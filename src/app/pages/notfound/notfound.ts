@@ -5,7 +5,6 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
 
 @Component({
   selector: 'app-notfound',
-  standalone: true,
   imports: [RouterModule, AppFloatingConfigurator, ButtonModule],
   template: ` <app-floating-configurator />
     <div class="flex items-center justify-center min-h-screen overflow-hidden">

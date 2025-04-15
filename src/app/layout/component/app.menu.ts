@@ -6,12 +6,17 @@ import { AppMenuitem } from './app.menuitem';
 
 @Component({
   selector: 'app-menu',
-  standalone: true,
   imports: [AppMenuitem, RouterModule],
   template: `<ul class="layout-menu">
     @for (item of model; track item; let i = $index) {
       @if (!item.separator) {
-        <li app-menuitem [item]="item" [index]="i" [root]="true"></li>
+        <li
+          app-menuitem
+          [item]="item"
+          [index]="i"
+          [root]="true"
+          [parentKey]="''"
+        ></li>
       }
       @if (item.separator) {
         <li class="menu-separator"></li>

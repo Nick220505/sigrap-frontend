@@ -11,7 +11,6 @@ import { Product, ProductService } from '../service/product.service';
 
 @Component({
   selector: 'app-list-demo',
-  standalone: true,
   imports: [
     CommonModule,
     DataViewModule,

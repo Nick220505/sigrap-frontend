@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
-import { TimelineModule } from 'primeng/timeline';
-import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { TimelineModule } from 'primeng/timeline';
 
 @Component({
   selector: 'app-timeline-demo',
-  standalone: true,
   imports: [CommonModule, TimelineModule, ButtonModule, CardModule],
   template: ` <div class="grid grid-cols-12 gap-8">
     <div class="col-span-6">

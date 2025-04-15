@@ -35,7 +35,6 @@ import { NodeService } from '../service/node.service';
 
 @Component({
   selector: 'app-input-demo',
-  standalone: true,
   imports: [
     FormsModule,
     InputTextModule,

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 @Component({
-  standalone: true,
   selector: 'app-stats-widget',
   imports: [],
   template: `<div class="col-span-12 lg:col-span-6 xl:col-span-3">

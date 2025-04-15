@@ -3,7 +3,6 @@ import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 
 @Component({
-  standalone: true,
   selector: 'app-notifications-widget',
   imports: [ButtonModule, MenuModule],
   template: `<div class="card">

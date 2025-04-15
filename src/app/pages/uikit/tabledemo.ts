@@ -35,7 +35,6 @@ interface ExpandedRows {
 
 @Component({
   selector: 'app-table-demo',
-  standalone: true,
   imports: [
     TableModule,
     MultiSelectModule,

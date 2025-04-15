@@ -1,14 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { TreeModule } from 'primeng/tree';
-import { FormsModule } from '@angular/forms';
 import { TreeTableModule } from 'primeng/treetable';
 
 import { NodeService } from '../service/node.service';
 
 @Component({
   selector: 'app-tree-demo',
-  standalone: true,
   imports: [FormsModule, TreeModule, TreeTableModule],
   template: `
     <div class="card">

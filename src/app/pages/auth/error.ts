@@ -13,7 +13,6 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
     AppFloatingConfigurator,
     ButtonModule,
   ],
-  standalone: true,
   template: ` <app-floating-configurator />
     <div
       class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"

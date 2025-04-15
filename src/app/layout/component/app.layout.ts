@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2, inject, viewChild } from '@angular/core';
+import { Component, inject, Renderer2, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { LayoutService } from '../service/layout.service';
@@ -9,7 +9,6 @@ import { AppTopbar } from './app.topbar';
 
 @Component({
   selector: 'app-layout',
-  standalone: true,
   imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
   template: `<div class="layout-wrapper" [ngClass]="containerClass">
     <app-topbar></app-topbar>

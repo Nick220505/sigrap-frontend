@@ -10,7 +10,6 @@ import { Product, ProductService } from '../service/product.service';
 
 @Component({
   selector: 'app-media-demo',
-  standalone: true,
   imports: [
     CommonModule,
     CarouselModule,

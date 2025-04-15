@@ -1,14 +1,13 @@
-import { Component, inject } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
-import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { AppConfigurator } from './app.configurator';
 
 @Component({
   selector: 'app-topbar',
-  standalone: true,
   imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
   template: ` <div class="layout-topbar">
     <div class="layout-topbar-logo-container">

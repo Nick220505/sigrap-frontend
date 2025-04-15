@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, inject, viewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -33,7 +33,6 @@ interface ExportColumn {
 
 @Component({
   selector: 'app-crud',
-  standalone: true,
   imports: [
     CommonModule,
     TableModule,

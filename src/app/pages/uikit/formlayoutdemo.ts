@@ -8,7 +8,6 @@ import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-formlayout-demo',
-  standalone: true,
   imports: [
     InputTextModule,
     FluidModule,

@@ -1,22 +1,21 @@
 import { Component } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 
-import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
-import { MegaMenuModule } from 'primeng/megamenu';
-import { PanelMenuModule } from 'primeng/panelmenu';
-import { TabsModule } from 'primeng/tabs';
-import { MenubarModule } from 'primeng/menubar';
-import { InputTextModule } from 'primeng/inputtext';
-import { StepperModule } from 'primeng/stepper';
 import { IconField, IconFieldModule } from 'primeng/iconfield';
 import { InputIcon, InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { MegaMenuModule } from 'primeng/megamenu';
+import { MenuModule } from 'primeng/menu';
+import { MenubarModule } from 'primeng/menubar';
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { StepperModule } from 'primeng/stepper';
+import { TabsModule } from 'primeng/tabs';
 
 @Component({
   selector: 'app-menu-demo',
-  standalone: true,
   imports: [
     BreadcrumbModule,
     TieredMenuModule,

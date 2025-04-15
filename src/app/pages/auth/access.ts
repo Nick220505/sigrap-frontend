@@ -6,7 +6,6 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
 
 @Component({
   selector: 'app-access',
-  standalone: true,
   imports: [
     ButtonModule,
     RouterModule,

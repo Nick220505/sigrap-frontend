@@ -19,7 +19,6 @@ import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-panels-demo',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
