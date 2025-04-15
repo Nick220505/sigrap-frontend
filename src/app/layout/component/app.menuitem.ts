@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input, inject } from '@angular/core';
+import { Component, HostBinding, Input, inject, input } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
@@ -117,11 +117,11 @@ export class AppMenuitem {
 
   @Input() item!: MenuItem;
 
-  @Input() index!: number;
+  readonly index = input.required<number>();
 
   @Input() @HostBinding('class.layout-root-menuitem') root!: boolean;
 
-  @Input() parentKey!: string;
+  readonly parentKey = input.required<string>();
 
   active = false;
 
@@ -164,9 +164,10 @@ export class AppMenuitem {
   }
 
   ngOnInit() {
-    this.key = this.parentKey
-      ? this.parentKey + '-' + this.index
-      : String(this.index);
+    const parentKey = this.parentKey();
+    this.key = parentKey
+      ? parentKey + '-' + this.index()
+      : String(this.index());
 
     if (this.item.routerLink) {
       this.updateActiveStateFromRoute();
