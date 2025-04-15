@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-documentation',
-  imports: [],
   template: `
     <div class="card">
       <div class="font-semibold text-2xl mb-4">Documentation</div>
