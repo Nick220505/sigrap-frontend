@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input, inject, input } from '@angular/core';
+import { Component, HostBinding, inject, input } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
@@ -20,63 +20,63 @@ import { LayoutService } from '../service/layout.service';
   imports: [CommonModule, RouterModule, RippleModule],
   template: `
     <ng-container>
-      @if (root && item.visible !== false) {
+      @if (root() && item().visible !== false) {
         <div class="layout-menuitem-root-text">
-          {{ item.label }}
+          {{ item().label }}
         </div>
       }
-      @if ((!item.routerLink || item.items) && item.visible !== false) {
+      @if ((!item().routerLink || item().items) && item().visible !== false) {
         <a
-          [attr.href]="item.url"
+          [attr.href]="item().url"
           (click)="itemClick($event)"
-          [ngClass]="item.styleClass"
-          [attr.target]="item.target"
+          [ngClass]="item().styleClass"
+          [attr.target]="item().target"
           tabindex="0"
           pRipple
         >
-          <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-          <span class="layout-menuitem-text">{{ item.label }}</span>
-          @if (item.items) {
+          <i [ngClass]="item().icon" class="layout-menuitem-icon"></i>
+          <span class="layout-menuitem-text">{{ item().label }}</span>
+          @if (item().items) {
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
           }
         </a>
       }
-      @if (item.routerLink && !item.items && item.visible !== false) {
+      @if (item().routerLink && !item().items && item().visible !== false) {
         <a
           (click)="itemClick($event)"
-          [ngClass]="item.styleClass"
-          [routerLink]="item.routerLink"
+          [ngClass]="item().styleClass"
+          [routerLink]="item().routerLink"
           routerLinkActive="active-route"
           [routerLinkActiveOptions]="
-            item.routerLinkActiveOptions || {
+            item().routerLinkActiveOptions || {
               paths: 'exact',
               queryParams: 'ignored',
               matrixParams: 'ignored',
               fragment: 'ignored',
             }
           "
-          [fragment]="item.fragment"
-          [queryParamsHandling]="item.queryParamsHandling"
-          [preserveFragment]="item.preserveFragment"
-          [skipLocationChange]="item.skipLocationChange"
-          [replaceUrl]="item.replaceUrl"
-          [state]="item.state"
-          [queryParams]="item.queryParams"
-          [attr.target]="item.target"
+          [fragment]="item().fragment"
+          [queryParamsHandling]="item().queryParamsHandling"
+          [preserveFragment]="item().preserveFragment"
+          [skipLocationChange]="item().skipLocationChange"
+          [replaceUrl]="item().replaceUrl"
+          [state]="item().state"
+          [queryParams]="item().queryParams"
+          [attr.target]="item().target"
           tabindex="0"
           pRipple
         >
-          <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-          <span class="layout-menuitem-text">{{ item.label }}</span>
-          @if (item.items) {
+          <i [ngClass]="item().icon" class="layout-menuitem-icon"></i>
+          <span class="layout-menuitem-text">{{ item().label }}</span>
+          @if (item().items) {
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
           }
         </a>
       }
 
-      @if (item.items && item.visible !== false) {
+      @if (item().items && item().visible !== false) {
         <ul [@children]="submenuAnimation">
-          @for (child of item.items; track child; let i = $index) {
+          @for (child of item().items; track child; let i = $index) {
             <li
               app-menuitem
               [item]="child"
@@ -115,11 +115,16 @@ export class AppMenuitem {
   router = inject(Router);
   private readonly layoutService = inject(LayoutService);
 
-  @Input() item!: MenuItem;
+  readonly item = input.required<MenuItem>();
 
   readonly index = input.required<number>();
 
-  @Input() @HostBinding('class.layout-root-menuitem') root!: boolean;
+  readonly root = input<boolean>(false);
+
+  @HostBinding('class.layout-root-menuitem')
+  get isRootItem() {
+    return this.root();
+  }
 
   readonly parentKey = input.required<string>();
 
@@ -157,7 +162,7 @@ export class AppMenuitem {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((params) => {
-        if (this.item.routerLink) {
+        if (this.item().routerLink) {
           this.updateActiveStateFromRoute();
         }
       });
@@ -169,13 +174,13 @@ export class AppMenuitem {
       ? parentKey + '-' + this.index()
       : String(this.index());
 
-    if (this.item.routerLink) {
+    if (this.item().routerLink) {
       this.updateActiveStateFromRoute();
     }
   }
 
   updateActiveStateFromRoute() {
-    let activeRoute = this.router.isActive(this.item.routerLink[0], {
+    let activeRoute = this.router.isActive(this.item().routerLink[0], {
       paths: 'exact',
       queryParams: 'ignored',
       matrixParams: 'ignored',
@@ -192,18 +197,21 @@ export class AppMenuitem {
 
   itemClick(event: Event) {
     // avoid processing disabled items
-    if (this.item.disabled) {
+    if (this.item().disabled) {
       event.preventDefault();
       return;
     }
 
     // execute command
-    if (this.item.command) {
-      this.item.command({ originalEvent: event, item: this.item });
+    if (this.item().command) {
+      const command = this.item().command;
+      if (command) {
+        command({ originalEvent: event, item: this.item() });
+      }
     }
 
     // toggle active state
-    if (this.item.items) {
+    if (this.item().items) {
       this.active = !this.active;
     }
 
@@ -211,7 +219,7 @@ export class AppMenuitem {
   }
 
   get submenuAnimation() {
-    if (this.root) {
+    if (this.root()) {
       return 'expanded';
     }
 
@@ -220,7 +228,7 @@ export class AppMenuitem {
 
   @HostBinding('class.active-menuitem')
   get activeClass() {
-    return this.active && !this.root;
+    return this.active && !this.root();
   }
 
   ngOnDestroy() {
