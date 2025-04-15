@@ -11,7 +11,10 @@ import { FluidModule } from 'primeng/fluid';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import {
+    AutoCompleteCompleteEvent,
+    AutoCompleteModule,
+} from 'primeng/autocomplete';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SliderModule } from 'primeng/slider';
 import { RatingModule } from 'primeng/rating';
@@ -61,7 +64,7 @@ import { Country } from '../service/customer.service';
         MultiSelectModule,
         ListboxModule,
         InputGroupAddonModule,
-        TextareaModule
+        TextareaModule,
     ],
     template: ` <p-fluid class="flex flex-col md:flex-row gap-8">
             <div class="md:w-1/2">
@@ -69,8 +72,18 @@ import { Country } from '../service/customer.service';
                     <div class="font-semibold text-xl">InputText</div>
                     <div class="flex flex-col md:flex-row gap-4">
                         <input pInputText type="text" placeholder="Default" />
-                        <input pInputText type="text" placeholder="Disabled" [disabled]="true" />
-                        <input pInputText type="text" placeholder="Invalid" class="ng-dirty ng-invalid" />
+                        <input
+                            pInputText
+                            type="text"
+                            placeholder="Disabled"
+                            [disabled]="true"
+                        />
+                        <input
+                            pInputText
+                            type="text"
+                            placeholder="Invalid"
+                            class="ng-dirty ng-invalid"
+                        />
                     </div>
 
                     <div class="font-semibold text-xl">Icons</div>
@@ -85,21 +98,49 @@ import { Country } from '../service/customer.service';
 
                     <div class="font-semibold text-xl">Float Label</div>
                     <p-floatlabel>
-                        <input pInputText id="username" type="text" [(ngModel)]="floatValue" />
+                        <input
+                            pInputText
+                            id="username"
+                            type="text"
+                            [(ngModel)]="floatValue"
+                        />
                         <label for="username">Username</label>
                     </p-floatlabel>
 
                     <div class="font-semibold text-xl">Textarea</div>
-                    <textarea pTextarea placeholder="Your Message" [autoResize]="true" rows="3" cols="30"></textarea>
+                    <textarea
+                        pTextarea
+                        placeholder="Your Message"
+                        [autoResize]="true"
+                        rows="3"
+                        cols="30"
+                    ></textarea>
 
                     <div class="font-semibold text-xl">AutoComplete</div>
-                    <p-autocomplete [(ngModel)]="selectedAutoValue" [suggestions]="autoFilteredValue" optionLabel="name" placeholder="Search" dropdown multiple display="chip" (completeMethod)="filterCountry($event)" />
+                    <p-autocomplete
+                        [(ngModel)]="selectedAutoValue"
+                        [suggestions]="autoFilteredValue"
+                        optionLabel="name"
+                        placeholder="Search"
+                        dropdown
+                        multiple
+                        display="chip"
+                        (completeMethod)="filterCountry($event)"
+                    />
 
                     <div class="font-semibold text-xl">DatePicker</div>
-                    <p-datepicker [showIcon]="true" [showButtonBar]="true" [(ngModel)]="calendarValue"></p-datepicker>
+                    <p-datepicker
+                        [showIcon]="true"
+                        [showButtonBar]="true"
+                        [(ngModel)]="calendarValue"
+                    ></p-datepicker>
 
                     <div class="font-semibold text-xl">InputNumber</div>
-                    <p-inputnumber [(ngModel)]="inputNumberValue" showButtons mode="decimal"></p-inputnumber>
+                    <p-inputnumber
+                        [(ngModel)]="inputNumberValue"
+                        showButtons
+                        mode="decimal"
+                    ></p-inputnumber>
                 </div>
 
                 <div class="card flex flex-col gap-4">
@@ -114,12 +155,21 @@ import { Country } from '../service/customer.service';
                         </div>
                         <div class="flex flex-col gap-4 w-1/2">
                             <div class="font-semibold text-xl">ColorPicker</div>
-                            <p-colorpicker [style]="{ width: '2rem' }" [(ngModel)]="colorValue" />
+                            <p-colorpicker
+                                [style]="{ width: '2rem' }"
+                                [(ngModel)]="colorValue"
+                            />
                         </div>
                     </div>
 
                     <div class="font-semibold text-xl">Knob</div>
-                    <p-knob [(ngModel)]="knobValue" [step]="10" [min]="-50" [max]="50" valueTemplate="{value}%" />
+                    <p-knob
+                        [(ngModel)]="knobValue"
+                        [step]="10"
+                        [min]="-50"
+                        [max]="50"
+                        valueTemplate="{value}%"
+                    />
                 </div>
             </div>
             <div class="md:w-1/2">
@@ -127,32 +177,74 @@ import { Country } from '../service/customer.service';
                     <div class="font-semibold text-xl">RadioButton</div>
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex items-center">
-                            <p-radiobutton id="option1" name="option" value="Chicago" [(ngModel)]="radioValue" />
-                            <label for="option1" class="leading-none ml-2">Chicago</label>
+                            <p-radiobutton
+                                id="option1"
+                                name="option"
+                                value="Chicago"
+                                [(ngModel)]="radioValue"
+                            />
+                            <label for="option1" class="leading-none ml-2"
+                                >Chicago</label
+                            >
                         </div>
                         <div class="flex items-center">
-                            <p-radiobutton id="option2" name="option" value="Los Angeles" [(ngModel)]="radioValue" />
-                            <label for="option2" class="leading-none ml-2">Los Angeles</label>
+                            <p-radiobutton
+                                id="option2"
+                                name="option"
+                                value="Los Angeles"
+                                [(ngModel)]="radioValue"
+                            />
+                            <label for="option2" class="leading-none ml-2"
+                                >Los Angeles</label
+                            >
                         </div>
                         <div class="flex items-center">
-                            <p-radiobutton id="option3" name="option" value="New York" [(ngModel)]="radioValue" />
-                            <label for="option3" class="leading-none ml-2">New York</label>
+                            <p-radiobutton
+                                id="option3"
+                                name="option"
+                                value="New York"
+                                [(ngModel)]="radioValue"
+                            />
+                            <label for="option3" class="leading-none ml-2"
+                                >New York</label
+                            >
                         </div>
                     </div>
 
                     <div class="font-semibold text-xl">Checkbox</div>
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex items-center">
-                            <p-checkbox id="checkOption1" name="option" value="Chicago" [(ngModel)]="checkboxValue" />
-                            <label for="checkOption1" class="ml-2">Chicago</label>
+                            <p-checkbox
+                                id="checkOption1"
+                                name="option"
+                                value="Chicago"
+                                [(ngModel)]="checkboxValue"
+                            />
+                            <label for="checkOption1" class="ml-2"
+                                >Chicago</label
+                            >
                         </div>
                         <div class="flex items-center">
-                            <p-checkbox id="checkOption2" name="option" value="Los Angeles" [(ngModel)]="checkboxValue" />
-                            <label for="checkOption2" class="ml-2">Los Angeles</label>
+                            <p-checkbox
+                                id="checkOption2"
+                                name="option"
+                                value="Los Angeles"
+                                [(ngModel)]="checkboxValue"
+                            />
+                            <label for="checkOption2" class="ml-2"
+                                >Los Angeles</label
+                            >
                         </div>
                         <div class="flex items-center">
-                            <p-checkbox id="checkOption3" name="option" value="New York" [(ngModel)]="checkboxValue" />
-                            <label for="checkOption3" class="ml-2">New York</label>
+                            <p-checkbox
+                                id="checkOption3"
+                                name="option"
+                                value="New York"
+                                [(ngModel)]="checkboxValue"
+                            />
+                            <label for="checkOption3" class="ml-2"
+                                >New York</label
+                            >
                         </div>
                     </div>
 
@@ -162,39 +254,83 @@ import { Country } from '../service/customer.service';
 
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">Listbox</div>
-                    <p-listbox [(ngModel)]="listboxValue" [options]="listboxValues" optionLabel="name" [filter]="true" />
+                    <p-listbox
+                        [(ngModel)]="listboxValue"
+                        [options]="listboxValues"
+                        optionLabel="name"
+                        [filter]="true"
+                    />
 
                     <div class="font-semibold text-xl">Select</div>
-                    <p-select [(ngModel)]="dropdownValue" [options]="dropdownValues" optionLabel="name" placeholder="Select" />
+                    <p-select
+                        [(ngModel)]="dropdownValue"
+                        [options]="dropdownValues"
+                        optionLabel="name"
+                        placeholder="Select"
+                    />
 
                     <div class="font-semibold text-xl">MultiSelect</div>
-                    <p-multiselect [options]="multiselectCountries" [(ngModel)]="multiselectSelectedCountries" placeholder="Select Countries" optionLabel="name" display="chip" [filter]="true">
+                    <p-multiselect
+                        [options]="multiselectCountries"
+                        [(ngModel)]="multiselectSelectedCountries"
+                        placeholder="Select Countries"
+                        optionLabel="name"
+                        display="chip"
+                        [filter]="true"
+                    >
                         <ng-template #selecteditems let-countries>
                             @for (country of countries; track country.code) {
-                                <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
-                                    <span [class]="'mr-2 flag flag-' + country.code.toLowerCase()" style="width: 18px; height: 12px"></span>
+                                <div
+                                    class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2"
+                                >
+                                    <span
+                                        [class]="
+                                            'mr-2 flag flag-' +
+                                            country.code.toLowerCase()
+                                        "
+                                        style="width: 18px; height: 12px"
+                                    ></span>
                                     <div>{{ country.name }}</div>
                                 </div>
                             }
                         </ng-template>
                         <ng-template #item let-country>
                             <div class="flex items-center">
-                                <span [class]="'mr-2 flag flag-' + country.code.toLowerCase()" style="width: 18px; height: 12px"></span>
+                                <span
+                                    [class]="
+                                        'mr-2 flag flag-' +
+                                        country.code.toLowerCase()
+                                    "
+                                    style="width: 18px; height: 12px"
+                                ></span>
                                 <div>{{ country.name }}</div>
                             </div>
                         </ng-template>
                     </p-multiselect>
 
                     <div class="font-semibold text-xl">TreeSelect</div>
-                    <p-treeselect [(ngModel)]="selectedNode" [options]="treeSelectNodes" placeholder="Select Item"></p-treeselect>
+                    <p-treeselect
+                        [(ngModel)]="selectedNode"
+                        [options]="treeSelectNodes"
+                        placeholder="Select Item"
+                    ></p-treeselect>
                 </div>
 
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">ToggleButton</div>
-                    <p-togglebutton [(ngModel)]="toggleValue" onLabel="Yes" offLabel="No" [style]="{ width: '10em' }" />
+                    <p-togglebutton
+                        [(ngModel)]="toggleValue"
+                        onLabel="Yes"
+                        offLabel="No"
+                        [style]="{ width: '10em' }"
+                    />
 
                     <div class="font-semibold text-xl">SelectButton</div>
-                    <p-selectbutton [(ngModel)]="selectButtonValue" [options]="selectButtonValues" optionLabel="name" />
+                    <p-selectbutton
+                        [(ngModel)]="selectButtonValue"
+                        [options]="selectButtonValues"
+                        optionLabel="name"
+                    />
                 </div>
             </div>
         </p-fluid>
@@ -228,14 +364,17 @@ import { Country } from '../service/customer.service';
                     </p-inputgroup>
                     <p-inputgroup>
                         <p-inputgroup-addon>
-                            <p-checkbox [(ngModel)]="inputGroupValue" [binary]="true" />
+                            <p-checkbox
+                                [(ngModel)]="inputGroupValue"
+                                [binary]="true"
+                            />
                         </p-inputgroup-addon>
                         <input pInputText placeholder="Confirm" />
                     </p-inputgroup>
                 </div>
             </div>
         </p-fluid>`,
-    providers: [CountryService, NodeService]
+    providers: [CountryService, NodeService],
 })
 export class InputDemo implements OnInit {
     floatValue: any = null;
@@ -267,7 +406,7 @@ export class InputDemo implements OnInit {
         { name: 'Rome', code: 'RM' },
         { name: 'London', code: 'LDN' },
         { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' }
+        { name: 'Paris', code: 'PRS' },
     ];
 
     listboxValue: any = null;
@@ -277,7 +416,7 @@ export class InputDemo implements OnInit {
         { name: 'Rome', code: 'RM' },
         { name: 'London', code: 'LDN' },
         { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' }
+        { name: 'Paris', code: 'PRS' },
     ];
 
     dropdownValue: any = null;
@@ -292,7 +431,7 @@ export class InputDemo implements OnInit {
         { name: 'India', code: 'IN' },
         { name: 'Japan', code: 'JP' },
         { name: 'Spain', code: 'ES' },
-        { name: 'United States', code: 'US' }
+        { name: 'United States', code: 'US' },
     ];
 
     multiselectSelectedCountries!: Country[];
@@ -301,7 +440,11 @@ export class InputDemo implements OnInit {
 
     selectButtonValue: any = null;
 
-    selectButtonValues: any = [{ name: 'Option 1' }, { name: 'Option 2' }, { name: 'Option 3' }];
+    selectButtonValues: any = [
+        { name: 'Option 1' },
+        { name: 'Option 2' },
+        { name: 'Option 3' },
+    ];
 
     knobValue: number = 50;
 
@@ -320,7 +463,9 @@ export class InputDemo implements OnInit {
             this.autoValue = countries;
         });
 
-        this.nodeService.getFiles().then((data) => (this.treeSelectNodes = data));
+        this.nodeService
+            .getFiles()
+            .then((data) => (this.treeSelectNodes = data));
     }
 
     filterCountry(event: AutoCompleteCompleteEvent) {

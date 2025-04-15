@@ -35,7 +35,7 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
         StepperModule,
         TabsModule,
         IconField,
-        InputIcon
+        InputIcon,
     ],
     template: `
         <div class="card">
@@ -52,7 +52,10 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
 
         <div class="card">
             <div class="font-semibold text-xl mb-4">Breadcrumb</div>
-            <p-breadcrumb [model]="breadcrumbItems" [home]="breadcrumbHome"></p-breadcrumb>
+            <p-breadcrumb
+                [model]="breadcrumbItems"
+                [home]="breadcrumbHome"
+            ></p-breadcrumb>
         </div>
 
         <div class="flex flex-col md:flex-row gap-8">
@@ -98,14 +101,28 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
             <div class="md:w-1/3">
                 <div class="card">
                     <div class="font-semibold text-xl mb-4">Overlay Menu</div>
-                    <p-menu #menu [popup]="true" [model]="overlayMenuItems"></p-menu>
-                    <button type="button" pButton icon="pi pi-chevron-down" label="Options" (click)="menu.toggle($event)" style="width:auto"></button>
+                    <p-menu
+                        #menu
+                        [popup]="true"
+                        [model]="overlayMenuItems"
+                    ></p-menu>
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-chevron-down"
+                        label="Options"
+                        (click)="menu.toggle($event)"
+                        style="width:auto"
+                    ></button>
                 </div>
 
                 <div class="card" #anchor>
                     <div class="font-semibold text-xl mb-4">Context Menu</div>
                     Right click to display.
-                    <p-contextmenu [target]="anchor" [model]="contextMenuItems"></p-contextmenu>
+                    <p-contextmenu
+                        [target]="anchor"
+                        [model]="contextMenuItems"
+                    ></p-contextmenu>
                 </div>
             </div>
         </div>
@@ -113,11 +130,18 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
         <div class="flex flex-col md:flex-row gap-8 mt-8">
             <div class="md:w-1/2">
                 <div class="card">
-                    <div class="font-semibold text-xl mb-4">MegaMenu | Horizontal</div>
+                    <div class="font-semibold text-xl mb-4">
+                        MegaMenu | Horizontal
+                    </div>
                     <p-megamenu [model]="megaMenuItems" />
 
-                    <div class="font-semibold text-xl mb-4 mt-8">MegaMenu | Vertical</div>
-                    <p-megamenu [model]="megaMenuItems" orientation="vertical" />
+                    <div class="font-semibold text-xl mb-4 mt-8">
+                        MegaMenu | Vertical
+                    </div>
+                    <p-megamenu
+                        [model]="megaMenuItems"
+                        orientation="vertical"
+                    />
                 </div>
             </div>
             <div class="md:w-1/2">
@@ -127,7 +151,7 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
                 </div>
             </div>
         </div>
-    `
+    `,
 })
 export class MenuDemo {
     nestedMenuItems = [
@@ -141,19 +165,19 @@ export class MenuDemo {
                     items: [
                         {
                             label: 'Customer',
-                            icon: 'pi pi-fw pi-plus'
+                            icon: 'pi pi-fw pi-plus',
                         },
                         {
                             label: 'Duplicate',
-                            icon: 'pi pi-fw pi-copy'
-                        }
-                    ]
+                            icon: 'pi pi-fw pi-copy',
+                        },
+                    ],
                 },
                 {
                     label: 'Edit',
-                    icon: 'pi pi-fw pi-user-edit'
-                }
-            ]
+                    icon: 'pi pi-fw pi-user-edit',
+                },
+            ],
         },
         {
             label: 'Orders',
@@ -161,13 +185,13 @@ export class MenuDemo {
             items: [
                 {
                     label: 'View',
-                    icon: 'pi pi-fw pi-list'
+                    icon: 'pi pi-fw pi-list',
                 },
                 {
                     label: 'Search',
-                    icon: 'pi pi-fw pi-search'
-                }
-            ]
+                    icon: 'pi pi-fw pi-search',
+                },
+            ],
         },
         {
             label: 'Shipments',
@@ -175,17 +199,17 @@ export class MenuDemo {
             items: [
                 {
                     label: 'Tracker',
-                    icon: 'pi pi-fw pi-compass'
+                    icon: 'pi pi-fw pi-compass',
                 },
                 {
                     label: 'Map',
-                    icon: 'pi pi-fw pi-map-marker'
+                    icon: 'pi pi-fw pi-map-marker',
                 },
                 {
                     label: 'Manage',
-                    icon: 'pi pi-fw pi-pencil'
-                }
-            ]
+                    icon: 'pi pi-fw pi-pencil',
+                },
+            ],
         },
         {
             label: 'Profile',
@@ -193,21 +217,27 @@ export class MenuDemo {
             items: [
                 {
                     label: 'Settings',
-                    icon: 'pi pi-fw pi-cog'
+                    icon: 'pi pi-fw pi-cog',
                 },
                 {
                     label: 'Billing',
-                    icon: 'pi pi-fw pi-file'
-                }
-            ]
+                    icon: 'pi pi-fw pi-file',
+                },
+            ],
         },
         {
             label: 'Quit',
-            icon: 'pi pi-fw pi-sign-out'
-        }
+            icon: 'pi pi-fw pi-sign-out',
+        },
     ];
     breadcrumbHome = { icon: 'pi pi-home', to: '/' };
-    breadcrumbItems = [{ label: 'Computer' }, { label: 'Notebook' }, { label: 'Accessories' }, { label: 'Backpacks' }, { label: 'Item' }];
+    breadcrumbItems = [
+        { label: 'Computer' },
+        { label: 'Notebook' },
+        { label: 'Accessories' },
+        { label: 'Backpacks' },
+        { label: 'Item' },
+    ];
     tieredMenuItems = [
         {
             label: 'Customers',
@@ -219,19 +249,19 @@ export class MenuDemo {
                     items: [
                         {
                             label: 'Customer',
-                            icon: 'pi pi-fw pi-plus'
+                            icon: 'pi pi-fw pi-plus',
                         },
                         {
                             label: 'Duplicate',
-                            icon: 'pi pi-fw pi-copy'
-                        }
-                    ]
+                            icon: 'pi pi-fw pi-copy',
+                        },
+                    ],
                 },
                 {
                     label: 'Edit',
-                    icon: 'pi pi-fw pi-user-edit'
-                }
-            ]
+                    icon: 'pi pi-fw pi-user-edit',
+                },
+            ],
         },
         {
             label: 'Orders',
@@ -239,13 +269,13 @@ export class MenuDemo {
             items: [
                 {
                     label: 'View',
-                    icon: 'pi pi-fw pi-list'
+                    icon: 'pi pi-fw pi-list',
                 },
                 {
                     label: 'Search',
-                    icon: 'pi pi-fw pi-search'
-                }
-            ]
+                    icon: 'pi pi-fw pi-search',
+                },
+            ],
         },
         {
             label: 'Shipments',
@@ -253,17 +283,17 @@ export class MenuDemo {
             items: [
                 {
                     label: 'Tracker',
-                    icon: 'pi pi-fw pi-compass'
+                    icon: 'pi pi-fw pi-compass',
                 },
                 {
                     label: 'Map',
-                    icon: 'pi pi-fw pi-map-marker'
+                    icon: 'pi pi-fw pi-map-marker',
                 },
                 {
                     label: 'Manage',
-                    icon: 'pi pi-fw pi-pencil'
-                }
-            ]
+                    icon: 'pi pi-fw pi-pencil',
+                },
+            ],
         },
         {
             label: 'Profile',
@@ -271,42 +301,42 @@ export class MenuDemo {
             items: [
                 {
                     label: 'Settings',
-                    icon: 'pi pi-fw pi-cog'
+                    icon: 'pi pi-fw pi-cog',
                 },
                 {
                     label: 'Billing',
-                    icon: 'pi pi-fw pi-file'
-                }
-            ]
+                    icon: 'pi pi-fw pi-file',
+                },
+            ],
         },
         {
-            separator: true
+            separator: true,
         },
         {
             label: 'Quit',
-            icon: 'pi pi-fw pi-sign-out'
-        }
+            icon: 'pi pi-fw pi-sign-out',
+        },
     ];
     overlayMenuItems = [
         {
             label: 'Save',
-            icon: 'pi pi-save'
+            icon: 'pi pi-save',
         },
         {
             label: 'Update',
-            icon: 'pi pi-refresh'
+            icon: 'pi pi-refresh',
         },
         {
             label: 'Delete',
-            icon: 'pi pi-trash'
+            icon: 'pi pi-trash',
         },
         {
-            separator: true
+            separator: true,
         },
         {
             label: 'Home',
-            icon: 'pi pi-home'
-        }
+            icon: 'pi pi-home',
+        },
     ];
     menuItems = [
         {
@@ -314,48 +344,48 @@ export class MenuDemo {
             items: [
                 {
                     label: 'New',
-                    icon: 'pi pi-fw pi-plus'
+                    icon: 'pi pi-fw pi-plus',
                 },
                 {
                     label: 'Edit',
-                    icon: 'pi pi-fw pi-user-edit'
-                }
-            ]
+                    icon: 'pi pi-fw pi-user-edit',
+                },
+            ],
         },
         {
             label: 'Orders',
             items: [
                 {
                     label: 'View',
-                    icon: 'pi pi-fw pi-list'
+                    icon: 'pi pi-fw pi-list',
                 },
                 {
                     label: 'Search',
-                    icon: 'pi pi-fw pi-search'
-                }
-            ]
-        }
+                    icon: 'pi pi-fw pi-search',
+                },
+            ],
+        },
     ];
     contextMenuItems = [
         {
             label: 'Save',
-            icon: 'pi pi-save'
+            icon: 'pi pi-save',
         },
         {
             label: 'Update',
-            icon: 'pi pi-refresh'
+            icon: 'pi pi-refresh',
         },
         {
             label: 'Delete',
-            icon: 'pi pi-trash'
+            icon: 'pi pi-trash',
         },
         {
-            separator: true
+            separator: true,
         },
         {
             label: 'Options',
-            icon: 'pi pi-cog'
-        }
+            icon: 'pi pi-cog',
+        },
     ];
     megaMenuItems = [
         {
@@ -365,24 +395,36 @@ export class MenuDemo {
                 [
                     {
                         label: 'Woman',
-                        items: [{ label: 'Woman Item' }, { label: 'Woman Item' }, { label: 'Woman Item' }]
+                        items: [
+                            { label: 'Woman Item' },
+                            { label: 'Woman Item' },
+                            { label: 'Woman Item' },
+                        ],
                     },
                     {
                         label: 'Men',
-                        items: [{ label: 'Men Item' }, { label: 'Men Item' }, { label: 'Men Item' }]
-                    }
+                        items: [
+                            { label: 'Men Item' },
+                            { label: 'Men Item' },
+                            { label: 'Men Item' },
+                        ],
+                    },
                 ],
                 [
                     {
                         label: 'Kids',
-                        items: [{ label: 'Kids Item' }, { label: 'Kids Item' }]
+                        items: [{ label: 'Kids Item' }, { label: 'Kids Item' }],
                     },
                     {
                         label: 'Luggage',
-                        items: [{ label: 'Luggage Item' }, { label: 'Luggage Item' }, { label: 'Luggage Item' }]
-                    }
-                ]
-            ]
+                        items: [
+                            { label: 'Luggage Item' },
+                            { label: 'Luggage Item' },
+                            { label: 'Luggage Item' },
+                        ],
+                    },
+                ],
+            ],
         },
         {
             label: 'Electronics',
@@ -391,30 +433,44 @@ export class MenuDemo {
                 [
                     {
                         label: 'Computer',
-                        items: [{ label: 'Computer Item' }, { label: 'Computer Item' }]
+                        items: [
+                            { label: 'Computer Item' },
+                            { label: 'Computer Item' },
+                        ],
                     },
                     {
                         label: 'Camcorder',
-                        items: [{ label: 'Camcorder Item' }, { label: 'Camcorder Item' }, { label: 'Camcorder Item' }]
-                    }
+                        items: [
+                            { label: 'Camcorder Item' },
+                            { label: 'Camcorder Item' },
+                            { label: 'Camcorder Item' },
+                        ],
+                    },
                 ],
                 [
                     {
                         label: 'TV',
-                        items: [{ label: 'TV Item' }, { label: 'TV Item' }]
+                        items: [{ label: 'TV Item' }, { label: 'TV Item' }],
                     },
                     {
                         label: 'Audio',
-                        items: [{ label: 'Audio Item' }, { label: 'Audio Item' }, { label: 'Audio Item' }]
-                    }
+                        items: [
+                            { label: 'Audio Item' },
+                            { label: 'Audio Item' },
+                            { label: 'Audio Item' },
+                        ],
+                    },
                 ],
                 [
                     {
                         label: 'Sports.7',
-                        items: [{ label: 'Sports.7.1' }, { label: 'Sports.7.2' }]
-                    }
-                ]
-            ]
+                        items: [
+                            { label: 'Sports.7.1' },
+                            { label: 'Sports.7.2' },
+                        ],
+                    },
+                ],
+            ],
         },
         {
             label: 'Furniture',
@@ -423,24 +479,38 @@ export class MenuDemo {
                 [
                     {
                         label: 'Living Room',
-                        items: [{ label: 'Living Room Item' }, { label: 'Living Room Item' }]
+                        items: [
+                            { label: 'Living Room Item' },
+                            { label: 'Living Room Item' },
+                        ],
                     },
                     {
                         label: 'Kitchen',
-                        items: [{ label: 'Kitchen Item' }, { label: 'Kitchen Item' }, { label: 'Kitchen Item' }]
-                    }
+                        items: [
+                            { label: 'Kitchen Item' },
+                            { label: 'Kitchen Item' },
+                            { label: 'Kitchen Item' },
+                        ],
+                    },
                 ],
                 [
                     {
                         label: 'Bedroom',
-                        items: [{ label: 'Bedroom Item' }, { label: 'Bedroom Item' }]
+                        items: [
+                            { label: 'Bedroom Item' },
+                            { label: 'Bedroom Item' },
+                        ],
                     },
                     {
                         label: 'Outdoor',
-                        items: [{ label: 'Outdoor Item' }, { label: 'Outdoor Item' }, { label: 'Outdoor Item' }]
-                    }
-                ]
-            ]
+                        items: [
+                            { label: 'Outdoor Item' },
+                            { label: 'Outdoor Item' },
+                            { label: 'Outdoor Item' },
+                        ],
+                    },
+                ],
+            ],
         },
         {
             label: 'Sports',
@@ -449,21 +519,31 @@ export class MenuDemo {
                 [
                     {
                         label: 'Basketball',
-                        items: [{ label: 'Basketball Item' }, { label: 'Basketball Item' }]
+                        items: [
+                            { label: 'Basketball Item' },
+                            { label: 'Basketball Item' },
+                        ],
                     },
                     {
                         label: 'Football',
-                        items: [{ label: 'Football Item' }, { label: 'Football Item' }, { label: 'Football Item' }]
-                    }
+                        items: [
+                            { label: 'Football Item' },
+                            { label: 'Football Item' },
+                            { label: 'Football Item' },
+                        ],
+                    },
                 ],
                 [
                     {
                         label: 'Tennis',
-                        items: [{ label: 'Tennis Item' }, { label: 'Tennis Item' }]
-                    }
-                ]
-            ]
-        }
+                        items: [
+                            { label: 'Tennis Item' },
+                            { label: 'Tennis Item' },
+                        ],
+                    },
+                ],
+            ],
+        },
     ];
     panelMenuItems = [
         {
@@ -476,19 +556,19 @@ export class MenuDemo {
                     items: [
                         {
                             label: 'Customer',
-                            icon: 'pi pi-fw pi-plus'
+                            icon: 'pi pi-fw pi-plus',
                         },
                         {
                             label: 'Duplicate',
-                            icon: 'pi pi-fw pi-copy'
-                        }
-                    ]
+                            icon: 'pi pi-fw pi-copy',
+                        },
+                    ],
                 },
                 {
                     label: 'Edit',
-                    icon: 'pi pi-fw pi-user-edit'
-                }
-            ]
+                    icon: 'pi pi-fw pi-user-edit',
+                },
+            ],
         },
         {
             label: 'Orders',
@@ -496,13 +576,13 @@ export class MenuDemo {
             items: [
                 {
                     label: 'View',
-                    icon: 'pi pi-fw pi-list'
+                    icon: 'pi pi-fw pi-list',
                 },
                 {
                     label: 'Search',
-                    icon: 'pi pi-fw pi-search'
-                }
-            ]
+                    icon: 'pi pi-fw pi-search',
+                },
+            ],
         },
         {
             label: 'Shipments',
@@ -510,17 +590,17 @@ export class MenuDemo {
             items: [
                 {
                     label: 'Tracker',
-                    icon: 'pi pi-fw pi-compass'
+                    icon: 'pi pi-fw pi-compass',
                 },
                 {
                     label: 'Map',
-                    icon: 'pi pi-fw pi-map-marker'
+                    icon: 'pi pi-fw pi-map-marker',
                 },
                 {
                     label: 'Manage',
-                    icon: 'pi pi-fw pi-pencil'
-                }
-            ]
+                    icon: 'pi pi-fw pi-pencil',
+                },
+            ],
         },
         {
             label: 'Profile',
@@ -528,13 +608,13 @@ export class MenuDemo {
             items: [
                 {
                     label: 'Settings',
-                    icon: 'pi pi-fw pi-cog'
+                    icon: 'pi pi-fw pi-cog',
                 },
                 {
                     label: 'Billing',
-                    icon: 'pi pi-fw pi-file'
-                }
-            ]
-        }
+                    icon: 'pi pi-fw pi-file',
+                },
+            ],
+        },
     ];
 }

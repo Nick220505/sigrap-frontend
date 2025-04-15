@@ -9,7 +9,14 @@ import { TextareaModule } from 'primeng/textarea';
 @Component({
     selector: 'app-formlayout-demo',
     standalone: true,
-    imports: [InputTextModule, FluidModule, ButtonModule, SelectModule, FormsModule, TextareaModule],
+    imports: [
+        InputTextModule,
+        FluidModule,
+        ButtonModule,
+        SelectModule,
+        FormsModule,
+        TextareaModule,
+    ],
     template: `<p-fluid>
         <div class="flex flex-col md:flex-row gap-8">
             <div class="md:w-1/2">
@@ -47,13 +54,21 @@ import { TextareaModule } from 'primeng/textarea';
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">Horizontal</div>
                     <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-2">
-                        <label for="name3" class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0">Name</label>
+                        <label
+                            for="name3"
+                            class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
+                            >Name</label
+                        >
                         <div class="col-span-12 md:col-span-10">
                             <input pInputText id="name3" type="text" />
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-2">
-                        <label for="email3" class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0">Email</label>
+                        <label
+                            for="email3"
+                            class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
+                            >Email</label
+                        >
                         <div class="col-span-12 md:col-span-10">
                             <input pInputText id="email3" type="text" />
                         </div>
@@ -64,12 +79,26 @@ import { TextareaModule } from 'primeng/textarea';
                     <div class="font-semibold text-xl">Inline</div>
                     <div class="flex flex-wrap items-start gap-6">
                         <div class="field">
-                            <label for="firstname1" class="sr-only">Firstname</label>
-                            <input pInputText id="firstname1" type="text" placeholder="Firstname" />
+                            <label for="firstname1" class="sr-only"
+                                >Firstname</label
+                            >
+                            <input
+                                pInputText
+                                id="firstname1"
+                                type="text"
+                                placeholder="Firstname"
+                            />
                         </div>
                         <div class="field">
-                            <label for="lastname1" class="sr-only">Lastname</label>
-                            <input pInputText id="lastname1" type="text" placeholder="Lastname" />
+                            <label for="lastname1" class="sr-only"
+                                >Lastname</label
+                            >
+                            <input
+                                pInputText
+                                id="lastname1"
+                                type="text"
+                                placeholder="Lastname"
+                            />
                         </div>
                         <p-button label="Submit" [fluid]="false"></p-button>
                     </div>
@@ -79,7 +108,9 @@ import { TextareaModule } from 'primeng/textarea';
                     <div class="flex flex-wrap gap-2">
                         <label for="username">Username</label>
                         <input pInputText id="username" type="text" />
-                        <small>Enter your username to reset your password.</small>
+                        <small
+                            >Enter your username to reset your password.</small
+                        >
                     </div>
                 </div>
             </div>
@@ -107,7 +138,14 @@ import { TextareaModule } from 'primeng/textarea';
                 <div class="flex flex-col md:flex-row gap-6">
                     <div class="flex flex-wrap gap-2 w-full">
                         <label for="state">State</label>
-                        <p-select id="state" [(ngModel)]="dropdownItem" [options]="dropdownItems" optionLabel="name" placeholder="Select One" class="w-full"></p-select>
+                        <p-select
+                            id="state"
+                            [(ngModel)]="dropdownItem"
+                            [options]="dropdownItems"
+                            optionLabel="name"
+                            placeholder="Select One"
+                            class="w-full"
+                        ></p-select>
                     </div>
                     <div class="flex flex-wrap gap-2 w-full">
                         <label for="zip">Zip</label>
@@ -116,13 +154,13 @@ import { TextareaModule } from 'primeng/textarea';
                 </div>
             </div>
         </div>
-    </p-fluid>`
+    </p-fluid>`,
 })
 export class FormLayoutDemo {
     dropdownItems = [
         { name: 'Option 1', code: 'Option 1' },
         { name: 'Option 2', code: 'Option 2' },
-        { name: 'Option 3', code: 'Option 3' }
+        { name: 'Option 3', code: 'Option 3' },
     ];
 
     dropdownItem = null;

@@ -1,11 +1,5 @@
 {
-    "useTabs": false,
-    "tabWidth": 4,
-    "trailingComma": "none",
-    "semi": true,
     "singleQuote": true,
-    "printWidth": 250,
-    "bracketSameLine": false,
     "overrides": [
         {
             "files": ["*.ts", "*.mts", "*.d.ts"],
