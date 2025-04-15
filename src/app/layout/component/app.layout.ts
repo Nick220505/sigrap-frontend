@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2, ViewChild, inject } from '@angular/core';
+import { Component, Renderer2, inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { LayoutService } from '../service/layout.service';
@@ -32,9 +32,9 @@ export class AppLayout {
 
   menuOutsideClickListener: any;
 
-  @ViewChild(AppSidebar) appSidebar!: AppSidebar;
+  readonly appSidebar = viewChild.required(AppSidebar);
 
-  @ViewChild(AppTopbar) appTopBar!: AppTopbar;
+  readonly appTopBar = viewChild.required(AppTopbar);
 
   constructor() {
     this.overlayMenuOpenSubscription =

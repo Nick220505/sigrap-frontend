@@ -3,8 +3,8 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ViewChild,
   inject,
+  viewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -669,7 +669,7 @@ export class TableDemo implements OnInit {
 
   loading: boolean = true;
 
-  @ViewChild('filter') filter!: ElementRef;
+  readonly filter = viewChild.required<ElementRef>('filter');
 
   ngOnInit() {
     this.customerService.getCustomersLarge().then((customers) => {
@@ -775,7 +775,7 @@ export class TableDemo implements OnInit {
 
   clear(table: Table) {
     table.clear();
-    this.filter.nativeElement.value = '';
+    this.filter().nativeElement.value = '';
   }
 
   getSeverity(status: string) {

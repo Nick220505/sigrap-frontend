@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -360,14 +360,14 @@ export class Crud implements OnInit {
 
   statuses!: any[];
 
-  @ViewChild('dt') dt!: Table;
+  readonly dt = viewChild.required<Table>('dt');
 
   exportColumns!: ExportColumn[];
 
   cols!: Column[];
 
   exportCSV() {
-    this.dt.exportCSV();
+    this.dt().exportCSV();
   }
 
   ngOnInit() {
