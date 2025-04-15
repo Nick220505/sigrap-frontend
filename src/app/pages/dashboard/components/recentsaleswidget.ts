@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
@@ -63,9 +63,9 @@ import { Product, ProductService } from '../../service/product.service';
   providers: [ProductService],
 })
 export class RecentSalesWidget {
-  products!: Product[];
+  private readonly productService = inject(ProductService);
 
-  constructor(private readonly productService: ProductService) {}
+  products!: Product[];
 
   ngOnInit() {
     this.productService

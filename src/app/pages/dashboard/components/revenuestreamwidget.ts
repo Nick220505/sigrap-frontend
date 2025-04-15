@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { debounceTime, Subscription } from 'rxjs';
 import { LayoutService } from '../../../layout/service/layout.service';
@@ -18,13 +18,15 @@ import { LayoutService } from '../../../layout/service/layout.service';
   </div>`,
 })
 export class RevenueStreamWidget {
+  layoutService = inject(LayoutService);
+
   chartData: any;
 
   chartOptions: any;
 
   subscription!: Subscription;
 
-  constructor(public layoutService: LayoutService) {
+  constructor() {
     this.subscription = this.layoutService.configUpdate$
       .pipe(debounceTime(25))
       .subscribe(() => {

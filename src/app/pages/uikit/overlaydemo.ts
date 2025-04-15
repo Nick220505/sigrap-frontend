@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -242,6 +242,10 @@ import { Product, ProductService } from '../service/product.service';
   providers: [ConfirmationService, MessageService, ProductService],
 })
 export class OverlayDemo implements OnInit {
+  private readonly productService = inject(ProductService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+
   images: any[] = [];
 
   display: boolean = false;
@@ -261,12 +265,6 @@ export class OverlayDemo implements OnInit {
   displayConfirmation: boolean = false;
 
   selectedProduct!: Product;
-
-  constructor(
-    private readonly productService: ProductService,
-    private readonly confirmationService: ConfirmationService,
-    private readonly messageService: MessageService,
-  ) {}
 
   ngOnInit() {
     this.productService

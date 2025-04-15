@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
@@ -255,6 +255,8 @@ import { Product, ProductService } from '../service/product.service';
   providers: [ProductService],
 })
 export class ListDemo {
+  private readonly productService = inject(ProductService);
+
   layout: 'list' | 'grid' = 'list';
 
   options = ['list', 'grid'];
@@ -266,8 +268,6 @@ export class ListDemo {
   targetCities: any[] = [];
 
   orderCities: any[] = [];
-
-  constructor(private readonly productService: ProductService) {}
 
   ngOnInit() {
     this.productService

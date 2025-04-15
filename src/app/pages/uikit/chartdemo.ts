@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { FluidModule } from 'primeng/fluid';
 import { debounceTime, Subscription } from 'rxjs';
@@ -66,6 +66,8 @@ import { LayoutService } from '../../layout/service/layout.service';
   `,
 })
 export class ChartDemo {
+  private layoutService = inject(LayoutService);
+
   lineData: any;
 
   barData: any;
@@ -87,7 +89,7 @@ export class ChartDemo {
   radarOptions: any;
 
   subscription: Subscription;
-  constructor(private layoutService: LayoutService) {
+  constructor() {
     this.subscription = this.layoutService.configUpdate$
       .pipe(debounceTime(25))
       .subscribe(() => {

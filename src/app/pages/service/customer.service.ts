@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 export interface Country {
   name?: string;
@@ -24,6 +24,8 @@ export interface Customer {
 
 @Injectable()
 export class CustomerService {
+  private readonly http = inject(HttpClient);
+
   getData() {
     return [
       {
@@ -9028,8 +9030,6 @@ export class CustomerService {
       },
     ];
   }
-
-  constructor(private readonly http: HttpClient) {}
 
   getCustomersMini() {
     return Promise.resolve(this.getData().slice(0, 5));

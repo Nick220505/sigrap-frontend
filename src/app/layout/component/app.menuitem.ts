@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
@@ -112,6 +112,9 @@ import { LayoutService } from '../service/layout.service';
   providers: [LayoutService],
 })
 export class AppMenuitem {
+  router = inject(Router);
+  private readonly layoutService = inject(LayoutService);
+
   @Input() item!: MenuItem;
 
   @Input() index!: number;
@@ -128,10 +131,7 @@ export class AppMenuitem {
 
   key: string = '';
 
-  constructor(
-    public router: Router,
-    private readonly layoutService: LayoutService,
-  ) {
+  constructor() {
     this.menuSourceSubscription = this.layoutService.menuSource$.subscribe(
       (value) => {
         Promise.resolve(null).then(() => {

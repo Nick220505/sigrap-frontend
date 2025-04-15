@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -344,6 +344,10 @@ interface ExportColumn {
   providers: [MessageService, ProductService, ConfirmationService],
 })
 export class Crud implements OnInit {
+  private readonly productService = inject(ProductService);
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+
   productDialog: boolean = false;
 
   products = signal<Product[]>([]);
@@ -361,12 +365,6 @@ export class Crud implements OnInit {
   exportColumns!: ExportColumn[];
 
   cols!: Column[];
-
-  constructor(
-    private readonly productService: ProductService,
-    private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService,
-  ) {}
 
   exportCSV() {
     this.dt.exportCSV();

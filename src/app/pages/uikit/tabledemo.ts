@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -632,6 +632,9 @@ interface ExpandedRows {
   ],
 })
 export class TableDemo implements OnInit {
+  private readonly customerService = inject(CustomerService);
+  private readonly productService = inject(ProductService);
+
   customers1: Customer[] = [];
 
   customers2: Customer[] = [];
@@ -661,11 +664,6 @@ export class TableDemo implements OnInit {
   loading: boolean = true;
 
   @ViewChild('filter') filter!: ElementRef;
-
-  constructor(
-    private readonly customerService: CustomerService,
-    private readonly productService: ProductService,
-  ) {}
 
   ngOnInit() {
     this.customerService.getCustomersLarge().then((customers) => {
