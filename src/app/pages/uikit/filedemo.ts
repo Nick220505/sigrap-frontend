@@ -65,7 +65,7 @@ import { ToastModule } from 'primeng/toast';
 export class FileDemo {
   uploadedFiles: any[] = [];
 
-  constructor(private messageService: MessageService) {}
+  constructor(private readonly messageService: MessageService) {}
 
   onUpload(event: any) {
     for (const file of event.files) {

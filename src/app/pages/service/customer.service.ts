@@ -9029,7 +9029,7 @@ export class CustomerService {
     ];
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getCustomersMini() {
     return Promise.resolve(this.getData().slice(0, 5));
@@ -9052,10 +9052,8 @@ export class CustomerService {
   }
 
   getCustomers(params?: any) {
-    return this.http
-      .get<any>('https://www.primefaces.org/data/customers', {
-        params: params,
-      })
-      .toPromise();
+    return this.http.get<any>('https://www.primefaces.org/data/customers', {
+      params: params,
+    });
   }
 }

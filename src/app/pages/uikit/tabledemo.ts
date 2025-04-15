@@ -23,7 +23,7 @@ import {
 } from '../service/customer.service';
 import { Product, ProductService } from '../service/product.service';
 
-interface expandedRows {
+interface ExpandedRows {
   [key: string]: boolean;
 }
 
@@ -650,7 +650,7 @@ export class TableDemo implements OnInit {
 
   rowGroupMetadata: any;
 
-  expandedRows: expandedRows = {};
+  expandedRows: ExpandedRows = {};
 
   activityValues: number[] = [0, 100];
 
@@ -663,8 +663,8 @@ export class TableDemo implements OnInit {
   @ViewChild('filter') filter!: ElementRef;
 
   constructor(
-    private customerService: CustomerService,
-    private productService: ProductService,
+    private readonly customerService: CustomerService,
+    private readonly productService: ProductService,
   ) {}
 
   ngOnInit() {
@@ -722,7 +722,7 @@ export class TableDemo implements OnInit {
     if (this.customers3) {
       for (let i = 0; i < this.customers3.length; i++) {
         const rowData = this.customers3[i];
-        const representativeName = rowData?.representative?.name || '';
+        const representativeName = rowData?.representative?.name ?? '';
 
         if (i === 0) {
           this.rowGroupMetadata[representativeName] = {
@@ -747,9 +747,11 @@ export class TableDemo implements OnInit {
 
   expandAll() {
     if (!this.isExpanded) {
-      this.products.forEach((product) =>
-        product && product.name ? (this.expandedRows[product.name] = true) : '',
-      );
+      this.products.forEach((product) => {
+        if (product.name) {
+          this.expandedRows[product.name] = true;
+        }
+      });
     } else {
       this.expandedRows = {};
     }

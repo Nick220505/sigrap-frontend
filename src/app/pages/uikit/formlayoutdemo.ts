@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
 import { FluidModule } from 'primeng/fluid';
 import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
-import { FormsModule } from '@angular/forms';
 import { TextareaModule } from 'primeng/textarea';
 
 @Component({
@@ -53,7 +53,7 @@ import { TextareaModule } from 'primeng/textarea';
       <div class="md:w-1/2">
         <div class="card flex flex-col gap-4">
           <div class="font-semibold text-xl">Horizontal</div>
-          <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-2">
+          <div class="grid grid-cols-12 gap-4">
             <label
               for="name3"
               class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
@@ -63,7 +63,7 @@ import { TextareaModule } from 'primeng/textarea';
               <input pInputText id="name3" type="text" />
             </div>
           </div>
-          <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-2">
+          <div class="grid grid-cols-12 gap-4">
             <label
               for="email3"
               class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"

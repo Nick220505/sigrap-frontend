@@ -1,38 +1,38 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CheckboxModule } from 'primeng/checkbox';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { SelectButtonModule } from 'primeng/selectbutton';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { FluidModule } from 'primeng/fluid';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { TreeNode } from 'primeng/api';
 import {
   AutoCompleteCompleteEvent,
   AutoCompleteModule,
 } from 'primeng/autocomplete';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { SliderModule } from 'primeng/slider';
-import { RatingModule } from 'primeng/rating';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ColorPickerModule } from 'primeng/colorpicker';
-import { KnobModule } from 'primeng/knob';
-import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { TreeSelectModule } from 'primeng/treeselect';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { ListboxModule } from 'primeng/listbox';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { FluidModule } from 'primeng/fluid';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { KnobModule } from 'primeng/knob';
+import { ListboxModule } from 'primeng/listbox';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RatingModule } from 'primeng/rating';
+import { SelectModule } from 'primeng/select';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { SliderModule } from 'primeng/slider';
 import { TextareaModule } from 'primeng/textarea';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { TreeSelectModule } from 'primeng/treeselect';
 import { CountryService } from '../service/country.service';
-import { NodeService } from '../service/node.service';
-import { TreeNode } from 'primeng/api';
 import { Country } from '../service/customer.service';
+import { NodeService } from '../service/node.service';
 
 @Component({
   selector: 'app-input-demo',
@@ -449,8 +449,7 @@ export class InputDemo implements OnInit {
     const filtered: any[] = [];
     const query = event.query;
 
-    for (let i = 0; i < (this.autoValue as any[]).length; i++) {
-      const country = (this.autoValue as any[])[i];
+    for (const country of this.autoValue as any[]) {
       if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
         filtered.push(country);
       }

@@ -267,7 +267,7 @@ export class ListDemo {
 
   orderCities: any[] = [];
 
-  constructor(private productService: ProductService) {}
+  constructor(private readonly productService: ProductService) {}
 
   ngOnInit() {
     this.productService

@@ -139,8 +139,8 @@ export class MediaDemo implements OnInit {
   ];
 
   constructor(
-    private productService: ProductService,
-    private photoService: PhotoService,
+    private readonly productService: ProductService,
+    private readonly photoService: PhotoService,
   ) {}
 
   ngOnInit() {

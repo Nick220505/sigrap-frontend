@@ -1,11 +1,11 @@
-import { Component, Renderer2, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Renderer2, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { AppTopbar } from './app.topbar';
-import { AppSidebar } from './app.sidebar';
-import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
+import { AppFooter } from './app.footer';
+import { AppSidebar } from './app.sidebar';
+import { AppTopbar } from './app.topbar';
 
 @Component({
   selector: 'app-layout',
@@ -39,17 +39,15 @@ export class AppLayout {
   ) {
     this.overlayMenuOpenSubscription =
       this.layoutService.overlayOpen$.subscribe(() => {
-        if (!this.menuOutsideClickListener) {
-          this.menuOutsideClickListener = this.renderer.listen(
-            'document',
-            'click',
-            (event) => {
-              if (this.isOutsideClicked(event)) {
-                this.hideMenu();
-              }
-            },
-          );
-        }
+        this.menuOutsideClickListener ??= this.renderer.listen(
+          'document',
+          'click',
+          (event) => {
+            if (this.isOutsideClicked(event)) {
+              this.hideMenu();
+            }
+          },
+        );
 
         if (this.layoutService.layoutState().staticMenuMobileActive) {
           this.blockBodyScroll();

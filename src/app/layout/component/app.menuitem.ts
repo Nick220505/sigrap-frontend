@@ -1,5 +1,3 @@
-import { Component, HostBinding, Input } from '@angular/core';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import {
   animate,
   state,
@@ -7,11 +5,13 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { CommonModule } from '@angular/common';
+import { Component, HostBinding, Input } from '@angular/core';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { RippleModule } from 'primeng/ripple';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { CommonModule } from '@angular/common';
-import { RippleModule } from 'primeng/ripple';
-import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../service/layout.service';
 
 @Component({
@@ -132,23 +132,19 @@ export class AppMenuitem {
 
   constructor(
     public router: Router,
-    private layoutService: LayoutService,
+    private readonly layoutService: LayoutService,
   ) {
     this.menuSourceSubscription = this.layoutService.menuSource$.subscribe(
       (value) => {
         Promise.resolve(null).then(() => {
           if (value.routeEvent) {
             this.active =
-              value.key === this.key || value.key.startsWith(this.key + '-')
-                ? true
-                : false;
-          } else {
-            if (
-              value.key !== this.key &&
-              !value.key.startsWith(this.key + '-')
-            ) {
-              this.active = false;
-            }
+              value.key === this.key || value.key.startsWith(this.key + '-');
+          } else if (
+            value.key !== this.key &&
+            !value.key.startsWith(this.key + '-')
+          ) {
+            this.active = false;
           }
         });
       },
@@ -216,7 +212,11 @@ export class AppMenuitem {
   }
 
   get submenuAnimation() {
-    return this.root ? 'expanded' : this.active ? 'expanded' : 'collapsed';
+    if (this.root) {
+      return 'expanded';
+    }
+
+    return this.active ? 'expanded' : 'collapsed';
   }
 
   @HostBinding('class.active-menuitem')

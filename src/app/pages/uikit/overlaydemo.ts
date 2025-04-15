@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { ToastModule } from 'primeng/toast';
-import { DrawerModule } from 'primeng/drawer';
-import { Popover, PopoverModule } from 'primeng/popover';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { DialogModule } from 'primeng/dialog';
+import { DrawerModule } from 'primeng/drawer';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
-import { TooltipModule } from 'primeng/tooltip';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { Product, ProductService } from '../service/product.service';
 
 @Component({
@@ -263,9 +263,9 @@ export class OverlayDemo implements OnInit {
   selectedProduct!: Product;
 
   constructor(
-    private productService: ProductService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
+    private readonly productService: ProductService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly messageService: MessageService,
   ) {}
 
   ngOnInit() {
