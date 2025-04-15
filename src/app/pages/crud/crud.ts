@@ -63,7 +63,7 @@ interface ExportColumn {
           severity="secondary"
           class="mr-2"
           (onClick)="openNew()"
-        />
+          />
         <p-button
           severity="secondary"
           label="Delete"
@@ -71,19 +71,19 @@ interface ExportColumn {
           outlined
           (onClick)="deleteSelectedProducts()"
           [disabled]="!selectedProducts || !selectedProducts.length"
-        />
+          />
       </ng-template>
-
+    
       <ng-template #end>
         <p-button
           label="Export"
           icon="pi pi-upload"
           severity="secondary"
           (onClick)="exportCSV()"
-        />
+          />
       </ng-template>
     </p-toolbar>
-
+    
     <p-table
       #dt
       [value]="products()"
@@ -103,7 +103,7 @@ interface ExportColumn {
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
       [showCurrentPageReport]="true"
       [rowsPerPageOptions]="[10, 20, 30]"
-    >
+      >
       <ng-template #caption>
         <div class="flex items-center justify-between">
           <h5 class="m-0">Manage Products</h5>
@@ -114,7 +114,7 @@ interface ExportColumn {
               type="text"
               (input)="onGlobalFilter(dt, $event)"
               placeholder="Search..."
-            />
+              />
           </p-iconfield>
         </div>
       </ng-template>
@@ -164,7 +164,7 @@ interface ExportColumn {
               [alt]="product.name"
               style="width: 64px"
               class="rounded"
-            />
+              />
           </td>
           <td>{{ product.price | currency: 'USD' }}</td>
           <td>{{ product.category }}</td>
@@ -175,7 +175,7 @@ interface ExportColumn {
             <p-tag
               [value]="product.inventoryStatus"
               [severity]="getSeverity(product.inventoryStatus)"
-            />
+              />
           </td>
           <td>
             <p-button
@@ -184,36 +184,37 @@ interface ExportColumn {
               [rounded]="true"
               [outlined]="true"
               (click)="editProduct(product)"
-            />
+              />
             <p-button
               icon="pi pi-trash"
               severity="danger"
               [rounded]="true"
               [outlined]="true"
               (click)="deleteProduct(product)"
-            />
+              />
           </td>
         </tr>
       </ng-template>
     </p-table>
-
+    
     <p-dialog
       [(visible)]="productDialog"
       [style]="{ width: '450px' }"
       header="Product Details"
       [modal]="true"
-    >
+      >
       <ng-template #content>
         <div class="flex flex-col gap-6">
-          <img
+          @if (product.image) {
+            <img
             [src]="
               'https://primefaces.org/cdn/primeng/images/demo/product/' +
               product.image
             "
-            [alt]="product.image"
-            class="block m-auto pb-4"
-            *ngIf="product.image"
-          />
+              [alt]="product.image"
+              class="block m-auto pb-4"
+              />
+          }
           <div>
             <label for="name" class="block font-bold mb-3">Name</label>
             <input
@@ -224,122 +225,124 @@ interface ExportColumn {
               required
               autofocus
               fluid
-            />
-            <small class="text-red-500" *ngIf="submitted && !product.name"
-              >Name is required.</small
-            >
-          </div>
-          <div>
-            <label for="description" class="block font-bold mb-3"
-              >Description</label
-            >
-            <textarea
-              id="description"
-              pTextarea
-              [(ngModel)]="product.description"
-              required
-              rows="3"
-              cols="20"
-              fluid
-            ></textarea>
-          </div>
-
-          <div>
-            <label for="inventoryStatus" class="block font-bold mb-3"
-              >Inventory Status</label
-            >
-            <p-select
-              [(ngModel)]="product.inventoryStatus"
-              inputId="inventoryStatus"
-              [options]="statuses"
-              optionLabel="label"
-              optionValue="label"
-              placeholder="Select a Status"
-              fluid
-            />
-          </div>
-
-          <div>
-            <span class="block font-bold mb-4">Category</span>
-            <div class="grid grid-cols-12 gap-4">
-              <div class="flex items-center gap-2 col-span-6">
-                <p-radiobutton
-                  id="category1"
-                  name="category"
-                  value="Accessories"
-                  [(ngModel)]="product.category"
-                />
-                <label for="category1">Accessories</label>
-              </div>
-              <div class="flex items-center gap-2 col-span-6">
-                <p-radiobutton
-                  id="category2"
-                  name="category"
-                  value="Clothing"
-                  [(ngModel)]="product.category"
-                />
-                <label for="category2">Clothing</label>
-              </div>
-              <div class="flex items-center gap-2 col-span-6">
-                <p-radiobutton
-                  id="category3"
-                  name="category"
-                  value="Electronics"
-                  [(ngModel)]="product.category"
-                />
-                <label for="category3">Electronics</label>
-              </div>
-              <div class="flex items-center gap-2 col-span-6">
-                <p-radiobutton
-                  id="category4"
-                  name="category"
-                  value="Fitness"
-                  [(ngModel)]="product.category"
-                />
-                <label for="category4">Fitness</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-12 gap-4">
-            <div class="col-span-6">
-              <label for="price" class="block font-bold mb-3">Price</label>
-              <p-inputnumber
-                id="price"
-                [(ngModel)]="product.price"
-                mode="currency"
-                currency="USD"
-                locale="en-US"
-                fluid
               />
+            @if (submitted && !product.name) {
+              <small class="text-red-500"
+                >Name is required.</small
+                >
+              }
             </div>
-            <div class="col-span-6">
-              <label for="quantity" class="block font-bold mb-3"
-                >Quantity</label
-              >
-              <p-inputnumber
-                id="quantity"
-                [(ngModel)]="product.quantity"
-                fluid
-              />
-            </div>
-          </div>
-        </div>
-      </ng-template>
-
-      <ng-template #footer>
-        <p-button
-          label="Cancel"
-          icon="pi pi-times"
-          text
-          (click)="hideDialog()"
-        />
-        <p-button label="Save" icon="pi pi-check" (click)="saveProduct()" />
-      </ng-template>
-    </p-dialog>
-
-    <p-confirmdialog [style]="{ width: '450px' }" />
-  `,
+            <div>
+              <label for="description" class="block font-bold mb-3"
+                >Description</label
+                >
+                <textarea
+                  id="description"
+                  pTextarea
+                  [(ngModel)]="product.description"
+                  required
+                  rows="3"
+                  cols="20"
+                  fluid
+                ></textarea>
+              </div>
+    
+              <div>
+                <label for="inventoryStatus" class="block font-bold mb-3"
+                  >Inventory Status</label
+                  >
+                  <p-select
+                    [(ngModel)]="product.inventoryStatus"
+                    inputId="inventoryStatus"
+                    [options]="statuses"
+                    optionLabel="label"
+                    optionValue="label"
+                    placeholder="Select a Status"
+                    fluid
+                    />
+                </div>
+    
+                <div>
+                  <span class="block font-bold mb-4">Category</span>
+                  <div class="grid grid-cols-12 gap-4">
+                    <div class="flex items-center gap-2 col-span-6">
+                      <p-radiobutton
+                        id="category1"
+                        name="category"
+                        value="Accessories"
+                        [(ngModel)]="product.category"
+                        />
+                      <label for="category1">Accessories</label>
+                    </div>
+                    <div class="flex items-center gap-2 col-span-6">
+                      <p-radiobutton
+                        id="category2"
+                        name="category"
+                        value="Clothing"
+                        [(ngModel)]="product.category"
+                        />
+                      <label for="category2">Clothing</label>
+                    </div>
+                    <div class="flex items-center gap-2 col-span-6">
+                      <p-radiobutton
+                        id="category3"
+                        name="category"
+                        value="Electronics"
+                        [(ngModel)]="product.category"
+                        />
+                      <label for="category3">Electronics</label>
+                    </div>
+                    <div class="flex items-center gap-2 col-span-6">
+                      <p-radiobutton
+                        id="category4"
+                        name="category"
+                        value="Fitness"
+                        [(ngModel)]="product.category"
+                        />
+                      <label for="category4">Fitness</label>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="grid grid-cols-12 gap-4">
+                  <div class="col-span-6">
+                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <p-inputnumber
+                      id="price"
+                      [(ngModel)]="product.price"
+                      mode="currency"
+                      currency="USD"
+                      locale="en-US"
+                      fluid
+                      />
+                  </div>
+                  <div class="col-span-6">
+                    <label for="quantity" class="block font-bold mb-3"
+                      >Quantity</label
+                      >
+                      <p-inputnumber
+                        id="quantity"
+                        [(ngModel)]="product.quantity"
+                        fluid
+                        />
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+    
+              <ng-template #footer>
+                <p-button
+                  label="Cancel"
+                  icon="pi pi-times"
+                  text
+                  (click)="hideDialog()"
+                  />
+                <p-button label="Save" icon="pi pi-check" (click)="saveProduct()" />
+              </ng-template>
+            </p-dialog>
+    
+            <p-confirmdialog [style]="{ width: '450px' }" />
+    `,
   providers: [MessageService, ProductService, ConfirmationService],
 })
 export class Crud implements OnInit {
