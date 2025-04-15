@@ -66,7 +66,7 @@ import { LayoutService } from '../../layout/service/layout.service';
   `,
 })
 export class ChartDemo {
-  private layoutService = inject(LayoutService);
+  private readonly layoutService = inject(LayoutService);
 
   lineData: any;
 
