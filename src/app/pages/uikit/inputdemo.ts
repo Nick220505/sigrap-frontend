@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
@@ -63,8 +62,8 @@ import { NodeService } from '../service/node.service';
     MultiSelectModule,
     ListboxModule,
     InputGroupAddonModule,
-    TextareaModule
-],
+    TextareaModule,
+  ],
   template: ` <p-fluid class="flex flex-col md:flex-row gap-8">
       <div class="md:w-1/2">
         <div class="card flex flex-col gap-4">

@@ -34,8 +34,8 @@ import { InputIcon, InputIconModule } from 'primeng/inputicon';
     StepperModule,
     TabsModule,
     IconField,
-    InputIcon
-],
+    InputIcon,
+  ],
   template: `
     <div class="card">
       <div class="font-semibold text-xl mb-4">Menubar</div>

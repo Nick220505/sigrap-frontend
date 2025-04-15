@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { FluidModule } from 'primeng/fluid';

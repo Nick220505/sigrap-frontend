@@ -104,7 +104,7 @@ declare type SurfacesType = {
           (ngModelChange)="onPresetChange($event)"
           [allowEmpty]="false"
           size="small"
-          />
+        />
       </div>
       @if (showMenuModeButton()) {
         <div class="flex flex-col gap-2">
@@ -115,11 +115,11 @@ declare type SurfacesType = {
             [options]="menuModeOptions"
             [allowEmpty]="false"
             size="small"
-            />
+          />
         </div>
       }
     </div>
-    `,
+  `,
   host: {
     class:
       'hidden absolute top-[3.25rem] right-0 w-72 p-4 bg-surface-0 dark:bg-surface-900 border border-surface rounded-border origin-top shadow-[0px_3px_5px_rgba(0,0,0,0.02),0px_0px_2px_rgba(0,0,0,0.05),0px_1px_4px_rgba(0,0,0,0.08)]',

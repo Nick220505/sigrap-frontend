@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService, ToastMessageOptions } from 'primeng/api';
@@ -15,8 +14,8 @@ import { ToastModule } from 'primeng/toast';
     ButtonModule,
     InputTextModule,
     MessageModule,
-    FormsModule
-],
+    FormsModule,
+  ],
   template: `
     <div class="flex flex-col md:flex-row gap-8">
       <div class="md:w-1/2">

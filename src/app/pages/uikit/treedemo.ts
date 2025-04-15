@@ -19,7 +19,7 @@ import { NodeService } from '../service/node.service';
         [(selection)]="selectedTreeValue"
       ></p-tree>
     </div>
-    
+
     <div class="card">
       <div class="font-semibold text-xl mb-4">TreeTable</div>
       <p-treetable
@@ -30,7 +30,7 @@ import { NodeService } from '../service/node.service';
         dataKey="key"
         [scrollable]="true"
         [tableStyle]="{ 'min-width': '50rem' }"
-        >
+      >
         <ng-template #header let-columns>
           <tr>
             @for (col of columns; track col) {
@@ -45,7 +45,7 @@ import { NodeService } from '../service/node.service';
           let-rowNode
           let-rowData="rowData"
           let-columns="columns"
-          >
+        >
           <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
             @for (col of columns; track col; let i = $index) {
               <td>
@@ -62,7 +62,7 @@ import { NodeService } from '../service/node.service';
         </ng-template>
       </p-treetable>
     </div>
-    `,
+  `,
   providers: [NodeService],
 })
 export class TreeDemo implements OnInit {

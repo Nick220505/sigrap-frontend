@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -22,7 +21,7 @@ import { ToastModule } from 'primeng/toast';
             maxFileSize="1000000"
             mode="advanced"
             url="https://www.primefaces.org/cdn/api/upload.php"
-            >
+          >
             <ng-template #empty>
               <div>Drag and drop files to here to upload.</div>
             </ng-template>
@@ -30,9 +29,7 @@ import { ToastModule } from 'primeng/toast';
               @if (uploadedFiles.length) {
                 <ul>
                   @for (file of uploadedFiles; track file) {
-                    <li>
-                      {{ file.name }} - {{ file.size }} bytes
-                    </li>
+                    <li>{{ file.name }} - {{ file.size }} bytes</li>
                   }
                 </ul>
               }
@@ -54,12 +51,12 @@ import { ToastModule } from 'primeng/toast';
               accept="image/*"
               maxFileSize="1000000"
               (onUpload)="onUpload($event)"
-              />
+            />
             <p-button
               label="Upload"
               (onClick)="fu.upload()"
               severity="secondary"
-              />
+            />
           </div>
         </div>
       </div>

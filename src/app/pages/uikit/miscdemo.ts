@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
@@ -26,8 +25,8 @@ import { TagModule } from 'primeng/tag';
     SkeletonModule,
     AvatarGroupModule,
     ScrollTopModule,
-    OverlayBadgeModule
-],
+    OverlayBadgeModule,
+  ],
   template: `
     <div class="card">
       <div class="font-semibold text-xl mb-4">ProgressBar</div>
