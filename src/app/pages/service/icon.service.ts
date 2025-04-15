@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 export class IconService {
   private readonly http = inject(HttpClient);
 
-
   icons!: any[];
 
   selectedIcon: any;
