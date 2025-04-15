@@ -4,7 +4,7 @@ import {
   ElementRef,
   OnInit,
   inject,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
