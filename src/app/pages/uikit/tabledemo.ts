@@ -1,21 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { RatingModule } from 'primeng/rating';
+import { RippleModule } from 'primeng/ripple';
 import { SelectModule } from 'primeng/select';
 import { SliderModule } from 'primeng/slider';
 import { Table, TableModule } from 'primeng/table';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { ToastModule } from 'primeng/toast';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { RatingModule } from 'primeng/rating';
-import { RippleModule } from 'primeng/ripple';
-import { InputIconModule } from 'primeng/inputicon';
-import { IconFieldModule } from 'primeng/iconfield';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import {
   Customer,
   CustomerService,
@@ -673,9 +673,11 @@ export class TableDemo implements OnInit {
       this.loading = false;
 
       // @ts-ignore
-      this.customers1.forEach(
-        (customer) => (customer.date = new Date(customer.date)),
-      );
+      this.customers1.forEach((customer) => {
+        if (customer.date) {
+          customer.date = new Date(customer.date);
+        }
+      });
     });
     this.customerService
       .getCustomersMedium()

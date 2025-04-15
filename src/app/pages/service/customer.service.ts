@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 export interface Country {
   name?: string;
@@ -16,7 +16,7 @@ export interface Customer {
   name?: string;
   country?: Country;
   company?: string;
-  date?: string;
+  date?: string | Date;
   status?: string;
   activity?: number;
   representative?: Representative;
