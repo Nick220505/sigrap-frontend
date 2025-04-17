@@ -113,10 +113,8 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
       documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-    // Check if dark theme is active using the LayoutService
     const isDarkMode = this.layoutService.isDarkTheme();
 
-    // Set chart text colors based on theme
     const chartTextColor = isDarkMode ? '#ffffff' : textColor;
     const chartSecondaryTextColor = isDarkMode ? '#cccccc' : textColorSecondary;
 
