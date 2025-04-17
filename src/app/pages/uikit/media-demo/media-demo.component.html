@@ -1,0 +1,76 @@
+<div class="card">
+  <div class="mb-4 text-xl font-semibold">Carousel</div>
+  <p-carousel
+    [value]="products"
+    [numVisible]="3"
+    [numScroll]="3"
+    [circular]="false"
+    [responsiveOptions]="carouselResponsiveOptions"
+  >
+    <ng-template pTemplate="item" let-product>
+      <div class="p-4 m-2 border border-surface rounded-border">
+        <div class="mb-4">
+          <div class="relative mx-auto">
+            <img
+              src="https://primefaces.org/cdn/primeng/images/demo/product/{{
+                product.image
+              }}"
+              alt="{{ product.name }}"
+              [title]="product.name"
+              class="w-full rounded-border"
+            />
+            <div
+              class="absolute bg-black/70 rounded-border"
+              [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
+            >
+              <p-tag
+                [value]="product.inventoryStatus"
+                [severity]="getSeverity(product.inventoryStatus)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="mb-4 font-medium">{{ product.name }}</div>
+        <div class="flex items-center justify-between">
+          <div class="mt-0 text-xl font-semibold">
+            {{ '$' + product.price }}
+          </div>
+          <span>
+            <p-button
+              icon="pi pi-heart"
+              severity="secondary"
+              [outlined]="true"
+            />
+            <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
+          </span>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>
+
+<div class="card">
+  <div class="mb-4 text-xl font-semibold">Image</div>
+  <p-image
+    src="https://primefaces.org/cdn/primeng/images/galleria/galleria10.jpg"
+    alt="Image"
+    width="250"
+  />
+</div>
+
+<div class="card">
+  <div class="mb-4 text-xl font-semibold">Galleria</div>
+  <p-galleria
+    [value]="images"
+    [responsiveOptions]="galleriaResponsiveOptions"
+    [containerStyle]="{ 'max-width': '640px' }"
+    [numVisible]="5"
+  >
+    <ng-template pTemplate="item" let-item>
+      <img [src]="item.itemImageSrc" class="w-full" alt="Galleria" />
+    </ng-template>
+    <ng-template pTemplate="thumbnail" let-item>
+      <img [src]="item.thumbnailImageSrc" alt="Galleria thumbnail" />
+    </ng-template>
+  </p-galleria>
+</div>

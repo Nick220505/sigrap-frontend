@@ -1,0 +1,73 @@
+<div class="flex flex-col gap-8 md:flex-row">
+  <div class="md:w-1/2">
+    <div class="card">
+      <div class="mb-4 text-xl font-semibold">Toast</div>
+      <div class="flex flex-wrap gap-2">
+        <p-button
+          (click)="showSuccessViaToast()"
+          (keydown)="showSuccessViaToast()"
+          label="Success"
+          severity="success"
+        />
+        <p-button
+          (click)="showInfoViaToast()"
+          (keydown)="showInfoViaToast()"
+          label="Info"
+          severity="info"
+        />
+        <p-button
+          (click)="showWarnViaToast()"
+          (keydown)="showWarnViaToast()"
+          label="Warn"
+          severity="warn"
+        />
+        <p-button
+          (click)="showErrorViaToast()"
+          (keydown)="showErrorViaToast()"
+          label="Error"
+          severity="danger"
+        />
+        <p-toast />
+      </div>
+
+      <div class="mt-4 mb-4 text-xl font-semibold">Inline</div>
+      <div class="flex flex-col gap-1 mb-4">
+        <input
+          pInputText
+          [(ngModel)]="username"
+          placeholder="Username"
+          aria-label="username"
+          class="ng-dirty ng-invalid"
+        />
+        <p-message severity="error" variant="simple" size="small"
+          >Username is required</p-message
+        >
+      </div>
+      <div class="flex flex-col flex-wrap gap-1">
+        <input
+          pInputText
+          [(ngModel)]="email"
+          placeholder="Email"
+          aria-label="email"
+          class="ng-dirty ng-invalid"
+        />
+        <p-message severity="error" variant="simple" size="small"
+          >Email is required</p-message
+        >
+      </div>
+    </div>
+  </div>
+  <div class="md:w-1/2">
+    <div class="card">
+      <div class="mb-4 text-xl font-semibold">Message</div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p-message severity="success">Success Message</p-message>
+        <p-message severity="info">Info Message</p-message>
+        <p-message severity="warn">Warn Message</p-message>
+        <p-message severity="error">Error Message</p-message>
+        <p-message severity="secondary">Secondary Message</p-message>
+        <p-message severity="contrast">Contrast Message</p-message>
+      </div>
+    </div>
+  </div>
+</div>

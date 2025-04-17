@@ -1,0 +1,5 @@
+:root {
+  --layout-section-transition-duration: var(--transition-duration);
+  --element-transition-duration: var(--transition-duration);
+  --sidebar-width: 20rem;
+}

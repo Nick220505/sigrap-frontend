@@ -1,0 +1,215 @@
+<div class="flex flex-col">
+  <div class="card">
+    <div class="text-xl font-semibold">DataView</div>
+    <p-dataview [value]="products" [layout]="layout">
+      <ng-template #header>
+        <div class="flex justify-end">
+          <p-select-button
+            [(ngModel)]="layout"
+            [options]="options"
+            [allowEmpty]="false"
+          >
+            <ng-template #item let-option>
+              <i
+                class="pi"
+                [ngClass]="{
+                  'pi-bars': option === 'list',
+                  'pi-table': option === 'grid',
+                }"
+              ></i>
+            </ng-template>
+          </p-select-button>
+        </div>
+      </ng-template>
+
+      <ng-template #list let-items>
+        <div class="flex flex-col">
+          @for (item of items; track item; let i = $index) {
+            <div>
+              <div
+                class="flex flex-col gap-4 p-6 sm:flex-row sm:items-center"
+                [ngClass]="{
+                  'border-t border-surface': i !== 0,
+                }"
+              >
+                <div class="relative md:w-40">
+                  <img
+                    class="block w-full mx-auto rounded-sm xl:block"
+                    src="https://primefaces.org/cdn/primevue/images/product/{{
+                      item.image
+                    }}"
+                    alt="{{ item.name }}"
+                    [title]="item.name"
+                  />
+                  <div
+                    class="absolute bg-black/70 rounded-border"
+                    [style]="{ left: '4px', top: '4px' }"
+                  >
+                    <p-tag
+                      [value]="item.inventoryStatus"
+                      [severity]="getSeverity(item)"
+                    ></p-tag>
+                  </div>
+                </div>
+                <div
+                  class="flex flex-col justify-between flex-1 gap-6 md:flex-row md:items-center"
+                >
+                  <div
+                    class="flex flex-row items-start justify-between gap-2 md:flex-col"
+                  >
+                    <div>
+                      <span
+                        class="text-sm font-medium text-surface-500 dark:text-surface-400"
+                        >{{ item.category }}</span
+                      >
+                      <div class="mt-2 text-lg font-medium">
+                        {{ item.name }}
+                      </div>
+                    </div>
+                    <div class="p-1 rounded-full bg-surface-100">
+                      <div
+                        class="flex items-center justify-center gap-2 px-2 py-1 rounded-full shadow-xs bg-surface-0"
+                      >
+                        <span class="text-sm font-medium text-surface-900">{{
+                          item.rating
+                        }}</span>
+                        <i class="text-yellow-500 pi pi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-8 md:items-end">
+                    <span class="text-xl font-semibold"
+                      >$ {{ item.price }}</span
+                    >
+                    <div class="flex flex-row-reverse gap-2 md:flex-row">
+                      <p-button
+                        icon="pi pi-heart"
+                        styleClass="h-full"
+                        [outlined]="true"
+                      ></p-button>
+                      <p-button
+                        icon="pi pi-shopping-cart"
+                        label="Buy Now"
+                        [disabled]="item.inventoryStatus === 'OUTOFSTOCK'"
+                        styleClass="flex-auto md:flex-initial whitespace-nowrap"
+                      ></p-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </ng-template>
+
+      <ng-template #grid let-items>
+        <div class="grid grid-cols-12 gap-4">
+          @for (item of items; track item; let i = $index) {
+            <div class="col-span-12 p-2 sm:col-span-6 lg:col-span-4">
+              <div
+                class="flex flex-col p-6 border rounded-sm border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900"
+              >
+                <div class="flex justify-center p-6 rounded-sm bg-surface-50">
+                  <div class="relative mx-auto">
+                    <img
+                      class="w-full rounded-sm max-w-[300px]"
+                      src="https://primefaces.org/cdn/primevue/images/product/{{
+                        item.image
+                      }}"
+                      alt="{{ item.name }}"
+                      [title]="item.name"
+                    />
+                    <div
+                      class="absolute bg-black/70 rounded-border"
+                      [style]="{ left: '4px', top: '4px' }"
+                    >
+                      <p-tag
+                        [value]="item.inventoryStatus"
+                        [severity]="getSeverity(item)"
+                      ></p-tag>
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-12">
+                  <div class="flex flex-row items-start justify-between gap-2">
+                    <div>
+                      <span
+                        class="text-sm font-medium text-surface-500 dark:text-surface-400"
+                        >{{ item.category }}</span
+                      >
+                      <div class="mt-1 text-lg font-medium">
+                        {{ item.name }}
+                      </div>
+                    </div>
+                    <div class="p-1 rounded-full bg-surface-100">
+                      <div
+                        class="flex items-center justify-center gap-2 px-2 py-1 rounded-full shadow-xs bg-surface-0"
+                      >
+                        <span class="text-sm font-medium text-surface-900">{{
+                          item.rating
+                        }}</span>
+                        <i class="text-yellow-500 pi pi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-6 mt-6">
+                    <span class="text-2xl font-semibold"
+                      >$ {{ item.price }}</span
+                    >
+                    <div class="flex gap-2">
+                      <p-button
+                        icon="pi pi-shopping-cart"
+                        label="Buy Now"
+                        [disabled]="item.inventoryStatus === 'OUTOFSTOCK'"
+                        class="flex-auto whitespace-nowrap"
+                        styleClass="w-full"
+                      ></p-button>
+                      <p-button
+                        icon="pi pi-heart"
+                        styleClass="h-full"
+                        [outlined]="true"
+                      ></p-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </ng-template>
+    </p-dataview>
+  </div>
+
+  <div class="flex flex-col gap-20 lg:flex-row">
+    <div class="lg:w-2/3">
+      <div class="card">
+        <div class="mb-4 text-xl font-semibold">PickList</div>
+        <p-pick-list
+          [source]="sourceCities"
+          [target]="targetCities"
+          breakpoint="1400px"
+        >
+          <ng-template #pickListItem let-item>
+            {{ item.name }}
+          </ng-template>
+        </p-pick-list>
+      </div>
+    </div>
+
+    <div class="lg:w-1/3">
+      <div class="card">
+        <div class="mb-4 text-xl font-semibold">OrderList</div>
+        <p-orderlist
+          [value]="orderCities"
+          dataKey="id"
+          breakpoint="575px"
+          class="[&_.p-orderlist-list-container]:!w-full"
+        >
+          <ng-template #option let-option>
+            {{ option.name }}
+          </ng-template>
+        </p-orderlist>
+      </div>
+    </div>
+  </div>
+</div>
