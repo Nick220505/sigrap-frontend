@@ -6,6 +6,7 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
 
 @Component({
   selector: 'app-menu',
+  standalone: true,
   imports: [MenuItemComponent, RouterModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
@@ -16,7 +17,7 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.model = [
       {
-        label: 'Home',
+        label: 'Principal',
         items: [
           {
             label: 'Dashboard',
@@ -26,216 +27,167 @@ export class MenuComponent implements OnInit {
         ],
       },
       {
-        label: 'UI Components',
+        label: 'Gestión de Inventario',
         items: [
           {
-            label: 'Form Layout',
-            icon: 'pi pi-fw pi-id-card',
-            routerLink: ['/uikit/formlayout'],
+            label: 'Productos',
+            icon: 'pi pi-fw pi-box',
+            routerLink: ['/inventario/productos'],
           },
           {
-            label: 'Input',
-            icon: 'pi pi-fw pi-check-square',
-            routerLink: ['/uikit/input'],
+            label: 'Categorías',
+            icon: 'pi pi-fw pi-tags',
+            routerLink: ['/inventario/categorias'],
           },
           {
-            label: 'Button',
-            icon: 'pi pi-fw pi-mobile',
-            class: 'rotated-icon',
-            routerLink: ['/uikit/button'],
+            label: 'Stock',
+            icon: 'pi pi-fw pi-server',
+            routerLink: ['/inventario/stock'],
           },
           {
-            label: 'Table',
-            icon: 'pi pi-fw pi-table',
-            routerLink: ['/uikit/table'],
+            label: 'Alertas',
+            icon: 'pi pi-fw pi-exclamation-triangle',
+            routerLink: ['/inventario/alertas'],
+          },
+        ],
+      },
+      {
+        label: 'Ventas',
+        items: [
+          {
+            label: 'Registrar Venta',
+            icon: 'pi pi-fw pi-shopping-cart',
+            routerLink: ['/ventas/registrar'],
           },
           {
-            label: 'List',
+            label: 'Historial de Ventas',
+            icon: 'pi pi-fw pi-history',
+            routerLink: ['/ventas/historial'],
+          },
+          {
+            label: 'Devoluciones',
+            icon: 'pi pi-fw pi-reply',
+            routerLink: ['/ventas/devoluciones'],
+          },
+          {
+            label: 'Descuentos',
+            icon: 'pi pi-fw pi-percentage',
+            routerLink: ['/ventas/descuentos'],
+          },
+        ],
+      },
+      {
+        label: 'Proveedores',
+        items: [
+          {
+            label: 'Catálogo',
+            icon: 'pi pi-fw pi-briefcase',
+            routerLink: ['/proveedores/catalogo'],
+          },
+          {
+            label: 'Pedidos',
+            icon: 'pi pi-fw pi-send',
+            routerLink: ['/proveedores/pedidos'],
+          },
+          {
+            label: 'Pagos',
+            icon: 'pi pi-fw pi-wallet',
+            routerLink: ['/proveedores/pagos'],
+          },
+          {
+            label: 'Seguimiento',
+            icon: 'pi pi-fw pi-truck',
+            routerLink: ['/proveedores/seguimiento'],
+          },
+        ],
+      },
+      {
+        label: 'Clientes',
+        items: [
+          {
+            label: 'Registro',
+            icon: 'pi pi-fw pi-user-plus',
+            routerLink: ['/clientes/registro'],
+          },
+          {
+            label: 'Historial',
             icon: 'pi pi-fw pi-list',
-            routerLink: ['/uikit/list'],
+            routerLink: ['/clientes/historial'],
           },
           {
-            label: 'Tree',
-            icon: 'pi pi-fw pi-share-alt',
-            routerLink: ['/uikit/tree'],
+            label: 'Ranking',
+            icon: 'pi pi-fw pi-star',
+            routerLink: ['/clientes/ranking'],
+          },
+        ],
+      },
+      {
+        label: 'Empleados',
+        items: [
+          {
+            label: 'Rendimiento',
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: ['/empleados/rendimiento'],
           },
           {
-            label: 'Panel',
-            icon: 'pi pi-fw pi-tablet',
-            routerLink: ['/uikit/panel'],
-          },
-          {
-            label: 'Overlay',
-            icon: 'pi pi-fw pi-clone',
-            routerLink: ['/uikit/overlay'],
-          },
-          {
-            label: 'Media',
-            icon: 'pi pi-fw pi-image',
-            routerLink: ['/uikit/media'],
-          },
-          {
-            label: 'Menu',
-            icon: 'pi pi-fw pi-bars',
-            routerLink: ['/uikit/menu'],
-          },
-          {
-            label: 'Message',
-            icon: 'pi pi-fw pi-comment',
-            routerLink: ['/uikit/message'],
-          },
-          {
-            label: 'File',
-            icon: 'pi pi-fw pi-file',
-            routerLink: ['/uikit/file'],
-          },
-          {
-            label: 'Chart',
-            icon: 'pi pi-fw pi-chart-bar',
-            routerLink: ['/uikit/charts'],
-          },
-          {
-            label: 'Timeline',
+            label: 'Horarios',
             icon: 'pi pi-fw pi-calendar',
-            routerLink: ['/uikit/timeline'],
+            routerLink: ['/empleados/horarios'],
           },
           {
-            label: 'Misc',
-            icon: 'pi pi-fw pi-circle',
-            routerLink: ['/uikit/misc'],
-          },
-        ],
-      },
-      {
-        label: 'Pages',
-        icon: 'pi pi-fw pi-briefcase',
-        routerLink: ['/pages'],
-        items: [
-          {
-            label: 'Landing',
-            icon: 'pi pi-fw pi-globe',
-            routerLink: ['/landing'],
-          },
-          {
-            label: 'Auth',
-            icon: 'pi pi-fw pi-user',
-            items: [
-              {
-                label: 'Login',
-                icon: 'pi pi-fw pi-sign-in',
-                routerLink: ['/auth/login'],
-              },
-              {
-                label: 'Error',
-                icon: 'pi pi-fw pi-times-circle',
-                routerLink: ['/auth/error'],
-              },
-              {
-                label: 'Access Denied',
-                icon: 'pi pi-fw pi-lock',
-                routerLink: ['/auth/access'],
-              },
-            ],
-          },
-          {
-            label: 'Crud',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: ['/pages/crud'],
-          },
-          {
-            label: 'Not Found',
-            icon: 'pi pi-fw pi-exclamation-circle',
-            routerLink: ['/pages/notfound'],
-          },
-          {
-            label: 'Empty',
-            icon: 'pi pi-fw pi-circle-off',
-            routerLink: ['/pages/empty'],
+            label: 'Seguimiento',
+            icon: 'pi pi-fw pi-eye',
+            routerLink: ['/empleados/seguimiento'],
           },
         ],
       },
       {
-        label: 'Hierarchy',
+        label: 'Reportes',
         items: [
           {
-            label: 'Submenu 1',
-            icon: 'pi pi-fw pi-bookmark',
-            items: [
-              {
-                label: 'Submenu 1.1',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [
-                  {
-                    label: 'Submenu 1.1.1',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                  {
-                    label: 'Submenu 1.1.2',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                  {
-                    label: 'Submenu 1.1.3',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                ],
-              },
-              {
-                label: 'Submenu 1.2',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [
-                  {
-                    label: 'Submenu 1.2.1',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                ],
-              },
-            ],
+            label: 'Ventas',
+            icon: 'pi pi-fw pi-chart-bar',
+            routerLink: ['/reportes/ventas'],
           },
           {
-            label: 'Submenu 2',
-            icon: 'pi pi-fw pi-bookmark',
-            items: [
-              {
-                label: 'Submenu 2.1',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [
-                  {
-                    label: 'Submenu 2.1.1',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                  {
-                    label: 'Submenu 2.1.2',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                ],
-              },
-              {
-                label: 'Submenu 2.2',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [
-                  {
-                    label: 'Submenu 2.2.1',
-                    icon: 'pi pi-fw pi-bookmark',
-                  },
-                ],
-              },
-            ],
+            label: 'Inventario',
+            icon: 'pi pi-fw pi-chart-pie',
+            routerLink: ['/reportes/inventario'],
+          },
+          {
+            label: 'Financieros',
+            icon: 'pi pi-fw pi-dollar',
+            routerLink: ['/reportes/financieros'],
+          },
+          {
+            label: 'Desempeño',
+            icon: 'pi pi-fw pi-chart-line',
+            routerLink: ['/reportes/desempeno'],
           },
         ],
       },
       {
-        label: 'Get Started',
+        label: 'Configuración',
         items: [
           {
-            label: 'Documentation',
-            icon: 'pi pi-fw pi-book',
-            routerLink: ['/documentation'],
+            label: 'Usuarios',
+            icon: 'pi pi-fw pi-users',
+            routerLink: ['/configuracion/usuarios'],
           },
           {
-            label: 'View Source',
-            icon: 'pi pi-fw pi-github',
-            url: 'https://github.com/primefaces/sakai-ng',
-            target: '_blank',
+            label: 'Perfiles',
+            icon: 'pi pi-fw pi-id-card',
+            routerLink: ['/configuracion/perfiles'],
+          },
+          {
+            label: 'Auditoría',
+            icon: 'pi pi-fw pi-search',
+            routerLink: ['/configuracion/auditoria'],
+          },
+          {
+            label: 'Notificaciones',
+            icon: 'pi pi-fw pi-bell',
+            routerLink: ['/configuracion/notificaciones'],
           },
         ],
       },

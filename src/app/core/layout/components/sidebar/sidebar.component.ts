@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuComponent } from './menu/menu.component';
 
 @Component({
@@ -7,6 +7,4 @@ import { MenuComponent } from './menu/menu.component';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
-export class SidebarComponent {
-  el = inject(ElementRef);
-}
+export class SidebarComponent {}
