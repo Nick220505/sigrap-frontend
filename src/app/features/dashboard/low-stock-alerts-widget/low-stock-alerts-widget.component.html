@@ -1,0 +1,109 @@
+<p-card styleClass="h-full">
+  <ng-template pTemplate="header">
+    <div class="flex justify-between items-center px-4 py-2">
+      <div class="flex items-center">
+        <h2 class="text-xl font-semibold m-0">Alerta de Stock Bajo</h2>
+        <p-badge
+          [value]="products.length.toString()"
+          severity="danger"
+          styleClass="ml-2"
+        ></p-badge>
+      </div>
+      <button
+        pButton
+        icon="pi pi-external-link"
+        label="Ver Inventario"
+        class="p-button-text p-button-sm"
+        (click)="navigateToInventory()"
+        ariaLabel="Ver inventario completo"
+      >
+        <span>Ver Inventario</span>
+      </button>
+    </div>
+  </ng-template>
+
+  <p-table
+    [value]="products"
+    styleClass="p-datatable-sm"
+    [tableStyle]="{ 'min-width': '100%' }"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-sm">Producto</th>
+        <th class="text-sm text-center">Categoría</th>
+        <th class="text-sm text-center">Stock</th>
+        <th class="text-sm">Estado</th>
+        <th class="text-sm text-center">Acción</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>
+          <div class="font-medium">{{ product.name }}</div>
+        </td>
+        <td class="text-center">
+          <span class="text-sm text-gray-600">{{ product.category }}</span>
+        </td>
+        <td class="text-center">
+          <div class="flex items-center justify-center">
+            <span
+              class="font-bold mr-2"
+              [ngClass]="{
+                'text-red-500': product.status === 'critical',
+                'text-orange-500': product.status === 'low',
+              }"
+            >
+              {{ product.currentStock }}
+            </span>
+            <span class="text-gray-500 text-sm">/{{ product.minStock }}</span>
+          </div>
+          <div class="w-16 h-1 bg-gray-200 rounded-full mt-1 mx-auto">
+            <div
+              class="h-full rounded-full"
+              [ngClass]="{
+                'bg-red-500': product.status === 'critical',
+                'bg-orange-500': product.status === 'low',
+              }"
+              [ngStyle]="{
+                width:
+                  getStockPercentage(product.currentStock, product.minStock) +
+                  '%',
+              }"
+            ></div>
+          </div>
+        </td>
+        <td>
+          <p-tag
+            [value]="product.status === 'critical' ? 'Crítico' : 'Bajo'"
+            [severity]="getSeverity(product.status)"
+          >
+          </p-tag>
+        </td>
+        <td class="text-center">
+          <button
+            pButton
+            icon="pi pi-shopping-cart"
+            class="p-button-rounded p-button-text p-button-sm"
+            pTooltip="Crear pedido"
+            tooltipPosition="top"
+            aria-label="Crear pedido para este producto"
+          >
+            <span class="sr-only">Crear pedido</span>
+          </button>
+          <button
+            pButton
+            icon="pi pi-search"
+            class="p-button-rounded p-button-text p-button-sm"
+            pTooltip="Ver detalles"
+            tooltipPosition="top"
+            (click)="navigateToProductDetails(product.id)"
+            aria-label="Ver detalles del producto"
+          >
+            <span class="sr-only">Ver detalles</span>
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>

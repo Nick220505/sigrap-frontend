@@ -1,0 +1,72 @@
+<p-card styleClass="h-full">
+  <ng-template pTemplate="header">
+    <div class="flex justify-between items-center px-4 py-2">
+      <h2 class="text-xl font-semibold m-0">Tendencias de Ventas</h2>
+      <div class="flex items-center">
+        <div class="mr-2">
+          <p-selectButton
+            [options]="timeRanges"
+            [(ngModel)]="selectedTimeRange"
+            optionLabel="label"
+            optionValue="value"
+          ></p-selectButton>
+        </div>
+        <button
+          pButton
+          icon="pi pi-external-link"
+          class="p-button-text p-button-rounded p-button-sm"
+          (click)="navigateToSalesReport()"
+          pTooltip="Ver reporte completo"
+          tooltipPosition="left"
+          ariaLabel="Ver reporte completo de ventas"
+        >
+          <span class="sr-only">Ver reporte completo</span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="p-4">
+    <div class="mb-6">
+      <p-chart
+        type="line"
+        [data]="chartData"
+        [options]="chartOptions"
+        height="250"
+      ></p-chart>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      @for (trend of salesTrends; track trend.label) {
+        <div class="p-3 border rounded-lg shadow-sm">
+          <span class="text-sm text-gray-500 block mb-1">{{
+            trend.label
+          }}</span>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold">{{ trend.value }}</span>
+            <div class="flex items-center">
+              <i
+                [ngClass]="{
+                  'pi pi-arrow-up text-green-500': trend.trend > 0,
+                  'pi pi-arrow-down text-red-500': trend.trend < 0,
+                  'pi pi-minus text-gray-500': trend.trend === 0,
+                }"
+                class="mr-1"
+              ></i>
+              <span
+                [ngClass]="{
+                  'text-green-500': trend.trend > 0,
+                  'text-red-500': trend.trend < 0,
+                  'text-gray-500': trend.trend === 0,
+                }"
+                class="text-sm"
+              >
+                {{ Math.abs(trend.trend) }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</p-card>

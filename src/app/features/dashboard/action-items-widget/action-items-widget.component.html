@@ -1,0 +1,97 @@
+<p-card styleClass="h-full shadow-sm border-0">
+  <ng-template pTemplate="header">
+    <div class="flex justify-between items-center p-4 border-b border-gray-100">
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-semibold m-0">Acciones Pendientes</h2>
+        <span
+          class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-xs font-medium"
+          >{{ pendingActionsCount }}</span
+        >
+      </div>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-external-link"
+        label="Ver Todas"
+        class="p-button-text p-button-sm"
+        (click)="navigateToActionsList()"
+        ariaLabel="Ver todas las acciones pendientes"
+      >
+        <span>Ver Todas</span>
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="p-4 h-full overflow-y-auto">
+    @if (actionItems.length === 0) {
+      <div class="flex flex-col items-center justify-center gap-3 p-6">
+        <i class="pi pi-check-circle text-4xl text-green-500"></i>
+        <p class="text-gray-500 text-center">No hay acciones pendientes</p>
+      </div>
+    } @else {
+      <div class="space-y-3">
+        @for (item of actionItems; track item.id) {
+          <div
+            class="p-3 bg-white rounded-lg border-l-4 shadow-sm hover:translate-y-[-2px] transition-all duration-200 flex flex-col"
+            [class.opacity-70]="item.completed"
+            [class.border-green-500]="item.completed"
+            [ngClass]="{
+              'border-red-500': item.priority === 'high' && !item.completed,
+              'border-orange-500':
+                item.priority === 'medium' && !item.completed,
+              'border-blue-500': item.priority === 'low' && !item.completed,
+            }"
+          >
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex-grow">
+                <h4
+                  class="m-0 mb-2 font-medium text-gray-900"
+                  [class.line-through]="item.completed"
+                >
+                  {{ item.title }}
+                </h4>
+                <p class="m-0 text-sm text-gray-500 mb-3 line-clamp-2">
+                  {{ item.description }}
+                </p>
+                <div class="flex flex-wrap gap-2 items-center">
+                  <p-tag
+                    [value]="item.priority"
+                    [severity]="getSeverity(item.priority)"
+                    [rounded]="true"
+                    styleClass="text-xs"
+                  ></p-tag>
+                  <p-tag
+                    [value]="getTimeAgo(item.dueDate)"
+                    severity="secondary"
+                    [rounded]="true"
+                    styleClass="text-xs"
+                  ></p-tag>
+                  <span class="text-xs text-gray-500 flex items-center gap-1">
+                    <i
+                      [class]="getTypeIcon(item.type)"
+                      class="text-gray-400"
+                    ></i>
+                    <span>{{ item.type | titlecase }}</span>
+                  </span>
+                </div>
+              </div>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-check"
+                class="p-button-rounded p-button-success p-button-sm flex-shrink-0"
+                (click)="completeAction(item.id)"
+                [disabled]="item.completed"
+                pTooltip="Marcar como completada"
+                tooltipPosition="left"
+                ariaLabel="Marcar acción como completada"
+              >
+                <span class="sr-only">Marcar como completada</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</p-card>

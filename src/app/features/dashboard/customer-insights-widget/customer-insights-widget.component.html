@@ -1,0 +1,55 @@
+<p-card styleClass="h-full">
+  <ng-template pTemplate="header">
+    <div class="flex justify-between items-center px-4 py-2">
+      <h2 class="text-xl font-semibold m-0">Clientes</h2>
+      <button
+        pButton
+        icon="pi pi-external-link"
+        class="p-button-text p-button-rounded p-button-sm"
+        (click)="navigateToCustomers()"
+        pTooltip="Ver todos los clientes"
+        tooltipPosition="left"
+        ariaLabel="Ver todos los clientes"
+      >
+        <span class="sr-only">Ver todos los clientes</span>
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="p-4">
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      @for (stat of customerStats; track stat.label) {
+        <div class="p-3 border rounded-lg shadow-sm text-center">
+          <div class="text-xl font-bold" [ngClass]="stat.colorClass">
+            {{ stat.value }}
+          </div>
+          <div class="text-xs text-gray-500">{{ stat.label }}</div>
+        </div>
+      }
+    </div>
+
+    <h3 class="text-lg font-medium mb-3">Nuevos Clientes</h3>
+    <div class="space-y-3">
+      @for (customer of recentCustomers; track customer.id) {
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0"
+          >
+            <i class="pi pi-user text-gray-500"></i>
+          </div>
+          <div class="flex-grow min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="font-medium truncate">{{ customer.name }}</span>
+              <span class="text-xs text-gray-500">{{
+                getTimeAgo(customer.registerDate)
+              }}</span>
+            </div>
+            <div class="text-sm text-gray-500 truncate">
+              {{ customer.email }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</p-card>

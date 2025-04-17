@@ -1,0 +1,112 @@
+<p-card styleClass="h-full shadow-sm border-0">
+  <ng-template pTemplate="header">
+    <div class="flex justify-between items-center p-4 border-b border-gray-100">
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-semibold m-0">Pedidos Pendientes</h2>
+        <span
+          class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-medium"
+          >{{ pendingOrders.length }}</span
+        >
+      </div>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-external-link"
+        label="Ver Todos"
+        class="p-button-text p-button-sm"
+        (click)="navigateToOrders()"
+        ariaLabel="Ver todos los pedidos"
+      >
+        <span>Ver Todos</span>
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="p-4 h-full overflow-y-auto">
+    @if (pendingOrders.length === 0) {
+      <div
+        class="flex flex-col items-center justify-center gap-3 p-6 text-center"
+      >
+        <i class="pi pi-check-circle text-4xl text-green-500"></i>
+        <p class="text-gray-500">No hay pedidos pendientes</p>
+      </div>
+    } @else {
+      <div class="space-y-3">
+        @for (order of pendingOrders; track order.id) {
+          <div
+            class="bg-white rounded-lg border-l-4 shadow-sm hover:shadow-md transition-all duration-200"
+            [ngClass]="{
+              'border-red-500': order.status === 'urgent',
+              'border-orange-500': order.status === 'pending',
+              'border-green-500': order.status === 'approved',
+            }"
+          >
+            <div class="p-3">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center gap-2">
+                  <h4 class="m-0 font-medium text-gray-900">
+                    Pedido #{{ order.id }}
+                  </h4>
+                  <p-tag
+                    [value]="getStatusLabel(order.status)"
+                    [severity]="getSeverity(order.status)"
+                    [rounded]="true"
+                    styleClass="text-xs"
+                  ></p-tag>
+                </div>
+                <div class="flex flex-shrink-0 gap-1">
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-eye"
+                    class="p-button-rounded p-button-text p-button-sm"
+                    pTooltip="Ver detalles"
+                    tooltipPosition="top"
+                    (click)="viewOrderDetails(order.id)"
+                    ariaLabel="Ver detalles del pedido"
+                  >
+                    <span class="sr-only">Ver detalles</span>
+                  </button>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-check"
+                    class="p-button-rounded p-button-success p-button-sm"
+                    pTooltip="Aprobar pedido"
+                    tooltipPosition="top"
+                    (click)="approveOrder(order.id)"
+                    [disabled]="order.status === 'approved'"
+                    ariaLabel="Aprobar pedido"
+                  >
+                    <span class="sr-only">Aprobar</span>
+                  </button>
+                </div>
+              </div>
+              <p class="m-0 mt-1 mb-2 text-sm text-gray-600 font-medium">
+                {{ order.customerName }}
+              </p>
+              <div
+                class="flex flex-wrap items-center gap-3 text-xs text-gray-500"
+              >
+                <span class="flex items-center">
+                  <i class="pi pi-calendar mr-1"></i>
+                  {{ order.date | date: 'dd/MM/yyyy' }}
+                </span>
+                <span class="flex items-center">
+                  <i class="pi pi-tag mr-1"></i>
+                  {{
+                    order.total | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                  }}
+                </span>
+                <span class="flex items-center">
+                  <i class="pi pi-shopping-cart mr-1"></i>
+                  {{ order.items }} items
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</p-card>
