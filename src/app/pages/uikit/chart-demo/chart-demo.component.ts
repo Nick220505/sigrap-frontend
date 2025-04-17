@@ -107,11 +107,18 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
 
   initCharts() {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue(
-      '--text-color-secondary',
-    );
+    const textColor =
+      documentStyle.getPropertyValue('--text-color') || '#495057';
+    const textColorSecondary =
+      documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+    // Check if dark theme is active using the LayoutService
+    const isDarkMode = this.layoutService.isDarkTheme();
+
+    // Set chart text colors based on theme
+    const chartTextColor = isDarkMode ? '#ffffff' : textColor;
+    const chartSecondaryTextColor = isDarkMode ? '#cccccc' : textColorSecondary;
 
     this.barData = {
       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -137,14 +144,14 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
       plugins: {
         legend: {
           labels: {
-            color: textColor,
+            color: chartTextColor,
           },
         },
       },
       scales: {
         x: {
           ticks: {
-            color: textColorSecondary,
+            color: chartSecondaryTextColor,
             font: {
               weight: 500,
             },
@@ -156,7 +163,7 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
         },
         y: {
           ticks: {
-            color: textColorSecondary,
+            color: chartSecondaryTextColor,
           },
           grid: {
             color: surfaceBorder,
@@ -190,7 +197,7 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
         legend: {
           labels: {
             usePointStyle: true,
-            color: textColor,
+            color: chartTextColor,
           },
         },
       },
@@ -224,14 +231,14 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
       plugins: {
         legend: {
           labels: {
-            color: textColor,
+            color: chartTextColor,
           },
         },
       },
       scales: {
         x: {
           ticks: {
-            color: textColorSecondary,
+            color: chartSecondaryTextColor,
           },
           grid: {
             color: surfaceBorder,
@@ -240,7 +247,7 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
         },
         y: {
           ticks: {
-            color: textColorSecondary,
+            color: chartSecondaryTextColor,
           },
           grid: {
             color: surfaceBorder,
@@ -270,7 +277,7 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
       plugins: {
         legend: {
           labels: {
-            color: textColor,
+            color: chartTextColor,
           },
         },
       },
@@ -281,7 +288,7 @@ export class ChartDemoComponent implements OnInit, OnDestroy {
           },
           ticks: {
             display: false,
-            color: textColorSecondary,
+            color: chartSecondaryTextColor,
           },
         },
       },

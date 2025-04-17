@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { debounceTime, Subscription } from 'rxjs';
-import { LayoutService } from '../../../../layout/services/layout.service';
+import { LayoutService } from '../../../../core/layout/services/layout.service';
 
 interface ChartDataset {
   type: string;
@@ -87,11 +87,18 @@ export class RevenueStreamWidgetComponent implements OnInit, OnDestroy {
 
   initChart() {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColor =
+      documentStyle.getPropertyValue('--text-color') || '#495057';
     const borderColor = documentStyle.getPropertyValue('--surface-border');
-    const textMutedColor = documentStyle.getPropertyValue(
-      '--text-color-secondary',
-    );
+
+    // Check if dark theme is active using the LayoutService
+    const isDarkMode = this.layoutService.isDarkTheme();
+
+    // Set chart text colors based on theme
+    const chartTextColor = isDarkMode ? '#ffffff' : textColor;
+    const chartSecondaryTextColor = isDarkMode
+      ? '#cccccc'
+      : documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
 
     this.chartData = {
       labels: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -133,7 +140,7 @@ export class RevenueStreamWidgetComponent implements OnInit, OnDestroy {
       plugins: {
         legend: {
           labels: {
-            color: textColor,
+            color: chartTextColor,
           },
         },
       },
@@ -141,7 +148,7 @@ export class RevenueStreamWidgetComponent implements OnInit, OnDestroy {
         x: {
           stacked: true,
           ticks: {
-            color: textMutedColor,
+            color: chartSecondaryTextColor,
           },
           grid: {
             color: 'transparent',
@@ -151,7 +158,7 @@ export class RevenueStreamWidgetComponent implements OnInit, OnDestroy {
         y: {
           stacked: true,
           ticks: {
-            color: textMutedColor,
+            color: chartSecondaryTextColor,
           },
           grid: {
             color: borderColor,
