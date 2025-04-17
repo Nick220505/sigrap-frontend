@@ -54,24 +54,24 @@ export class MenuComponent implements OnInit {
         label: 'Ventas',
         items: [
           {
-            label: 'Registrar Venta',
+            label: 'Punto de Venta',
             icon: 'pi pi-fw pi-shopping-cart',
-            routerLink: ['/ventas/registrar'],
+            routerLink: ['/ventas/punto-venta'],
           },
           {
-            label: 'Historial de Ventas',
-            icon: 'pi pi-fw pi-history',
-            routerLink: ['/ventas/historial'],
+            label: 'Facturas',
+            icon: 'pi pi-fw pi-file',
+            routerLink: ['/ventas/facturas'],
+          },
+          {
+            label: 'Pedidos',
+            icon: 'pi pi-fw pi-list',
+            routerLink: ['/ventas/pedidos'],
           },
           {
             label: 'Devoluciones',
             icon: 'pi pi-fw pi-reply',
             routerLink: ['/ventas/devoluciones'],
-          },
-          {
-            label: 'Descuentos',
-            icon: 'pi pi-fw pi-percentage',
-            routerLink: ['/ventas/descuentos'],
           },
         ],
       },
@@ -79,14 +79,14 @@ export class MenuComponent implements OnInit {
         label: 'Proveedores',
         items: [
           {
-            label: 'Catálogo',
+            label: 'Lista de Proveedores',
             icon: 'pi pi-fw pi-briefcase',
-            routerLink: ['/proveedores/catalogo'],
+            routerLink: ['/proveedores/lista'],
           },
           {
-            label: 'Pedidos',
+            label: 'Órdenes de Compra',
             icon: 'pi pi-fw pi-send',
-            routerLink: ['/proveedores/pedidos'],
+            routerLink: ['/proveedores/ordenes-compra'],
           },
           {
             label: 'Pagos',
@@ -104,19 +104,19 @@ export class MenuComponent implements OnInit {
         label: 'Clientes',
         items: [
           {
-            label: 'Registro',
-            icon: 'pi pi-fw pi-user-plus',
-            routerLink: ['/clientes/registro'],
+            label: 'Lista de Clientes',
+            icon: 'pi pi-fw pi-users',
+            routerLink: ['/clientes/lista'],
+          },
+          {
+            label: 'Cotizaciones',
+            icon: 'pi pi-fw pi-calculator',
+            routerLink: ['/clientes/cotizaciones'],
           },
           {
             label: 'Historial',
             icon: 'pi pi-fw pi-list',
             routerLink: ['/clientes/historial'],
-          },
-          {
-            label: 'Ranking',
-            icon: 'pi pi-fw pi-star',
-            routerLink: ['/clientes/ranking'],
           },
         ],
       },
@@ -144,12 +144,12 @@ export class MenuComponent implements OnInit {
         label: 'Reportes',
         items: [
           {
-            label: 'Ventas',
+            label: 'Reportes de Ventas',
             icon: 'pi pi-fw pi-chart-bar',
             routerLink: ['/reportes/ventas'],
           },
           {
-            label: 'Inventario',
+            label: 'Reportes de Inventario',
             icon: 'pi pi-fw pi-chart-pie',
             routerLink: ['/reportes/inventario'],
           },
@@ -158,25 +158,20 @@ export class MenuComponent implements OnInit {
             icon: 'pi pi-fw pi-dollar',
             routerLink: ['/reportes/financieros'],
           },
-          {
-            label: 'Desempeño',
-            icon: 'pi pi-fw pi-chart-line',
-            routerLink: ['/reportes/desempeno'],
-          },
         ],
       },
       {
         label: 'Configuración',
         items: [
           {
-            label: 'Usuarios',
-            icon: 'pi pi-fw pi-users',
-            routerLink: ['/configuracion/usuarios'],
+            label: 'Configuración General',
+            icon: 'pi pi-fw pi-cog',
+            routerLink: ['/configuracion/general'],
           },
           {
-            label: 'Perfiles',
-            icon: 'pi pi-fw pi-id-card',
-            routerLink: ['/configuracion/perfiles'],
+            label: 'Gestión de Usuarios',
+            icon: 'pi pi-fw pi-users',
+            routerLink: ['/configuracion/usuarios'],
           },
           {
             label: 'Auditoría',
