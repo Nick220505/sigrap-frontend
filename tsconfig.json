@@ -17,7 +17,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src/app",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@features/*": ["features/*"],
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
