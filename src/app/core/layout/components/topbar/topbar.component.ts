@@ -73,7 +73,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 
         <button
           type="button"
-          class="layout-topbar-menu-button flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] hidden md:block lg:hidden"
+          class="layout-topbar-menu-button hidden md:flex lg:hidden justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
           pStyleClass="@next"
           enterFromClass="hidden"
           enterActiveClass="animate-scalein"
