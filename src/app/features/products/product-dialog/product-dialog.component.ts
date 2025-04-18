@@ -32,7 +32,7 @@ interface StatusItem {
     <p-dialog
       [(visible)]="visible"
       [style]="{ width: '450px' }"
-      header="Product Details"
+      header="Detalles del Producto"
       [modal]="true"
       (onHide)="hideDialog()"
     >
@@ -45,12 +45,12 @@ interface StatusItem {
                 product().image
               "
               [alt]="product().name"
-              title="Product image"
+              title="Imagen del producto"
               class="block pb-4 m-auto"
             />
           }
           <div>
-            <label for="name" class="block mb-3 font-bold">Name</label>
+            <label for="name" class="block mb-3 font-bold">Nombre</label>
             <input
               type="text"
               pInputText
@@ -59,13 +59,13 @@ interface StatusItem {
               required
               fluid
             />
-            @if (submitted) {
-              <small class="text-red-500">Name is required.</small>
+            @if (submitted && !product().name) {
+              <small class="text-red-500">El nombre es obligatorio.</small>
             }
           </div>
           <div>
             <label for="description" class="block mb-3 font-bold"
-              >Description</label
+              >Descripción</label
             >
             <textarea
               id="description"
@@ -80,21 +80,21 @@ interface StatusItem {
 
           <div>
             <label for="inventoryStatus" class="block mb-3 font-bold"
-              >Inventory Status</label
+              >Estado de Inventario</label
             >
             <p-select
               [(ngModel)]="product().inventoryStatus"
               inputId="inventoryStatus"
               [options]="statuses"
               optionLabel="label"
-              optionValue="label"
-              placeholder="Select a Status"
+              optionValue="value"
+              placeholder="Selecciona un Estado"
               fluid
             />
           </div>
 
           <div>
-            <span class="block mb-4 font-bold">Category</span>
+            <span class="block mb-4 font-bold">Categoría</span>
             <div class="grid grid-cols-12 gap-4">
               <div class="flex items-center col-span-6 gap-2">
                 <p-radiobutton
@@ -103,7 +103,7 @@ interface StatusItem {
                   value="Accessories"
                   [(ngModel)]="product().category"
                 />
-                <label for="category1">Accessories</label>
+                <label for="category1">Accesorios</label>
               </div>
               <div class="flex items-center col-span-6 gap-2">
                 <p-radiobutton
@@ -112,7 +112,7 @@ interface StatusItem {
                   value="Clothing"
                   [(ngModel)]="product().category"
                 />
-                <label for="category2">Clothing</label>
+                <label for="category2">Ropa</label>
               </div>
               <div class="flex items-center col-span-6 gap-2">
                 <p-radiobutton
@@ -121,7 +121,7 @@ interface StatusItem {
                   value="Electronics"
                   [(ngModel)]="product().category"
                 />
-                <label for="category3">Electronics</label>
+                <label for="category3">Electrónicos</label>
               </div>
               <div class="flex items-center col-span-6 gap-2">
                 <p-radiobutton
@@ -137,7 +137,7 @@ interface StatusItem {
 
           <div class="grid grid-cols-12 gap-4">
             <div class="col-span-6">
-              <label for="price" class="block mb-3 font-bold">Price</label>
+              <label for="price" class="block mb-3 font-bold">Precio</label>
               <p-inputnumber
                 id="price"
                 [(ngModel)]="product().price"
@@ -149,7 +149,7 @@ interface StatusItem {
             </div>
             <div class="col-span-6">
               <label for="quantity" class="block mb-3 font-bold"
-                >Quantity</label
+                >Cantidad</label
               >
               <p-inputnumber
                 id="quantity"
@@ -163,14 +163,14 @@ interface StatusItem {
 
       <ng-template #footer>
         <p-button
-          label="Cancel"
+          label="Cancelar"
           icon="pi pi-times"
           text
           (click)="hideDialog()"
           (keydown.enter)="hideDialog()"
         />
         <p-button
-          label="Save"
+          label="Guardar"
           icon="pi pi-check"
           (click)="saveProduct()"
           (keydown.enter)="saveProduct()"
@@ -193,9 +193,9 @@ export class ProductDialogComponent {
   submitted = false;
 
   statuses: StatusItem[] = [
-    { label: 'INSTOCK', value: 'instock' },
-    { label: 'LOWSTOCK', value: 'lowstock' },
-    { label: 'OUTOFSTOCK', value: 'outofstock' },
+    { label: 'EN STOCK', value: 'INSTOCK' },
+    { label: 'POCO STOCK', value: 'LOWSTOCK' },
+    { label: 'SIN STOCK', value: 'OUTOFSTOCK' },
   ];
 
   constructor() {

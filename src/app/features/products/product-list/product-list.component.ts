@@ -49,7 +49,7 @@ interface ExportColumn {
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="New"
+          label="Nuevo"
           icon="pi pi-plus"
           severity="secondary"
           class="mr-2"
@@ -57,7 +57,7 @@ interface ExportColumn {
         />
         <p-button
           severity="secondary"
-          label="Delete"
+          label="Eliminar"
           icon="pi pi-trash"
           outlined
           (onClick)="deleteSelectedProducts()"
@@ -67,7 +67,7 @@ interface ExportColumn {
 
       <ng-template #end>
         <p-button
-          label="Export"
+          label="Exportar"
           icon="pi pi-upload"
           severity="secondary"
           (onClick)="exportCSV()"
@@ -91,20 +91,20 @@ interface ExportColumn {
       [(selection)]="selectedProducts"
       [rowHover]="true"
       dataKey="id"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
       [showCurrentPageReport]="true"
       [rowsPerPageOptions]="[10, 20, 30]"
     >
       <ng-template #caption>
         <div class="flex items-center justify-between">
-          <h5 class="m-0">Manage Products</h5>
+          <h5 class="m-0">Administrar Productos</h5>
           <p-iconfield>
             <p-inputicon styleClass="pi pi-search" />
             <input
               pInputText
               type="text"
               (input)="onGlobalFilter(dt, $event)"
-              placeholder="Search..."
+              placeholder="Buscar..."
             />
           </p-iconfield>
         </div>
@@ -114,22 +114,22 @@ interface ExportColumn {
           <th scope="col" style="width: 3rem">
             <p-tableHeaderCheckbox />
           </th>
-          <th scope="col" style="min-width: 16rem">Code</th>
+          <th scope="col" style="min-width: 16rem">Código</th>
           <th scope="col" pSortableColumn="name" style="min-width: 16rem">
-            Name
+            Nombre
             <p-sortIcon field="name" />
           </th>
-          <th scope="col">Image</th>
+          <th scope="col">Imagen</th>
           <th scope="col" pSortableColumn="price" style="min-width: 8rem">
-            Price
+            Precio
             <p-sortIcon field="price" />
           </th>
           <th scope="col" pSortableColumn="category" style="min-width: 10rem">
-            Category
+            Categoría
             <p-sortIcon field="category" />
           </th>
           <th scope="col" pSortableColumn="rating" style="min-width: 12rem">
-            Reviews
+            Reseñas
             <p-sortIcon field="rating" />
           </th>
           <th
@@ -137,7 +137,7 @@ interface ExportColumn {
             pSortableColumn="inventoryStatus"
             style="min-width: 12rem"
           >
-            Status
+            Estado
             <p-sortIcon field="inventoryStatus" />
           </th>
           <th scope="col" style="min-width: 12rem"></th>
@@ -157,7 +157,7 @@ interface ExportColumn {
                 product.image
               "
               [alt]="product.name"
-              title="Product image"
+              title="Imagen del producto"
               class="w-16 rounded-sm"
             />
           </td>
@@ -180,6 +180,8 @@ interface ExportColumn {
               [outlined]="true"
               (click)="editProduct(product)"
               (keydown.enter)="editProduct(product)"
+              tooltip="Editar"
+              tooltipPosition="top"
             />
             <p-button
               icon="pi pi-trash"
@@ -188,6 +190,8 @@ interface ExportColumn {
               [outlined]="true"
               (click)="deleteProduct(product)"
               (keydown.enter)="deleteProduct(product)"
+              tooltip="Eliminar"
+              tooltipPosition="top"
             />
           </td>
         </tr>
@@ -217,15 +221,15 @@ export class ProductListComponent implements OnInit {
     this.cols = [
       {
         field: 'code',
-        header: 'Code',
-        customExportHeader: 'Product Code',
+        header: 'Código',
+        customExportHeader: 'Código del Producto',
       },
-      { field: 'name', header: 'Name' },
-      { field: 'image', header: 'Image' },
-      { field: 'price', header: 'Price' },
-      { field: 'category', header: 'Category' },
-      { field: 'rating', header: 'Rating' },
-      { field: 'inventoryStatus', header: 'Status' },
+      { field: 'name', header: 'Nombre' },
+      { field: 'image', header: 'Imagen' },
+      { field: 'price', header: 'Precio' },
+      { field: 'category', header: 'Categoría' },
+      { field: 'rating', header: 'Valoración' },
+      { field: 'inventoryStatus', header: 'Estado' },
     ];
 
     this.exportColumns = this.cols.map((col) => ({
@@ -265,9 +269,12 @@ export class ProductListComponent implements OnInit {
 
   deleteSelectedProducts() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected products?',
-      header: 'Confirm',
+      message:
+        '¿Estás seguro de que deseas eliminar los productos seleccionados?',
+      header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí',
+      rejectLabel: 'No',
       accept: () => {
         this.selectedProducts?.forEach((product) => {
           if (product.id) {
@@ -277,8 +284,8 @@ export class ProductListComponent implements OnInit {
         this.selectedProducts = null;
         this.messageService.add({
           severity: 'success',
-          summary: 'Successful',
-          detail: 'Products Deleted',
+          summary: 'Éxito',
+          detail: 'Productos Eliminados',
           life: 3000,
         });
       },
@@ -287,23 +294,25 @@ export class ProductListComponent implements OnInit {
 
   deleteProduct(product: Product) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + product.name + '?',
-      header: 'Confirm',
+      message: '¿Estás seguro de que deseas eliminar ' + product.name + '?',
+      header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí',
+      rejectLabel: 'No',
       accept: () => {
         if (product.id) {
           this.productService.deleteProductById(product.id);
           this.messageService.add({
             severity: 'success',
-            summary: 'Successful',
-            detail: 'Product Deleted',
+            summary: 'Éxito',
+            detail: 'Producto Eliminado',
             life: 3000,
           });
         } else {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Product ID not found',
+            detail: 'ID del producto no encontrado',
             life: 3000,
           });
         }

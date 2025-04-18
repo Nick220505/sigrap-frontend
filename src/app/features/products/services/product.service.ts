@@ -392,7 +392,7 @@ export class ProductService {
     const newProduct = {
       ...product,
       id: this.generateId(),
-      code: this.generateId(), // Assuming code should also be generated
+      code: this.generateId(),
       image: product.image ?? 'product-placeholder.svg',
     };
     this.products.update((products) => [...products, newProduct]);
