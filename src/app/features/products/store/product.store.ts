@@ -10,7 +10,8 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { catchError, finalize, of, pipe, switchMap, tap } from 'rxjs';
-import { Product, ProductService } from '../services/product.service';
+import { Product } from '../models/product.model';
+import { ProductService } from '../services/product.service';
 
 export interface ProductState {
   products: Product[];
@@ -69,7 +70,7 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      addProduct: rxMethod<Omit<Product, 'id' | 'code'>>(
+      addProduct: rxMethod<Omit<Product, 'id'>>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap((product) =>
@@ -103,11 +104,11 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      updateProduct: rxMethod<Product>(
+      updateProduct: rxMethod<{ id: string; productData: Omit<Product, 'id'> }>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((product) =>
-            productService.updateProduct(product).pipe(
+          switchMap(({ id, productData }) =>
+            productService.updateProduct(id, productData).pipe(
               tap((updatedProduct: Product) => {
                 patchState(store, (state) => ({
                   products: state.products.map((p) =>

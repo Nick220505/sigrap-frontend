@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -15,7 +15,7 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { Product } from '../services/product.service';
+import { Product } from '../models/product.model';
 import { ProductStore } from '../store/product.store';
 
 interface Column {
@@ -113,7 +113,7 @@ interface ExportColumn {
         #dt
         [value]="productStore.getProducts()"
         [rows]="10"
-        [columns]="cols"
+        [columns]="cols()"
         [paginator]="true"
         [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
         [tableStyle]="{ 'min-width': '75rem' }"
@@ -145,7 +145,6 @@ interface ExportColumn {
             <th scope="col" style="width: 3rem">
               <p-tableHeaderCheckbox />
             </th>
-            <th scope="col" style="min-width: 8rem">Código</th>
             <th scope="col" pSortableColumn="name" style="min-width: 16rem">
               Nombre
               <p-sortIcon field="name" />
@@ -178,7 +177,6 @@ interface ExportColumn {
             <td style="width: 3rem">
               <p-tableCheckbox [value]="product" />
             </td>
-            <td style="min-width: 8rem">{{ product.code }}</td>
             <td style="min-width: 16rem">{{ product.name }}</td>
             <td style="min-width: 8rem">
               {{ product.price | currency: 'USD' }}
@@ -219,7 +217,7 @@ interface ExportColumn {
         </ng-template>
         <ng-template #empty>
           <tr>
-            <td [attr.colspan]="cols.length + 1" class="text-center py-4">
+            <td [attr.colspan]="cols().length + 1" class="text-center py-4">
               No hay productos disponibles.
             </td>
           </tr>
@@ -236,23 +234,17 @@ export class ProductListComponent {
 
   selectedProducts = signal<Product[] | null>(null);
 
-  cols: Column[] = [
-    {
-      field: 'code',
-      header: 'Código',
-      customExportHeader: 'Código del Producto',
-    },
+  readonly cols = signal<Column[]>([
     { field: 'name', header: 'Nombre' },
     { field: 'price', header: 'Precio' },
     { field: 'category', header: 'Categoría' },
     { field: 'rating', header: 'Valoración' },
     { field: 'inventoryStatus', header: 'Estado' },
-  ];
+  ]);
 
-  exportColumns: ExportColumn[] = this.cols.map((col) => ({
-    title: col.header,
-    dataKey: col.field,
-  }));
+  readonly exportColumns = computed<ExportColumn[]>(() =>
+    this.cols().map((col) => ({ title: col.header, dataKey: col.field })),
+  );
 
   readonly dt = viewChild.required<Table>('dt');
 

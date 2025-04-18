@@ -1,18 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
-export interface Product {
-  id?: string;
-  code?: string;
-  name?: string;
-  description?: string;
-  price?: number;
-  quantity?: number;
-  inventoryStatus?: string;
-  category?: string;
-  rating?: number;
-}
+import { Product } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,15 +14,15 @@ export class ProductService {
     return this.http.get<Product[]>(this.productsUrl);
   }
 
-  createProduct(newProduct: Omit<Product, 'id' | 'code'>): Observable<Product> {
+  createProduct(newProduct: Omit<Product, 'id'>): Observable<Product> {
     return this.http.post<Product>(this.productsUrl, newProduct);
   }
 
-  updateProduct(updatedProduct: Product): Observable<Product> {
-    return this.http.put<Product>(
-      `${this.productsUrl}/${updatedProduct.id}`,
-      updatedProduct,
-    );
+  updateProduct(
+    id: string,
+    productData: Omit<Product, 'id'>,
+  ): Observable<Product> {
+    return this.http.put<Product>(`${this.productsUrl}/${id}`, productData);
   }
 
   deleteProductById(id: string): Observable<object> {
