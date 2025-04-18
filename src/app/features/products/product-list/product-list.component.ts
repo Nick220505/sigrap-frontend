@@ -191,8 +191,10 @@ interface ExportColumn {
             <td style="min-width: 8rem">
               <img
                 [src]="
-                  'https://primefaces.org/cdn/primeng/images/demo/product/' +
                   product.image
+                    ? 'https://primefaces.org/cdn/primeng/images/demo/product/' +
+                      product.image
+                    : 'assets/images/product-placeholder.svg'
                 "
                 [alt]="product.name"
                 title="Imagen del producto"

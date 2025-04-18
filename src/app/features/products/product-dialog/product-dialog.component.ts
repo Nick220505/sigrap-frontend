@@ -38,15 +38,17 @@ interface StatusItem {
     >
       <ng-template #content>
         <div class="flex flex-col gap-6">
-          @if (product().image) {
+          @if (product().image || !product().id) {
             <img
               [src]="
-                'https://primefaces.org/cdn/primeng/images/demo/product/' +
                 product().image
+                  ? 'https://primefaces.org/cdn/primeng/images/demo/product/' +
+                    product().image
+                  : 'assets/images/product-placeholder.svg'
               "
-              [alt]="product().name"
-              title="Imagen del producto"
-              class="block pb-4 m-auto"
+              [alt]="product().name || 'Nuevo Producto'"
+              [title]="product().image ? 'Imagen del producto' : 'Placeholder'"
+              class="block pb-4 m-auto w-32 h-32 object-contain rounded-md border border-gray-200"
             />
           }
           <div>

@@ -12,44 +12,33 @@ import { MessageService } from 'primeng/api';
 import { catchError, finalize, of, pipe, switchMap, tap } from 'rxjs';
 import { Product, ProductService } from '../services/product.service';
 
-// Define the state interface
 export interface ProductState {
   products: Product[];
   loading: boolean;
   error: string | null;
-  // Add filter if needed later
-  // filter: { query: string; order: 'asc' | 'desc' };
 }
 
-// Define the initial state
 const initialState: ProductState = {
   products: [],
   loading: false,
   error: null,
 };
 
-// Create the SignalStore
 export const ProductStore = signalStore(
-  { providedIn: 'root' }, // Provide the store at the root level
+  { providedIn: 'root' },
   withState(initialState),
-
-  // --- Selectors (Computed Signals) ---
   withComputed(({ products, loading, error }) => ({
-    // Expose state signals directly or create derived selectors
     isLoading: computed(() => loading()),
     getError: computed(() => error()),
     getProducts: computed(() => products()),
     productCount: computed(() => products().length),
   })),
-
-  // --- Methods (State Updaters) ---
   withMethods(
     (
       store,
       productService = inject(ProductService),
       messageService = inject(MessageService),
     ) => ({
-      // --- Load Products --- (using rxMethod for Observable handling)
       loadProducts: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
@@ -66,8 +55,6 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-
-      // --- Add Product ---
       addProduct: rxMethod<Omit<Product, 'id' | 'code'>>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
@@ -98,8 +85,6 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-
-      // --- Update Product ---
       updateProduct: rxMethod<Product>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
@@ -132,8 +117,6 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-
-      // --- Delete Product ---
       deleteProduct: rxMethod<string>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
@@ -166,11 +149,9 @@ export const ProductStore = signalStore(
       ),
     }),
   ),
-
-  // --- Hooks (Lifecycle) ---
   withHooks({
     onInit({ loadProducts }) {
-      loadProducts(); // Load products when the store is initialized
+      loadProducts();
     },
   }),
 );
