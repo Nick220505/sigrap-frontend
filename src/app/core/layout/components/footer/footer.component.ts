@@ -6,16 +6,14 @@ import { Component } from '@angular/core';
     <div
       class="flex items-center justify-center py-4 gap-2 border-t border-surface-300/50"
     >
-      SAKAI by
-      <a
-        href="https://primeng.org"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="font-bold text-primary hover:underline"
+      SIGRAP - Sistema Integrado de Gestión y Registro de Artículos de Papelería
+      © {{ currentYear }}
+      <span class="text-sm text-gray-500"
+        >| Desarrollado por Millennium Technologies</span
       >
-        PrimeNG
-      </a>
     </div>
   `,
 })
-export class FooterComponent {}
+export class FooterComponent {
+  currentYear = new Date().getFullYear();
+}
