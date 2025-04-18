@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  inject,
-  OnInit,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, inject, OnInit, output, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -213,7 +206,7 @@ export class ProductListComponent implements OnInit {
   editProductEvent = output<Product>();
   newProductEvent = output<void>();
 
-  products = signal<Product[]>([]);
+  products = this.productService.getProducts();
   selectedProducts!: Product[] | null;
   cols!: Column[];
   exportColumns!: ExportColumn[];
@@ -221,14 +214,6 @@ export class ProductListComponent implements OnInit {
   readonly dt = viewChild.required<Table>('dt');
 
   ngOnInit() {
-    this.loadDemoData();
-  }
-
-  loadDemoData() {
-    this.productService.getProducts().then((data) => {
-      this.products.set(data);
-    });
-
     this.cols = [
       {
         field: 'code',
@@ -239,6 +224,8 @@ export class ProductListComponent implements OnInit {
       { field: 'image', header: 'Image' },
       { field: 'price', header: 'Price' },
       { field: 'category', header: 'Category' },
+      { field: 'rating', header: 'Rating' },
+      { field: 'inventoryStatus', header: 'Status' },
     ];
 
     this.exportColumns = this.cols.map((col) => ({
@@ -282,11 +269,11 @@ export class ProductListComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.products.set(
-          this.products().filter(
-            (val) => !this.selectedProducts?.includes(val),
-          ),
-        );
+        this.selectedProducts?.forEach((product) => {
+          if (product.id) {
+            this.productService.deleteProductById(product.id);
+          }
+        });
         this.selectedProducts = null;
         this.messageService.add({
           severity: 'success',
@@ -304,15 +291,22 @@ export class ProductListComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.products.set(
-          this.products().filter((val) => val.id !== product.id),
-        );
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Deleted',
-          life: 3000,
-        });
+        if (product.id) {
+          this.productService.deleteProductById(product.id);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Product Deleted',
+            life: 3000,
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Product ID not found',
+            life: 3000,
+          });
+        }
       },
     });
   }
