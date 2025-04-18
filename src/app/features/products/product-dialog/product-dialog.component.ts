@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -8,7 +13,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { Product } from '../models/product.model';
 import { StatusItem } from '../models/status-item.model';
 import { ProductStore } from '../store/product.store';
 
@@ -194,12 +198,12 @@ export class ProductDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly productStore = inject(ProductStore);
 
-  productForm = this.fb.group({
+  productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
-    inventoryStatus: [null as string | null],
-    category: [null as string | null, Validators.required],
-    price: [null as number | null, Validators.required],
+    inventoryStatus: ['', Validators.required],
+    category: ['', Validators.required],
+    price: [0, Validators.required],
     quantity: [0],
   });
   isDialogVisible = signal(false);
@@ -226,7 +230,7 @@ export class ProductDialogComponent {
   }
 
   saveProduct() {
-    const productData = this.productForm.getRawValue() as Omit<Product, 'id'>;
+    const productData = this.productForm.value;
     const id = this.productStore.selectSelectedProductForEdit()?.id;
     if (id) {
       this.productStore.updateProduct({ id, productData });
