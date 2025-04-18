@@ -20,7 +20,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       <div class="layout-topbar-logo-container w-80 flex items-center gap-2">
         <button
           type="button"
-          class="layout-topbar-action layout-menu-button inline-flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1"
+          class="layout-topbar-action layout-menu-button justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1"
           (click)="layoutService.onMenuToggle()"
           aria-label="Toggle menu"
         >
@@ -41,7 +41,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         <div class="layout-config-menu flex gap-4">
           <button
             type="button"
-            class="layout-topbar-action inline-flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+            class="layout-topbar-action justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
             (click)="toggleDarkMode()"
             aria-label="Toggle dark mode"
           >
@@ -56,7 +56,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           </button>
           <div class="relative">
             <button
-              class="layout-topbar-action layout-topbar-action-highlight inline-flex justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)]"
+              class="layout-topbar-action layout-topbar-action-highlight justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)]"
               pStyleClass="@next"
               enterFromClass="hidden"
               enterActiveClass="animate-scalein"
@@ -73,7 +73,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 
         <button
           type="button"
-          class="layout-topbar-action layout-topbar-menu-button inline-flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] hidden md:inline-flex lg:hidden"
+          class="layout-topbar-action layout-topbar-menu-button justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] hidden md:block lg:hidden"
           pStyleClass="@next"
           enterFromClass="hidden"
           enterActiveClass="animate-scalein"
