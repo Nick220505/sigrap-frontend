@@ -13,9 +13,9 @@ import { RippleModule } from 'primeng/ripple';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { Product } from '../models/product.model';
+import { ProductToolbarComponent } from '../product-toolbar/product-toolbar.component';
 import { ProductStore } from '../store/product.store';
 
 interface Column {
@@ -38,7 +38,6 @@ interface ExportColumn {
     ButtonModule,
     RippleModule,
     ToastModule,
-    ToolbarModule,
     RatingModule,
     InputTextModule,
     TagModule,
@@ -47,50 +46,10 @@ interface ExportColumn {
     ConfirmDialogModule,
     TooltipModule,
     ProgressSpinnerModule,
+    ProductToolbarComponent,
   ],
   template: `
     <p-toast />
-
-    <p-toolbar styleClass="mb-6">
-      <ng-template #start>
-        <p-button
-          label="Nuevo"
-          icon="pi pi-plus"
-          severity="secondary"
-          class="mr-2"
-          (onClick)="productStore.openDialogForNew()"
-          pTooltip="Crear nuevo producto"
-          tooltipPosition="top"
-          [disabled]="productStore.isLoading()"
-        />
-        <p-button
-          severity="secondary"
-          label="Eliminar"
-          icon="pi pi-trash"
-          outlined
-          (onClick)="deleteSelectedProducts()"
-          [disabled]="
-            productStore.isLoading() ||
-            !selectedProducts() ||
-            !selectedProducts()?.length
-          "
-          pTooltip="Eliminar productos seleccionados"
-          tooltipPosition="top"
-        />
-      </ng-template>
-
-      <ng-template #end>
-        <p-button
-          label="Exportar"
-          icon="pi pi-upload"
-          severity="secondary"
-          (onClick)="this.dt().exportCSV()"
-          pTooltip="Exportar datos a CSV"
-          tooltipPosition="top"
-          [disabled]="productStore.isLoading() || !productStore.productCount()"
-        />
-      </ng-template>
-    </p-toolbar>
 
     @if (productStore.isLoading()) {
       <div class="flex justify-center p-8">
@@ -109,6 +68,8 @@ interface ExportColumn {
         />
       </div>
     } @else {
+      <app-product-toolbar [dt]="dt" />
+
       <p-table
         #dt
         [value]="productStore.getProducts()"
@@ -117,7 +78,8 @@ interface ExportColumn {
         [paginator]="true"
         [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
         [tableStyle]="{ 'min-width': '75rem' }"
-        [(selection)]="selectedProducts"
+        [selection]="productStore.getSelectedProductsFromIds()"
+        (selectionChange)="productStore.setSelectedProducts($event)"
         [rowHover]="true"
         dataKey="id"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
@@ -232,8 +194,6 @@ export class ProductListComponent {
   readonly productStore = inject(ProductStore);
   private readonly confirmationService = inject(ConfirmationService);
 
-  selectedProducts = signal<Product[] | null>(null);
-
   readonly cols = signal<Column[]>([
     { field: 'name', header: 'Nombre' },
     { field: 'price', header: 'Precio' },
@@ -246,7 +206,7 @@ export class ProductListComponent {
     this.cols().map((col) => ({ title: col.header, dataKey: col.field })),
   );
 
-  readonly dt = viewChild.required<Table>('dt');
+  readonly dt = viewChild<Table>('dt');
 
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
@@ -267,28 +227,6 @@ export class ProductListComponent {
     }
   }
 
-  deleteSelectedProducts() {
-    this.confirmationService.confirm({
-      message:
-        '¿Estás seguro de que deseas eliminar los productos seleccionados?',
-      header: 'Confirmar',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí',
-      rejectLabel: 'No',
-      accept: () => {
-        const productsToDelete = this.selectedProducts();
-        if (productsToDelete) {
-          productsToDelete.forEach((product) => {
-            if (product.id) {
-              this.productStore.deleteProduct(product.id);
-            }
-          });
-          this.selectedProducts.set(null);
-        }
-      },
-    });
-  }
-
   deleteProduct(product: Product) {
     this.confirmationService.confirm({
       message: '¿Estás seguro de que deseas eliminar ' + product.name + '?',
@@ -299,11 +237,6 @@ export class ProductListComponent {
       accept: () => {
         if (product.id) {
           this.productStore.deleteProduct(product.id);
-        } else {
-          console.error(
-            'Attempted to delete product without ID:',
-            product.name,
-          );
         }
       },
     });
