@@ -59,11 +59,6 @@ export class ProductToolbarComponent {
   private readonly confirmationService = inject(ConfirmationService);
 
   deleteSelectedProducts(): void {
-    const selectedIds = this.productStore.selectSelectedProductIds();
-    if (!selectedIds || selectedIds.size === 0) {
-      return;
-    }
-
     this.confirmationService.confirm({
       message:
         '¿Estás seguro de que deseas eliminar los productos seleccionados?',
@@ -71,7 +66,7 @@ export class ProductToolbarComponent {
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sí',
       rejectLabel: 'No',
-      accept: () => this.productStore.deleteProducts(selectedIds),
+      accept: () => this.productStore.deleteProducts(),
     });
   }
 }

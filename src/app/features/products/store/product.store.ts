@@ -194,10 +194,11 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      deleteProducts: rxMethod<ReadonlySet<string>>(
+      deleteProducts: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((idsToDelete) => {
+          switchMap(() => {
+            const idsToDelete = store.selectedProductIds();
             if (idsToDelete.size === 0) {
               patchState(store, { loading: false });
               return of([]);
