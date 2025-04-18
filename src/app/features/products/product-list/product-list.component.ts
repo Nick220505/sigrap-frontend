@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  inject,
-  OnInit,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -257,9 +250,6 @@ export class ProductListComponent implements OnInit {
   readonly productStore = inject(ProductStore);
   private readonly confirmationService = inject(ConfirmationService);
 
-  editProductEvent = output<Product>();
-  newProductEvent = output<void>();
-
   selectedProducts = signal<Product[] | null>(null);
   cols!: Column[];
   exportColumns!: ExportColumn[];
@@ -311,11 +301,11 @@ export class ProductListComponent implements OnInit {
   }
 
   openNew() {
-    this.newProductEvent.emit();
+    this.productStore.openDialogForNew();
   }
 
   editProduct(product: Product) {
-    this.editProductEvent.emit(product);
+    this.productStore.openDialogForEdit(product);
   }
 
   deleteSelectedProducts() {

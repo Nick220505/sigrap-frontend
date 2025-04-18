@@ -16,23 +16,37 @@ export interface ProductState {
   products: Product[];
   loading: boolean;
   error: string | null;
+  isDialogVisible: boolean;
+  selectedProductForEdit: Product | null;
 }
 
 const initialState: ProductState = {
   products: [],
   loading: false,
   error: null,
+  isDialogVisible: false,
+  selectedProductForEdit: null,
 };
 
 export const ProductStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ products, loading, error }) => ({
-    isLoading: computed(() => loading()),
-    getError: computed(() => error()),
-    getProducts: computed(() => products()),
-    productCount: computed(() => products().length),
-  })),
+  withComputed(
+    ({
+      products,
+      loading,
+      error,
+      isDialogVisible,
+      selectedProductForEdit,
+    }) => ({
+      isLoading: computed(() => loading()),
+      getError: computed(() => error()),
+      getProducts: computed(() => products()),
+      productCount: computed(() => products().length),
+      selectIsDialogVisible: computed(() => isDialogVisible()),
+      selectSelectedProductForEdit: computed(() => selectedProductForEdit()),
+    }),
+  ),
   withMethods(
     (
       store,
@@ -69,6 +83,10 @@ export const ProductStore = signalStore(
                   summary: 'Éxito',
                   detail: 'Producto Creado',
                 });
+                patchState(store, {
+                  isDialogVisible: false,
+                  selectedProductForEdit: null,
+                });
               }),
               catchError((err: Error) => {
                 console.error('Store Error creating product:', err);
@@ -100,6 +118,10 @@ export const ProductStore = signalStore(
                   severity: 'success',
                   summary: 'Éxito',
                   detail: 'Producto Actualizado',
+                });
+                patchState(store, {
+                  isDialogVisible: false,
+                  selectedProductForEdit: null,
                 });
               }),
               catchError((err: Error) => {
@@ -147,6 +169,24 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
+      openDialogForNew(): void {
+        patchState(store, {
+          isDialogVisible: true,
+          selectedProductForEdit: null,
+        });
+      },
+      openDialogForEdit(product: Product): void {
+        patchState(store, {
+          isDialogVisible: true,
+          selectedProductForEdit: { ...product },
+        });
+      },
+      closeDialog(): void {
+        patchState(store, {
+          isDialogVisible: false,
+          selectedProductForEdit: null,
+        });
+      },
     }),
   ),
   withHooks({

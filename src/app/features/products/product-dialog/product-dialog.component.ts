@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, input, model, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -9,6 +9,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { Product } from '../services/product.service';
+import { ProductStore } from '../store/product.store';
 
 interface StatusItem {
   label: string;
@@ -30,7 +31,7 @@ interface StatusItem {
   ],
   template: `
     <p-dialog
-      [(visible)]="visible"
+      [(visible)]="isDialogVisible"
       [style]="{ width: '450px' }"
       header="Detalles del Producto"
       [modal]="true"
@@ -38,16 +39,16 @@ interface StatusItem {
     >
       <ng-template #content>
         <div class="flex flex-col gap-6">
-          @if (product().image || !product().id) {
+          @if (_product().image || !_product().id) {
             <img
               [src]="
-                product().image
+                _product().image
                   ? 'https://primefaces.org/cdn/primeng/images/demo/product/' +
-                    product().image
+                    _product().image
                   : 'assets/images/product-placeholder.svg'
               "
-              [alt]="product().name || 'Nuevo Producto'"
-              [title]="product().image ? 'Imagen del producto' : 'Placeholder'"
+              [alt]="_product().name || 'Nuevo Producto'"
+              [title]="_product().image ? 'Imagen del producto' : 'Placeholder'"
               class="block pb-4 m-auto w-32 h-32 object-contain rounded-md border border-gray-200"
             />
           }
@@ -57,11 +58,11 @@ interface StatusItem {
               type="text"
               pInputText
               id="name"
-              [(ngModel)]="product().name"
+              [(ngModel)]="_product().name"
               required
               fluid
             />
-            @if (submitted() && !product().name) {
+            @if (submitted() && !_product().name) {
               <small class="text-red-500">El nombre es obligatorio.</small>
             }
           </div>
@@ -72,7 +73,7 @@ interface StatusItem {
             <textarea
               id="description"
               pTextarea
-              [(ngModel)]="product().description"
+              [(ngModel)]="_product().description"
               required
               rows="3"
               cols="20"
@@ -85,7 +86,7 @@ interface StatusItem {
               >Estado de Inventario</label
             >
             <p-select
-              [(ngModel)]="product().inventoryStatus"
+              [(ngModel)]="_product().inventoryStatus"
               inputId="inventoryStatus"
               [options]="statuses"
               optionLabel="label"
@@ -103,7 +104,7 @@ interface StatusItem {
                   id="category1"
                   name="category"
                   value="Accessories"
-                  [(ngModel)]="product().category"
+                  [(ngModel)]="_product().category"
                 />
                 <label for="category1">Accesorios</label>
               </div>
@@ -112,7 +113,7 @@ interface StatusItem {
                   id="category2"
                   name="category"
                   value="Clothing"
-                  [(ngModel)]="product().category"
+                  [(ngModel)]="_product().category"
                 />
                 <label for="category2">Ropa</label>
               </div>
@@ -121,7 +122,7 @@ interface StatusItem {
                   id="category3"
                   name="category"
                   value="Electronics"
-                  [(ngModel)]="product().category"
+                  [(ngModel)]="_product().category"
                 />
                 <label for="category3">Electrónicos</label>
               </div>
@@ -130,7 +131,7 @@ interface StatusItem {
                   id="category4"
                   name="category"
                   value="Fitness"
-                  [(ngModel)]="product().category"
+                  [(ngModel)]="_product().category"
                 />
                 <label for="category4">Fitness</label>
               </div>
@@ -142,7 +143,7 @@ interface StatusItem {
               <label for="price" class="block mb-3 font-bold">Precio</label>
               <p-inputnumber
                 id="price"
-                [(ngModel)]="product().price"
+                [(ngModel)]="_product().price"
                 mode="currency"
                 currency="USD"
                 locale="en-US"
@@ -155,7 +156,7 @@ interface StatusItem {
               >
               <p-inputnumber
                 id="quantity"
-                [(ngModel)]="product().quantity"
+                [(ngModel)]="_product().quantity"
                 fluid
               />
             </div>
@@ -176,23 +177,21 @@ interface StatusItem {
           icon="pi pi-check"
           (click)="saveProduct()"
           (keydown.enter)="saveProduct()"
+          [disabled]="productStore.isLoading()"
         />
       </ng-template>
     </p-dialog>
   `,
 })
 export class ProductDialogComponent {
-  // Signal-based inputs
-  visible = model<boolean>(false);
-  productData = input<Product>({});
+  readonly productStore = inject(ProductStore);
 
-  // Signal-based outputs
-  hideDialogEvent = output<void>();
-  saveProductEvent = output<Product>();
-
-  private readonly _product = signal<Product>({});
-  product = this._product.asReadonly();
+  readonly _product = signal<Product>({});
   submitted = signal(false);
+
+  isDialogVisible = signal(false);
+
+  isEditMode = computed(() => !!this._product().id);
 
   statuses: StatusItem[] = [
     { label: 'EN STOCK', value: 'INSTOCK' },
@@ -201,25 +200,41 @@ export class ProductDialogComponent {
   ];
 
   constructor() {
-    // Initialize product data when productData input changes
     effect(() => {
-      this._product.set(this.productData());
+      const storeVisible = this.productStore.selectIsDialogVisible();
+      const storeProduct = this.productStore.selectSelectedProductForEdit();
+
+      this.isDialogVisible.set(storeVisible);
+
+      if (storeVisible) {
+        this._product.set(storeProduct ? { ...storeProduct } : {});
+        this.submitted.set(false);
+      } else {
+        // Optionally reset local product when dialog closes externally (e.g., success)
+        // this._product.set({});
+      }
     });
   }
 
   hideDialog() {
-    this.visible.set(false);
-    this.hideDialogEvent.emit();
-    this.submitted.set(false);
+    this.productStore.closeDialog();
   }
 
   saveProduct() {
     this.submitted.set(true);
+    const currentProduct = this._product();
 
-    if (this.product().name?.trim()) {
-      this.saveProductEvent.emit(this._product());
-      this.visible.set(false);
-      this.submitted.set(false);
+    if (currentProduct.name?.trim()) {
+      if (this.isEditMode()) {
+        this.productStore.updateProduct(currentProduct);
+      } else {
+        const newProductData = { ...currentProduct };
+        delete newProductData.id;
+        delete newProductData.code;
+        this.productStore.addProduct(newProductData);
+      }
+    } else {
+      console.warn('Product name is required.');
     }
   }
 }
