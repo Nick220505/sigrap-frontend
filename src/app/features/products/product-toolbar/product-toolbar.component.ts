@@ -1,7 +1,6 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Table } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ProductStore } from '../store/product.store';
@@ -41,10 +40,14 @@ import { ProductStore } from '../store/product.store';
           label="Exportar"
           icon="pi pi-upload"
           severity="secondary"
-          (onClick)="dt()?.exportCSV()"
+          (onClick)="productStore.getTableInstance()?.exportCSV()"
           pTooltip="Exportar datos a CSV"
           tooltipPosition="top"
-          [disabled]="productStore.isLoading() || !productStore.productCount()"
+          [disabled]="
+            productStore.isLoading() ||
+            !productStore.productCount() ||
+            !productStore.getTableInstance()
+          "
         />
       </ng-template>
     </p-toolbar>
@@ -54,8 +57,6 @@ import { ProductStore } from '../store/product.store';
 export class ProductToolbarComponent {
   readonly productStore = inject(ProductStore);
   private readonly confirmationService = inject(ConfirmationService);
-
-  dt = input.required<Table | undefined>();
 
   deleteSelectedProducts(): void {
     const selectedIds = this.productStore.selectSelectedProductIds();

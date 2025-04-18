@@ -1,0 +1,211 @@
+import { CommonModule } from '@angular/common';
+import { Component, effect, inject, signal, viewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ConfirmationService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { RatingModule } from 'primeng/rating';
+import { Table, TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
+import { Product } from '../models/product.model';
+import { ProductStore } from '../store/product.store';
+
+interface Column {
+  field: string;
+  header: string;
+}
+
+@Component({
+  selector: 'app-product-table',
+  imports: [
+    CommonModule,
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    RatingModule,
+    TagModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    ConfirmDialogModule,
+  ],
+  template: `
+    <p-table
+      #dt
+      [value]="productStore.getProducts()"
+      [rows]="10"
+      [columns]="cols()"
+      [paginator]="true"
+      [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      [selection]="productStore.getSelectedProductsFromIds()"
+      (selectionChange)="productStore.setSelectedProducts($event)"
+      [rowHover]="true"
+      dataKey="id"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 20, 30]"
+    >
+      <ng-template #caption>
+        <div class="flex items-center justify-between">
+          <h5 class="m-0">Administrar Productos</h5>
+          <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input
+              pInputText
+              type="text"
+              (input)="onGlobalFilter($event, dt)"
+              placeholder="Buscar..."
+              class="pl-8"
+              [disabled]="!productStore.productCount()"
+            />
+          </p-iconfield>
+        </div>
+      </ng-template>
+      <ng-template #header>
+        <tr>
+          <th scope="col" style="width: 3rem">
+            <p-tableHeaderCheckbox />
+          </th>
+          <th scope="col" pSortableColumn="name" style="min-width: 16rem">
+            Nombre
+            <p-sortIcon field="name" />
+          </th>
+          <th scope="col" pSortableColumn="price" style="min-width: 8rem">
+            Precio
+            <p-sortIcon field="price" />
+          </th>
+          <th scope="col" pSortableColumn="category" style="min-width: 10rem">
+            Categoría
+            <p-sortIcon field="category" />
+          </th>
+          <th scope="col" pSortableColumn="rating" style="min-width: 8rem">
+            Reseñas
+            <p-sortIcon field="rating" />
+          </th>
+          <th
+            scope="col"
+            pSortableColumn="inventoryStatus"
+            style="min-width: 10rem"
+          >
+            Estado
+            <p-sortIcon field="inventoryStatus" />
+          </th>
+          <th scope="col" style="width: 8rem">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-product>
+        <tr>
+          <td style="width: 3rem">
+            <p-tableCheckbox [value]="product" />
+          </td>
+          <td style="min-width: 16rem">{{ product.name }}</td>
+          <td style="min-width: 8rem">
+            {{ product.price | currency: 'USD' }}
+          </td>
+          <td style="min-width: 10rem">{{ product.category }}</td>
+          <td style="min-width: 8rem">
+            <p-rating [(ngModel)]="product.rating" [readonly]="true" />
+          </td>
+          <td style="min-width: 10rem">
+            <p-tag
+              [value]="product.inventoryStatus"
+              [severity]="getSeverity(product.inventoryStatus)"
+            />
+          </td>
+          <td style="width: 8rem">
+            <p-button
+              icon="pi pi-pencil"
+              class="mr-2"
+              [rounded]="true"
+              [outlined]="true"
+              (click)="productStore.openDialogForEdit(product)"
+              pTooltip="Editar"
+              tooltipPosition="top"
+              [disabled]="productStore.isLoading()"
+            />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [rounded]="true"
+              [outlined]="true"
+              (click)="deleteProduct(product)"
+              pTooltip="Eliminar"
+              tooltipPosition="top"
+              [disabled]="productStore.isLoading()"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #empty>
+        <tr>
+          <td [attr.colspan]="cols().length + 1" class="text-center py-4">
+            No hay productos disponibles.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <p-confirmdialog [style]="{ width: '450px' }" />
+  `,
+  styles: ``,
+})
+export class ProductTableComponent {
+  readonly productStore = inject(ProductStore);
+  private readonly confirmationService = inject(ConfirmationService);
+
+  readonly cols = signal<Column[]>([
+    { field: 'name', header: 'Nombre' },
+    { field: 'price', header: 'Precio' },
+    { field: 'category', header: 'Categoría' },
+    { field: 'rating', header: 'Valoración' },
+    { field: 'inventoryStatus', header: 'Estado' },
+  ]);
+
+  readonly dt = viewChild<Table>('dt');
+
+  constructor() {
+    effect(() => {
+      this.productStore.setTableInstance(this.dt() ?? null);
+    });
+  }
+
+  onGlobalFilter(event: Event, table: Table): void {
+    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+
+  getSeverity(
+    status: string | undefined,
+  ): 'success' | 'warn' | 'danger' | 'info' {
+    switch (status) {
+      case 'INSTOCK':
+        return 'success';
+      case 'LOWSTOCK':
+        return 'warn';
+      case 'OUTOFSTOCK':
+        return 'danger';
+      default:
+        return 'info';
+    }
+  }
+
+  deleteProduct(product: Product): void {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de que deseas eliminar ' + product.name + '?',
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí',
+      rejectLabel: 'No',
+      accept: () => {
+        if (product.id) {
+          this.productStore.deleteProduct(product.id);
+        }
+      },
+    });
+  }
+}

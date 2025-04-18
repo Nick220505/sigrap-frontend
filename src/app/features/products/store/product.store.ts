@@ -10,6 +10,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
 import {
   catchError,
   finalize,
@@ -30,6 +31,7 @@ export interface ProductState {
   isDialogVisible: boolean;
   selectedProductForEdit: Product | null;
   selectedProductIds: ReadonlySet<string>;
+  tableInstance: Table | null;
 }
 
 const initialState: ProductState = {
@@ -39,6 +41,7 @@ const initialState: ProductState = {
   isDialogVisible: false,
   selectedProductForEdit: null,
   selectedProductIds: new Set<string>(),
+  tableInstance: null,
 };
 
 export const ProductStore = signalStore(
@@ -52,6 +55,7 @@ export const ProductStore = signalStore(
       isDialogVisible,
       selectedProductForEdit,
       selectedProductIds,
+      tableInstance,
     }) => ({
       isLoading: computed(() => loading()),
       getError: computed(() => error()),
@@ -65,6 +69,7 @@ export const ProductStore = signalStore(
         const ids = selectedProductIds();
         return products().filter((p) => ids.has(p.id!));
       }),
+      getTableInstance: computed(() => tableInstance()),
     }),
   ),
   withMethods(
@@ -318,6 +323,9 @@ export const ProductStore = signalStore(
       },
       clearSelection(): void {
         patchState(store, { selectedProductIds: new Set<string>() });
+      },
+      setTableInstance(table: Table | null): void {
+        patchState(store, { tableInstance: table });
       },
     }),
   ),
