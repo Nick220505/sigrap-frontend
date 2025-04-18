@@ -114,11 +114,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     </div>
   `,
   styles: `
-    .layout-topbar-action.layout-topbar-action-highlight {
-      background-color: var(--primary-color);
-      color: var(--primary-contrast-color);
-    }
-
     .layout-topbar .layout-topbar-menu-button {
       display: none;
     }
