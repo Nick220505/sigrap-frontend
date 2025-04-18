@@ -150,7 +150,6 @@ interface ExportColumn {
               Nombre
               <p-sortIcon field="name" />
             </th>
-            <th scope="col" style="min-width: 8rem">Imagen</th>
             <th scope="col" pSortableColumn="price" style="min-width: 8rem">
               Precio
               <p-sortIcon field="price" />
@@ -181,19 +180,6 @@ interface ExportColumn {
             </td>
             <td style="min-width: 8rem">{{ product.code }}</td>
             <td style="min-width: 16rem">{{ product.name }}</td>
-            <td style="min-width: 8rem">
-              <img
-                [src]="
-                  product.image
-                    ? 'https://primefaces.org/cdn/primeng/images/demo/product/' +
-                      product.image
-                    : 'assets/images/product-placeholder.svg'
-                "
-                [alt]="product.name"
-                title="Imagen del producto"
-                class="w-16 rounded-sm shadow-sm"
-              />
-            </td>
             <td style="min-width: 8rem">
               {{ product.price | currency: 'USD' }}
             </td>
@@ -264,7 +250,6 @@ export class ProductListComponent implements OnInit {
         customExportHeader: 'Código del Producto',
       },
       { field: 'name', header: 'Nombre' },
-      { field: 'image', header: 'Imagen' },
       { field: 'price', header: 'Precio' },
       { field: 'category', header: 'Categoría' },
       { field: 'rating', header: 'Valoración' },
