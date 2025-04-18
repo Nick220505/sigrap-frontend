@@ -15,16 +15,16 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
   ],
   template: `
     <div
-      class="layout-topbar fixed h-16 z-[997] left-0 top-0 w-full px-8 bg-[var(--surface-card)] flex items-center"
+      class="layout-topbar fixed h-16 z-[997] left-0 top-0 w-full px-8 bg-[var(--surface-card)] flex items-center transition-[left] duration-[var(--layout-section-transition-duration)]"
     >
       <div class="layout-topbar-logo-container w-80 flex items-center gap-2">
         <button
           type="button"
-          class="layout-topbar-action layout-menu-button"
+          class="layout-topbar-action layout-menu-button inline-flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1"
           (click)="layoutService.onMenuToggle()"
           aria-label="Toggle menu"
         >
-          <i class="pi pi-bars"></i>
+          <i class="pi pi-bars text-5 text-[1.25rem]"></i>
         </button>
         <a
           class="layout-topbar-logo flex items-center text-2xl text-[var(--text-color)] font-medium gap-3"
@@ -41,7 +41,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         <div class="layout-config-menu flex gap-4">
           <button
             type="button"
-            class="layout-topbar-action"
+            class="layout-topbar-action inline-flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
             (click)="toggleDarkMode()"
             aria-label="Toggle dark mode"
           >
@@ -51,11 +51,12 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                 'pi-moon': layoutService.isDarkTheme(),
                 'pi-sun': !layoutService.isDarkTheme(),
               }"
+              class="text-[1.25rem]"
             ></i>
           </button>
           <div class="relative">
             <button
-              class="layout-topbar-action layout-topbar-action-highlight"
+              class="layout-topbar-action layout-topbar-action-highlight inline-flex justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)]"
               pStyleClass="@next"
               enterFromClass="hidden"
               enterActiveClass="animate-scalein"
@@ -64,7 +65,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
               [hideOnOutsideClick]="true"
               aria-label="Toggle theme configurator"
             >
-              <i class="pi pi-palette"></i>
+              <i class="pi pi-palette text-[1.25rem]"></i>
             </button>
             <app-configurator />
           </div>
@@ -72,7 +73,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 
         <button
           type="button"
-          class="layout-topbar-menu-button layout-topbar-action"
+          class="layout-topbar-action layout-topbar-menu-button inline-flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] hidden md:inline-flex lg:hidden"
           pStyleClass="@next"
           enterFromClass="hidden"
           enterActiveClass="animate-scalein"
@@ -81,7 +82,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           [hideOnOutsideClick]="true"
           aria-label="Toggle menu options"
         >
-          <i class="pi pi-ellipsis-v"></i>
+          <i class="pi pi-ellipsis-v text-[1.25rem]"></i>
         </button>
 
         <div class="hidden layout-topbar-menu lg:block">
@@ -104,11 +105,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     </div>
   `,
   styles: `
-    .layout-topbar {
-      transition: left var(--layout-section-transition-duration);
-    }
-
-    .layout-topbar .layout-topbar-action {
+    .layout-topbar-action {
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -120,11 +117,11 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       cursor: pointer;
     }
 
-    .layout-topbar .layout-topbar-action:hover {
+    .layout-topbar-action:hover {
       background-color: var(--surface-hover);
     }
 
-    .layout-topbar .layout-topbar-action:focus-visible {
+    .layout-topbar-action:focus-visible {
       outline-width: var(--focus-ring-width);
       outline-style: var(--focus-ring-style);
       outline-color: var(--focus-ring-color);
@@ -135,22 +132,18 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         outline-color var(--transition-duration);
     }
 
-    .layout-topbar .layout-topbar-action i {
+    .layout-topbar-action i {
       font-size: 1.25rem;
     }
 
-    .layout-topbar .layout-topbar-action span {
+    .layout-topbar-action span {
       font-size: 1rem;
       display: none;
     }
 
-    .layout-topbar .layout-topbar-action.layout-topbar-action-highlight {
+    .layout-topbar-action.layout-topbar-action-highlight {
       background-color: var(--primary-color);
       color: var(--primary-contrast-color);
-    }
-
-    .layout-topbar .layout-menu-button {
-      margin-right: 0.25rem;
     }
 
     .layout-topbar .layout-topbar-menu-button {
@@ -163,7 +156,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       }
 
       .layout-topbar .layout-menu-button {
-        margin-left: 0;
         margin-right: 0.5rem;
       }
 
