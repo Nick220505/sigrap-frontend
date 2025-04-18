@@ -98,7 +98,7 @@ import { ProductStore } from '../store/product.store';
             class="flex flex-col gap-2 border rounded p-3"
             [style.border-color]="
               categoryControlInvalid
-                ? 'var(--p-invalid-border-color)'
+                ? 'text-red-500'
                 : 'var(--p-inputtext-border-color)'
             "
           >
