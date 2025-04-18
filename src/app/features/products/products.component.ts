@@ -1,5 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
 import { ProductListComponent } from './product-list/product-list.component';
@@ -8,6 +7,7 @@ import { Product, ProductService } from './services/product.service';
 @Component({
   selector: 'app-products',
   imports: [ToastModule, ProductListComponent, ProductDialogComponent],
+  providers: [],
   template: `
     <p-toast />
 
@@ -25,7 +25,6 @@ import { Product, ProductService } from './services/product.service';
   `,
 })
 export class ProductsComponent {
-  private readonly messageService = inject(MessageService);
   private readonly productService = inject(ProductService);
 
   productDialog = signal(false);
@@ -48,20 +47,8 @@ export class ProductsComponent {
   saveProduct(product: Product) {
     if (product.id) {
       this.productService.updateProduct(product);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Actualizado',
-        life: 3000,
-      });
     } else {
       this.productService.createProduct(product);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Creado',
-        life: 3000,
-      });
     }
 
     this.product.set({});

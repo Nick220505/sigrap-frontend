@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  effect,
   inject,
   OnInit,
   output,
@@ -8,12 +9,13 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RatingModule } from 'primeng/rating';
 import { RippleModule } from 'primeng/ripple';
 import { Table, TableModule } from 'primeng/table';
@@ -51,6 +53,7 @@ interface ExportColumn {
     IconFieldModule,
     ConfirmDialogModule,
     TooltipModule,
+    ProgressSpinnerModule,
   ],
   template: `
     <p-toast />
@@ -65,6 +68,7 @@ interface ExportColumn {
           (onClick)="openNew()"
           pTooltip="Crear nuevo producto"
           tooltipPosition="top"
+          [disabled]="productService.productsState().loading"
         />
         <p-button
           severity="secondary"
@@ -72,7 +76,11 @@ interface ExportColumn {
           icon="pi pi-trash"
           outlined
           (onClick)="deleteSelectedProducts()"
-          [disabled]="!selectedProducts() || !selectedProducts()?.length"
+          [disabled]="
+            productService.productsState().loading ||
+            !selectedProducts() ||
+            !selectedProducts()?.length
+          "
           pTooltip="Eliminar productos seleccionados"
           tooltipPosition="top"
         />
@@ -86,136 +94,167 @@ interface ExportColumn {
           (onClick)="exportCSV()"
           pTooltip="Exportar datos a CSV"
           tooltipPosition="top"
+          [disabled]="
+            productService.productsState().loading ||
+            !productService.productsState().data.length
+          "
         />
       </ng-template>
     </p-toolbar>
 
-    <p-table
-      #dt
-      [value]="productService.products()"
-      [rows]="10"
-      [columns]="cols"
-      [paginator]="true"
-      [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
-      [tableStyle]="{ 'min-width': '75rem' }"
-      [(selection)]="selectedProducts"
-      [rowHover]="true"
-      dataKey="id"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
-      [showCurrentPageReport]="true"
-      [rowsPerPageOptions]="[10, 20, 30]"
-    >
-      <ng-template #caption>
-        <div class="flex items-center justify-between">
-          <h5 class="m-0">Administrar Productos</h5>
-          <p-iconfield>
-            <p-inputicon styleClass="pi pi-search" />
-            <input
-              pInputText
-              type="text"
-              (input)="onGlobalFilter(dt, $event)"
-              placeholder="Buscar..."
-              class="pl-8"
-            />
-          </p-iconfield>
-        </div>
-      </ng-template>
-      <ng-template #header>
-        <tr>
-          <th scope="col" style="width: 3rem">
-            <p-tableHeaderCheckbox />
-          </th>
-          <th scope="col" style="min-width: 8rem">Código</th>
-          <th scope="col" pSortableColumn="name" style="min-width: 16rem">
-            Nombre
-            <p-sortIcon field="name" />
-          </th>
-          <th scope="col" style="min-width: 8rem">Imagen</th>
-          <th scope="col" pSortableColumn="price" style="min-width: 8rem">
-            Precio
-            <p-sortIcon field="price" />
-          </th>
-          <th scope="col" pSortableColumn="category" style="min-width: 10rem">
-            Categoría
-            <p-sortIcon field="category" />
-          </th>
-          <th scope="col" pSortableColumn="rating" style="min-width: 8rem">
-            Reseñas
-            <p-sortIcon field="rating" />
-          </th>
-          <th
-            scope="col"
-            pSortableColumn="inventoryStatus"
-            style="min-width: 10rem"
-          >
-            Estado
-            <p-sortIcon field="inventoryStatus" />
-          </th>
-          <th scope="col" style="width: 8rem">Acciones</th>
-        </tr>
-      </ng-template>
-      <ng-template #body let-product>
-        <tr>
-          <td style="width: 3rem">
-            <p-tableCheckbox [value]="product" />
-          </td>
-          <td style="min-width: 8rem">{{ product.code }}</td>
-          <td style="min-width: 16rem">{{ product.name }}</td>
-          <td style="min-width: 8rem">
-            <img
-              [src]="
-                'https://primefaces.org/cdn/primeng/images/demo/product/' +
-                product.image
-              "
-              [alt]="product.name"
-              title="Imagen del producto"
-              class="w-16 rounded-sm shadow-sm"
-            />
-          </td>
-          <td style="min-width: 8rem">
-            {{ product.price | currency: 'USD' }}
-          </td>
-          <td style="min-width: 10rem">{{ product.category }}</td>
-          <td style="min-width: 8rem">
-            <p-rating [(ngModel)]="product.rating" [readonly]="true" />
-          </td>
-          <td style="min-width: 10rem">
-            <p-tag
-              [value]="product.inventoryStatus"
-              [severity]="getSeverity(product.inventoryStatus)"
-            />
-          </td>
-          <td style="width: 8rem">
-            <p-button
-              icon="pi pi-pencil"
-              class="mr-2"
-              [rounded]="true"
-              [outlined]="true"
-              (click)="editProduct(product)"
-              (keydown.enter)="editProduct(product)"
-              pTooltip="Editar"
-              tooltipPosition="top"
-            />
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              [rounded]="true"
-              [outlined]="true"
-              (click)="deleteProduct(product)"
-              (keydown.enter)="deleteProduct(product)"
-              pTooltip="Eliminar"
-              tooltipPosition="top"
-            />
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+    @if (productService.productsState().loading) {
+      <div class="flex justify-center p-8">
+        <p-progressSpinner />
+      </div>
+    } @else if (productService.productsState().error) {
+      <div
+        class="p-4 text-center text-red-600 bg-red-100 border border-red-400 rounded"
+      >
+        <p>Error al cargar productos:</p>
+        <p>{{ productService.productsState().error }}</p>
+        <p-button
+          label="Reintentar"
+          (onClick)="retryLoad()"
+          styleClass="p-button-sm mt-2"
+        />
+      </div>
+    } @else {
+      <p-table
+        #dt
+        [value]="productService.productsState().data"
+        [rows]="10"
+        [columns]="cols"
+        [paginator]="true"
+        [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [(selection)]="selectedProducts"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 20, 30]"
+      >
+        <ng-template #caption>
+          <div class="flex items-center justify-between">
+            <h5 class="m-0">Administrar Productos</h5>
+            <p-iconfield>
+              <p-inputicon styleClass="pi pi-search" />
+              <input
+                pInputText
+                type="text"
+                (input)="onGlobalFilter(dt, $event)"
+                placeholder="Buscar..."
+                class="pl-8"
+                [disabled]="!productService.productsState().data.length"
+              />
+            </p-iconfield>
+          </div>
+        </ng-template>
+        <ng-template #header>
+          <tr>
+            <th scope="col" style="width: 3rem">
+              <p-tableHeaderCheckbox />
+            </th>
+            <th scope="col" style="min-width: 8rem">Código</th>
+            <th scope="col" pSortableColumn="name" style="min-width: 16rem">
+              Nombre
+              <p-sortIcon field="name" />
+            </th>
+            <th scope="col" style="min-width: 8rem">Imagen</th>
+            <th scope="col" pSortableColumn="price" style="min-width: 8rem">
+              Precio
+              <p-sortIcon field="price" />
+            </th>
+            <th scope="col" pSortableColumn="category" style="min-width: 10rem">
+              Categoría
+              <p-sortIcon field="category" />
+            </th>
+            <th scope="col" pSortableColumn="rating" style="min-width: 8rem">
+              Reseñas
+              <p-sortIcon field="rating" />
+            </th>
+            <th
+              scope="col"
+              pSortableColumn="inventoryStatus"
+              style="min-width: 10rem"
+            >
+              Estado
+              <p-sortIcon field="inventoryStatus" />
+            </th>
+            <th scope="col" style="width: 8rem">Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-product>
+          <tr>
+            <td style="width: 3rem">
+              <p-tableCheckbox [value]="product" />
+            </td>
+            <td style="min-width: 8rem">{{ product.code }}</td>
+            <td style="min-width: 16rem">{{ product.name }}</td>
+            <td style="min-width: 8rem">
+              <img
+                [src]="
+                  'https://primefaces.org/cdn/primeng/images/demo/product/' +
+                  product.image
+                "
+                [alt]="product.name"
+                title="Imagen del producto"
+                class="w-16 rounded-sm shadow-sm"
+              />
+            </td>
+            <td style="min-width: 8rem">
+              {{ product.price | currency: 'USD' }}
+            </td>
+            <td style="min-width: 10rem">{{ product.category }}</td>
+            <td style="min-width: 8rem">
+              <p-rating [(ngModel)]="product.rating" [readonly]="true" />
+            </td>
+            <td style="min-width: 10rem">
+              <p-tag
+                [value]="product.inventoryStatus"
+                [severity]="getSeverity(product.inventoryStatus)"
+              />
+            </td>
+            <td style="width: 8rem">
+              <p-button
+                icon="pi pi-pencil"
+                class="mr-2"
+                [rounded]="true"
+                [outlined]="true"
+                (click)="editProduct(product)"
+                (keydown.enter)="editProduct(product)"
+                pTooltip="Editar"
+                tooltipPosition="top"
+                [disabled]="productService.productsState().loading"
+              />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [rounded]="true"
+                [outlined]="true"
+                (click)="deleteProduct(product)"
+                (keydown.enter)="deleteProduct(product)"
+                pTooltip="Eliminar"
+                tooltipPosition="top"
+                [disabled]="productService.productsState().loading"
+              />
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template #empty>
+          <tr>
+            <td [attr.colspan]="cols.length + 1" class="text-center py-4">
+              No hay productos disponibles.
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    }
 
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
 export class ProductListComponent implements OnInit {
-  private readonly messageService = inject(MessageService);
   readonly productService = inject(ProductService);
   private readonly confirmationService = inject(ConfirmationService);
 
@@ -227,6 +266,13 @@ export class ProductListComponent implements OnInit {
   exportColumns!: ExportColumn[];
 
   readonly dt = viewChild.required<Table>('dt');
+
+  constructor() {
+    effect(() => {
+      this.productService.productsState();
+      this.selectedProducts.set(null);
+    });
+  }
 
   ngOnInit() {
     this.cols = [
@@ -293,14 +339,9 @@ export class ProductListComponent implements OnInit {
         if (productsToDelete) {
           productsToDelete.forEach((product) => {
             if (product.id) {
-              this.productService.deleteProductById(product.id).subscribe({
-                error: (err) =>
-                  this.showError('Error al eliminar producto', err.message),
-              });
+              this.productService.deleteProductById(product.id);
             }
           });
-          this.selectedProducts.set(null);
-          this.showSuccess('Éxito', 'Productos Eliminados');
         }
       },
     });
@@ -315,37 +356,18 @@ export class ProductListComponent implements OnInit {
       rejectLabel: 'No',
       accept: () => {
         if (product.id) {
-          this.productService.deleteProductById(product.id).subscribe({
-            next: () =>
-              this.showSuccess('Éxito', 'Producto Eliminado ' + product.name),
-            error: (err) =>
-              this.showError('Error al eliminar producto', err.message),
-          });
+          this.productService.deleteProductById(product.id);
         } else {
-          this.showError(
-            'Error',
-            'ID del producto no encontrado para ' + product.name,
+          console.error(
+            'Attempted to delete product without ID:',
+            product.name,
           );
         }
       },
     });
   }
 
-  private showSuccess(summary: string, detail: string): void {
-    this.messageService.add({
-      severity: 'success',
-      summary: summary,
-      detail: detail,
-      life: 3000,
-    });
-  }
-
-  private showError(summary: string, detail: string): void {
-    this.messageService.add({
-      severity: 'error',
-      summary: summary,
-      detail: detail,
-      life: 3000,
-    });
+  retryLoad() {
+    this.productService.getProducts();
   }
 }
