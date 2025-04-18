@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -9,7 +8,6 @@ import { ProductToolbarComponent } from './product-toolbar/product-toolbar.compo
 @Component({
   selector: 'app-product-list',
   imports: [
-    CommonModule,
     ButtonModule,
     ProgressSpinnerModule,
     ProductToolbarComponent,
