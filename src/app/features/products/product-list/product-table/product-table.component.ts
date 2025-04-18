@@ -11,8 +11,8 @@ import { RatingModule } from 'primeng/rating';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { Product } from '../models/product.model';
-import { ProductStore } from '../store/product.store';
+import { Product } from '../../models/product.model';
+import { ProductStore } from '../../store/product.store';
 
 interface Column {
   field: string;

@@ -2,23 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ToastModule } from 'primeng/toast';
-import { ProductTableComponent } from '../product-table/product-table.component';
-import { ProductToolbarComponent } from '../product-toolbar/product-toolbar.component';
 import { ProductStore } from '../store/product.store';
+import { ProductTableComponent } from './product-table/product-table.component';
+import { ProductToolbarComponent } from './product-toolbar/product-toolbar.component';
 
 @Component({
   selector: 'app-product-list',
   imports: [
     CommonModule,
-    ToastModule,
     ButtonModule,
     ProgressSpinnerModule,
     ProductToolbarComponent,
     ProductTableComponent,
   ],
   template: `
-    <p-toast />
     @if (productStore.isLoading()) {
       <div class="flex justify-center p-8">
         <p-progressSpinner />

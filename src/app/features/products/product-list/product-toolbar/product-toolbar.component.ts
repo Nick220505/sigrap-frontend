@@ -3,7 +3,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { ProductStore } from '../store/product.store';
+import { ProductStore } from '../../store/product.store';
 
 @Component({
   selector: 'app-product-toolbar',
