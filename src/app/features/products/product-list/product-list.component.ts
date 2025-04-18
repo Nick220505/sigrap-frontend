@@ -92,16 +92,11 @@ interface ExportColumn {
 
     <p-table
       #dt
-      [value]="products()"
+      [value]="productService.products()"
       [rows]="10"
       [columns]="cols"
       [paginator]="true"
-      [globalFilterFields]="[
-        'name',
-        'country.name',
-        'representative.name',
-        'status',
-      ]"
+      [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
       [tableStyle]="{ 'min-width': '75rem' }"
       [(selection)]="selectedProducts"
       [rowHover]="true"
@@ -120,6 +115,7 @@ interface ExportColumn {
               type="text"
               (input)="onGlobalFilter(dt, $event)"
               placeholder="Buscar..."
+              class="pl-8"
             />
           </p-iconfield>
         </div>
@@ -129,12 +125,12 @@ interface ExportColumn {
           <th scope="col" style="width: 3rem">
             <p-tableHeaderCheckbox />
           </th>
-          <th scope="col" style="min-width: 16rem">Código</th>
+          <th scope="col" style="min-width: 8rem">Código</th>
           <th scope="col" pSortableColumn="name" style="min-width: 16rem">
             Nombre
             <p-sortIcon field="name" />
           </th>
-          <th scope="col">Imagen</th>
+          <th scope="col" style="min-width: 8rem">Imagen</th>
           <th scope="col" pSortableColumn="price" style="min-width: 8rem">
             Precio
             <p-sortIcon field="price" />
@@ -143,19 +139,19 @@ interface ExportColumn {
             Categoría
             <p-sortIcon field="category" />
           </th>
-          <th scope="col" pSortableColumn="rating" style="min-width: 12rem">
+          <th scope="col" pSortableColumn="rating" style="min-width: 8rem">
             Reseñas
             <p-sortIcon field="rating" />
           </th>
           <th
             scope="col"
             pSortableColumn="inventoryStatus"
-            style="min-width: 12rem"
+            style="min-width: 10rem"
           >
             Estado
             <p-sortIcon field="inventoryStatus" />
           </th>
-          <th scope="col" style="min-width: 12rem">Acciones</th>
+          <th scope="col" style="width: 8rem">Acciones</th>
         </tr>
       </ng-template>
       <ng-template #body let-product>
@@ -163,9 +159,9 @@ interface ExportColumn {
           <td style="width: 3rem">
             <p-tableCheckbox [value]="product" />
           </td>
-          <td style="min-width: 12rem">{{ product.code }}</td>
+          <td style="min-width: 8rem">{{ product.code }}</td>
           <td style="min-width: 16rem">{{ product.name }}</td>
-          <td>
+          <td style="min-width: 8rem">
             <img
               [src]="
                 'https://primefaces.org/cdn/primeng/images/demo/product/' +
@@ -173,21 +169,23 @@ interface ExportColumn {
               "
               [alt]="product.name"
               title="Imagen del producto"
-              class="w-16 rounded-sm"
+              class="w-16 rounded-sm shadow-sm"
             />
           </td>
-          <td>{{ product.price | currency: 'USD' }}</td>
-          <td>{{ product.category }}</td>
-          <td>
+          <td style="min-width: 8rem">
+            {{ product.price | currency: 'USD' }}
+          </td>
+          <td style="min-width: 10rem">{{ product.category }}</td>
+          <td style="min-width: 8rem">
             <p-rating [(ngModel)]="product.rating" [readonly]="true" />
           </td>
-          <td>
+          <td style="min-width: 10rem">
             <p-tag
               [value]="product.inventoryStatus"
               [severity]="getSeverity(product.inventoryStatus)"
             />
           </td>
-          <td>
+          <td style="width: 8rem">
             <p-button
               icon="pi pi-pencil"
               class="mr-2"
@@ -218,15 +216,12 @@ interface ExportColumn {
 })
 export class ProductListComponent implements OnInit {
   private readonly messageService = inject(MessageService);
-  private readonly productService = inject(ProductService);
+  readonly productService = inject(ProductService);
   private readonly confirmationService = inject(ConfirmationService);
 
-  // Signal-based outputs
   editProductEvent = output<Product>();
   newProductEvent = output<void>();
 
-  // Access the public signal directly from the service
-  products = this.productService.products;
   selectedProducts = signal<Product[] | null>(null);
   cols!: Column[];
   exportColumns!: ExportColumn[];
@@ -262,7 +257,9 @@ export class ProductListComponent implements OnInit {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
-  getSeverity(status: string) {
+  getSeverity(
+    status: string | undefined,
+  ): 'success' | 'warn' | 'danger' | 'info' {
     switch (status) {
       case 'INSTOCK':
         return 'success';
@@ -292,18 +289,19 @@ export class ProductListComponent implements OnInit {
       acceptLabel: 'Sí',
       rejectLabel: 'No',
       accept: () => {
-        this.selectedProducts()?.forEach((product) => {
-          if (product.id) {
-            this.productService.deleteProductById(product.id);
-          }
-        });
-        this.selectedProducts.set(null);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Productos Eliminados',
-          life: 3000,
-        });
+        const productsToDelete = this.selectedProducts();
+        if (productsToDelete) {
+          productsToDelete.forEach((product) => {
+            if (product.id) {
+              this.productService.deleteProductById(product.id).subscribe({
+                error: (err) =>
+                  this.showError('Error al eliminar producto', err.message),
+              });
+            }
+          });
+          this.selectedProducts.set(null);
+          this.showSuccess('Éxito', 'Productos Eliminados');
+        }
       },
     });
   }
@@ -317,22 +315,37 @@ export class ProductListComponent implements OnInit {
       rejectLabel: 'No',
       accept: () => {
         if (product.id) {
-          this.productService.deleteProductById(product.id);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Producto Eliminado',
-            life: 3000,
+          this.productService.deleteProductById(product.id).subscribe({
+            next: () =>
+              this.showSuccess('Éxito', 'Producto Eliminado ' + product.name),
+            error: (err) =>
+              this.showError('Error al eliminar producto', err.message),
           });
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'ID del producto no encontrado',
-            life: 3000,
-          });
+          this.showError(
+            'Error',
+            'ID del producto no encontrado para ' + product.name,
+          );
         }
       },
+    });
+  }
+
+  private showSuccess(summary: string, detail: string): void {
+    this.messageService.add({
+      severity: 'success',
+      summary: summary,
+      detail: detail,
+      life: 3000,
+    });
+  }
+
+  private showError(summary: string, detail: string): void {
+    this.messageService.add({
+      severity: 'error',
+      summary: summary,
+      detail: detail,
+      life: 3000,
     });
   }
 }

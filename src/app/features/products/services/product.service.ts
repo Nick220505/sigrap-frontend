@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, of, tap, throwError } from 'rxjs';
 
 export interface Product {
   id?: string;
@@ -20,62 +20,62 @@ export interface Product {
 })
 export class ProductService {
   private readonly http = inject(HttpClient);
-  private readonly productsUrl = 'http://localhost:3000/products'; // URL for json-server
+  private readonly productsUrl = 'http://localhost:3000/products';
 
-  // Public signal to hold the products state
   readonly products = signal<Product[]>([]);
 
   constructor() {
-    this.loadProducts();
+    this.getProducts().subscribe({
+      error: (err) => console.error('Error loading initial products:', err),
+    });
   }
 
-  private loadProducts(): void {
-    this.http
-      .get<Product[]>(this.productsUrl)
-      .pipe(tap((data) => this.products.set(data)))
-      .subscribe({
-        error: (err) => console.error('Error loading products:', err),
-      });
-  }
-
-  // Method to manually trigger a refresh if needed
   getProducts(): Observable<Product[]> {
-    return this.http
-      .get<Product[]>(this.productsUrl)
-      .pipe(tap((data) => this.products.set(data)));
+    return this.http.get<Product[]>(this.productsUrl).pipe(
+      tap((data) => this.products.set(data)),
+      catchError((err) => {
+        console.error('Error fetching products:', err);
+        return of([]);
+      }),
+    );
   }
-
-  // No getProductById needed, can compute from the signal if required
-  // getProductById(id: string) { ... }
 
   createProduct(product: Omit<Product, 'id' | 'code'>): Observable<Product> {
-    // Generate code locally for the mock server
     const newProduct = {
       ...product,
       code: this.generateId(),
       image: product.image ?? 'product-placeholder.svg',
     };
-    // json-server will generate the 'id'
     return this.http.post<Product>(this.productsUrl, newProduct).pipe(
       tap((createdProduct) => {
-        // Update the signal optimistically or after confirmation
-        this.products.update((products) => [...products, createdProduct]);
+        this.products.update((currentProducts) => [
+          ...currentProducts,
+          createdProduct,
+        ]);
+      }),
+      catchError((err) => {
+        console.error('Error creating product:', err);
+        return throwError(() => new Error('Failed to create product'));
       }),
     );
   }
 
   updateProduct(updatedProduct: Product): Observable<Product> {
     if (!updatedProduct.id) {
-      throw new Error('Product ID is required for update');
+      return throwError(() => new Error('Product ID is required for update'));
     }
     const url = `${this.productsUrl}/${updatedProduct.id}`;
     return this.http.put<Product>(url, updatedProduct).pipe(
       tap((returnedProduct) => {
-        this.products.update((products) =>
-          products.map((p) =>
+        this.products.update((currentProducts) =>
+          currentProducts.map((p) =>
             p.id === returnedProduct.id ? returnedProduct : p,
           ),
         );
+      }),
+      catchError((err) => {
+        console.error('Error updating product:', err);
+        return throwError(() => new Error('Failed to update product'));
       }),
     );
   }
@@ -84,15 +84,17 @@ export class ProductService {
     const url = `${this.productsUrl}/${id}`;
     return this.http.delete<object>(url).pipe(
       tap(() => {
-        // Update the signal after successful deletion
-        this.products.update((products) =>
-          products.filter((product) => product.id !== id),
+        this.products.update((currentProducts) =>
+          currentProducts.filter((product) => product.id !== id),
         );
+      }),
+      catchError((err) => {
+        console.error('Error deleting product:', err);
+        return throwError(() => new Error('Failed to delete product'));
       }),
     );
   }
 
-  // Keep generateId for creating new product codes before sending to server
   private generateId(): string {
     let id = '';
     const chars =
