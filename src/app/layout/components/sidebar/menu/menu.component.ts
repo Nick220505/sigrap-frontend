@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { MenuItemComponent } from '../menu-item/menu-item.component';
+import { MenuItemComponent } from './menu-item/menu-item.component';
 
 @Component({
   selector: 'app-menu',
