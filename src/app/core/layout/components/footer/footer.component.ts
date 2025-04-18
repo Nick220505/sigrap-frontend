@@ -1,19 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-footer',
   template: `
-    <div
-      class="flex items-center justify-center py-4 gap-2 border-t border-surface-300/50"
-    >
-      SIGRAP - Sistema Integrado de Gestión y Registro de Artículos de Papelería
-      © {{ currentYear }}
-      <span class="text-sm text-gray-500"
-        >| Desarrollado por Millennium Technologies</span
-      >
-    </div>
+    <footer class="border-t border-surface-300/50">
+      <div class="flex items-center justify-center py-4">
+        <span class="text-sm">
+          SIGRAP - Sistema Integrado de Gestión y Registro de Artículos de
+          Papelería
+        </span>
+      </div>
+    </footer>
   `,
 })
 export class FooterComponent {
-  currentYear = new Date().getFullYear();
+  currentYear = signal(new Date().getFullYear());
 }
