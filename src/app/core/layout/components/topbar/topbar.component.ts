@@ -20,7 +20,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       <div class="layout-topbar-logo-container w-80 flex items-center gap-2">
         <button
           type="button"
-          class="layout-topbar-action layout-menu-button justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1"
+          class="layout-menu-button flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1"
           (click)="layoutService.onMenuToggle()"
           aria-label="Toggle menu"
         >
@@ -41,7 +41,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         <div class="layout-config-menu flex gap-4">
           <button
             type="button"
-            class="layout-topbar-action justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+            class="flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
             (click)="toggleDarkMode()"
             aria-label="Toggle dark mode"
           >
@@ -56,7 +56,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           </button>
           <div class="relative">
             <button
-              class="layout-topbar-action layout-topbar-action-highlight justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)]"
+              class="flex justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)]"
               pStyleClass="@next"
               enterFromClass="hidden"
               enterActiveClass="animate-scalein"
@@ -73,7 +73,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 
         <button
           type="button"
-          class="layout-topbar-action layout-topbar-menu-button justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] hidden md:block lg:hidden"
+          class="layout-topbar-menu-button flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] hidden md:block lg:hidden"
           pStyleClass="@next"
           enterFromClass="hidden"
           enterActiveClass="animate-scalein"
@@ -87,17 +87,26 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 
         <div class="hidden layout-topbar-menu lg:block">
           <div class="layout-topbar-menu-content flex gap-4">
-            <button type="button" class="layout-topbar-action">
-              <i class="pi pi-calendar"></i>
-              <span>Calendar</span>
+            <button
+              type="button"
+              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+            >
+              <i class="pi pi-calendar text-[1.25rem]"></i>
+              <span class="hidden">Calendar</span>
             </button>
-            <button type="button" class="layout-topbar-action">
-              <i class="pi pi-inbox"></i>
-              <span>Messages</span>
+            <button
+              type="button"
+              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+            >
+              <i class="pi pi-inbox text-[1.25rem]"></i>
+              <span class="hidden">Messages</span>
             </button>
-            <button type="button" class="layout-topbar-action">
-              <i class="pi pi-user"></i>
-              <span>Profile</span>
+            <button
+              type="button"
+              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+            >
+              <i class="pi pi-user text-[1.25rem]"></i>
+              <span class="hidden">Profile</span>
             </button>
           </div>
         </div>
@@ -105,22 +114,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     </div>
   `,
   styles: `
-    .layout-topbar-action {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-      width: 2.5rem;
-      height: 2.5rem;
-      color: var(--text-color);
-      transition: background-color var(--element-transition-duration);
-      cursor: pointer;
-    }
-
-    .layout-topbar-action:hover {
-      background-color: var(--surface-hover);
-    }
-
     .layout-topbar-action:focus-visible {
       outline-width: var(--focus-ring-width);
       outline-style: var(--focus-ring-style);
@@ -130,15 +123,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       transition:
         box-shadow var(--transition-duration),
         outline-color var(--transition-duration);
-    }
-
-    .layout-topbar-action i {
-      font-size: 1.25rem;
-    }
-
-    .layout-topbar-action span {
-      font-size: 1rem;
-      display: none;
     }
 
     .layout-topbar-action.layout-topbar-action-highlight {
