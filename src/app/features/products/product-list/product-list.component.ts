@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -58,7 +58,7 @@ interface ExportColumn {
           icon="pi pi-plus"
           severity="secondary"
           class="mr-2"
-          (onClick)="openNew()"
+          (onClick)="productStore.openDialogForNew()"
           pTooltip="Crear nuevo producto"
           tooltipPosition="top"
           [disabled]="productStore.isLoading()"
@@ -84,7 +84,7 @@ interface ExportColumn {
           label="Exportar"
           icon="pi pi-upload"
           severity="secondary"
-          (onClick)="exportCSV()"
+          (onClick)="this.dt().exportCSV()"
           pTooltip="Exportar datos a CSV"
           tooltipPosition="top"
           [disabled]="productStore.isLoading() || !productStore.productCount()"
@@ -104,7 +104,7 @@ interface ExportColumn {
         <p>{{ productStore.getError() }}</p>
         <p-button
           label="Reintentar"
-          (onClick)="retryLoad()"
+          (onClick)="productStore.loadProducts()"
           styleClass="p-button-sm mt-2"
         />
       </div>
@@ -199,8 +199,7 @@ interface ExportColumn {
                 class="mr-2"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="editProduct(product)"
-                (keydown.enter)="editProduct(product)"
+                (click)="productStore.openDialogForEdit(product)"
                 pTooltip="Editar"
                 tooltipPosition="top"
                 [disabled]="productStore.isLoading()"
@@ -211,7 +210,6 @@ interface ExportColumn {
                 [rounded]="true"
                 [outlined]="true"
                 (click)="deleteProduct(product)"
-                (keydown.enter)="deleteProduct(product)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
                 [disabled]="productStore.isLoading()"
@@ -232,39 +230,31 @@ interface ExportColumn {
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent {
   readonly productStore = inject(ProductStore);
   private readonly confirmationService = inject(ConfirmationService);
 
   selectedProducts = signal<Product[] | null>(null);
-  cols!: Column[];
-  exportColumns!: ExportColumn[];
+
+  cols: Column[] = [
+    {
+      field: 'code',
+      header: 'Código',
+      customExportHeader: 'Código del Producto',
+    },
+    { field: 'name', header: 'Nombre' },
+    { field: 'price', header: 'Precio' },
+    { field: 'category', header: 'Categoría' },
+    { field: 'rating', header: 'Valoración' },
+    { field: 'inventoryStatus', header: 'Estado' },
+  ];
+
+  exportColumns: ExportColumn[] = this.cols.map((col) => ({
+    title: col.header,
+    dataKey: col.field,
+  }));
 
   readonly dt = viewChild.required<Table>('dt');
-
-  ngOnInit() {
-    this.cols = [
-      {
-        field: 'code',
-        header: 'Código',
-        customExportHeader: 'Código del Producto',
-      },
-      { field: 'name', header: 'Nombre' },
-      { field: 'price', header: 'Precio' },
-      { field: 'category', header: 'Categoría' },
-      { field: 'rating', header: 'Valoración' },
-      { field: 'inventoryStatus', header: 'Estado' },
-    ];
-
-    this.exportColumns = this.cols.map((col) => ({
-      title: col.header,
-      dataKey: col.field,
-    }));
-  }
-
-  exportCSV() {
-    this.dt().exportCSV();
-  }
 
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
@@ -283,14 +273,6 @@ export class ProductListComponent implements OnInit {
       default:
         return 'info';
     }
-  }
-
-  openNew() {
-    this.productStore.openDialogForNew();
-  }
-
-  editProduct(product: Product) {
-    this.productStore.openDialogForEdit(product);
   }
 
   deleteSelectedProducts() {
@@ -333,9 +315,5 @@ export class ProductListComponent implements OnInit {
         }
       },
     });
-  }
-
-  retryLoad() {
-    this.productStore.loadProducts();
   }
 }
