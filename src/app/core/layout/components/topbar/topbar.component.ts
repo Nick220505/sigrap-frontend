@@ -15,24 +15,31 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     ConfiguratorComponent,
   ],
   template: `
-    <div class="layout-topbar">
-      <div class="layout-topbar-logo-container">
+    <div
+      class="layout-topbar fixed h-16 z-[997] left-0 top-0 w-full px-8 bg-[var(--surface-card)] flex items-center"
+    >
+      <div class="layout-topbar-logo-container w-80 flex items-center gap-2">
         <button
           type="button"
-          class="layout-menu-button layout-topbar-action"
+          class="layout-topbar-action layout-menu-button"
           (click)="layoutService.onMenuToggle()"
           aria-label="Toggle menu"
         >
           <i class="pi pi-bars"></i>
         </button>
-        <a class="layout-topbar-logo" routerLink="/">
-          <i class="pi pi-shopping-bag"></i>
+        <a
+          class="layout-topbar-logo flex items-center text-2xl text-[var(--text-color)] font-medium gap-3"
+          routerLink="/"
+        >
+          <i
+            class="pi pi-shopping-bag text-[2rem] text-[var(--primary-color)]"
+          ></i>
           <span>SIGRAP</span>
         </a>
       </div>
 
-      <div class="layout-topbar-actions">
-        <div class="layout-config-menu">
+      <div class="layout-topbar-actions ml-auto flex gap-4">
+        <div class="layout-config-menu flex gap-4">
           <button
             type="button"
             class="layout-topbar-action"
@@ -79,7 +86,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         </button>
 
         <div class="hidden layout-topbar-menu lg:block">
-          <div class="layout-topbar-menu-content">
+          <div class="layout-topbar-menu-content flex gap-4">
             <button type="button" class="layout-topbar-action">
               <i class="pi pi-calendar"></i>
               <span>Calendar</span>
@@ -99,54 +106,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
   `,
   styles: `
     .layout-topbar {
-      position: fixed;
-      height: 4rem;
-      z-index: 997;
-      left: 0;
-      top: 0;
-      width: 100%;
-      padding: 0 2rem;
-      background-color: var(--surface-card);
       transition: left var(--layout-section-transition-duration);
-      display: flex;
-      align-items: center;
-    }
-
-    .layout-topbar .layout-topbar-logo-container {
-      width: 20rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .layout-topbar .layout-topbar-logo {
-      display: inline-flex;
-      align-items: center;
-      font-size: 1.5rem;
-      border-radius: var(--content-border-radius);
-      color: var(--text-color);
-      font-weight: 500;
-      gap: 0.75rem;
-    }
-
-    .layout-topbar .layout-topbar-logo i.pi-shopping-bag {
-      font-size: 2rem;
-      color: var(--primary-color);
-    }
-
-    .layout-topbar .layout-topbar-logo svg {
-      width: 3rem;
-    }
-
-    .layout-topbar .layout-topbar-logo:focus-visible {
-      outline-width: var(--focus-ring-width);
-      outline-style: var(--focus-ring-style);
-      outline-color: var(--focus-ring-color);
-      outline-offset: var(--focus-ring-offset);
-      box-shadow: var(--focus-ring-shadow);
-      transition:
-        box-shadow var(--transition-duration),
-        outline-color var(--transition-duration);
     }
 
     .layout-topbar .layout-topbar-action {
@@ -198,27 +158,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       display: none;
     }
 
-    .layout-topbar .layout-topbar-actions {
-      margin-left: auto;
-      display: flex;
-      gap: 1rem;
-    }
-
-    .layout-topbar .layout-topbar-menu-content {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .layout-topbar .layout-config-menu {
-      display: flex;
-      gap: 1rem;
-    }
-
     @media (max-width: 991px) {
-      .layout-topbar {
-        padding: 0 2rem;
-      }
-
       .layout-topbar .layout-topbar-logo-container {
         width: auto;
       }
