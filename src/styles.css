@@ -1,18 +1,4 @@
-@import 'primeicons/primeicons.css';
-@import './assets/layout/layout.css';
-@import './assets/demo/demo.css';
 @import 'tailwindcss';
-
-@plugin 'tailwindcss-primeui';
-
-@source './**/*.{html,ts,css}';
-
-@custom-variant dark (&:where([class="app-dark"], [class="app-dark"] *));
-
-@theme {
-  --breakpoint-sm: 576px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 992px;
-  --breakpoint-xl: 1200px;
-  --breakpoint-2xl: 1920px;
-}
+@import 'primeicons/primeicons.css';
+@plugin "tailwindcss-primeui";
+@custom-variant dark (&:where(.my-app-dark, .my-app-dark *));
