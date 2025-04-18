@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, output, viewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -61,7 +68,7 @@ interface ExportColumn {
           icon="pi pi-trash"
           outlined
           (onClick)="deleteSelectedProducts()"
-          [disabled]="!selectedProducts || !selectedProducts.length"
+          [disabled]="!selectedProducts() || !selectedProducts()?.length"
         />
       </ng-template>
 
@@ -211,7 +218,7 @@ export class ProductListComponent implements OnInit {
   newProductEvent = output<void>();
 
   products = this.productService.getProducts();
-  selectedProducts!: Product[] | null;
+  selectedProducts = signal<Product[] | null>(null);
   cols!: Column[];
   exportColumns!: ExportColumn[];
 
@@ -276,12 +283,12 @@ export class ProductListComponent implements OnInit {
       acceptLabel: 'Sí',
       rejectLabel: 'No',
       accept: () => {
-        this.selectedProducts?.forEach((product) => {
+        this.selectedProducts()?.forEach((product) => {
           if (product.id) {
             this.productService.deleteProductById(product.id);
           }
         });
-        this.selectedProducts = null;
+        this.selectedProducts.set(null);
         this.messageService.add({
           severity: 'success',
           summary: 'Éxito',

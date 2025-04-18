@@ -59,7 +59,7 @@ interface StatusItem {
               required
               fluid
             />
-            @if (submitted && !product().name) {
+            @if (submitted() && !product().name) {
               <small class="text-red-500">El nombre es obligatorio.</small>
             }
           </div>
@@ -190,7 +190,7 @@ export class ProductDialogComponent {
 
   private readonly _product = signal<Product>({});
   product = this._product.asReadonly();
-  submitted = false;
+  submitted = signal(false);
 
   statuses: StatusItem[] = [
     { label: 'EN STOCK', value: 'INSTOCK' },
@@ -208,16 +208,16 @@ export class ProductDialogComponent {
   hideDialog() {
     this.visible.set(false);
     this.hideDialogEvent.emit();
-    this.submitted = false;
+    this.submitted.set(false);
   }
 
   saveProduct() {
-    this.submitted = true;
+    this.submitted.set(true);
 
     if (this.product().name?.trim()) {
       this.saveProductEvent.emit(this._product());
       this.visible.set(false);
-      this.submitted = false;
+      this.submitted.set(false);
     }
   }
 }

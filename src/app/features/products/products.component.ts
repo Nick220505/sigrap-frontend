@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
@@ -18,7 +18,7 @@ import { Product, ProductService } from './services/product.service';
 
     <app-product-dialog
       [(visible)]="productDialog"
-      [productData]="product"
+      [productData]="product()"
       (hideDialogEvent)="hideDialog()"
       (saveProductEvent)="saveProduct($event)"
     />
@@ -28,21 +28,21 @@ export class ProductsComponent {
   private readonly messageService = inject(MessageService);
   private readonly productService = inject(ProductService);
 
-  productDialog = false;
-  product: Product = {};
+  productDialog = signal(false);
+  product = signal<Product>({});
 
   openNew() {
-    this.product = {};
-    this.productDialog = true;
+    this.product.set({});
+    this.productDialog.set(true);
   }
 
   editProduct(product: Product) {
-    this.product = { ...product };
-    this.productDialog = true;
+    this.product.set({ ...product });
+    this.productDialog.set(true);
   }
 
   hideDialog() {
-    this.productDialog = false;
+    this.productDialog.set(false);
   }
 
   saveProduct(product: Product) {
@@ -50,21 +50,21 @@ export class ProductsComponent {
       this.productService.updateProduct(product);
       this.messageService.add({
         severity: 'success',
-        summary: 'Successful',
-        detail: 'Product Updated',
+        summary: 'Éxito',
+        detail: 'Producto Actualizado',
         life: 3000,
       });
     } else {
       this.productService.createProduct(product);
       this.messageService.add({
         severity: 'success',
-        summary: 'Successful',
-        detail: 'Product Created',
+        summary: 'Éxito',
+        detail: 'Producto Creado',
         life: 3000,
       });
     }
 
-    this.product = {};
-    this.productDialog = false;
+    this.product.set({});
+    this.productDialog.set(false);
   }
 }
