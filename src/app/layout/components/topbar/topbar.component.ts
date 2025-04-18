@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
 import { LayoutService } from '../../services/layout.service';
-import { ConfiguratorComponent } from '../floating-configurator/configurator/configurator.component';
+import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
 
 @Component({
   selector: 'app-topbar',
