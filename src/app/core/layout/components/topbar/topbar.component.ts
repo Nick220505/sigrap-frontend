@@ -20,7 +20,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       <div class="layout-topbar-logo-container w-80 flex items-center gap-2">
         <button
           type="button"
-          class="layout-menu-button flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1"
+          class="layout-menu-button flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1 focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
           (click)="layoutService.onMenuToggle()"
           aria-label="Toggle menu"
         >
@@ -41,7 +41,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         <div class="layout-config-menu flex gap-4">
           <button
             type="button"
-            class="flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+            class="flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
             (click)="toggleDarkMode()"
             aria-label="Toggle dark mode"
           >
@@ -56,7 +56,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           </button>
           <div class="relative">
             <button
-              class="flex justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)]"
+              class="flex justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)] focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
               pStyleClass="@next"
               enterFromClass="hidden"
               enterActiveClass="animate-scalein"
@@ -73,7 +73,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 
         <button
           type="button"
-          class="layout-topbar-menu-button hidden md:flex lg:hidden justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+          class="layout-topbar-menu-button hidden md:flex lg:hidden justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
           pStyleClass="@next"
           enterFromClass="hidden"
           enterActiveClass="animate-scalein"
@@ -89,21 +89,21 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           <div class="layout-topbar-menu-content flex gap-4">
             <button
               type="button"
-              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
             >
               <i class="pi pi-calendar text-[1.25rem]"></i>
               <span class="hidden">Calendar</span>
             </button>
             <button
               type="button"
-              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
             >
               <i class="pi pi-inbox text-[1.25rem]"></i>
               <span class="hidden">Messages</span>
             </button>
             <button
               type="button"
-              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)]"
+              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline focus-visible:outline-[var(--focus-ring-width)] focus-visible:outline-[var(--focus-ring-style)] focus-visible:outline-[var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
             >
               <i class="pi pi-user text-[1.25rem]"></i>
               <span class="hidden">Profile</span>
@@ -114,17 +114,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     </div>
   `,
   styles: `
-    .layout-topbar-action:focus-visible {
-      outline-width: var(--focus-ring-width);
-      outline-style: var(--focus-ring-style);
-      outline-color: var(--focus-ring-color);
-      outline-offset: var(--focus-ring-offset);
-      box-shadow: var(--focus-ring-shadow);
-      transition:
-        box-shadow var(--transition-duration),
-        outline-color var(--transition-duration);
-    }
-
     .layout-topbar-action.layout-topbar-action-highlight {
       background-color: var(--primary-color);
       color: var(--primary-contrast-color);
