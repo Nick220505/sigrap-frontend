@@ -59,6 +59,8 @@ interface StatusItem {
     ConfirmDialogModule,
   ],
   template: `
+    <p-toast />
+
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
