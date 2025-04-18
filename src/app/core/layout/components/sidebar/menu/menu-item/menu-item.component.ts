@@ -15,11 +15,11 @@ import {
   OnInit,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { LayoutService } from '@core/layout/services/layout.service';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { LayoutService } from '../../../../services/layout.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector

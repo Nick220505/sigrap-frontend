@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { LayoutService } from '@core/layout/services/layout.service';
 import { MenuItem } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
-import { LayoutService } from '../../services/layout.service';
 import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
 
 @Component({
