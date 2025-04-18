@@ -46,19 +46,21 @@ import { ProductStore } from '../store/product.store';
               productForm.get('name')?.touched
             "
           >
+            @let nameControlInvalid =
+              productForm.get('name')?.invalid &&
+              productForm.get('name')?.touched;
             <label for="name" class="font-bold">Nombre</label>
             <input
               type="text"
               pInputText
               id="name"
               formControlName="name"
+              placeholder="Ingrese el nombre"
+              [ngClass]="{ 'ng-dirty ng-invalid': nameControlInvalid }"
               required
               fluid
             />
-            @if (
-              productForm.get('name')?.invalid &&
-              productForm.get('name')?.touched
-            ) {
+            @if (nameControlInvalid) {
               <small class="text-red-500">El nombre es obligatorio.</small>
             }
           </div>
@@ -68,6 +70,7 @@ import { ProductStore } from '../store/product.store';
               id="description"
               pTextarea
               formControlName="description"
+              placeholder="Ingrese la descripción"
               rows="3"
               cols="20"
               fluid
@@ -83,16 +86,20 @@ import { ProductStore } from '../store/product.store';
               [options]="statuses()"
               optionLabel="label"
               optionValue="value"
-              placeholder="Selecciona un Estado"
+              placeholder="Seleccione un Estado"
               fluid
               appendTo="body"
             />
           </div>
+          @let categoryControlInvalid =
+            productForm.get('category')?.invalid &&
+            productForm.get('category')?.touched;
           <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="
-              productForm.get('category')?.invalid &&
-              productForm.get('category')?.touched
+            class="flex flex-col gap-2 border rounded p-3"
+            [style.border-color]="
+              categoryControlInvalid
+                ? 'var(--p-invalid-border-color)'
+                : 'var(--p-inputtext-border-color)'
             "
           >
             <span class="font-bold">Categoría</span>
@@ -138,11 +145,10 @@ import { ProductStore } from '../store/product.store';
                 <label for="category4">Fitness</label>
               </div>
             </div>
-            @if (
-              productForm.get('category')?.invalid &&
-              productForm.get('category')?.touched
-            ) {
-              <small class="text-red-500">La categoría es obligatoria.</small>
+            @if (categoryControlInvalid) {
+              <small class="text-red-500 mt-1"
+                >La categoría es obligatoria.</small
+              >
             }
           </div>
           <div class="grid grid-cols-12 gap-4">
@@ -160,6 +166,12 @@ import { ProductStore } from '../store/product.store';
                 mode="currency"
                 currency="USD"
                 locale="en-US"
+                placeholder="Ingrese el precio"
+                [ngClass]="{
+                  'ng-dirty ng-invalid':
+                    productForm.get('price')?.invalid &&
+                    productForm.get('price')?.touched,
+                }"
                 required
                 fluid
               />
@@ -172,7 +184,12 @@ import { ProductStore } from '../store/product.store';
             </div>
             <div class="flex flex-col col-span-6 gap-2">
               <label for="quantity" class="font-bold">Cantidad</label>
-              <p-inputnumber id="quantity" formControlName="quantity" fluid />
+              <p-inputnumber
+                id="quantity"
+                formControlName="quantity"
+                placeholder="Ingrese la cantidad"
+                fluid
+              />
             </div>
           </div>
         </form>
@@ -188,7 +205,7 @@ import { ProductStore } from '../store/product.store';
           label="Guardar"
           icon="pi pi-check"
           (click)="saveProduct()"
-          [disabled]="productStore.isLoading() || productForm.invalid"
+          [disabled]="productStore.isLoading()"
         />
       </ng-template>
     </p-dialog>
@@ -230,6 +247,11 @@ export class ProductDialogComponent {
   }
 
   saveProduct() {
+    if (!this.productForm.valid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
+
     const productData = this.productForm.value;
     const id = this.productStore.selectSelectedProductForEdit()?.id;
     if (id) {
