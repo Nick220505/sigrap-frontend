@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  effect,
   inject,
   OnInit,
   output,
@@ -23,7 +22,8 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { Product, ProductService } from '../services/product.service';
+import { Product } from '../services/product.service';
+import { ProductStore } from '../store/product.store';
 
 interface Column {
   field: string;
@@ -68,7 +68,7 @@ interface ExportColumn {
           (onClick)="openNew()"
           pTooltip="Crear nuevo producto"
           tooltipPosition="top"
-          [disabled]="productService.productsState().loading"
+          [disabled]="productStore.isLoading()"
         />
         <p-button
           severity="secondary"
@@ -77,7 +77,7 @@ interface ExportColumn {
           outlined
           (onClick)="deleteSelectedProducts()"
           [disabled]="
-            productService.productsState().loading ||
+            productStore.isLoading() ||
             !selectedProducts() ||
             !selectedProducts()?.length
           "
@@ -94,24 +94,21 @@ interface ExportColumn {
           (onClick)="exportCSV()"
           pTooltip="Exportar datos a CSV"
           tooltipPosition="top"
-          [disabled]="
-            productService.productsState().loading ||
-            !productService.productsState().data.length
-          "
+          [disabled]="productStore.isLoading() || !productStore.productCount()"
         />
       </ng-template>
     </p-toolbar>
 
-    @if (productService.productsState().loading) {
+    @if (productStore.isLoading()) {
       <div class="flex justify-center p-8">
         <p-progressSpinner />
       </div>
-    } @else if (productService.productsState().error) {
+    } @else if (productStore.getError()) {
       <div
         class="p-4 text-center text-red-600 bg-red-100 border border-red-400 rounded"
       >
         <p>Error al cargar productos:</p>
-        <p>{{ productService.productsState().error }}</p>
+        <p>{{ productStore.getError() }}</p>
         <p-button
           label="Reintentar"
           (onClick)="retryLoad()"
@@ -121,7 +118,7 @@ interface ExportColumn {
     } @else {
       <p-table
         #dt
-        [value]="productService.productsState().data"
+        [value]="productStore.getProducts()"
         [rows]="10"
         [columns]="cols"
         [paginator]="true"
@@ -145,7 +142,7 @@ interface ExportColumn {
                 (input)="onGlobalFilter(dt, $event)"
                 placeholder="Buscar..."
                 class="pl-8"
-                [disabled]="!productService.productsState().data.length"
+                [disabled]="!productStore.productCount()"
               />
             </p-iconfield>
           </div>
@@ -225,7 +222,7 @@ interface ExportColumn {
                 (keydown.enter)="editProduct(product)"
                 pTooltip="Editar"
                 tooltipPosition="top"
-                [disabled]="productService.productsState().loading"
+                [disabled]="productStore.isLoading()"
               />
               <p-button
                 icon="pi pi-trash"
@@ -236,7 +233,7 @@ interface ExportColumn {
                 (keydown.enter)="deleteProduct(product)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
-                [disabled]="productService.productsState().loading"
+                [disabled]="productStore.isLoading()"
               />
             </td>
           </tr>
@@ -255,7 +252,7 @@ interface ExportColumn {
   `,
 })
 export class ProductListComponent implements OnInit {
-  readonly productService = inject(ProductService);
+  readonly productStore = inject(ProductStore);
   private readonly confirmationService = inject(ConfirmationService);
 
   editProductEvent = output<Product>();
@@ -266,13 +263,6 @@ export class ProductListComponent implements OnInit {
   exportColumns!: ExportColumn[];
 
   readonly dt = viewChild.required<Table>('dt');
-
-  constructor() {
-    effect(() => {
-      this.productService.productsState();
-      this.selectedProducts.set(null);
-    });
-  }
 
   ngOnInit() {
     this.cols = [
@@ -339,9 +329,10 @@ export class ProductListComponent implements OnInit {
         if (productsToDelete) {
           productsToDelete.forEach((product) => {
             if (product.id) {
-              this.productService.deleteProductById(product.id);
+              this.productStore.deleteProduct(product.id);
             }
           });
+          this.selectedProducts.set(null);
         }
       },
     });
@@ -356,7 +347,7 @@ export class ProductListComponent implements OnInit {
       rejectLabel: 'No',
       accept: () => {
         if (product.id) {
-          this.productService.deleteProductById(product.id);
+          this.productStore.deleteProduct(product.id);
         } else {
           console.error(
             'Attempted to delete product without ID:',
@@ -368,6 +359,6 @@ export class ProductListComponent implements OnInit {
   }
 
   retryLoad() {
-    this.productService.getProducts();
+    this.productStore.loadProducts();
   }
 }

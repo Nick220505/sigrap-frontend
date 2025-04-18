@@ -2,7 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
 import { ProductListComponent } from './product-list/product-list.component';
-import { Product, ProductService } from './services/product.service';
+import { Product } from './services/product.service';
+import { ProductStore } from './store/product.store';
 
 @Component({
   selector: 'app-products',
@@ -25,7 +26,7 @@ import { Product, ProductService } from './services/product.service';
   `,
 })
 export class ProductsComponent {
-  private readonly productService = inject(ProductService);
+  private readonly productStore = inject(ProductStore);
 
   productDialog = signal(false);
   product = signal<Product>({});
@@ -46,9 +47,12 @@ export class ProductsComponent {
 
   saveProduct(product: Product) {
     if (product.id) {
-      this.productService.updateProduct(product);
+      this.productStore.updateProduct(product);
     } else {
-      this.productService.createProduct(product);
+      const newProductData = { ...product };
+      delete newProductData.id;
+      delete newProductData.code;
+      this.productStore.addProduct(newProductData);
     }
 
     this.product.set({});
