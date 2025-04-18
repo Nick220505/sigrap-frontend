@@ -18,7 +18,7 @@ import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
-import { Product, ProductService } from '../services/product.service';
+import { Product, ProductService } from './services/product.service';
 
 interface Column {
   field: string;
