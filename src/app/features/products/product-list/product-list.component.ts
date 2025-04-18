@@ -20,6 +20,7 @@ import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
 import { Product, ProductService } from '../services/product.service';
 
 interface Column {
@@ -49,6 +50,7 @@ interface ExportColumn {
     InputIconModule,
     IconFieldModule,
     ConfirmDialogModule,
+    TooltipModule,
   ],
   template: `
     <p-toast />
@@ -61,6 +63,8 @@ interface ExportColumn {
           severity="secondary"
           class="mr-2"
           (onClick)="openNew()"
+          pTooltip="Crear nuevo producto"
+          tooltipPosition="top"
         />
         <p-button
           severity="secondary"
@@ -69,6 +73,8 @@ interface ExportColumn {
           outlined
           (onClick)="deleteSelectedProducts()"
           [disabled]="!selectedProducts() || !selectedProducts()?.length"
+          pTooltip="Eliminar productos seleccionados"
+          tooltipPosition="top"
         />
       </ng-template>
 
@@ -78,6 +84,8 @@ interface ExportColumn {
           icon="pi pi-upload"
           severity="secondary"
           (onClick)="exportCSV()"
+          pTooltip="Exportar datos a CSV"
+          tooltipPosition="top"
         />
       </ng-template>
     </p-toolbar>
@@ -147,7 +155,7 @@ interface ExportColumn {
             Estado
             <p-sortIcon field="inventoryStatus" />
           </th>
-          <th scope="col" style="min-width: 12rem"></th>
+          <th scope="col" style="min-width: 12rem">Acciones</th>
         </tr>
       </ng-template>
       <ng-template #body let-product>
@@ -187,7 +195,7 @@ interface ExportColumn {
               [outlined]="true"
               (click)="editProduct(product)"
               (keydown.enter)="editProduct(product)"
-              tooltip="Editar"
+              pTooltip="Editar"
               tooltipPosition="top"
             />
             <p-button
@@ -197,7 +205,7 @@ interface ExportColumn {
               [outlined]="true"
               (click)="deleteProduct(product)"
               (keydown.enter)="deleteProduct(product)"
-              tooltip="Eliminar"
+              pTooltip="Eliminar"
               tooltipPosition="top"
             />
           </td>
