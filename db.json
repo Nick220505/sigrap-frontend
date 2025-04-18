@@ -298,15 +298,6 @@
       "quantity": 25,
       "inventoryStatus": "INSTOCK",
       "rating": 8
-    },
-    {
-      "id": "1ad2",
-      "name": "fds",
-      "description": "fsdfsdfsd",
-      "inventoryStatus": "LOWSTOCK",
-      "category": "Electronics",
-      "price": 5454,
-      "quantity": 5445
     }
   ]
 }
