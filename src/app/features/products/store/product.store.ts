@@ -21,7 +21,11 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { Product } from '../models/product.model';
+import {
+  CreateProductDto,
+  Product,
+  UpdateProductDto,
+} from '../models/product.model';
 import { ProductService } from '../services/product.service';
 
 export interface ProductState {
@@ -94,7 +98,7 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      addProduct: rxMethod<Omit<Product, 'id'>>(
+      addProduct: rxMethod<CreateProductDto>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap((product) =>
@@ -128,7 +132,7 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      updateProduct: rxMethod<{ id: string; productData: Omit<Product, 'id'> }>(
+      updateProduct: rxMethod<{ id: string; productData: UpdateProductDto }>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap(({ id, productData }) =>

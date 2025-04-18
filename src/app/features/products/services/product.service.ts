@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Product } from '../models/product.model';
+import {
+  CreateProductDto,
+  Product,
+  UpdateProductDto,
+} from '../models/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +18,13 @@ export class ProductService {
     return this.http.get<Product[]>(this.productsUrl);
   }
 
-  createProduct(newProduct: Omit<Product, 'id'>): Observable<Product> {
+  createProduct(newProduct: CreateProductDto): Observable<Product> {
     return this.http.post<Product>(this.productsUrl, newProduct);
   }
 
   updateProduct(
     id: string,
-    productData: Omit<Product, 'id'>,
+    productData: UpdateProductDto,
   ): Observable<Product> {
     return this.http.put<Product>(`${this.productsUrl}/${id}`, productData);
   }

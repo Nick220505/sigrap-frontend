@@ -7,7 +7,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { RatingModule } from 'primeng/rating';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
@@ -26,7 +25,6 @@ interface Column {
     FormsModule,
     TableModule,
     ButtonModule,
-    RatingModule,
     TagModule,
     InputTextModule,
     IconFieldModule,
@@ -42,7 +40,7 @@ interface Column {
       [columns]="cols()"
       [paginator]="true"
       [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
-      [tableStyle]="{ 'min-width': '75rem' }"
+      [tableStyle]="{ 'min-width': '65rem' }"
       [selection]="productStore.getSelectedProductsFromIds()"
       (selectionChange)="productStore.setSelectedProducts($event)"
       [rowHover]="true"
@@ -84,10 +82,6 @@ interface Column {
             Categoría
             <p-sortIcon field="category" />
           </th>
-          <th scope="col" pSortableColumn="rating" style="min-width: 8rem">
-            Reseñas
-            <p-sortIcon field="rating" />
-          </th>
           <th
             scope="col"
             pSortableColumn="inventoryStatus"
@@ -109,9 +103,6 @@ interface Column {
             {{ product.price | currency: 'USD' }}
           </td>
           <td style="min-width: 10rem">{{ product.category }}</td>
-          <td style="min-width: 8rem">
-            <p-rating [(ngModel)]="product.rating" [readonly]="true" />
-          </td>
           <td style="min-width: 10rem">
             <p-tag
               [value]="product.inventoryStatus"
@@ -163,7 +154,6 @@ export class ProductTableComponent {
     { field: 'name', header: 'Nombre' },
     { field: 'price', header: 'Precio' },
     { field: 'category', header: 'Categoría' },
-    { field: 'rating', header: 'Valoración' },
     { field: 'inventoryStatus', header: 'Estado' },
   ]);
 
