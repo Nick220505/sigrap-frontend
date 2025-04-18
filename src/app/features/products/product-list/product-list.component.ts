@@ -225,7 +225,8 @@ export class ProductListComponent implements OnInit {
   editProductEvent = output<Product>();
   newProductEvent = output<void>();
 
-  products = this.productService.getProducts();
+  // Access the public signal directly from the service
+  products = this.productService.products;
   selectedProducts = signal<Product[] | null>(null);
   cols!: Column[];
   exportColumns!: ExportColumn[];
