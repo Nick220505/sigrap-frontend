@@ -5,49 +5,53 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./dashboard/dashboard.component').then(
+      import('./features/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent,
       ),
   },
   {
     path: 'sales',
     loadComponent: () =>
-      import('./sales/sales.component').then((m) => m.SalesComponent),
+      import('./features/sales/sales.component').then((m) => m.SalesComponent),
   },
   {
     path: 'inventory',
     loadComponent: () =>
-      import('./inventory/inventory.component').then(
+      import('./features/inventory/inventory.component').then(
         (m) => m.InventoryComponent,
       ),
   },
   {
     path: 'customers',
     loadComponent: () =>
-      import('./customers/customers.component').then(
+      import('./features/customers/customers.component').then(
         (m) => m.CustomersComponent,
       ),
   },
   {
     path: 'products',
     loadComponent: () =>
-      import('./products/products.component').then((m) => m.ProductsComponent),
+      import('./features/products/products.component').then(
+        (m) => m.ProductsComponent,
+      ),
   },
   {
     path: 'suppliers',
     loadComponent: () =>
-      import('./suppliers/suppliers.component').then(
+      import('./features/suppliers/suppliers.component').then(
         (m) => m.SuppliersComponent,
       ),
   },
   {
     path: 'reports',
     loadComponent: () =>
-      import('./reports/reports.component').then((m) => m.ReportsComponent),
+      import('./features/reports/reports.component').then(
+        (m) => m.ReportsComponent,
+      ),
   },
   {
     path: 'users',
     loadComponent: () =>
-      import('./users/users.component').then((m) => m.UsersComponent),
+      import('./features/users/users.component').then((m) => m.UsersComponent),
   },
 ];
