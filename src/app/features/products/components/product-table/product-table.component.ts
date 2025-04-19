@@ -178,11 +178,13 @@ export class ProductTableComponent {
 
   deleteProduct({ id, name }: Product): void {
     this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el producto ${name}?`,
-      header: 'Confirmar',
+      message: `¿Está seguro de que desea eliminar el producto "${name}"?`,
+      header: 'Eliminar producto',
       icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí',
-      rejectLabel: 'No',
+      acceptLabel: 'Eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => this.productStore.delete(id),
     });
   }
