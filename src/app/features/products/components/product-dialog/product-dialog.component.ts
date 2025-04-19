@@ -13,7 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ProductStore } from '../store/product.store';
+import { ProductStore } from '../../store/product.store';
 
 @Component({
   selector: 'app-product-dialog',
