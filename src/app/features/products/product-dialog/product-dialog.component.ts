@@ -60,40 +60,6 @@ import { ProductStore } from '../store/product.store';
               <small class="text-red-500">El nombre es obligatorio.</small>
             }
           </div>
-          @let inventoryStatusControlInvalid =
-            productForm.get('inventoryStatus')?.invalid &&
-            productForm.get('inventoryStatus')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="inventoryStatusControlInvalid"
-          >
-            <label for="inventoryStatus" class="font-bold"
-              >Estado de Inventario</label
-            >
-            <p-select
-              formControlName="inventoryStatus"
-              inputId="inventoryStatus"
-              [options]="[
-                { label: 'EN STOCK', value: 'INSTOCK' },
-                { label: 'POCO STOCK', value: 'LOWSTOCK' },
-                { label: 'SIN STOCK', value: 'OUTOFSTOCK' },
-              ]"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Seleccione un Estado"
-              [ngClass]="{
-                'ng-dirty ng-invalid': inventoryStatusControlInvalid,
-              }"
-              required
-              fluid
-              appendTo="body"
-            />
-            @if (inventoryStatusControlInvalid) {
-              <small class="text-red-500"
-                >El estado de inventario es obligatorio.</small
-              >
-            }
-          </div>
           @let categoryControlInvalid =
             productForm.get('category')?.invalid &&
             productForm.get('category')?.touched;
@@ -215,7 +181,6 @@ export class ProductDialogComponent {
 
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    inventoryStatus: ['', Validators.required],
     category: ['', Validators.required],
     price: [0, Validators.required],
     quantity: [0],

@@ -2,7 +2,6 @@
   "products": [
     {
       "name": "Reloj de Bambú",
-      "inventoryStatus": "INSTOCK",
       "category": "Accesorios",
       "price": 65,
       "quantity": 24,
@@ -13,232 +12,203 @@
       "name": "Reloj Negro",
       "price": 72,
       "category": "Accesorios",
-      "quantity": 61,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 61
     },
     {
       "id": "1002",
       "name": "Banda Azul",
       "price": 79,
       "category": "Fitness",
-      "quantity": 2,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 2
     },
     {
       "id": "1003",
       "name": "Camiseta Azul",
       "price": 29,
       "category": "Ropa",
-      "quantity": 25,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 25
     },
     {
       "id": "1004",
       "name": "Pulsera",
       "price": 15,
       "category": "Accesorios",
-      "quantity": 73,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 73
     },
     {
       "id": "1005",
       "name": "Bolso Marrón",
       "price": 120,
       "category": "Accesorios",
-      "quantity": 0,
-      "inventoryStatus": "OUTOFSTOCK"
+      "quantity": 0
     },
     {
       "id": "1006",
       "name": "Pulsera Chakra",
       "price": 32,
       "category": "Accesorios",
-      "quantity": 5,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 5
     },
     {
       "id": "1007",
       "name": "Aretes Galaxia",
       "price": 34,
       "category": "Accesorios",
-      "quantity": 23,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 23
     },
     {
       "id": "1008",
       "name": "Control de Juego",
       "price": 99,
       "category": "Electrónica",
-      "quantity": 2,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 2
     },
     {
       "id": "1009",
       "name": "Set de Juegos",
       "price": 299,
       "category": "Electrónica",
-      "quantity": 63,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 63
     },
     {
       "id": "1010",
       "name": "Funda Dorada para Teléfono",
       "price": 24,
       "category": "Accesorios",
-      "quantity": 0,
-      "inventoryStatus": "OUTOFSTOCK"
+      "quantity": 0
     },
     {
       "id": "1011",
       "name": "Auriculares Verdes",
       "price": 89,
       "category": "Electrónica",
-      "quantity": 23,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 23
     },
     {
       "id": "1012",
       "name": "Camiseta Verde",
       "price": 49,
       "category": "Ropa",
-      "quantity": 74,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 74
     },
     {
       "id": "1013",
       "name": "Camiseta Gris",
       "price": 48,
       "category": "Ropa",
-      "quantity": 0,
-      "inventoryStatus": "OUTOFSTOCK"
+      "quantity": 0
     },
     {
       "id": "1014",
       "name": "Auriculares",
       "price": 175,
       "category": "Electrónica",
-      "quantity": 8,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 8
     },
     {
       "id": "1015",
       "name": "Camiseta Verde Claro",
       "price": 49,
       "category": "Ropa",
-      "quantity": 34,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 34
     },
     {
       "id": "1016",
       "name": "Banda Lima",
       "price": 79,
       "category": "Fitness",
-      "quantity": 12,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 12
     },
     {
       "id": "1017",
       "name": "Mini Parlantes",
       "price": 85,
       "category": "Ropa",
-      "quantity": 42,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 42
     },
     {
       "id": "1018",
       "name": "Funda Pintada para Teléfono",
       "price": 56,
       "category": "Accesorios",
-      "quantity": 41,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 41
     },
     {
       "id": "1019",
       "name": "Banda Rosa",
       "price": 79,
       "category": "Fitness",
-      "quantity": 63,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 63
     },
     {
       "id": "1020",
       "name": "Bolso Rosa",
       "price": 110,
       "category": "Accesorios",
-      "quantity": 0,
-      "inventoryStatus": "OUTOFSTOCK"
+      "quantity": 0
     },
     {
       "id": "1021",
       "name": "Banda Morada",
       "price": 79,
       "category": "Fitness",
-      "quantity": 6,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 6
     },
     {
       "id": "1022",
       "name": "Collar de Piedras Preciosas Morado",
       "price": 45,
       "category": "Accesorios",
-      "quantity": 62,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 62
     },
     {
       "id": "1023",
       "name": "Camiseta Morada",
       "price": 49,
       "category": "Ropa",
-      "quantity": 2,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 2
     },
     {
       "id": "1024",
       "name": "Zapatos",
       "price": 64,
       "category": "Ropa",
-      "quantity": 0,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 0
     },
     {
       "id": "1025",
       "name": "Zapatillas",
       "price": 78,
       "category": "Ropa",
-      "quantity": 52,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 52
     },
     {
       "id": "1026",
       "name": "Camiseta Verde Azulado",
       "price": 49,
       "category": "Ropa",
-      "quantity": 3,
-      "inventoryStatus": "LOWSTOCK"
+      "quantity": 3
     },
     {
       "id": "1027",
       "name": "Auriculares Amarillos",
       "price": 89,
       "category": "Electrónica",
-      "quantity": 35,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 35
     },
     {
       "id": "1028",
       "name": "Esterilla de Yoga",
       "price": 20,
       "category": "Fitness",
-      "quantity": 15,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 15
     },
     {
       "id": "1029",
       "name": "Set de Yoga",
       "price": 20,
       "category": "Fitness",
-      "quantity": 25,
-      "inventoryStatus": "INSTOCK"
+      "quantity": 25
     }
   ]
 }

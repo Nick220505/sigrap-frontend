@@ -51,11 +51,10 @@ import { ProductStore } from '../../store/product.store';
           { field: 'name', header: 'Nombre' },
           { field: 'price', header: 'Precio' },
           { field: 'category', header: 'Categoría' },
-          { field: 'inventoryStatus', header: 'Estado' },
         ]"
         [paginator]="true"
-        [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
-        [tableStyle]="{ 'min-width': '65rem' }"
+        [globalFilterFields]="['name', 'category', 'price']"
+        [tableStyle]="{ 'min-width': '55rem' }"
         [selection]="productStore.getSelectedProductsFromIds()"
         (selectionChange)="productStore.setSelectedProducts($event)"
         [rowHover]="true"
@@ -103,14 +102,6 @@ import { ProductStore } from '../../store/product.store';
               Categoría
               <p-sortIcon field="category" />
             </th>
-            <th
-              scope="col"
-              pSortableColumn="inventoryStatus"
-              style="min-width: 10rem"
-            >
-              Estado
-              <p-sortIcon field="inventoryStatus" />
-            </th>
             <th scope="col" style="width: 8rem">Acciones</th>
           </tr>
         </ng-template>
@@ -124,22 +115,6 @@ import { ProductStore } from '../../store/product.store';
               {{ product.price | currency: 'USD' }}
             </td>
             <td style="min-width: 10rem">{{ product.category }}</td>
-            <td style="min-width: 10rem">
-              @switch (product.inventoryStatus) {
-                @case ('INSTOCK') {
-                  <p-tag value="EN STOCK" severity="success" />
-                }
-                @case ('LOWSTOCK') {
-                  <p-tag value="POCO STOCK" severity="warn" />
-                }
-                @case ('OUTOFSTOCK') {
-                  <p-tag value="SIN STOCK" severity="danger" />
-                }
-                @default {
-                  <p-tag [value]="product.inventoryStatus" severity="info" />
-                }
-              }
-            </td>
             <td style="width: 8rem">
               <p-button
                 icon="pi pi-pencil"
@@ -167,7 +142,7 @@ import { ProductStore } from '../../store/product.store';
         <ng-template #empty>
           @if (!productStore.isLoading() && !productStore.productCount()) {
             <tr>
-              <td [attr.colspan]="6" class="text-center py-4">
+              <td [attr.colspan]="5" class="text-center py-4">
                 No hay productos disponibles.
               </td>
             </tr>
