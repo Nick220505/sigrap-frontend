@@ -237,7 +237,7 @@ export class ProductDialogComponent {
     });
   }
 
-  saveProduct() {
+  saveProduct(): void {
     const productData = this.productForm.value;
     const id = this.productStore.selectSelectedProductForEdit()?.id;
     if (id) {
