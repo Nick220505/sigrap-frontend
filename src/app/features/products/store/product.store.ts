@@ -82,11 +82,11 @@ export const ProductStore = signalStore(
       productService = inject(ProductService),
       messageService = inject(MessageService),
     ) => ({
-      loadProducts: rxMethod<void>(
+      loadAll: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap(() =>
-            productService.getProducts().pipe(
+            productService.getAll().pipe(
               tap((products: Product[]) => patchState(store, { products })),
               catchError((err: Error) => {
                 console.error('Store Error loading products:', err);
@@ -98,11 +98,11 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      addProduct: rxMethod<CreateProductDto>(
+      create: rxMethod<CreateProductDto>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap((product) =>
-            productService.createProduct(product).pipe(
+            productService.create(product).pipe(
               tap((createdProduct: Product) => {
                 patchState(store, (state) => ({
                   products: [...state.products, createdProduct],
@@ -132,11 +132,11 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      updateProduct: rxMethod<{ id: string; productData: UpdateProductDto }>(
+      update: rxMethod<{ id: string; productData: UpdateProductDto }>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap(({ id, productData }) =>
-            productService.updateProduct(id, productData).pipe(
+            productService.update(id, productData).pipe(
               tap((updatedProduct: Product) => {
                 patchState(store, (state) => ({
                   products: state.products.map((p) =>
@@ -168,11 +168,11 @@ export const ProductStore = signalStore(
           ),
         ),
       ),
-      deleteProduct: rxMethod<string>(
+      delete: rxMethod<string>(
         pipe(
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap((id) =>
-            productService.deleteProductById(id).pipe(
+            productService.delete(id).pipe(
               tap(() => {
                 patchState(store, (state) => ({
                   products: state.products.filter((p) => p.id !== id),
@@ -208,7 +208,7 @@ export const ProductStore = signalStore(
               return of([]);
             }
             const deleteRequests = Array.from(idsToDelete).map((id) =>
-              productService.deleteProductById(id).pipe(
+              productService.delete(id).pipe(
                 map(() => ({ id, status: 'success' }) as const),
                 catchError((err: unknown) => {
                   if (err instanceof HttpErrorResponse && err.status === 404) {
@@ -335,8 +335,8 @@ export const ProductStore = signalStore(
     }),
   ),
   withHooks({
-    onInit({ loadProducts }) {
-      loadProducts();
+    onInit({ loadAll }) {
+      loadAll();
     },
   }),
 );

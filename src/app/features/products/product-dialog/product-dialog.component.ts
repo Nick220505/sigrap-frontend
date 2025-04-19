@@ -206,9 +206,9 @@ export class ProductDialogComponent {
     const productData = this.productForm.value;
     const id = this.productStore.selectSelectedProductForEdit()?.id;
     if (id) {
-      this.productStore.updateProduct({ id, productData });
+      this.productStore.update({ id, productData });
     } else {
-      this.productStore.addProduct(productData);
+      this.productStore.create(productData);
     }
   }
 }

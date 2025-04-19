@@ -36,7 +36,7 @@ import { ProductStore } from '../../store/product.store';
         <p>{{ error }}</p>
         <p-button
           label="Reintentar"
-          (onClick)="productStore.loadProducts()"
+          (onClick)="productStore.loadAll()"
           styleClass="p-button-sm mt-2"
           [loading]="productStore.isLoading()"
         />
@@ -179,7 +179,7 @@ export class ProductTableComponent {
       rejectLabel: 'No',
       accept: () => {
         if (product.id) {
-          this.productStore.deleteProduct(product.id);
+          this.productStore.delete(product.id);
         }
       },
     });
