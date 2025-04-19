@@ -225,9 +225,9 @@ export class ProductDialogComponent {
 
   constructor() {
     effect(() => {
-      const storeVisible = this.productStore.selectIsDialogVisible();
+      const isDialogVisible = this.productStore.selectIsDialogVisible();
       const selectedProduct = this.productStore.selectSelectedProductForEdit();
-      this.isDialogVisible.set(storeVisible);
+      this.isDialogVisible.set(isDialogVisible);
       this.isEditMode.set(!!selectedProduct);
       if (selectedProduct) {
         this.productForm.patchValue(selectedProduct);
