@@ -13,7 +13,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { StatusItem } from '../models/status-item.model';
 import { ProductStore } from '../store/product.store';
 
 @Component({
@@ -77,7 +76,11 @@ import { ProductStore } from '../store/product.store';
             <p-select
               formControlName="inventoryStatus"
               inputId="inventoryStatus"
-              [options]="statuses()"
+              [options]="[
+                { label: 'EN STOCK', value: 'INSTOCK' },
+                { label: 'POCO STOCK', value: 'LOWSTOCK' },
+                { label: 'SIN STOCK', value: 'OUTOFSTOCK' },
+              ]"
               optionLabel="label"
               optionValue="value"
               placeholder="Seleccione un Estado"
@@ -207,7 +210,9 @@ import { ProductStore } from '../store/product.store';
         <p-button
           label="Guardar"
           icon="pi pi-check"
-          (click)="saveProduct()"
+          (click)="
+            productForm.valid ? saveProduct() : productForm.markAllAsTouched()
+          "
           [disabled]="productStore.isLoading()"
         />
       </ng-template>
@@ -228,12 +233,6 @@ export class ProductDialogComponent {
   isDialogVisible = signal(false);
   isEditMode = signal(false);
 
-  readonly statuses = signal<StatusItem[]>([
-    { label: 'EN STOCK', value: 'INSTOCK' },
-    { label: 'POCO STOCK', value: 'LOWSTOCK' },
-    { label: 'SIN STOCK', value: 'OUTOFSTOCK' },
-  ]);
-
   constructor() {
     effect(() => {
       const storeVisible = this.productStore.selectIsDialogVisible();
@@ -249,11 +248,6 @@ export class ProductDialogComponent {
   }
 
   saveProduct() {
-    if (!this.productForm.valid) {
-      this.productForm.markAllAsTouched();
-      return;
-    }
-
     const productData = this.productForm.value;
     const id = this.productStore.selectSelectedProductForEdit()?.id;
     if (id) {
