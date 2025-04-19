@@ -9,7 +9,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -72,7 +72,9 @@ import { TooltipModule } from 'primeng/tooltip';
                 <input
                   pInputText
                   type="text"
-                  (input)="onGlobalFilter($event, dt)"
+                  (input)="
+                    dt.filterGlobal($any($event.target).value, 'contains')
+                  "
                   placeholder="Buscar..."
                   class="w-full sm:w-auto"
                   [disabled]="
@@ -171,10 +173,6 @@ import { TooltipModule } from 'primeng/tooltip';
 export class ProductTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly productStore = inject(ProductStore);
-
-  onGlobalFilter({ target }: Event, table: Table): void {
-    table.filterGlobal((target as HTMLInputElement).value, 'contains');
-  }
 
   deleteProduct({ id, name }: Product): void {
     this.confirmationService.confirm({
