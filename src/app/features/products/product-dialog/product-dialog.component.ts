@@ -38,16 +38,13 @@ import { ProductStore } from '../store/product.store';
     >
       <ng-template #content>
         <form [formGroup]="productForm" class="flex flex-col gap-6 pt-4">
+          @let nameControlInvalid =
+            productForm.get('name')?.invalid &&
+            productForm.get('name')?.touched;
           <div
             class="flex flex-col gap-2"
-            [class.p-invalid]="
-              productForm.get('name')?.invalid &&
-              productForm.get('name')?.touched
-            "
+            [class.p-invalid]="nameControlInvalid"
           >
-            @let nameControlInvalid =
-              productForm.get('name')?.invalid &&
-              productForm.get('name')?.touched;
             <label for="name" class="font-bold">Nombre</label>
             <input
               type="text"
@@ -158,12 +155,12 @@ import { ProductStore } from '../store/product.store';
             }
           </div>
           <div class="grid grid-cols-12 gap-4">
+            @let priceControlInvalid =
+              productForm.get('price')?.invalid &&
+              productForm.get('price')?.touched;
             <div
               class="flex flex-col col-span-6 gap-2"
-              [class.p-invalid]="
-                productForm.get('price')?.invalid &&
-                productForm.get('price')?.touched
-              "
+              [class.p-invalid]="priceControlInvalid"
             >
               <label for="price" class="font-bold">Precio</label>
               <p-inputnumber
@@ -173,18 +170,11 @@ import { ProductStore } from '../store/product.store';
                 currency="USD"
                 locale="en-US"
                 placeholder="Ingrese el precio"
-                [ngClass]="{
-                  'ng-dirty ng-invalid':
-                    productForm.get('price')?.invalid &&
-                    productForm.get('price')?.touched,
-                }"
+                [ngClass]="{ 'ng-dirty ng-invalid': priceControlInvalid }"
                 required
                 fluid
               />
-              @if (
-                productForm.get('price')?.invalid &&
-                productForm.get('price')?.touched
-              ) {
+              @if (priceControlInvalid) {
                 <small class="text-red-500">El precio es obligatorio.</small>
               }
             </div>
