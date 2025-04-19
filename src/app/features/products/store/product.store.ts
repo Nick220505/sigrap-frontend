@@ -11,16 +11,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import {
-  catchError,
-  finalize,
-  forkJoin,
-  map,
-  of,
-  pipe,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { catchError, finalize, forkJoin, map, of, pipe, tap } from 'rxjs';
 import {
   CreateProductDto,
   Product,
@@ -84,120 +75,124 @@ export const ProductStore = signalStore(
     ) => ({
       loadAll: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap(() =>
-            productService.getAll().pipe(
-              tap((products: Product[]) => patchState(store, { products })),
-              catchError(({ message: error }: Error) => {
-                patchState(store, { error });
-                return of([]);
-              }),
-              finalize(() => patchState(store, { loading: false })),
-            ),
-          ),
+          tap(() => {
+            patchState(store, { loading: true, error: null });
+            productService
+              .getAll()
+              .pipe(finalize(() => patchState(store, { loading: false })))
+              .subscribe({
+                next: (products) => patchState(store, { products }),
+                error: ({ message: error }: Error) => {
+                  patchState(store, { error });
+                },
+              });
+          }),
         ),
       ),
       create: rxMethod<CreateProductDto>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((product) =>
-            productService.create(product).pipe(
-              tap((createdProduct: Product) => {
-                patchState(store, (state) => ({
-                  products: [...state.products, createdProduct],
-                  isDialogVisible: false,
-                  selectedProductForEdit: null,
-                }));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Producto Creado',
-                });
-              }),
-              catchError(({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al crear producto',
-                });
-                return of(undefined);
-              }),
-              finalize(() => patchState(store, { loading: false })),
-            ),
-          ),
+          tap((product) => {
+            patchState(store, { loading: true, error: null });
+            productService
+              .create(product)
+              .pipe(finalize(() => patchState(store, { loading: false })))
+              .subscribe({
+                next: (createdProduct: Product) => {
+                  patchState(store, (state) => ({
+                    products: [...state.products, createdProduct],
+                    isDialogVisible: false,
+                    selectedProductForEdit: null,
+                  }));
+                  messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Producto Creado',
+                  });
+                },
+                error: ({ message: error }: Error) => {
+                  patchState(store, { error });
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al crear producto',
+                  });
+                },
+              });
+          }),
         ),
       ),
       update: rxMethod<{ id: string; productData: UpdateProductDto }>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap(({ id, productData }) =>
-            productService.update(id, productData).pipe(
-              tap((updatedProduct: Product) => {
-                patchState(store, (state) => ({
-                  products: state.products.map((p) =>
-                    p.id === updatedProduct.id ? updatedProduct : p,
-                  ),
-                  isDialogVisible: false,
-                  selectedProductForEdit: null,
-                }));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Producto Actualizado',
-                });
-              }),
-              catchError(({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al actualizar producto',
-                });
-                return of(undefined);
-              }),
-              finalize(() => patchState(store, { loading: false })),
-            ),
-          ),
+          tap(({ id, productData }) => {
+            patchState(store, { loading: true, error: null });
+            productService
+              .update(id, productData)
+              .pipe(finalize(() => patchState(store, { loading: false })))
+              .subscribe({
+                next: (updatedProduct: Product) => {
+                  patchState(store, (state) => ({
+                    products: state.products.map((p) =>
+                      p.id === updatedProduct.id ? updatedProduct : p,
+                    ),
+                    isDialogVisible: false,
+                    selectedProductForEdit: null,
+                  }));
+                  messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Producto Actualizado',
+                  });
+                },
+                error: ({ message: error }: Error) => {
+                  patchState(store, { error });
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al actualizar producto',
+                  });
+                },
+              });
+          }),
         ),
       ),
       delete: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap((id) =>
-            productService.delete(id).pipe(
-              tap(() => {
-                patchState(store, (state) => ({
-                  products: state.products.filter((p) => p.id !== id),
-                }));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Producto Eliminado',
-                });
-              }),
-              catchError(({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al eliminar producto',
-                });
-                return of(undefined);
-              }),
-              finalize(() => patchState(store, { loading: false })),
-            ),
-          ),
+          tap((id) => {
+            patchState(store, { loading: true, error: null });
+            productService
+              .delete(id)
+              .pipe(finalize(() => patchState(store, { loading: false })))
+              .subscribe({
+                next: () => {
+                  patchState(store, (state) => ({
+                    products: state.products.filter((p) => p.id !== id),
+                  }));
+                  messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Producto Eliminado',
+                  });
+                },
+                error: ({ message: error }: Error) => {
+                  patchState(store, { error });
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al eliminar producto',
+                  });
+                },
+              });
+          }),
         ),
       ),
       deleteProducts: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap(() => {
+          tap(() => {
+            patchState(store, { loading: true, error: null });
             const idsToDelete = store.selectedProductIds();
             if (idsToDelete.size === 0) {
               patchState(store, { loading: false });
-              return of([]);
+              return;
             }
             const deleteRequests = Array.from(idsToDelete).map((id) =>
               productService.delete(id).pipe(
@@ -215,72 +210,73 @@ export const ProductStore = signalStore(
               ),
             );
 
-            return forkJoin(deleteRequests).pipe(
-              tap((results) => {
-                const errors404Ids = new Set<string>();
-                const otherErrorIds = new Set<string>();
-                const successfullyDeletedIds = new Set<string>();
+            forkJoin(deleteRequests)
+              .pipe(finalize(() => patchState(store, { loading: false })))
+              .subscribe({
+                next: (results) => {
+                  const errors404Ids = new Set<string>();
+                  const otherErrorIds = new Set<string>();
+                  const successfullyDeletedIds = new Set<string>();
 
-                results.forEach((result) => {
-                  switch (result.status) {
-                    case 'success':
-                      successfullyDeletedIds.add(result.id);
-                      break;
-                    case 'not_found':
-                      errors404Ids.add(result.id);
-                      break;
-                    case 'error':
-                      otherErrorIds.add(result.id);
-                      break;
-                  }
-                });
+                  results.forEach((result) => {
+                    switch (result.status) {
+                      case 'success':
+                        successfullyDeletedIds.add(result.id);
+                        break;
+                      case 'not_found':
+                        errors404Ids.add(result.id);
+                        break;
+                      case 'error':
+                        otherErrorIds.add(result.id);
+                        break;
+                    }
+                  });
 
-                if (successfullyDeletedIds.size > 0 || errors404Ids.size > 0) {
-                  patchState(store, (state) => ({
-                    products: state.products.filter(
-                      (p) => !successfullyDeletedIds.has(p.id!),
-                    ),
-                    selectedProductIds: new Set(
-                      Array.from(state.selectedProductIds).filter(
-                        (id) =>
-                          !successfullyDeletedIds.has(id) &&
-                          !errors404Ids.has(id),
+                  if (
+                    successfullyDeletedIds.size > 0 ||
+                    errors404Ids.size > 0
+                  ) {
+                    patchState(store, (state) => ({
+                      products: state.products.filter(
+                        (p) => !successfullyDeletedIds.has(p.id!),
                       ),
-                    ),
-                  }));
-                }
+                      selectedProductIds: new Set(
+                        Array.from(state.selectedProductIds).filter(
+                          (id) =>
+                            !successfullyDeletedIds.has(id) &&
+                            !errors404Ids.has(id),
+                        ),
+                      ),
+                    }));
+                  }
 
-                if (successfullyDeletedIds.size > 0) {
-                  messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: `${successfullyDeletedIds.size} Producto(s) Eliminado(s)`,
-                  });
-                }
+                  if (successfullyDeletedIds.size > 0) {
+                    messageService.add({
+                      severity: 'success',
+                      summary: 'Éxito',
+                      detail: `${successfullyDeletedIds.size} Producto(s) Eliminado(s)`,
+                    });
+                  }
 
-                if (otherErrorIds.size > 0) {
-                  messageService.add({
-                    severity: 'warn',
-                    summary: 'Error Parcial',
-                    detail: `${otherErrorIds.size} producto(s) no pudieron ser eliminados debido a un error.`,
+                  if (otherErrorIds.size > 0) {
+                    messageService.add({
+                      severity: 'warn',
+                      summary: 'Error Parcial',
+                      detail: `${otherErrorIds.size} producto(s) no pudieron ser eliminados debido a un error.`,
+                    });
+                  }
+                },
+                error: () => {
+                  patchState(store, {
+                    error: 'Error al procesar la eliminación masiva.',
                   });
-                }
-              }),
-              catchError(() => {
-                patchState(store, {
-                  error: 'Error al procesar la eliminación masiva.',
-                });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al procesar la eliminación masiva.',
-                });
-                return of(undefined);
-              }),
-              finalize(() => {
-                patchState(store, { loading: false });
-              }),
-            );
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al procesar la eliminación masiva.',
+                  });
+                },
+              });
           }),
         ),
       ),
