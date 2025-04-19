@@ -88,8 +88,8 @@ export const ProductStore = signalStore(
           switchMap(() =>
             productService.getAll().pipe(
               tap((products: Product[]) => patchState(store, { products })),
-              catchError((err: Error) => {
-                patchState(store, { error: err.message });
+              catchError(({ message: error }: Error) => {
+                patchState(store, { error });
                 return of([]);
               }),
               finalize(() => patchState(store, { loading: false })),
@@ -116,8 +116,8 @@ export const ProductStore = signalStore(
                   selectedProductForEdit: null,
                 });
               }),
-              catchError((err: Error) => {
-                patchState(store, { error: err.message });
+              catchError(({ message: error }: Error) => {
+                patchState(store, { error });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -151,8 +151,8 @@ export const ProductStore = signalStore(
                   selectedProductForEdit: null,
                 });
               }),
-              catchError((err: Error) => {
-                patchState(store, { error: err.message });
+              catchError(({ message: error }: Error) => {
+                patchState(store, { error });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -180,8 +180,8 @@ export const ProductStore = signalStore(
                   detail: 'Producto Eliminado',
                 });
               }),
-              catchError((err: Error) => {
-                patchState(store, { error: err.message });
+              catchError(({ message: error }: Error) => {
+                patchState(store, { error });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -206,11 +206,14 @@ export const ProductStore = signalStore(
             const deleteRequests = Array.from(idsToDelete).map((id) =>
               productService.delete(id).pipe(
                 map(() => ({ id, status: 'success' }) as const),
-                catchError((err: unknown) => {
-                  if (err instanceof HttpErrorResponse && err.status === 404) {
+                catchError((error: unknown) => {
+                  if (
+                    error instanceof HttpErrorResponse &&
+                    error.status === 404
+                  ) {
                     return of({ id, status: 'not_found' } as const);
                   } else {
-                    return of({ id, status: 'error', error: err } as const);
+                    return of({ id, status: 'error', error: error } as const);
                   }
                 }),
               ),
