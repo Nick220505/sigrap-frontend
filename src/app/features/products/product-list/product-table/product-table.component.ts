@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, viewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -55,8 +55,6 @@ import { ProductStore } from '../../store/product.store';
         [paginator]="true"
         [globalFilterFields]="['name', 'category', 'price']"
         [tableStyle]="{ 'min-width': '55rem' }"
-        [selection]="productStore.getSelectedProductsFromIds()"
-        (selectionChange)="productStore.setSelectedProducts($event)"
         [rowHover]="true"
         dataKey="id"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
@@ -65,7 +63,29 @@ import { ProductStore } from '../../store/product.store';
       >
         <ng-template #caption>
           <div class="flex items-center justify-between">
-            <h5 class="m-0">Administrar Productos</h5>
+            <div class="flex items-center gap-2">
+              <h5 class="m-0">Administrar Productos</h5>
+              <p-button
+                label="Nuevo"
+                icon="pi pi-plus"
+                severity="secondary"
+                (onClick)="productStore.openDialogForNew()"
+                pTooltip="Crear nuevo producto"
+                tooltipPosition="top"
+                [disabled]="productStore.isLoading()"
+              />
+              <p-button
+                label="Exportar"
+                icon="pi pi-upload"
+                severity="secondary"
+                (onClick)="dt.exportCSV()"
+                pTooltip="Exportar datos a CSV"
+                tooltipPosition="top"
+                [disabled]="
+                  productStore.isLoading() || !productStore.productCount()
+                "
+              />
+            </div>
             <p-iconfield>
               <p-inputicon styleClass="pi pi-search" />
               <input
@@ -83,13 +103,6 @@ import { ProductStore } from '../../store/product.store';
         </ng-template>
         <ng-template #header>
           <tr>
-            <th scope="col" style="width: 3rem">
-              <p-tableHeaderCheckbox
-                [disabled]="
-                  !productStore.productCount() || productStore.isLoading()
-                "
-              />
-            </th>
             <th scope="col" pSortableColumn="name" style="min-width: 16rem">
               Nombre
               <p-sortIcon field="name" />
@@ -107,9 +120,6 @@ import { ProductStore } from '../../store/product.store';
         </ng-template>
         <ng-template #body let-product>
           <tr>
-            <td style="width: 3rem">
-              <p-tableCheckbox [value]="product" />
-            </td>
             <td style="min-width: 16rem">{{ product.name }}</td>
             <td style="min-width: 8rem">
               {{ product.price | currency: 'USD' }}
@@ -142,7 +152,7 @@ import { ProductStore } from '../../store/product.store';
         <ng-template #empty>
           @if (!productStore.isLoading() && !productStore.productCount()) {
             <tr>
-              <td [attr.colspan]="5" class="text-center py-4">
+              <td [attr.colspan]="4" class="text-center py-4">
                 No hay productos disponibles.
               </td>
             </tr>
@@ -157,14 +167,6 @@ import { ProductStore } from '../../store/product.store';
 export class ProductTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly productStore = inject(ProductStore);
-
-  readonly dt = viewChild<Table>('dt');
-
-  constructor() {
-    effect(() => {
-      this.productStore.setTableInstance(this.dt() ?? null);
-    });
-  }
 
   onGlobalFilter(event: Event, table: Table): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
