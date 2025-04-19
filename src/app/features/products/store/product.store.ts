@@ -189,10 +189,6 @@ export const ProductStore = signalStore(
           tap(() => {
             patchState(store, { loading: true, error: null });
             const idsToDelete = store.selectedProductIds();
-            if (idsToDelete.size === 0) {
-              patchState(store, { loading: false });
-              return;
-            }
             const deleteRequests = Array.from(idsToDelete).map((id) =>
               productService.delete(id),
             );
@@ -213,11 +209,8 @@ export const ProductStore = signalStore(
                     detail: `${idsToDelete.size} Producto(s) Eliminado(s)`,
                   });
                 },
-                error: (error) => {
-                  const errorMessage =
-                    (error as Error)?.message ||
-                    'Error desconocido durante la eliminación masiva.';
-                  patchState(store, { error: errorMessage });
+                error: ({ message: error }: Error) => {
+                  patchState(store, { error });
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
