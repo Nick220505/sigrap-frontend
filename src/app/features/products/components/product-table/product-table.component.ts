@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Product } from '@features/products/models/product.model';
 import { ProductStore } from '@features/products/store/product.store';
-import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -147,7 +145,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 severity="danger"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="deleteProduct(product)"
+                (click)="productStore.deleteWithConfirmation(product)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
                 [disabled]="productStore.isLoading()"
@@ -171,19 +169,5 @@ import { TooltipModule } from 'primeng/tooltip';
   `,
 })
 export class ProductTableComponent {
-  private readonly confirmationService = inject(ConfirmationService);
   readonly productStore = inject(ProductStore);
-
-  deleteProduct({ id, name }: Product): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el producto "${name}"?`,
-      header: 'Eliminar producto',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => this.productStore.delete(id),
-    });
-  }
 }

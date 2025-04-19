@@ -8,7 +8,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { finalize, pipe, tap } from 'rxjs';
 import {
   CreateProductDto,
@@ -57,6 +57,7 @@ export const ProductStore = signalStore(
       store,
       productService = inject(ProductService),
       messageService = inject(MessageService),
+      confirmationService = inject(ConfirmationService),
     ) => ({
       loadAll: rxMethod<void>(
         pipe(
@@ -140,6 +141,18 @@ export const ProductStore = signalStore(
           }),
         ),
       ),
+      deleteWithConfirmation(product: Product): void {
+        confirmationService.confirm({
+          message: `¿Está seguro de que desea eliminar el producto "${product.name}"?`,
+          header: 'Eliminar producto',
+          icon: 'pi pi-exclamation-triangle',
+          acceptLabel: 'Eliminar',
+          rejectLabel: 'Cancelar',
+          acceptButtonStyleClass: 'p-button-danger',
+          rejectButtonStyleClass: 'p-button-secondary',
+          accept: () => this.delete(product.id),
+        });
+      },
       delete: rxMethod<string>(
         pipe(
           tap((id) => {
