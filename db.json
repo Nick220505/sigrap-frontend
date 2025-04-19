@@ -2,7 +2,6 @@
   "products": [
     {
       "name": "Reloj de Bambú",
-      "description": "Descripción del producto",
       "inventoryStatus": "INSTOCK",
       "category": "Accesorios",
       "price": 65,
@@ -12,7 +11,6 @@
     {
       "id": "1001",
       "name": "Reloj Negro",
-      "description": "Descripción del producto",
       "price": 72,
       "category": "Accesorios",
       "quantity": 61,
@@ -21,7 +19,6 @@
     {
       "id": "1002",
       "name": "Banda Azul",
-      "description": "Descripción del producto",
       "price": 79,
       "category": "Fitness",
       "quantity": 2,
@@ -30,7 +27,6 @@
     {
       "id": "1003",
       "name": "Camiseta Azul",
-      "description": "Descripción del producto",
       "price": 29,
       "category": "Ropa",
       "quantity": 25,
@@ -39,7 +35,6 @@
     {
       "id": "1004",
       "name": "Pulsera",
-      "description": "Descripción del producto",
       "price": 15,
       "category": "Accesorios",
       "quantity": 73,
@@ -48,7 +43,6 @@
     {
       "id": "1005",
       "name": "Bolso Marrón",
-      "description": "Descripción del producto",
       "price": 120,
       "category": "Accesorios",
       "quantity": 0,
@@ -57,7 +51,6 @@
     {
       "id": "1006",
       "name": "Pulsera Chakra",
-      "description": "Descripción del producto",
       "price": 32,
       "category": "Accesorios",
       "quantity": 5,
@@ -66,7 +59,6 @@
     {
       "id": "1007",
       "name": "Aretes Galaxia",
-      "description": "Descripción del producto",
       "price": 34,
       "category": "Accesorios",
       "quantity": 23,
@@ -75,7 +67,6 @@
     {
       "id": "1008",
       "name": "Control de Juego",
-      "description": "Descripción del producto",
       "price": 99,
       "category": "Electrónica",
       "quantity": 2,
@@ -84,7 +75,6 @@
     {
       "id": "1009",
       "name": "Set de Juegos",
-      "description": "Descripción del producto",
       "price": 299,
       "category": "Electrónica",
       "quantity": 63,
@@ -93,7 +83,6 @@
     {
       "id": "1010",
       "name": "Funda Dorada para Teléfono",
-      "description": "Descripción del producto",
       "price": 24,
       "category": "Accesorios",
       "quantity": 0,
@@ -102,7 +91,6 @@
     {
       "id": "1011",
       "name": "Auriculares Verdes",
-      "description": "Descripción del producto",
       "price": 89,
       "category": "Electrónica",
       "quantity": 23,
@@ -111,7 +99,6 @@
     {
       "id": "1012",
       "name": "Camiseta Verde",
-      "description": "Descripción del producto",
       "price": 49,
       "category": "Ropa",
       "quantity": 74,
@@ -120,7 +107,6 @@
     {
       "id": "1013",
       "name": "Camiseta Gris",
-      "description": "Descripción del producto",
       "price": 48,
       "category": "Ropa",
       "quantity": 0,
@@ -129,7 +115,6 @@
     {
       "id": "1014",
       "name": "Auriculares",
-      "description": "Descripción del producto",
       "price": 175,
       "category": "Electrónica",
       "quantity": 8,
@@ -138,7 +123,6 @@
     {
       "id": "1015",
       "name": "Camiseta Verde Claro",
-      "description": "Descripción del producto",
       "price": 49,
       "category": "Ropa",
       "quantity": 34,
@@ -147,7 +131,6 @@
     {
       "id": "1016",
       "name": "Banda Lima",
-      "description": "Descripción del producto",
       "price": 79,
       "category": "Fitness",
       "quantity": 12,
@@ -156,7 +139,6 @@
     {
       "id": "1017",
       "name": "Mini Parlantes",
-      "description": "Descripción del producto",
       "price": 85,
       "category": "Ropa",
       "quantity": 42,
@@ -165,7 +147,6 @@
     {
       "id": "1018",
       "name": "Funda Pintada para Teléfono",
-      "description": "Descripción del producto",
       "price": 56,
       "category": "Accesorios",
       "quantity": 41,
@@ -174,7 +155,6 @@
     {
       "id": "1019",
       "name": "Banda Rosa",
-      "description": "Descripción del producto",
       "price": 79,
       "category": "Fitness",
       "quantity": 63,
@@ -183,7 +163,6 @@
     {
       "id": "1020",
       "name": "Bolso Rosa",
-      "description": "Descripción del producto",
       "price": 110,
       "category": "Accesorios",
       "quantity": 0,
@@ -192,7 +171,6 @@
     {
       "id": "1021",
       "name": "Banda Morada",
-      "description": "Descripción del producto",
       "price": 79,
       "category": "Fitness",
       "quantity": 6,
@@ -201,7 +179,6 @@
     {
       "id": "1022",
       "name": "Collar de Piedras Preciosas Morado",
-      "description": "Descripción del producto",
       "price": 45,
       "category": "Accesorios",
       "quantity": 62,
@@ -210,7 +187,6 @@
     {
       "id": "1023",
       "name": "Camiseta Morada",
-      "description": "Descripción del producto",
       "price": 49,
       "category": "Ropa",
       "quantity": 2,
@@ -219,7 +195,6 @@
     {
       "id": "1024",
       "name": "Zapatos",
-      "description": "Descripción del producto",
       "price": 64,
       "category": "Ropa",
       "quantity": 0,
@@ -228,7 +203,6 @@
     {
       "id": "1025",
       "name": "Zapatillas",
-      "description": "Descripción del producto",
       "price": 78,
       "category": "Ropa",
       "quantity": 52,
@@ -237,7 +211,6 @@
     {
       "id": "1026",
       "name": "Camiseta Verde Azulado",
-      "description": "Descripción del producto",
       "price": 49,
       "category": "Ropa",
       "quantity": 3,
@@ -246,7 +219,6 @@
     {
       "id": "1027",
       "name": "Auriculares Amarillos",
-      "description": "Descripción del producto",
       "price": 89,
       "category": "Electrónica",
       "quantity": 35,
@@ -255,7 +227,6 @@
     {
       "id": "1028",
       "name": "Esterilla de Yoga",
-      "description": "Descripción del producto",
       "price": 20,
       "category": "Fitness",
       "quantity": 15,
@@ -264,7 +235,6 @@
     {
       "id": "1029",
       "name": "Set de Yoga",
-      "description": "Descripción del producto",
       "price": 20,
       "category": "Fitness",
       "quantity": 25,

@@ -64,18 +64,6 @@ import { ProductStore } from '../store/product.store';
               <small class="text-red-500">El nombre es obligatorio.</small>
             }
           </div>
-          <div class="flex flex-col gap-2">
-            <label for="description" class="font-bold">Descripción</label>
-            <textarea
-              id="description"
-              pTextarea
-              formControlName="description"
-              placeholder="Ingrese la descripción"
-              rows="3"
-              cols="20"
-              fluid
-            ></textarea>
-          </div>
           @let inventoryStatusControlInvalid =
             productForm.get('inventoryStatus')?.invalid &&
             productForm.get('inventoryStatus')?.touched;
@@ -232,7 +220,6 @@ export class ProductDialogComponent {
 
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    description: [''],
     inventoryStatus: ['', Validators.required],
     category: ['', Validators.required],
     price: [0, Validators.required],
