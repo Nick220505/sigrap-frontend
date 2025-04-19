@@ -89,7 +89,6 @@ export const ProductStore = signalStore(
             productService.getAll().pipe(
               tap((products: Product[]) => patchState(store, { products })),
               catchError((err: Error) => {
-                console.error('Store Error loading products:', err);
                 patchState(store, { error: err.message });
                 return of([]);
               }),
@@ -118,7 +117,6 @@ export const ProductStore = signalStore(
                 });
               }),
               catchError((err: Error) => {
-                console.error('Store Error creating product:', err);
                 patchState(store, { error: err.message });
                 messageService.add({
                   severity: 'error',
@@ -154,7 +152,6 @@ export const ProductStore = signalStore(
                 });
               }),
               catchError((err: Error) => {
-                console.error('Store Error updating product:', err);
                 patchState(store, { error: err.message });
                 messageService.add({
                   severity: 'error',
@@ -184,7 +181,6 @@ export const ProductStore = signalStore(
                 });
               }),
               catchError((err: Error) => {
-                console.error('Store Error deleting product:', err);
                 patchState(store, { error: err.message });
                 messageService.add({
                   severity: 'error',
@@ -212,15 +208,8 @@ export const ProductStore = signalStore(
                 map(() => ({ id, status: 'success' }) as const),
                 catchError((err: unknown) => {
                   if (err instanceof HttpErrorResponse && err.status === 404) {
-                    console.warn(
-                      `[ProductStore] Product ${id} not found during bulk delete (404).`,
-                    );
                     return of({ id, status: 'not_found' } as const);
                   } else {
-                    console.error(
-                      `[ProductStore] Error deleting product ${id}:`,
-                      err,
-                    );
                     return of({ id, status: 'error', error: err } as const);
                   }
                 }),
@@ -278,11 +267,7 @@ export const ProductStore = signalStore(
                   });
                 }
               }),
-              catchError((err: Error) => {
-                console.error(
-                  '[ProductStore] Error during bulk delete forkJoin operation:',
-                  err,
-                );
+              catchError(() => {
                 patchState(store, {
                   error: 'Error al procesar la eliminación masiva.',
                 });
