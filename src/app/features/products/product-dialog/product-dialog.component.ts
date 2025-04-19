@@ -111,7 +111,7 @@ import { ProductStore } from '../store/product.store';
                 <p-radiobutton
                   id="category1"
                   name="category"
-                  value="Accessories"
+                  value="Accesorios"
                   formControlName="category"
                   required
                 />
@@ -121,7 +121,7 @@ import { ProductStore } from '../store/product.store';
                 <p-radiobutton
                   id="category2"
                   name="category"
-                  value="Clothing"
+                  value="Ropa"
                   formControlName="category"
                   required
                 />
@@ -131,7 +131,7 @@ import { ProductStore } from '../store/product.store';
                 <p-radiobutton
                   id="category3"
                   name="category"
-                  value="Electronics"
+                  value="Electrónicos"
                   formControlName="category"
                   required
                 />
