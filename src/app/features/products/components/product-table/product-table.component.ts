@@ -62,43 +62,47 @@ import { TooltipModule } from 'primeng/tooltip';
         [rowsPerPageOptions]="[10, 20, 30]"
       >
         <ng-template #caption>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <h5 class="m-0">Administrar Productos</h5>
-              <p-button
-                label="Nuevo"
-                icon="pi pi-plus"
-                severity="secondary"
-                (onClick)="productStore.openDialogForNew()"
-                pTooltip="Crear nuevo producto"
-                tooltipPosition="top"
-                [disabled]="productStore.isLoading()"
-              />
-              <p-button
-                label="Exportar"
-                icon="pi pi-upload"
-                severity="secondary"
-                (onClick)="dt.exportCSV()"
-                pTooltip="Exportar datos a CSV"
-                tooltipPosition="top"
-                [disabled]="
-                  productStore.isLoading() || !productStore.productCount()
-                "
-              />
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+          >
+            <h5 class="text-xl font-semibold m-0">Administrar Productos</h5>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+              <p-iconfield iconPosition="left">
+                <p-inputicon class="pi pi-search" />
+                <input
+                  pInputText
+                  type="text"
+                  (input)="onGlobalFilter($event, dt)"
+                  placeholder="Buscar..."
+                  class="w-full sm:w-auto"
+                  [disabled]="
+                    !productStore.productCount() || productStore.isLoading()
+                  "
+                />
+              </p-iconfield>
+              <div class="flex gap-2">
+                <p-button
+                  label="Nuevo"
+                  icon="pi pi-plus"
+                  severity="secondary"
+                  (onClick)="productStore.openDialogForNew()"
+                  pTooltip="Crear nuevo producto"
+                  tooltipPosition="top"
+                  [disabled]="productStore.isLoading()"
+                />
+                <p-button
+                  label="Exportar"
+                  icon="pi pi-upload"
+                  severity="secondary"
+                  (onClick)="dt.exportCSV()"
+                  pTooltip="Exportar datos a CSV"
+                  tooltipPosition="top"
+                  [disabled]="
+                    productStore.isLoading() || !productStore.productCount()
+                  "
+                />
+              </div>
             </div>
-            <p-iconfield>
-              <p-inputicon styleClass="pi pi-search" />
-              <input
-                pInputText
-                type="text"
-                (input)="onGlobalFilter($event, dt)"
-                placeholder="Buscar..."
-                class="pl-8"
-                [disabled]="
-                  !productStore.productCount() || productStore.isLoading()
-                "
-              />
-            </p-iconfield>
           </div>
         </ng-template>
         <ng-template #header>
@@ -168,22 +172,18 @@ export class ProductTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly productStore = inject(ProductStore);
 
-  onGlobalFilter(event: Event, table: Table): void {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  onGlobalFilter({ target }: Event, table: Table): void {
+    table.filterGlobal((target as HTMLInputElement).value, 'contains');
   }
 
-  deleteProduct(product: Product): void {
+  deleteProduct({ id, name }: Product): void {
     this.confirmationService.confirm({
-      message: '¿Estás seguro de que deseas eliminar ' + product.name + '?',
+      message: `¿Está seguro de que desea eliminar el producto ${name}?`,
       header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sí',
       rejectLabel: 'No',
-      accept: () => {
-        if (product.id) {
-          this.productStore.delete(product.id);
-        }
-      },
+      accept: () => this.productStore.delete(id),
     });
   }
 }
