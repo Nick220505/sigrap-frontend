@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal, viewChild } from '@angular/core';
+import { Component, effect, inject, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -12,11 +12,6 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { Product } from '../../models/product.model';
 import { ProductStore } from '../../store/product.store';
-
-interface Column {
-  field: string;
-  header: string;
-}
 
 @Component({
   selector: 'app-product-table',
@@ -37,7 +32,12 @@ interface Column {
       #dt
       [value]="productStore.getProducts()"
       [rows]="10"
-      [columns]="cols()"
+      [columns]="[
+        { field: 'name', header: 'Nombre' },
+        { field: 'price', header: 'Precio' },
+        { field: 'category', header: 'Categoría' },
+        { field: 'inventoryStatus', header: 'Estado' },
+      ]"
       [paginator]="true"
       [globalFilterFields]="['name', 'category', 'price', 'inventoryStatus']"
       [tableStyle]="{ 'min-width': '65rem' }"
@@ -104,10 +104,20 @@ interface Column {
           </td>
           <td style="min-width: 10rem">{{ product.category }}</td>
           <td style="min-width: 10rem">
-            <p-tag
-              [value]="product.inventoryStatus"
-              [severity]="getSeverity(product.inventoryStatus)"
-            />
+            @switch (product.inventoryStatus) {
+              @case ('INSTOCK') {
+                <p-tag [value]="product.inventoryStatus" severity="success" />
+              }
+              @case ('LOWSTOCK') {
+                <p-tag [value]="product.inventoryStatus" severity="warn" />
+              }
+              @case ('OUTOFSTOCK') {
+                <p-tag [value]="product.inventoryStatus" severity="danger" />
+              }
+              @default {
+                <p-tag [value]="product.inventoryStatus" severity="info" />
+              }
+            }
           </td>
           <td style="width: 8rem">
             <p-button
@@ -135,7 +145,7 @@ interface Column {
       </ng-template>
       <ng-template #empty>
         <tr>
-          <td [attr.colspan]="cols().length + 1" class="text-center py-4">
+          <td [attr.colspan]="6" class="text-center py-4">
             No hay productos disponibles.
           </td>
         </tr>
@@ -144,18 +154,10 @@ interface Column {
 
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
-  styles: ``,
 })
 export class ProductTableComponent {
-  readonly productStore = inject(ProductStore);
   private readonly confirmationService = inject(ConfirmationService);
-
-  readonly cols = signal<Column[]>([
-    { field: 'name', header: 'Nombre' },
-    { field: 'price', header: 'Precio' },
-    { field: 'category', header: 'Categoría' },
-    { field: 'inventoryStatus', header: 'Estado' },
-  ]);
+  readonly productStore = inject(ProductStore);
 
   readonly dt = viewChild<Table>('dt');
 
@@ -167,21 +169,6 @@ export class ProductTableComponent {
 
   onGlobalFilter(event: Event, table: Table): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-  }
-
-  getSeverity(
-    status: string | undefined,
-  ): 'success' | 'warn' | 'danger' | 'info' {
-    switch (status) {
-      case 'INSTOCK':
-        return 'success';
-      case 'LOWSTOCK':
-        return 'warn';
-      case 'OUTOFSTOCK':
-        return 'danger';
-      default:
-        return 'info';
-    }
   }
 
   deleteProduct(product: Product): void {
