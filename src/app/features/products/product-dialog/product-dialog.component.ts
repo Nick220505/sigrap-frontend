@@ -76,7 +76,13 @@ import { ProductStore } from '../store/product.store';
               fluid
             ></textarea>
           </div>
-          <div class="flex flex-col gap-2">
+          @let inventoryStatusControlInvalid =
+            productForm.get('inventoryStatus')?.invalid &&
+            productForm.get('inventoryStatus')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="inventoryStatusControlInvalid"
+          >
             <label for="inventoryStatus" class="font-bold"
               >Estado de Inventario</label
             >
@@ -87,9 +93,18 @@ import { ProductStore } from '../store/product.store';
               optionLabel="label"
               optionValue="value"
               placeholder="Seleccione un Estado"
+              [ngClass]="{
+                'ng-dirty ng-invalid': inventoryStatusControlInvalid,
+              }"
+              required
               fluid
               appendTo="body"
             />
+            @if (inventoryStatusControlInvalid) {
+              <small class="text-red-500"
+                >El estado de inventario es obligatorio.</small
+              >
+            }
           </div>
           @let categoryControlInvalid =
             productForm.get('category')?.invalid &&

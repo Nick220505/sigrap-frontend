@@ -106,13 +106,13 @@ import { ProductStore } from '../../store/product.store';
           <td style="min-width: 10rem">
             @switch (product.inventoryStatus) {
               @case ('INSTOCK') {
-                <p-tag [value]="product.inventoryStatus" severity="success" />
+                <p-tag value="EN STOCK" severity="success" />
               }
               @case ('LOWSTOCK') {
-                <p-tag [value]="product.inventoryStatus" severity="warn" />
+                <p-tag value="POCO STOCK" severity="warn" />
               }
               @case ('OUTOFSTOCK') {
-                <p-tag [value]="product.inventoryStatus" severity="danger" />
+                <p-tag value="SIN STOCK" severity="danger" />
               }
               @default {
                 <p-tag [value]="product.inventoryStatus" severity="info" />
