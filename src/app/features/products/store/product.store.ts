@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import {
   patchState,
@@ -11,7 +10,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { catchError, finalize, forkJoin, map, of, pipe, tap } from 'rxjs';
+import { finalize, forkJoin, pipe, tap } from 'rxjs';
 import {
   CreateProductDto,
   Product,
@@ -195,81 +194,30 @@ export const ProductStore = signalStore(
               return;
             }
             const deleteRequests = Array.from(idsToDelete).map((id) =>
-              productService.delete(id).pipe(
-                map(() => ({ id, status: 'success' }) as const),
-                catchError((error: unknown) => {
-                  if (
-                    error instanceof HttpErrorResponse &&
-                    error.status === 404
-                  ) {
-                    return of({ id, status: 'not_found' } as const);
-                  } else {
-                    return of({ id, status: 'error', error: error } as const);
-                  }
-                }),
-              ),
+              productService.delete(id),
             );
 
             forkJoin(deleteRequests)
               .pipe(finalize(() => patchState(store, { loading: false })))
               .subscribe({
-                next: (results) => {
-                  const errors404Ids = new Set<string>();
-                  const otherErrorIds = new Set<string>();
-                  const successfullyDeletedIds = new Set<string>();
-
-                  results.forEach((result) => {
-                    switch (result.status) {
-                      case 'success':
-                        successfullyDeletedIds.add(result.id);
-                        break;
-                      case 'not_found':
-                        errors404Ids.add(result.id);
-                        break;
-                      case 'error':
-                        otherErrorIds.add(result.id);
-                        break;
-                    }
+                next: () => {
+                  patchState(store, (state) => ({
+                    products: state.products.filter(
+                      (p) => !idsToDelete.has(p.id!),
+                    ),
+                    selectedProductIds: new Set<string>(),
+                  }));
+                  messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: `${idsToDelete.size} Producto(s) Eliminado(s)`,
                   });
-
-                  if (
-                    successfullyDeletedIds.size > 0 ||
-                    errors404Ids.size > 0
-                  ) {
-                    patchState(store, (state) => ({
-                      products: state.products.filter(
-                        (p) => !successfullyDeletedIds.has(p.id!),
-                      ),
-                      selectedProductIds: new Set(
-                        Array.from(state.selectedProductIds).filter(
-                          (id) =>
-                            !successfullyDeletedIds.has(id) &&
-                            !errors404Ids.has(id),
-                        ),
-                      ),
-                    }));
-                  }
-
-                  if (successfullyDeletedIds.size > 0) {
-                    messageService.add({
-                      severity: 'success',
-                      summary: 'Éxito',
-                      detail: `${successfullyDeletedIds.size} Producto(s) Eliminado(s)`,
-                    });
-                  }
-
-                  if (otherErrorIds.size > 0) {
-                    messageService.add({
-                      severity: 'warn',
-                      summary: 'Error Parcial',
-                      detail: `${otherErrorIds.size} producto(s) no pudieron ser eliminados debido a un error.`,
-                    });
-                  }
                 },
-                error: () => {
-                  patchState(store, {
-                    error: 'Error al procesar la eliminación masiva.',
-                  });
+                error: (error) => {
+                  const errorMessage =
+                    (error as Error)?.message ||
+                    'Error desconocido durante la eliminación masiva.';
+                  patchState(store, { error: errorMessage });
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
