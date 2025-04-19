@@ -105,15 +105,13 @@ export const ProductStore = signalStore(
               tap((createdProduct: Product) => {
                 patchState(store, (state) => ({
                   products: [...state.products, createdProduct],
+                  isDialogVisible: false,
+                  selectedProductForEdit: null,
                 }));
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',
                   detail: 'Producto Creado',
-                });
-                patchState(store, {
-                  isDialogVisible: false,
-                  selectedProductForEdit: null,
                 });
               }),
               catchError(({ message: error }: Error) => {
@@ -140,15 +138,13 @@ export const ProductStore = signalStore(
                   products: state.products.map((p) =>
                     p.id === updatedProduct.id ? updatedProduct : p,
                   ),
+                  isDialogVisible: false,
+                  selectedProductForEdit: null,
                 }));
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',
                   detail: 'Producto Actualizado',
-                });
-                patchState(store, {
-                  isDialogVisible: false,
-                  selectedProductForEdit: null,
                 });
               }),
               catchError(({ message: error }: Error) => {
