@@ -18,10 +18,11 @@
     "target": "ES2022",
     "module": "ES2022",
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src/app",
+    "baseUrl": "./src",
     "paths": {
-      "@core/*": ["core/*"],
-      "@features/*": ["features/*"],
+      "@env": ["environments/environment"],
+      "@core/*": ["app/core/*"],
+      "@features/*": ["app/features/*"]
     }
   },
   "angularCompilerOptions": {
