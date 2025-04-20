@@ -47,6 +47,9 @@ export const ProductStore = signalStore(
       isLoading: computed(() => loading()),
       getError: computed(() => error()),
       getProducts: computed(() => products()),
+      getActiveProducts: computed(() =>
+        products().filter((p) => p.active && !p.deleted),
+      ),
       productCount: computed(() => products().length),
       selectIsDialogVisible: computed(() => isDialogVisible()),
       selectSelectedProductForEdit: computed(() => selectedProductForEdit()),
@@ -107,7 +110,7 @@ export const ProductStore = signalStore(
           }),
         ),
       ),
-      update: rxMethod<{ id: string; productData: UpdateProductDto }>(
+      update: rxMethod<{ id: number; productData: UpdateProductDto }>(
         pipe(
           tap(({ id, productData }) => {
             patchState(store, { loading: true, error: null });
@@ -141,6 +144,38 @@ export const ProductStore = signalStore(
           }),
         ),
       ),
+      toggleStatus: rxMethod<number>(
+        pipe(
+          tap((id) => {
+            patchState(store, { loading: true, error: null });
+            productService
+              .toggleStatus(id)
+              .pipe(finalize(() => patchState(store, { loading: false })))
+              .subscribe({
+                next: (updatedProduct: Product) => {
+                  patchState(store, (state) => ({
+                    products: state.products.map((p) =>
+                      p.id === updatedProduct.id ? updatedProduct : p,
+                    ),
+                  }));
+                  messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: `Producto ${updatedProduct.active ? 'activado' : 'desactivado'}`,
+                  });
+                },
+                error: ({ message: error }: Error) => {
+                  patchState(store, { error });
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al cambiar estado del producto',
+                  });
+                },
+              });
+          }),
+        ),
+      ),
       deleteWithConfirmation(product: Product): void {
         confirmationService.confirm({
           message: `¿Está seguro de que desea eliminar el producto "${product.name}"?`,
@@ -153,7 +188,7 @@ export const ProductStore = signalStore(
           accept: () => this.delete(product.id),
         });
       },
-      delete: rxMethod<string>(
+      delete: rxMethod<number>(
         pipe(
           tap((id) => {
             patchState(store, { loading: true, error: null });

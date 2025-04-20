@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -24,6 +25,7 @@ import { TooltipModule } from 'primeng/tooltip';
     InputIconModule,
     TooltipModule,
     ConfirmDialogModule,
+    InputSwitchModule,
   ],
   template: `
     @if (productStore.getError(); as error) {
@@ -42,17 +44,13 @@ import { TooltipModule } from 'primeng/tooltip';
     } @else {
       <p-table
         #dt
-        [value]="productStore.getProducts()"
+        [value]="productStore.getActiveProducts()"
         [loading]="productStore.isLoading()"
         [rows]="10"
-        [columns]="[
-          { field: 'name', header: 'Nombre' },
-          { field: 'price', header: 'Precio' },
-          { field: 'category', header: 'Categoría' },
-        ]"
+        [columns]="columns"
         [paginator]="true"
-        [globalFilterFields]="['name', 'category', 'price']"
-        [tableStyle]="{ 'min-width': '55rem' }"
+        [globalFilterFields]="['name', 'category.name']"
+        [tableStyle]="{ 'min-width': '75rem' }"
         [rowHover]="true"
         dataKey="id"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
@@ -107,28 +105,52 @@ import { TooltipModule } from 'primeng/tooltip';
         </ng-template>
         <ng-template #header>
           <tr>
-            <th scope="col" pSortableColumn="name" style="min-width: 16rem">
-              Nombre
+            <th scope="col" pSortableColumn="name" style="min-width: 14rem">
+              {{ columns[0].header }}
               <p-sortIcon field="name" />
             </th>
-            <th scope="col" pSortableColumn="price" style="min-width: 8rem">
-              Precio
-              <p-sortIcon field="price" />
+            <th scope="col" pSortableColumn="costPrice" style="min-width: 8rem">
+              {{ columns[1].header }}
+              <p-sortIcon field="costPrice" />
             </th>
-            <th scope="col" pSortableColumn="category" style="min-width: 10rem">
-              Categoría
-              <p-sortIcon field="category" />
+            <th scope="col" pSortableColumn="salePrice" style="min-width: 8rem">
+              {{ columns[2].header }}
+              <p-sortIcon field="salePrice" />
+            </th>
+            <th
+              scope="col"
+              pSortableColumn="category.name"
+              style="min-width: 10rem"
+            >
+              {{ columns[3].header }}
+              <p-sortIcon field="category.name" />
+            </th>
+            <th scope="col" pSortableColumn="active" style="min-width: 6rem">
+              {{ columns[4].header }}
+              <p-sortIcon field="active" />
             </th>
             <th scope="col" style="width: 8rem">Acciones</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
           <tr>
-            <td style="min-width: 16rem">{{ product.name }}</td>
+            <td style="min-width: 14rem">{{ product.name }}</td>
             <td style="min-width: 8rem">
-              {{ product.price | currency: 'USD' }}
+              {{ product.costPrice | currency: 'USD' }}
             </td>
-            <td style="min-width: 10rem">{{ product.category }}</td>
+            <td style="min-width: 8rem">
+              {{ product.salePrice | currency: 'USD' }}
+            </td>
+            <td style="min-width: 10rem">
+              {{ product.category?.name || '-' }}
+            </td>
+            <td style="min-width: 6rem">
+              <p-inputSwitch
+                [(ngModel)]="product.active"
+                (onChange)="productStore.toggleStatus(product.id)"
+                [disabled]="productStore.isLoading()"
+              ></p-inputSwitch>
+            </td>
             <td style="width: 8rem">
               <p-button
                 icon="pi pi-pencil"
@@ -156,7 +178,7 @@ import { TooltipModule } from 'primeng/tooltip';
         <ng-template #empty>
           @if (!productStore.isLoading() && !productStore.productCount()) {
             <tr>
-              <td [attr.colspan]="4" class="text-center py-4">
+              <td [attr.colspan]="6" class="text-center py-4">
                 No hay productos disponibles.
               </td>
             </tr>
@@ -170,4 +192,12 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class ProductTableComponent {
   readonly productStore = inject(ProductStore);
+
+  readonly columns = [
+    { field: 'name', header: 'Nombre' },
+    { field: 'costPrice', header: 'Precio de Costo ($)' },
+    { field: 'salePrice', header: 'Precio de Venta ($)' },
+    { field: 'category.name', header: 'Categoría' },
+    { field: 'active', header: 'Estado' },
+  ];
 }
