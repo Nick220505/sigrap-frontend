@@ -1,0 +1,33 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import {
+  Category,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '../models/category.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CategoryService {
+  private readonly http = inject(HttpClient);
+  private readonly categoriesUrl = `${environment.apiUrl}/categories`;
+
+  getAll(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.categoriesUrl);
+  }
+
+  create(newCategory: CreateCategoryDto): Observable<Category> {
+    return this.http.post<Category>(this.categoriesUrl, newCategory);
+  }
+
+  update(id: number, categoryData: UpdateCategoryDto): Observable<Category> {
+    return this.http.put<Category>(`${this.categoriesUrl}/${id}`, categoryData);
+  }
+
+  delete(id: number): Observable<object> {
+    return this.http.delete<object>(`${this.categoriesUrl}/${id}`);
+  }
+}

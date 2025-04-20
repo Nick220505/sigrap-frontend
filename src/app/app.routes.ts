@@ -15,4 +15,11 @@ export const routes: Routes = [
         (m) => m.ProductsComponent,
       ),
   },
+  {
+    path: 'categorias',
+    loadComponent: () =>
+      import('./features/categories/categories.component').then(
+        (m) => m.CategoriesComponent,
+      ),
+  },
 ];
