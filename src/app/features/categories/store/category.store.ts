@@ -25,17 +25,15 @@ export interface CategoryState {
   selectedCategory: Category | null;
 }
 
-const initialState: CategoryState = {
-  categories: [],
-  loading: false,
-  error: null,
-  isDialogVisible: false,
-  selectedCategory: null,
-};
-
 export const CategoryStore = signalStore(
   { providedIn: 'root' },
-  withState(initialState),
+  withState<CategoryState>({
+    categories: [],
+    loading: false,
+    error: null,
+    isDialogVisible: false,
+    selectedCategory: null,
+  }),
   withComputed(({ categories }) => ({
     categoriesCount: computed(() => categories().length),
   })),
