@@ -37,7 +37,7 @@ export const CategoryStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed(({ categories }) => ({
-    categoryCount: computed(() => categories().length),
+    categoriesCount: computed(() => categories().length),
   })),
   withMethods(
     (

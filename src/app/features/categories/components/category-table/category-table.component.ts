@@ -72,7 +72,7 @@ import { CategoryStore } from '../../store/category.store';
                   placeholder="Buscar..."
                   class="w-full sm:w-auto"
                   [disabled]="
-                    !categoryStore.categoryCount() || categoryStore.loading()
+                    !categoryStore.categoriesCount() || categoryStore.loading()
                   "
                 />
               </p-iconfield>
@@ -94,7 +94,7 @@ import { CategoryStore } from '../../store/category.store';
                   pTooltip="Exportar datos a CSV"
                   tooltipPosition="top"
                   [disabled]="
-                    categoryStore.loading() || !categoryStore.categoryCount()
+                    categoryStore.loading() || !categoryStore.categoriesCount()
                   "
                 />
               </div>
@@ -147,7 +147,7 @@ import { CategoryStore } from '../../store/category.store';
           </tr>
         </ng-template>
         <ng-template #empty>
-          @if (!categoryStore.loading() && !categoryStore.categoryCount()) {
+          @if (!categoryStore.loading() && !categoryStore.categoriesCount()) {
             <tr>
               <td [attr.colspan]="3" class="text-center py-4">
                 No hay categorías disponibles.
