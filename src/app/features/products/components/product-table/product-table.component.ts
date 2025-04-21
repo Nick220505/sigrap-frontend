@@ -42,6 +42,14 @@ import { TooltipModule } from 'primeng/tooltip';
         />
       </div>
     } @else {
+      @let columns =
+        [
+          { field: 'name', header: 'Nombre' },
+          { field: 'costPrice', header: 'Precio de Costo ($)' },
+          { field: 'salePrice', header: 'Precio de Venta ($)' },
+          { field: 'category.name', header: 'Categoría' },
+          { field: 'active', header: 'Estado' },
+        ];
       <p-table
         #dt
         [value]="productStore.getActiveProducts()"
@@ -192,12 +200,4 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class ProductTableComponent {
   readonly productStore = inject(ProductStore);
-
-  readonly columns = [
-    { field: 'name', header: 'Nombre' },
-    { field: 'costPrice', header: 'Precio de Costo ($)' },
-    { field: 'salePrice', header: 'Precio de Venta ($)' },
-    { field: 'category.name', header: 'Categoría' },
-    { field: 'active', header: 'Estado' },
-  ];
 }
