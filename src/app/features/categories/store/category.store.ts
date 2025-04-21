@@ -59,8 +59,9 @@ export const CategoryStore = signalStore(
               next: (categories) => {
                 patchState(store, setAllEntities(categories));
               },
-              error: ({ message: error }: Error) =>
-                patchState(store, { error }),
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+              },
               finalize: () => patchState(store, { loading: false }),
             }),
           ),
