@@ -175,5 +175,9 @@ export const CategoryStore = signalStore(
       },
     }),
   ),
-  withHooks({ onInit: ({ loadAll }) => loadAll() }),
+  withHooks({
+    onInit({ loadAll }) {
+      loadAll();
+    },
+  }),
 );
