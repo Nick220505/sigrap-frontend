@@ -83,7 +83,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                   label="Nueva"
                   icon="pi pi-plus"
                   severity="secondary"
-                  (onClick)="openDialogForNew()"
+                  (onClick)="openCategoryDialog()"
                   pTooltip="Crear nueva categoría"
                   tooltipPosition="top"
                   [disabled]="categoryStore.loading()"
@@ -130,7 +130,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                 class="mr-2"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="openDialogForEdit(category)"
+                (click)="openCategoryDialog(category)"
                 pTooltip="Editar"
                 tooltipPosition="top"
                 [disabled]="categoryStore.loading()"
@@ -175,13 +175,8 @@ export class CategoryTableComponent {
   dialogVisible = signal(false);
   selectedCategory = signal<Category | null>(null);
 
-  openDialogForNew() {
-    this.selectedCategory.set(null);
-    this.dialogVisible.set(true);
-  }
-
-  openDialogForEdit(category: Category) {
-    this.selectedCategory.set(category);
+  openCategoryDialog(category?: Category) {
+    this.selectedCategory.set(category ?? null);
     this.dialogVisible.set(true);
   }
 

@@ -105,8 +105,9 @@ export class CategoryDialogComponent {
 
   constructor() {
     effect(() => {
-      if (this.isEditMode()) {
-        this.categoryForm.patchValue(this.category()!);
+      const category = this.category();
+      if (category) {
+        this.categoryForm.patchValue(category);
       } else {
         this.categoryForm.reset();
       }
