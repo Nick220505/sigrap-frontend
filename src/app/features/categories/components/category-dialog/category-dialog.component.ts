@@ -14,7 +14,6 @@ import { CategoryStore } from '../../store/category.store';
 
 @Component({
   selector: 'app-category-dialog',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

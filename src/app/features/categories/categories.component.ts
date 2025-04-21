@@ -5,7 +5,6 @@ import { CategoryTableComponent } from './components/category-table/category-tab
 
 @Component({
   selector: 'app-categories',
-  standalone: true,
   imports: [ToastModule, CategoryDialogComponent, CategoryTableComponent],
   template: `
     <p-toast />

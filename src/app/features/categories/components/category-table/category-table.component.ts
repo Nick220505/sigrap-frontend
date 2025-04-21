@@ -12,7 +12,6 @@ import { CategoryStore } from '../../store/category.store';
 
 @Component({
   selector: 'app-category-table',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
