@@ -11,7 +11,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
-import { finalize, pipe, switchMap, tap } from 'rxjs';
+import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import {
   Category,
   CreateCategoryDto,
@@ -61,12 +61,10 @@ export const CategoryStore = signalStore(
     ),
     create: rxMethod<CreateCategoryDto>(
       pipe(
-        tap((category) => {
-          patchState(store, { loading: true, error: null });
-          categoryService
-            .create(category)
-            .pipe(finalize(() => patchState(store, { loading: false })))
-            .subscribe({
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((category) =>
+          categoryService.create(category).pipe(
+            tapResponse({
               next: (createdCategory: Category) => {
                 patchState(store, ({ categories }) => ({
                   categories: [...categories, createdCategory],
@@ -87,18 +85,18 @@ export const CategoryStore = signalStore(
                   detail: 'Error al crear categoría',
                 });
               },
-            });
-        }),
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
       ),
     ),
     update: rxMethod<{ id: number; categoryData: UpdateCategoryDto }>(
       pipe(
-        tap(({ id, categoryData }) => {
-          patchState(store, { loading: true, error: null });
-          categoryService
-            .update(id, categoryData)
-            .pipe(finalize(() => patchState(store, { loading: false })))
-            .subscribe({
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap(({ id, categoryData }) =>
+          categoryService.update(id, categoryData).pipe(
+            tapResponse({
               next: (updatedCategory: Category) => {
                 patchState(store, ({ categories }) => ({
                   categories: categories.map((c) =>
@@ -121,18 +119,18 @@ export const CategoryStore = signalStore(
                   detail: 'Error al actualizar categoría',
                 });
               },
-            });
-        }),
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
       ),
     ),
     delete: rxMethod<number>(
       pipe(
-        tap((id) => {
-          patchState(store, { loading: true, error: null });
-          categoryService
-            .delete(id)
-            .pipe(finalize(() => patchState(store, { loading: false })))
-            .subscribe({
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((id) =>
+          categoryService.delete(id).pipe(
+            tapResponse({
               next: () => {
                 patchState(store, ({ categories }) => ({
                   categories: categories.filter((c) => c.id !== id),
@@ -151,8 +149,10 @@ export const CategoryStore = signalStore(
                   detail: 'Error al eliminar categoría',
                 });
               },
-            });
-        }),
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
       ),
     ),
     openDialogForNew(): void {
