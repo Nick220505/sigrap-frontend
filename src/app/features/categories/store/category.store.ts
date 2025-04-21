@@ -8,7 +8,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { finalize, pipe, tap } from 'rxjs';
 import {
   Category,
@@ -44,7 +44,6 @@ export const CategoryStore = signalStore(
       store,
       categoryService = inject(CategoryService),
       messageService = inject(MessageService),
-      confirmationService = inject(ConfirmationService),
     ) => ({
       loadAll: rxMethod<void>(
         pipe(
@@ -128,18 +127,6 @@ export const CategoryStore = signalStore(
           }),
         ),
       ),
-      deleteWithConfirmation(category: Category): void {
-        confirmationService.confirm({
-          message: `¿Está seguro de que desea eliminar la categoría "${category.name}"?`,
-          header: 'Eliminar categoría',
-          icon: 'pi pi-exclamation-triangle',
-          acceptLabel: 'Eliminar',
-          rejectLabel: 'Cancelar',
-          acceptButtonStyleClass: 'p-button-danger',
-          rejectButtonStyleClass: 'p-button-secondary',
-          accept: () => this.delete(category.id),
-        });
-      },
       delete: rxMethod<number>(
         pipe(
           tap((id) => {

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -8,6 +9,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
+import { Category } from '../../models/category.model';
 import { CategoryStore } from '../../store/category.store';
 
 @Component({
@@ -136,7 +138,7 @@ import { CategoryStore } from '../../store/category.store';
                 severity="danger"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="categoryStore.deleteWithConfirmation(category)"
+                (click)="confirmDelete(category)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
                 [disabled]="categoryStore.loading()"
@@ -160,5 +162,19 @@ import { CategoryStore } from '../../store/category.store';
   `,
 })
 export class CategoryTableComponent {
+  private readonly confirmationService = inject(ConfirmationService);
   readonly categoryStore = inject(CategoryStore);
+
+  confirmDelete({ id, name }: Category): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea eliminar la categoría "${name}"?`,
+      header: 'Eliminar categoría',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => this.categoryStore.delete(id),
+    });
+  }
 }
