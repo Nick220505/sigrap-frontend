@@ -161,7 +161,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
 
       <app-category-dialog
         [(visible)]="dialogVisible"
-        [(category)]="selectedCategory"
+        [(inputCategory)]="selectedCategory"
       />
 
       <p-confirmdialog [style]="{ width: '450px' }" />

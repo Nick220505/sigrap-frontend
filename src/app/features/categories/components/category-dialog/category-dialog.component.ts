@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, model } from '@angular/core';
+import { Component, effect, inject, model } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -15,7 +15,6 @@ import { CategoryStore } from '../../store/category.store';
 
 @Component({
   selector: 'app-category-dialog',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -28,7 +27,7 @@ import { CategoryStore } from '../../store/category.store';
     <p-dialog
       [(visible)]="visible"
       [style]="{ width: '450px' }"
-      [header]="isEditMode() ? 'Editar Categoría' : 'Crear Categoría'"
+      [header]="inputCategory() ? 'Editar Categoría' : 'Crear Categoría'"
       [modal]="true"
       (onHide)="closeDialog()"
     >
@@ -96,8 +95,7 @@ export class CategoryDialogComponent {
   readonly categoryStore = inject(CategoryStore);
 
   visible = model(false);
-  category = model<Category | null>(null);
-  isEditMode = computed(() => !!this.category());
+  inputCategory = model<Category | null>(null);
   categoryForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
@@ -105,9 +103,9 @@ export class CategoryDialogComponent {
 
   constructor() {
     effect(() => {
-      const category = this.category();
-      if (category) {
-        this.categoryForm.patchValue(category);
+      const inputCategory = this.inputCategory();
+      if (inputCategory) {
+        this.categoryForm.patchValue(inputCategory);
       } else {
         this.categoryForm.reset();
       }
@@ -116,7 +114,7 @@ export class CategoryDialogComponent {
 
   saveCategory(): void {
     const categoryData = this.categoryForm.value;
-    const id = this.category()?.id;
+    const id = this.inputCategory()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });
     } else {
@@ -127,6 +125,6 @@ export class CategoryDialogComponent {
 
   closeDialog() {
     this.visible.set(false);
-    this.category.set(null);
+    this.inputCategory.set(null);
   }
 }
