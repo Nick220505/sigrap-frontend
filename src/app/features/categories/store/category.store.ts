@@ -71,8 +71,8 @@ export const CategoryStore = signalStore(
               .pipe(finalize(() => patchState(store, { loading: false })))
               .subscribe({
                 next: (createdCategory: Category) => {
-                  patchState(store, (state) => ({
-                    categories: [...state.categories, createdCategory],
+                  patchState(store, ({ categories }) => ({
+                    categories: [...categories, createdCategory],
                     isDialogVisible: false,
                     selectedCategory: null,
                   }));
@@ -103,8 +103,8 @@ export const CategoryStore = signalStore(
               .pipe(finalize(() => patchState(store, { loading: false })))
               .subscribe({
                 next: (updatedCategory: Category) => {
-                  patchState(store, (state) => ({
-                    categories: state.categories.map((c) =>
+                  patchState(store, ({ categories }) => ({
+                    categories: categories.map((c) =>
                       c.id === updatedCategory.id ? updatedCategory : c,
                     ),
                     isDialogVisible: false,
@@ -149,8 +149,8 @@ export const CategoryStore = signalStore(
               .pipe(finalize(() => patchState(store, { loading: false })))
               .subscribe({
                 next: () => {
-                  patchState(store, (state) => ({
-                    categories: state.categories.filter((c) => c.id !== id),
+                  patchState(store, ({ categories }) => ({
+                    categories: categories.filter((c) => c.id !== id),
                   }));
                   messageService.add({
                     severity: 'success',
