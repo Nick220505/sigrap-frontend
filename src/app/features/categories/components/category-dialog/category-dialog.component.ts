@@ -31,44 +31,39 @@ import { CategoryStore } from '../../store/category.store';
       [modal]="true"
       (onHide)="closeDialog()"
     >
-      <ng-template #content>
-        <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
-          @let nameControlInvalid =
-            categoryForm.get('name')?.invalid &&
-            categoryForm.get('name')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="nameControlInvalid"
-          >
-            <label for="name" class="font-bold">Nombre</label>
-            <input
-              type="text"
-              pInputText
-              id="name"
-              formControlName="name"
-              placeholder="Ingrese el nombre de la categoría"
-              [ngClass]="{ 'ng-dirty ng-invalid': nameControlInvalid }"
-              required
-              fluid
-            />
-            @if (nameControlInvalid) {
-              <small class="text-red-500">El nombre es obligatorio.</small>
-            }
-          </div>
+      <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
+        @let nameControlInvalid =
+          categoryForm.get('name')?.invalid &&
+          categoryForm.get('name')?.touched;
+        <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
+          <label for="name" class="font-bold">Nombre</label>
+          <input
+            type="text"
+            pInputText
+            id="name"
+            formControlName="name"
+            placeholder="Ingrese el nombre de la categoría"
+            [ngClass]="{ 'ng-dirty ng-invalid': nameControlInvalid }"
+            required
+            fluid
+          />
+          @if (nameControlInvalid) {
+            <small class="text-red-500">El nombre es obligatorio.</small>
+          }
+        </div>
 
-          <div class="flex flex-col gap-2">
-            <label for="description" class="font-bold">Descripción</label>
-            <textarea
-              rows="3"
-              pTextarea
-              id="description"
-              formControlName="description"
-              placeholder="Ingrese una descripción (opcional)"
-              fluid
-            ></textarea>
-          </div>
-        </form>
-      </ng-template>
+        <div class="flex flex-col gap-2">
+          <label for="description" class="font-bold">Descripción</label>
+          <textarea
+            rows="3"
+            pTextarea
+            id="description"
+            formControlName="description"
+            placeholder="Ingrese una descripción (opcional)"
+            fluid
+          ></textarea>
+        </div>
+      </form>
       <ng-template #footer>
         <p-button
           label="Cancelar"
