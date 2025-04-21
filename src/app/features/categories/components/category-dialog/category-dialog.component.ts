@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, model } from '@angular/core';
+import { Component, computed, effect, inject, model } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -30,7 +30,7 @@ import { CategoryStore } from '../../store/category.store';
       [style]="{ width: '450px' }"
       [header]="isEditMode() ? 'Editar Categoría' : 'Crear Categoría'"
       [modal]="true"
-      (onHide)="close()"
+      (onHide)="closeDialog()"
     >
       <ng-template #content>
         <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
@@ -71,7 +71,12 @@ import { CategoryStore } from '../../store/category.store';
         </form>
       </ng-template>
       <ng-template #footer>
-        <p-button label="Cancelar" icon="pi pi-times" text (click)="close()" />
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          text
+          (click)="closeDialog()"
+        />
         <p-button
           label="Guardar"
           icon="pi pi-check"
@@ -87,23 +92,21 @@ import { CategoryStore } from '../../store/category.store';
   `,
 })
 export class CategoryDialogComponent {
+  private readonly fb = inject(FormBuilder);
+  readonly categoryStore = inject(CategoryStore);
+
   visible = model(false);
   category = model<Category | null>(null);
-  readonly categoryStore = inject(CategoryStore);
-  private readonly fb = inject(FormBuilder);
-
+  isEditMode = computed(() => !!this.category());
   categoryForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
   });
-  isEditMode = model(false);
 
   constructor() {
     effect(() => {
-      const cat = this.category();
-      this.isEditMode.set(!!cat);
-      if (cat) {
-        this.categoryForm.patchValue(cat);
+      if (this.isEditMode()) {
+        this.categoryForm.patchValue(this.category()!);
       } else {
         this.categoryForm.reset();
       }
@@ -118,10 +121,10 @@ export class CategoryDialogComponent {
     } else {
       this.categoryStore.create(categoryData);
     }
-    this.close();
+    this.closeDialog();
   }
 
-  close() {
+  closeDialog() {
     this.visible.set(false);
     this.category.set(null);
   }
