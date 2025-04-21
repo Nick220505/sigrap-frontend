@@ -1,4 +1,5 @@
 import { computed, inject } from '@angular/core';
+import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
   signalStore,
@@ -9,7 +10,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
-import { finalize, pipe, tap } from 'rxjs';
+import { finalize, pipe, switchMap, tap } from 'rxjs';
 import {
   Category,
   CreateCategoryDto,
@@ -45,18 +46,17 @@ export const CategoryStore = signalStore(
     ) => ({
       loadAll: rxMethod<void>(
         pipe(
-          tap(() => {
-            patchState(store, { loading: true, error: null });
-            categoryService
-              .getAll()
-              .pipe(finalize(() => patchState(store, { loading: false })))
-              .subscribe({
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap(() =>
+            categoryService.getAll().pipe(
+              tapResponse({
                 next: (categories) => patchState(store, { categories }),
-                error: ({ message: error }: Error) => {
-                  patchState(store, { error });
-                },
-              });
-          }),
+                error: ({ message: error }: Error) =>
+                  patchState(store, { error }),
+                finalize: () => patchState(store, { loading: false }),
+              }),
+            ),
+          ),
         ),
       ),
       create: rxMethod<CreateCategoryDto>(
