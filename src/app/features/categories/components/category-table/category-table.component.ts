@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,7 @@ import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { Category } from '../../models/category.model';
 import { CategoryStore } from '../../store/category.store';
+import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
 
 @Component({
   selector: 'app-category-table',
@@ -24,6 +25,7 @@ import { CategoryStore } from '../../store/category.store';
     InputIconModule,
     TooltipModule,
     ConfirmDialogModule,
+    CategoryDialogComponent,
   ],
   template: `
     @if (categoryStore.error(); as error) {
@@ -81,7 +83,7 @@ import { CategoryStore } from '../../store/category.store';
                   label="Nueva"
                   icon="pi pi-plus"
                   severity="secondary"
-                  (onClick)="categoryStore.openDialogForNew()"
+                  (onClick)="openDialogForNew()"
                   pTooltip="Crear nueva categoría"
                   tooltipPosition="top"
                   [disabled]="categoryStore.loading()"
@@ -128,7 +130,7 @@ import { CategoryStore } from '../../store/category.store';
                 class="mr-2"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="categoryStore.openDialogForEdit(category)"
+                (click)="openDialogForEdit(category)"
                 pTooltip="Editar"
                 tooltipPosition="top"
                 [disabled]="categoryStore.loading()"
@@ -157,6 +159,11 @@ import { CategoryStore } from '../../store/category.store';
         </ng-template>
       </p-table>
 
+      <app-category-dialog
+        [(visible)]="dialogVisible"
+        [(category)]="selectedCategory"
+      ></app-category-dialog>
+
       <p-confirmdialog [style]="{ width: '450px' }" />
     }
   `,
@@ -164,6 +171,19 @@ import { CategoryStore } from '../../store/category.store';
 export class CategoryTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly categoryStore = inject(CategoryStore);
+
+  dialogVisible = signal(false);
+  selectedCategory = signal<Category | null>(null);
+
+  openDialogForNew() {
+    this.selectedCategory.set(null);
+    this.dialogVisible.set(true);
+  }
+
+  openDialogForEdit(category: Category) {
+    this.selectedCategory.set(category);
+    this.dialogVisible.set(true);
+  }
 
   confirmDelete({ id, name }: Category): void {
     this.confirmationService.confirm({

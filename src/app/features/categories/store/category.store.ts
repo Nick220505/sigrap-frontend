@@ -29,8 +29,6 @@ import { CategoryService } from '../services/category.service';
 export interface CategoryState {
   loading: boolean;
   error: string | null;
-  isDialogVisible: boolean;
-  selectedCategory: Category | null;
 }
 
 export const CategoryStore = signalStore(
@@ -39,8 +37,6 @@ export const CategoryStore = signalStore(
   withState<CategoryState>({
     loading: false,
     error: null,
-    isDialogVisible: false,
-    selectedCategory: null,
   }),
   withComputed(({ entities }) => ({
     categoriesCount: computed(() => entities().length),
@@ -76,10 +72,6 @@ export const CategoryStore = signalStore(
             tapResponse({
               next: (createdCategory: Category) => {
                 patchState(store, addEntity(createdCategory));
-                patchState(store, {
-                  isDialogVisible: false,
-                  selectedCategory: null,
-                });
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',
@@ -111,10 +103,6 @@ export const CategoryStore = signalStore(
                   store,
                   updateEntity({ id, changes: updatedCategory }),
                 );
-                patchState(store, {
-                  isDialogVisible: false,
-                  selectedCategory: null,
-                });
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',
@@ -163,24 +151,6 @@ export const CategoryStore = signalStore(
         ),
       ),
     ),
-    openDialogForNew(): void {
-      patchState(store, {
-        isDialogVisible: true,
-        selectedCategory: null,
-      });
-    },
-    openDialogForEdit(category: Category): void {
-      patchState(store, {
-        isDialogVisible: true,
-        selectedCategory: { ...category },
-      });
-    },
-    closeDialog(): void {
-      patchState(store, {
-        isDialogVisible: false,
-        selectedCategory: null,
-      });
-    },
   })),
   withHooks({
     onInit({ loadAll }) {

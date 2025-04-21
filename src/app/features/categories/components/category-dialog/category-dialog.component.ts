@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, model } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,10 +10,12 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { Category } from '../../models/category.model';
 import { CategoryStore } from '../../store/category.store';
 
 @Component({
   selector: 'app-category-dialog',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -24,11 +26,11 @@ import { CategoryStore } from '../../store/category.store';
   ],
   template: `
     <p-dialog
-      [(visible)]="isDialogVisible"
+      [(visible)]="visible"
       [style]="{ width: '450px' }"
       [header]="isEditMode() ? 'Editar Categoría' : 'Crear Categoría'"
       [modal]="true"
-      (onHide)="categoryStore.closeDialog()"
+      (onHide)="close()"
     >
       <ng-template #content>
         <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
@@ -69,12 +71,7 @@ import { CategoryStore } from '../../store/category.store';
         </form>
       </ng-template>
       <ng-template #footer>
-        <p-button
-          label="Cancelar"
-          icon="pi pi-times"
-          text
-          (click)="categoryStore.closeDialog()"
-        />
+        <p-button label="Cancelar" icon="pi pi-times" text (click)="close()" />
         <p-button
           label="Guardar"
           icon="pi pi-check"
@@ -90,24 +87,23 @@ import { CategoryStore } from '../../store/category.store';
   `,
 })
 export class CategoryDialogComponent {
-  private readonly fb = inject(FormBuilder);
+  visible = model(false);
+  category = model<Category | null>(null);
   readonly categoryStore = inject(CategoryStore);
+  private readonly fb = inject(FormBuilder);
 
   categoryForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
   });
-  isDialogVisible = signal(false);
-  isEditMode = signal(false);
+  isEditMode = model(false);
 
   constructor() {
     effect(() => {
-      const isDialogVisible = this.categoryStore.isDialogVisible();
-      const selectedCategory = this.categoryStore.selectedCategory();
-      this.isDialogVisible.set(isDialogVisible);
-      this.isEditMode.set(!!selectedCategory);
-      if (selectedCategory) {
-        this.categoryForm.patchValue(selectedCategory);
+      const cat = this.category();
+      this.isEditMode.set(!!cat);
+      if (cat) {
+        this.categoryForm.patchValue(cat);
       } else {
         this.categoryForm.reset();
       }
@@ -116,11 +112,17 @@ export class CategoryDialogComponent {
 
   saveCategory(): void {
     const categoryData = this.categoryForm.value;
-    const id = this.categoryStore.selectedCategory()?.id;
+    const id = this.category()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });
     } else {
       this.categoryStore.create(categoryData);
     }
+    this.close();
+  }
+
+  close() {
+    this.visible.set(false);
+    this.category.set(null);
   }
 }
