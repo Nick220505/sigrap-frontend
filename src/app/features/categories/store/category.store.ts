@@ -36,22 +36,9 @@ const initialState: CategoryState = {
 export const CategoryStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(
-    ({
-      categories,
-      loading,
-      error,
-      isDialogVisible,
-      selectedCategoryForEdit,
-    }) => ({
-      isLoading: computed(() => loading()),
-      getError: computed(() => error()),
-      getCategories: computed(() => categories()),
-      categoryCount: computed(() => categories().length),
-      selectIsDialogVisible: computed(() => isDialogVisible()),
-      selectSelectedCategoryForEdit: computed(() => selectedCategoryForEdit()),
-    }),
-  ),
+  withComputed(({ categories }) => ({
+    categoryCount: computed(() => categories().length),
+  })),
   withMethods(
     (
       store,

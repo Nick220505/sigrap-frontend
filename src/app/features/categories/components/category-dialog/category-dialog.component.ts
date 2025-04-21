@@ -84,7 +84,7 @@ import { CategoryStore } from '../../store/category.store';
               ? saveCategory()
               : categoryForm.markAllAsTouched()
           "
-          [disabled]="categoryStore.isLoading()"
+          [disabled]="categoryStore.loading()"
         />
       </ng-template>
     </p-dialog>
@@ -103,9 +103,8 @@ export class CategoryDialogComponent {
 
   constructor() {
     effect(() => {
-      const isDialogVisible = this.categoryStore.selectIsDialogVisible();
-      const selectedCategory =
-        this.categoryStore.selectSelectedCategoryForEdit();
+      const isDialogVisible = this.categoryStore.isDialogVisible();
+      const selectedCategory = this.categoryStore.selectedCategoryForEdit();
       this.isDialogVisible.set(isDialogVisible);
       this.isEditMode.set(!!selectedCategory);
       if (selectedCategory) {
@@ -118,7 +117,7 @@ export class CategoryDialogComponent {
 
   saveCategory(): void {
     const categoryData = this.categoryForm.value;
-    const id = this.categoryStore.selectSelectedCategoryForEdit()?.id;
+    const id = this.categoryStore.selectedCategoryForEdit()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });
     } else {

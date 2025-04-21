@@ -25,7 +25,7 @@ import { CategoryStore } from '../../store/category.store';
     ConfirmDialogModule,
   ],
   template: `
-    @if (categoryStore.getError(); as error) {
+    @if (categoryStore.error(); as error) {
       <div
         class="p-4 text-center text-red-600 bg-red-100 border border-red-400 rounded"
       >
@@ -35,14 +35,14 @@ import { CategoryStore } from '../../store/category.store';
           label="Reintentar"
           (onClick)="categoryStore.loadAll()"
           styleClass="p-button-sm mt-2"
-          [loading]="categoryStore.isLoading()"
+          [loading]="categoryStore.loading()"
         />
       </div>
     } @else {
       <p-table
         #dt
-        [value]="categoryStore.getCategories()"
-        [loading]="categoryStore.isLoading()"
+        [value]="categoryStore.categories()"
+        [loading]="categoryStore.loading()"
         [rows]="10"
         [columns]="[{ field: 'name', header: 'Nombre' }]"
         [paginator]="true"
@@ -71,7 +71,7 @@ import { CategoryStore } from '../../store/category.store';
                   placeholder="Buscar..."
                   class="w-full sm:w-auto"
                   [disabled]="
-                    !categoryStore.categoryCount() || categoryStore.isLoading()
+                    !categoryStore.categoryCount() || categoryStore.loading()
                   "
                 />
               </p-iconfield>
@@ -83,7 +83,7 @@ import { CategoryStore } from '../../store/category.store';
                   (onClick)="categoryStore.openDialogForNew()"
                   pTooltip="Crear nueva categoría"
                   tooltipPosition="top"
-                  [disabled]="categoryStore.isLoading()"
+                  [disabled]="categoryStore.loading()"
                 />
                 <p-button
                   label="Exportar"
@@ -93,7 +93,7 @@ import { CategoryStore } from '../../store/category.store';
                   pTooltip="Exportar datos a CSV"
                   tooltipPosition="top"
                   [disabled]="
-                    categoryStore.isLoading() || !categoryStore.categoryCount()
+                    categoryStore.loading() || !categoryStore.categoryCount()
                   "
                 />
               </div>
@@ -130,7 +130,7 @@ import { CategoryStore } from '../../store/category.store';
                 (click)="categoryStore.openDialogForEdit(category)"
                 pTooltip="Editar"
                 tooltipPosition="top"
-                [disabled]="categoryStore.isLoading()"
+                [disabled]="categoryStore.loading()"
               />
               <p-button
                 icon="pi pi-trash"
@@ -140,13 +140,13 @@ import { CategoryStore } from '../../store/category.store';
                 (click)="categoryStore.deleteWithConfirmation(category)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
-                [disabled]="categoryStore.isLoading()"
+                [disabled]="categoryStore.loading()"
               />
             </td>
           </tr>
         </ng-template>
         <ng-template #empty>
-          @if (!categoryStore.isLoading() && !categoryStore.categoryCount()) {
+          @if (!categoryStore.loading() && !categoryStore.categoryCount()) {
             <tr>
               <td [attr.colspan]="3" class="text-center py-4">
                 No hay categorías disponibles.
