@@ -6,6 +6,7 @@ import {
   withComputed,
   withHooks,
   withMethods,
+  withProps,
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -38,143 +39,141 @@ export const CategoryStore = signalStore(
   withComputed(({ categories }) => ({
     categoriesCount: computed(() => categories().length),
   })),
-  withMethods(
-    (
-      store,
-      categoryService = inject(CategoryService),
-      messageService = inject(MessageService),
-    ) => ({
-      loadAll: rxMethod<void>(
-        pipe(
-          tap(() => patchState(store, { loading: true, error: null })),
-          switchMap(() =>
-            categoryService.getAll().pipe(
-              tapResponse({
-                next: (categories) => patchState(store, { categories }),
-                error: ({ message: error }: Error) =>
-                  patchState(store, { error }),
-                finalize: () => patchState(store, { loading: false }),
-              }),
-            ),
+  withProps(() => ({
+    categoryService: inject(CategoryService),
+    messageService: inject(MessageService),
+  })),
+  withMethods(({ categoryService, messageService, ...store }) => ({
+    loadAll: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap(() =>
+          categoryService.getAll().pipe(
+            tapResponse({
+              next: (categories) => patchState(store, { categories }),
+              error: ({ message: error }: Error) =>
+                patchState(store, { error }),
+              finalize: () => patchState(store, { loading: false }),
+            }),
           ),
         ),
       ),
-      create: rxMethod<CreateCategoryDto>(
-        pipe(
-          tap((category) => {
-            patchState(store, { loading: true, error: null });
-            categoryService
-              .create(category)
-              .pipe(finalize(() => patchState(store, { loading: false })))
-              .subscribe({
-                next: (createdCategory: Category) => {
-                  patchState(store, ({ categories }) => ({
-                    categories: [...categories, createdCategory],
-                    isDialogVisible: false,
-                    selectedCategory: null,
-                  }));
-                  messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Categoría Creada',
-                  });
-                },
-                error: ({ message: error }: Error) => {
-                  patchState(store, { error });
-                  messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error al crear categoría',
-                  });
-                },
-              });
-          }),
-        ),
+    ),
+    create: rxMethod<CreateCategoryDto>(
+      pipe(
+        tap((category) => {
+          patchState(store, { loading: true, error: null });
+          categoryService
+            .create(category)
+            .pipe(finalize(() => patchState(store, { loading: false })))
+            .subscribe({
+              next: (createdCategory: Category) => {
+                patchState(store, ({ categories }) => ({
+                  categories: [...categories, createdCategory],
+                  isDialogVisible: false,
+                  selectedCategory: null,
+                }));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Éxito',
+                  detail: 'Categoría Creada',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al crear categoría',
+                });
+              },
+            });
+        }),
       ),
-      update: rxMethod<{ id: number; categoryData: UpdateCategoryDto }>(
-        pipe(
-          tap(({ id, categoryData }) => {
-            patchState(store, { loading: true, error: null });
-            categoryService
-              .update(id, categoryData)
-              .pipe(finalize(() => patchState(store, { loading: false })))
-              .subscribe({
-                next: (updatedCategory: Category) => {
-                  patchState(store, ({ categories }) => ({
-                    categories: categories.map((c) =>
-                      c.id === updatedCategory.id ? updatedCategory : c,
-                    ),
-                    isDialogVisible: false,
-                    selectedCategory: null,
-                  }));
-                  messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Categoría Actualizada',
-                  });
-                },
-                error: ({ message: error }: Error) => {
-                  patchState(store, { error });
-                  messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error al actualizar categoría',
-                  });
-                },
-              });
-          }),
-        ),
+    ),
+    update: rxMethod<{ id: number; categoryData: UpdateCategoryDto }>(
+      pipe(
+        tap(({ id, categoryData }) => {
+          patchState(store, { loading: true, error: null });
+          categoryService
+            .update(id, categoryData)
+            .pipe(finalize(() => patchState(store, { loading: false })))
+            .subscribe({
+              next: (updatedCategory: Category) => {
+                patchState(store, ({ categories }) => ({
+                  categories: categories.map((c) =>
+                    c.id === updatedCategory.id ? updatedCategory : c,
+                  ),
+                  isDialogVisible: false,
+                  selectedCategory: null,
+                }));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Éxito',
+                  detail: 'Categoría Actualizada',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al actualizar categoría',
+                });
+              },
+            });
+        }),
       ),
-      delete: rxMethod<number>(
-        pipe(
-          tap((id) => {
-            patchState(store, { loading: true, error: null });
-            categoryService
-              .delete(id)
-              .pipe(finalize(() => patchState(store, { loading: false })))
-              .subscribe({
-                next: () => {
-                  patchState(store, ({ categories }) => ({
-                    categories: categories.filter((c) => c.id !== id),
-                  }));
-                  messageService.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Categoría Eliminada',
-                  });
-                },
-                error: ({ message: error }: Error) => {
-                  patchState(store, { error });
-                  messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error al eliminar categoría',
-                  });
-                },
-              });
-          }),
-        ),
+    ),
+    delete: rxMethod<number>(
+      pipe(
+        tap((id) => {
+          patchState(store, { loading: true, error: null });
+          categoryService
+            .delete(id)
+            .pipe(finalize(() => patchState(store, { loading: false })))
+            .subscribe({
+              next: () => {
+                patchState(store, ({ categories }) => ({
+                  categories: categories.filter((c) => c.id !== id),
+                }));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Éxito',
+                  detail: 'Categoría Eliminada',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar categoría',
+                });
+              },
+            });
+        }),
       ),
-      openDialogForNew(): void {
-        patchState(store, {
-          isDialogVisible: true,
-          selectedCategory: null,
-        });
-      },
-      openDialogForEdit(category: Category): void {
-        patchState(store, {
-          isDialogVisible: true,
-          selectedCategory: { ...category },
-        });
-      },
-      closeDialog(): void {
-        patchState(store, {
-          isDialogVisible: false,
-          selectedCategory: null,
-        });
-      },
-    }),
-  ),
+    ),
+    openDialogForNew(): void {
+      patchState(store, {
+        isDialogVisible: true,
+        selectedCategory: null,
+      });
+    },
+    openDialogForEdit(category: Category): void {
+      patchState(store, {
+        isDialogVisible: true,
+        selectedCategory: { ...category },
+      });
+    },
+    closeDialog(): void {
+      patchState(store, {
+        isDialogVisible: false,
+        selectedCategory: null,
+      });
+    },
+  })),
   withHooks({
     onInit({ loadAll }) {
       loadAll();
