@@ -9,6 +9,13 @@ import {
   withProps,
   withState,
 } from '@ngrx/signals';
+import {
+  addEntity,
+  removeEntity,
+  setAllEntities,
+  updateEntity,
+  withEntities,
+} from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
@@ -20,7 +27,6 @@ import {
 import { CategoryService } from '../services/category.service';
 
 export interface CategoryState {
-  categories: Category[];
   loading: boolean;
   error: string | null;
   isDialogVisible: boolean;
@@ -29,15 +35,15 @@ export interface CategoryState {
 
 export const CategoryStore = signalStore(
   { providedIn: 'root' },
+  withEntities<Category>(),
   withState<CategoryState>({
-    categories: [],
     loading: false,
     error: null,
     isDialogVisible: false,
     selectedCategory: null,
   }),
-  withComputed(({ categories }) => ({
-    categoriesCount: computed(() => categories().length),
+  withComputed(({ entities }) => ({
+    categoriesCount: computed(() => entities().length),
   })),
   withProps(() => ({
     categoryService: inject(CategoryService),
@@ -50,7 +56,9 @@ export const CategoryStore = signalStore(
         switchMap(() =>
           categoryService.getAll().pipe(
             tapResponse({
-              next: (categories) => patchState(store, { categories }),
+              next: (categories) => {
+                patchState(store, setAllEntities(categories));
+              },
               error: ({ message: error }: Error) =>
                 patchState(store, { error }),
               finalize: () => patchState(store, { loading: false }),
@@ -66,11 +74,11 @@ export const CategoryStore = signalStore(
           categoryService.create(category).pipe(
             tapResponse({
               next: (createdCategory: Category) => {
-                patchState(store, ({ categories }) => ({
-                  categories: [...categories, createdCategory],
+                patchState(store, addEntity(createdCategory));
+                patchState(store, {
                   isDialogVisible: false,
                   selectedCategory: null,
-                }));
+                });
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',
@@ -98,13 +106,14 @@ export const CategoryStore = signalStore(
           categoryService.update(id, categoryData).pipe(
             tapResponse({
               next: (updatedCategory: Category) => {
-                patchState(store, ({ categories }) => ({
-                  categories: categories.map((c) =>
-                    c.id === updatedCategory.id ? updatedCategory : c,
-                  ),
+                patchState(
+                  store,
+                  updateEntity({ id, changes: updatedCategory }),
+                );
+                patchState(store, {
                   isDialogVisible: false,
                   selectedCategory: null,
-                }));
+                });
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',
@@ -132,9 +141,7 @@ export const CategoryStore = signalStore(
           categoryService.delete(id).pipe(
             tapResponse({
               next: () => {
-                patchState(store, ({ categories }) => ({
-                  categories: categories.filter((c) => c.id !== id),
-                }));
+                patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
                   summary: 'Éxito',

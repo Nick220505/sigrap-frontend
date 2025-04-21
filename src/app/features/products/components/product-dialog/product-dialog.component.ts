@@ -115,7 +115,7 @@ import { ProductStore } from '../../store/product.store';
           <p-dropdown
             id="category"
             formControlName="category"
-            [options]="categoryStore.categories()"
+            [options]="categoryStore.entities()"
             optionLabel="name"
             placeholder="Seleccione una categoría"
             [style]="{ width: '100%' }"

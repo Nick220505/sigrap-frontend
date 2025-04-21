@@ -42,7 +42,7 @@ import { CategoryStore } from '../../store/category.store';
     } @else {
       <p-table
         #dt
-        [value]="categoryStore.categories()"
+        [value]="categoryStore.entities()"
         [loading]="categoryStore.loading()"
         [rows]="10"
         [columns]="[{ field: 'name', header: 'Nombre' }]"
