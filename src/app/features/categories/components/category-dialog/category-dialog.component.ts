@@ -103,7 +103,7 @@ export class CategoryDialogComponent {
   constructor() {
     effect(() => {
       const isDialogVisible = this.categoryStore.isDialogVisible();
-      const selectedCategory = this.categoryStore.selectedCategoryForEdit();
+      const selectedCategory = this.categoryStore.selectedCategory();
       this.isDialogVisible.set(isDialogVisible);
       this.isEditMode.set(!!selectedCategory);
       if (selectedCategory) {
@@ -116,7 +116,7 @@ export class CategoryDialogComponent {
 
   saveCategory(): void {
     const categoryData = this.categoryForm.value;
-    const id = this.categoryStore.selectedCategoryForEdit()?.id;
+    const id = this.categoryStore.selectedCategory()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });
     } else {

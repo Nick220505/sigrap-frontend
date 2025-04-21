@@ -22,7 +22,7 @@ export interface CategoryState {
   loading: boolean;
   error: string | null;
   isDialogVisible: boolean;
-  selectedCategoryForEdit: Category | null;
+  selectedCategory: Category | null;
 }
 
 const initialState: CategoryState = {
@@ -30,7 +30,7 @@ const initialState: CategoryState = {
   loading: false,
   error: null,
   isDialogVisible: false,
-  selectedCategoryForEdit: null,
+  selectedCategory: null,
 };
 
 export const CategoryStore = signalStore(
@@ -74,7 +74,7 @@ export const CategoryStore = signalStore(
                   patchState(store, (state) => ({
                     categories: [...state.categories, createdCategory],
                     isDialogVisible: false,
-                    selectedCategoryForEdit: null,
+                    selectedCategory: null,
                   }));
                   messageService.add({
                     severity: 'success',
@@ -108,7 +108,7 @@ export const CategoryStore = signalStore(
                       c.id === updatedCategory.id ? updatedCategory : c,
                     ),
                     isDialogVisible: false,
-                    selectedCategoryForEdit: null,
+                    selectedCategory: null,
                   }));
                   messageService.add({
                     severity: 'success',
@@ -173,19 +173,19 @@ export const CategoryStore = signalStore(
       openDialogForNew(): void {
         patchState(store, {
           isDialogVisible: true,
-          selectedCategoryForEdit: null,
+          selectedCategory: null,
         });
       },
       openDialogForEdit(category: Category): void {
         patchState(store, {
           isDialogVisible: true,
-          selectedCategoryForEdit: { ...category },
+          selectedCategory: { ...category },
         });
       },
       closeDialog(): void {
         patchState(store, {
           isDialogVisible: false,
-          selectedCategoryForEdit: null,
+          selectedCategory: null,
         });
       },
     }),
