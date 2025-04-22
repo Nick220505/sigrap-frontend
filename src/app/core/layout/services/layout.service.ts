@@ -39,7 +39,7 @@ interface DocumentWithTransition extends Omit<Document, 'startViewTransition'> {
 export class LayoutService {
   _config: LayoutConfig = {
     preset: 'Aura',
-    primary: 'emerald',
+    primary: 'blue',
     surface: null,
     darkTheme: false,
     menuMode: 'static',
