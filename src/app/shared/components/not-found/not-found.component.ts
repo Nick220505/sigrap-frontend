@@ -56,7 +56,7 @@ import { ButtonModule } from 'primeng/button';
               Not Found
             </h1>
             <div class="text-surface-600 dark:text-surface-200 mb-8">
-              Requested resource is not available.
+              El recurso solicitado no se encuentra.
             </div>
             <a
               routerLink="/"
@@ -115,7 +115,7 @@ import { ButtonModule } from 'primeng/button';
                 >
               </span>
             </a>
-            <p-button label="Go to Dashboard" routerLink="/" />
+            <p-button label="Volver al Dashboard" routerLink="/" />
           </div>
         </div>
       </div>
