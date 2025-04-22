@@ -22,4 +22,15 @@ export const routes: Routes = [
         (m) => m.CategoriesComponent,
       ),
   },
+
+  {
+    path: 'notfound',
+    loadComponent: () =>
+      import('./shared/components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
+  },
+  
+  { path: '**', redirectTo: '/notfound' },
+
 ];
