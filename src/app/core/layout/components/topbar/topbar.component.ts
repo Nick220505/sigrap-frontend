@@ -32,9 +32,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           class="layout-topbar-logo flex items-center text-2xl text-[var(--text-color)] font-medium gap-3"
           routerLink="/"
         >
-          <i
-            class="pi pi-shopping-bag text-[2rem] text-[var(--primary-color)]"
-          ></i>
+          <img src="logo.png" alt="Logo" class="h-8" />
           <span>SIGRAP</span>
         </a>
       </div>
