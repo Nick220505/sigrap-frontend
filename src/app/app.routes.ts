@@ -23,11 +23,11 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'notfound',
+    path: 'no-encontrado',
     loadComponent: () =>
       import('./shared/components/not-found/not-found.component').then(
         (m) => m.NotFoundComponent,
       ),
   },
-  { path: '**', redirectTo: '/notfound' },
+  { path: '**', redirectTo: '/no-encontrado' },
 ];
