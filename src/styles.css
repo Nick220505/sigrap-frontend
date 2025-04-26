@@ -319,6 +319,23 @@ a {
   transition: max-height 1s ease-in-out;
 }
 
+.clearfix:after {
+  content: ' ';
+  display: block;
+  clear: both;
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: var(--content-border-radius);
+}
+
+.card:last-child {
+  margin-bottom: 0;
+}
+
 h1,
 h2,
 h3,
@@ -378,21 +395,4 @@ hr {
 p {
   margin: 0 0 1rem 0;
   line-height: 1.5;
-}
-
-.clearfix:after {
-  content: ' ';
-  display: block;
-  clear: both;
-}
-
-.card {
-  background: var(--surface-card);
-  padding: 2rem;
-  margin-bottom: 2rem;
-  border-radius: var(--content-border-radius);
-}
-
-.card:last-child {
-  margin-bottom: 0;
 }
