@@ -30,7 +30,6 @@ export const routes: Routes = [
         (m) => m.NotFoundComponent,
       ),
   },
-  
-  { path: '**', redirectTo: '/notfound' },
 
+  { path: '**', redirectTo: '/notfound' },
 ];

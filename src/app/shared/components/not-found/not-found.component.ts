@@ -15,8 +15,7 @@ import { ButtonModule } from 'primeng/button';
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           class="mb-8 w-32 shrink-0"
-        >
-        </svg>
+        ></svg>
 
         <img src="logo.png" alt="Logo" class="h-20" />
 
@@ -42,6 +41,4 @@ import { ButtonModule } from 'primeng/button';
     </div>
   `,
 })
-export class NotFoundComponent {
-
-}
+export class NotFoundComponent {}
