@@ -31,7 +31,7 @@ export class MenuComponent {
       label: 'PRINCIPAL',
       items: [
         {
-          label: 'Dashboard',
+          label: 'Panel Principal',
           icon: 'pi pi-fw pi-home',
           routerLink: ['/'],
         },
