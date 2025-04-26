@@ -38,7 +38,7 @@ export class MenuComponent {
       ],
     },
     {
-      label: 'GESTIÓN DE INVENTARIO',
+      label: 'INVENTARIO',
       items: [
         {
           label: 'Productos',
