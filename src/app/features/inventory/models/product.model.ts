@@ -1,4 +1,4 @@
-import { Category } from '@features/inventory/models/category.model';
+import { Category } from './category.model';
 
 export interface Product {
   id: number;
