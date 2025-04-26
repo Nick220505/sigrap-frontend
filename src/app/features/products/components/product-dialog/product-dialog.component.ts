@@ -8,9 +8,9 @@ import {
 } from '@angular/forms';
 import { CategoryStore } from '@features/categories/store/category.store';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -28,7 +28,7 @@ import { ProductStore } from '../../store/product.store';
     TextareaModule,
     InputNumberModule,
     SelectModule,
-    CheckboxModule,
+    InputSwitchModule,
   ],
   template: `
     <p-dialog
@@ -141,16 +141,6 @@ import { ProductStore } from '../../store/product.store';
             styleClass="w-full"
           />
         </div>
-
-        <div class="flex items-center gap-2 mt-2">
-          <p-checkbox
-            id="active"
-            formControlName="active"
-            [binary]="true"
-            inputId="active"
-          />
-          <label for="active" class="font-medium cursor-pointer">Activo</label>
-        </div>
       </form>
       <ng-template #footer>
         <p-button
@@ -185,7 +175,6 @@ export class ProductDialogComponent {
     costPrice: [0, [Validators.required, Validators.min(0)]],
     salePrice: [0, [Validators.required, Validators.min(0)]],
     category: [null],
-    active: [true],
   });
 
   constructor() {
@@ -197,14 +186,7 @@ export class ProductDialogComponent {
           category: inputProduct.category || null,
         });
       } else {
-        this.productForm.reset({
-          name: '',
-          description: '',
-          costPrice: 0,
-          salePrice: 0,
-          category: null,
-          active: true,
-        });
+        this.productForm.reset();
       }
     });
   }
@@ -213,11 +195,7 @@ export class ProductDialogComponent {
     const formValue = this.productForm.value;
 
     const productData: CreateProductDto = {
-      name: formValue.name,
-      description: formValue.description,
-      costPrice: formValue.costPrice,
-      salePrice: formValue.salePrice,
-      active: formValue.active,
+      ...formValue,
       category: formValue.category ? { id: formValue.category.id } : undefined,
     };
 

@@ -51,7 +51,6 @@ import { ProductDialogComponent } from '../product-dialog/product-dialog.compone
           { field: 'costPrice', header: 'Precio Costo' },
           { field: 'salePrice', header: 'Precio Venta' },
           { field: 'category.name', header: 'Categoría' },
-          { field: 'active', header: 'Estado' },
         ];
       <p-table
         #dt
@@ -144,10 +143,6 @@ import { ProductDialogComponent } from '../product-dialog/product-dialog.compone
               {{ columns[4].header }}
               <p-sortIcon field="category.name" />
             </th>
-            <th scope="col" pSortableColumn="active" style="width: 6rem">
-              {{ columns[5].header }}
-              <p-sortIcon field="active" />
-            </th>
             <th scope="col" style="width: 8rem">Acciones</th>
           </tr>
         </ng-template>
@@ -165,12 +160,6 @@ import { ProductDialogComponent } from '../product-dialog/product-dialog.compone
             </td>
             <td style="width: 10rem">
               {{ product.category?.name || 'Sin categoría' }}
-            </td>
-            <td style="width: 6rem">
-              <p-tag
-                [value]="product.active ? 'Activo' : 'Inactivo'"
-                [severity]="product.active ? 'success' : 'danger'"
-              ></p-tag>
             </td>
             <td style="width: 8rem">
               <p-button

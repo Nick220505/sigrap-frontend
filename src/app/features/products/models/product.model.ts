@@ -7,7 +7,6 @@ export interface Product {
   costPrice: number;
   salePrice: number;
   category?: Category;
-  active: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,7 +17,6 @@ export interface CreateProductDto {
   costPrice: number;
   salePrice: number;
   category?: { id: number };
-  active?: boolean;
 }
 
 export type UpdateProductDto = Partial<CreateProductDto>;
