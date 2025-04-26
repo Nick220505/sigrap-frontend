@@ -34,11 +34,4 @@ export class ProductService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.productsUrl}/${id}`);
   }
-
-  toggleStatus(id: number): Observable<Product> {
-    return this.http.patch<Product>(
-      `${this.productsUrl}/${id}/toggle-status`,
-      {},
-    );
-  }
 }

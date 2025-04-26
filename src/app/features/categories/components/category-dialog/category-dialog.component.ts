@@ -91,6 +91,7 @@ export class CategoryDialogComponent {
 
   visible = model(false);
   inputCategory = model<Category | null>(null);
+
   categoryForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],

@@ -1,4 +1,4 @@
-import { Category } from '@features/categories/models/category.model';
+import { Category } from '../../categories/models/category.model';
 
 export interface Product {
   id: number;
@@ -6,17 +6,19 @@ export interface Product {
   description?: string;
   costPrice: number;
   salePrice: number;
-  imageUrl?: string;
   category?: Category;
   active: boolean;
-  deleted: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export type CreateProductDto = Omit<
-  Product,
-  'id' | 'createdAt' | 'updatedAt' | 'deleted'
->;
+export interface CreateProductDto {
+  name: string;
+  description?: string;
+  costPrice: number;
+  salePrice: number;
+  category?: { id: number };
+  active?: boolean;
+}
 
 export type UpdateProductDto = Partial<CreateProductDto>;

@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ProductStore } from '@features/products/store/product.store';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { Product } from '../../models/product.model';
+import { ProductStore } from '../../store/product.store';
+import { ProductDialogComponent } from '../product-dialog/product-dialog.component';
 
 @Component({
   selector: 'app-product-table',
@@ -19,16 +21,16 @@ import { TooltipModule } from 'primeng/tooltip';
     FormsModule,
     TableModule,
     ButtonModule,
-    TagModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
     TooltipModule,
     ConfirmDialogModule,
-    InputSwitchModule,
+    TagModule,
+    ProductDialogComponent,
   ],
   template: `
-    @if (productStore.getError(); as error) {
+    @if (productStore.error(); as error) {
       <div
         class="p-4 text-center text-red-600 bg-red-100 border border-red-400 rounded"
       >
@@ -38,27 +40,28 @@ import { TooltipModule } from 'primeng/tooltip';
           label="Reintentar"
           (onClick)="productStore.loadAll()"
           styleClass="p-button-sm mt-2"
-          [loading]="productStore.isLoading()"
+          [loading]="productStore.loading()"
         />
       </div>
     } @else {
       @let columns =
         [
           { field: 'name', header: 'Nombre' },
-          { field: 'costPrice', header: 'Precio de Costo ($)' },
-          { field: 'salePrice', header: 'Precio de Venta ($)' },
+          { field: 'description', header: 'Descripción' },
+          { field: 'costPrice', header: 'Precio Costo' },
+          { field: 'salePrice', header: 'Precio Venta' },
           { field: 'category.name', header: 'Categoría' },
           { field: 'active', header: 'Estado' },
         ];
       <p-table
         #dt
-        [value]="productStore.getActiveProducts()"
-        [loading]="productStore.isLoading()"
+        [value]="productStore.entities()"
+        [loading]="productStore.loading()"
         [rows]="10"
         [columns]="columns"
         [paginator]="true"
-        [globalFilterFields]="['name', 'category.name']"
-        [tableStyle]="{ 'min-width': '75rem' }"
+        [globalFilterFields]="['name', 'description', 'category.name']"
+        [tableStyle]="{ 'min-width': '70rem' }"
         [rowHover]="true"
         dataKey="id"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
@@ -82,7 +85,7 @@ import { TooltipModule } from 'primeng/tooltip';
                   placeholder="Buscar..."
                   class="w-full sm:w-auto"
                   [disabled]="
-                    !productStore.productCount() || productStore.isLoading()
+                    !productStore.productsCount() || productStore.loading()
                   "
                 />
               </p-iconfield>
@@ -91,10 +94,10 @@ import { TooltipModule } from 'primeng/tooltip';
                   label="Nuevo"
                   icon="pi pi-plus"
                   severity="secondary"
-                  (onClick)="productStore.openDialogForNew()"
+                  (onClick)="openProductDialog()"
                   pTooltip="Crear nuevo producto"
                   tooltipPosition="top"
-                  [disabled]="productStore.isLoading()"
+                  [disabled]="productStore.loading()"
                 />
                 <p-button
                   label="Exportar"
@@ -104,7 +107,7 @@ import { TooltipModule } from 'primeng/tooltip';
                   pTooltip="Exportar datos a CSV"
                   tooltipPosition="top"
                   [disabled]="
-                    productStore.isLoading() || !productStore.productCount()
+                    productStore.loading() || !productStore.productsCount()
                   "
                 />
               </div>
@@ -113,28 +116,36 @@ import { TooltipModule } from 'primeng/tooltip';
         </ng-template>
         <ng-template #header>
           <tr>
-            <th scope="col" pSortableColumn="name" style="min-width: 14rem">
+            <th scope="col" pSortableColumn="name" style="min-width: 12rem">
               {{ columns[0].header }}
               <p-sortIcon field="name" />
             </th>
-            <th scope="col" pSortableColumn="costPrice" style="min-width: 8rem">
+            <th
+              scope="col"
+              pSortableColumn="description"
+              style="min-width: 14rem"
+            >
               {{ columns[1].header }}
+              <p-sortIcon field="description" />
+            </th>
+            <th scope="col" pSortableColumn="costPrice" style="width: 8rem">
+              {{ columns[2].header }}
               <p-sortIcon field="costPrice" />
             </th>
-            <th scope="col" pSortableColumn="salePrice" style="min-width: 8rem">
-              {{ columns[2].header }}
+            <th scope="col" pSortableColumn="salePrice" style="width: 8rem">
+              {{ columns[3].header }}
               <p-sortIcon field="salePrice" />
             </th>
             <th
               scope="col"
               pSortableColumn="category.name"
-              style="min-width: 10rem"
+              style="width: 10rem"
             >
-              {{ columns[3].header }}
+              {{ columns[4].header }}
               <p-sortIcon field="category.name" />
             </th>
-            <th scope="col" pSortableColumn="active" style="min-width: 6rem">
-              {{ columns[4].header }}
+            <th scope="col" pSortableColumn="active" style="width: 6rem">
+              {{ columns[5].header }}
               <p-sortIcon field="active" />
             </th>
             <th scope="col" style="width: 8rem">Acciones</th>
@@ -142,22 +153,24 @@ import { TooltipModule } from 'primeng/tooltip';
         </ng-template>
         <ng-template #body let-product>
           <tr>
-            <td style="min-width: 14rem">{{ product.name }}</td>
-            <td style="min-width: 8rem">
-              {{ product.costPrice | currency: 'USD' }}
+            <td style="min-width: 12rem">{{ product.name }}</td>
+            <td style="min-width: 14rem">
+              {{ product.description || 'Sin descripción' }}
             </td>
-            <td style="min-width: 8rem">
-              {{ product.salePrice | currency: 'USD' }}
+            <td style="width: 8rem">
+              {{ product.costPrice | currency: 'USD' : 'symbol' : '1.2-2' }}
             </td>
-            <td style="min-width: 10rem">
-              {{ product.category?.name || '-' }}
+            <td style="width: 8rem">
+              {{ product.salePrice | currency: 'USD' : 'symbol' : '1.2-2' }}
             </td>
-            <td style="min-width: 6rem">
-              <p-inputSwitch
-                [(ngModel)]="product.active"
-                (onChange)="productStore.toggleStatus(product.id)"
-                [disabled]="productStore.isLoading()"
-              ></p-inputSwitch>
+            <td style="width: 10rem">
+              {{ product.category?.name || 'Sin categoría' }}
+            </td>
+            <td style="width: 6rem">
+              <p-tag
+                [value]="product.active ? 'Activo' : 'Inactivo'"
+                [severity]="product.active ? 'success' : 'danger'"
+              ></p-tag>
             </td>
             <td style="width: 8rem">
               <p-button
@@ -165,28 +178,28 @@ import { TooltipModule } from 'primeng/tooltip';
                 class="mr-2"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="productStore.openDialogForEdit(product)"
+                (click)="openProductDialog(product)"
                 pTooltip="Editar"
                 tooltipPosition="top"
-                [disabled]="productStore.isLoading()"
+                [disabled]="productStore.loading()"
               />
               <p-button
                 icon="pi pi-trash"
                 severity="danger"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="productStore.deleteWithConfirmation(product)"
+                (click)="confirmDelete(product)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
-                [disabled]="productStore.isLoading()"
+                [disabled]="productStore.loading()"
               />
             </td>
           </tr>
         </ng-template>
         <ng-template #empty>
-          @if (!productStore.isLoading() && !productStore.productCount()) {
+          @if (!productStore.loading() && !productStore.productsCount()) {
             <tr>
-              <td [attr.colspan]="6" class="text-center py-4">
+              <td [attr.colspan]="7" class="text-center py-4">
                 No hay productos disponibles.
               </td>
             </tr>
@@ -194,10 +207,37 @@ import { TooltipModule } from 'primeng/tooltip';
         </ng-template>
       </p-table>
 
+      <app-product-dialog
+        [(visible)]="dialogVisible"
+        [(inputProduct)]="selectedProduct"
+      />
+
       <p-confirmdialog [style]="{ width: '450px' }" />
     }
   `,
 })
 export class ProductTableComponent {
+  private readonly confirmationService = inject(ConfirmationService);
   readonly productStore = inject(ProductStore);
+
+  dialogVisible = signal(false);
+  selectedProduct = signal<Product | null>(null);
+
+  openProductDialog(product?: Product) {
+    this.selectedProduct.set(product ?? null);
+    this.dialogVisible.set(true);
+  }
+
+  confirmDelete({ id, name }: Product): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea eliminar el producto "${name}"?`,
+      header: 'Eliminar producto',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => this.productStore.delete(id),
+    });
+  }
 }

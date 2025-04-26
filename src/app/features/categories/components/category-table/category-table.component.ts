@@ -42,12 +42,17 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         />
       </div>
     } @else {
+      @let columns =
+        [
+          { field: 'name', header: 'Nombre' },
+          { field: 'description', header: 'Descripción' },
+        ];
       <p-table
         #dt
         [value]="categoryStore.entities()"
         [loading]="categoryStore.loading()"
         [rows]="10"
-        [columns]="[{ field: 'name', header: 'Nombre' }]"
+        [columns]="columns"
         [paginator]="true"
         [globalFilterFields]="['name', 'description']"
         [tableStyle]="{ 'min-width': '40rem' }"
@@ -106,7 +111,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         <ng-template #header>
           <tr>
             <th scope="col" pSortableColumn="name" style="min-width: 16rem">
-              Nombre
+              {{ columns[0].header }}
               <p-sortIcon field="name" />
             </th>
             <th
@@ -114,7 +119,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
               pSortableColumn="description"
               style="min-width: 20rem"
             >
-              Descripción
+              {{ columns[1].header }}
               <p-sortIcon field="description" />
             </th>
             <th scope="col" style="width: 8rem">Acciones</th>

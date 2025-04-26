@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, model } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { CategoryStore } from '@features/categories/store/category.store';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { CategoryStore } from '../../../categories/store/category.store';
+import { CreateProductDto, Product } from '../../models/product.model';
 import { ProductStore } from '../../store/product.store';
 
 @Component({
@@ -24,34 +25,36 @@ import { ProductStore } from '../../store/product.store';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    InputNumberModule,
     TextareaModule,
-    InputSwitchModule,
+    InputNumberModule,
     DropdownModule,
+    CheckboxModule,
   ],
   template: `
     <p-dialog
-      [(visible)]="isDialogVisible"
-      [style]="{ width: '600px' }"
-      [header]="isEditMode() ? 'Editar Producto' : 'Crear Producto'"
+      [(visible)]="visible"
+      [style]="{ width: '500px' }"
+      [header]="inputProduct() ? 'Editar Producto' : 'Crear Producto'"
       [modal]="true"
-      (onHide)="productStore.closeDialog()"
+      (onHide)="closeDialog()"
     >
       <form [formGroup]="productForm" class="flex flex-col gap-4 pt-4">
-        @let nameInvalid =
+        @let nameControlInvalid =
           productForm.get('name')?.invalid && productForm.get('name')?.touched;
-        <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
-          <label for="name" class="font-bold">Nombre *</label>
+        <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
+          <label for="name" class="font-bold">Nombre</label>
           <input
             type="text"
             pInputText
             id="name"
             formControlName="name"
             placeholder="Ingrese el nombre del producto"
-            [ngClass]="{ 'ng-dirty ng-invalid': nameInvalid }"
+            [ngClass]="{ 'ng-dirty ng-invalid': nameControlInvalid }"
+            required
+            fluid
           />
-          @if (nameInvalid) {
-            <small class="text-red-500">El nombre es obligatorio</small>
+          @if (nameControlInvalid) {
+            <small class="text-red-500">El nombre es obligatorio.</small>
           }
         </div>
 
@@ -62,50 +65,63 @@ import { ProductStore } from '../../store/product.store';
             pTextarea
             id="description"
             formControlName="description"
-            placeholder="Ingrese la descripción del producto"
+            placeholder="Ingrese una descripción (opcional)"
             fluid
           ></textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          @let costPriceInvalid =
+          @let costPriceControlInvalid =
             productForm.get('costPrice')?.invalid &&
             productForm.get('costPrice')?.touched;
-          <div class="flex flex-col gap-2" [class.p-invalid]="costPriceInvalid">
-            <label for="costPrice" class="font-bold">Precio de Costo *</label>
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="costPriceControlInvalid"
+          >
+            <label for="costPrice" class="font-bold">Precio de Costo</label>
             <p-inputNumber
               id="costPrice"
               formControlName="costPrice"
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-              [minFractionDigits]="2"
-              [ngClass]="{ 'ng-dirty ng-invalid': costPriceInvalid }"
+              placeholder="0.00"
+              [min]="0"
+              [mode]="'currency'"
+              [currency]="'USD'"
+              [locale]="'en-US'"
+              [ngClass]="{ 'ng-dirty ng-invalid': costPriceControlInvalid }"
+              required
+              fluid
             />
-            @if (costPriceInvalid) {
-              <small class="text-red-500"
-                >El precio de costo es obligatorio</small
-              >
+            @if (costPriceControlInvalid) {
+              <small class="text-red-500">
+                El precio de costo es obligatorio.
+              </small>
             }
           </div>
-          @let salePriceInvalid =
+
+          @let salePriceControlInvalid =
             productForm.get('salePrice')?.invalid &&
             productForm.get('salePrice')?.touched;
-          <div class="flex flex-col gap-2" [class.p-invalid]="salePriceInvalid">
-            <label for="salePrice" class="font-bold">Precio de Venta *</label>
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="salePriceControlInvalid"
+          >
+            <label for="salePrice" class="font-bold">Precio de Venta</label>
             <p-inputNumber
               id="salePrice"
               formControlName="salePrice"
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-              [minFractionDigits]="2"
-              [ngClass]="{ 'ng-dirty ng-invalid': salePriceInvalid }"
+              placeholder="0.00"
+              [min]="0"
+              [mode]="'currency'"
+              [currency]="'USD'"
+              [locale]="'en-US'"
+              [ngClass]="{ 'ng-dirty ng-invalid': salePriceControlInvalid }"
+              required
+              fluid
             />
-            @if (salePriceInvalid) {
-              <small class="text-red-500"
-                >El precio de venta es obligatorio</small
-              >
+            @if (salePriceControlInvalid) {
+              <small class="text-red-500">
+                El precio de venta es obligatorio.
+              </small>
             }
           </div>
         </div>
@@ -118,44 +134,39 @@ import { ProductStore } from '../../store/product.store';
             [options]="categoryStore.entities()"
             optionLabel="name"
             placeholder="Seleccione una categoría"
-            [style]="{ width: '100%' }"
-          ></p-dropdown>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="imageUrl" class="font-bold">URL de Imagen</label>
-          <input
-            type="text"
-            pInputText
-            id="imageUrl"
-            formControlName="imageUrl"
-            placeholder="Ingrese la URL de la imagen"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            appendTo="body"
+            fluid
           />
         </div>
 
-        <div class="flex items-center gap-2">
-          <p-inputSwitch id="active" formControlName="active"></p-inputSwitch>
-          <label for="active" class="font-bold">Activo</label>
+        <div class="flex items-center gap-2 mt-2">
+          <p-checkbox
+            id="active"
+            formControlName="active"
+            [binary]="true"
+            inputId="active"
+          />
+          <label for="active" class="font-medium cursor-pointer">Activo</label>
         </div>
       </form>
-
-      <ng-template pTemplate="footer">
-        <div class="flex justify-end gap-2">
-          <p-button
-            label="Cancelar"
-            icon="pi pi-times"
-            (click)="productStore.closeDialog()"
-            styleClass="p-button-text"
-          ></p-button>
-          <p-button
-            label="Guardar"
-            icon="pi pi-check"
-            (click)="
-              productForm.valid ? saveProduct() : productForm.markAllAsTouched()
-            "
-            [loading]="productStore.isLoading()"
-          ></p-button>
-        </div>
+      <ng-template #footer>
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          text
+          (click)="closeDialog()"
+        />
+        <p-button
+          label="Guardar"
+          icon="pi pi-check"
+          (click)="
+            productForm.valid ? saveProduct() : productForm.markAllAsTouched()
+          "
+          [disabled]="productStore.loading()"
+        />
       </ng-template>
     </p-dialog>
   `,
@@ -165,36 +176,34 @@ export class ProductDialogComponent {
   readonly productStore = inject(ProductStore);
   readonly categoryStore = inject(CategoryStore);
 
+  visible = model(false);
+  inputProduct = model<Product | null>(null);
+
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
     costPrice: [0, [Validators.required, Validators.min(0)]],
     salePrice: [0, [Validators.required, Validators.min(0)]],
-    imageUrl: [''],
     category: [null],
     active: [true],
   });
 
-  isDialogVisible = signal(false);
-  isEditMode = signal(false);
-
   constructor() {
     effect(() => {
-      const isDialogVisible = this.productStore.selectIsDialogVisible();
-      const selectedProduct = this.productStore.selectSelectedProductForEdit();
-      this.isDialogVisible.set(isDialogVisible);
-      this.isEditMode.set(!!selectedProduct);
-
-      if (selectedProduct) {
+      const inputProduct = this.inputProduct();
+      if (inputProduct) {
         this.productForm.patchValue({
-          ...selectedProduct,
-          category: selectedProduct.category || null,
+          ...inputProduct,
+          category: inputProduct.category || null,
         });
       } else {
         this.productForm.reset({
-          active: true,
+          name: '',
+          description: '',
           costPrice: 0,
           salePrice: 0,
+          category: null,
+          active: true,
         });
       }
     });
@@ -202,16 +211,28 @@ export class ProductDialogComponent {
 
   saveProduct(): void {
     const formValue = this.productForm.value;
-    const productData = {
-      ...formValue,
-      category: formValue.category ? { id: formValue.category.id } : null,
+
+    // Format the data for the API
+    const productData: CreateProductDto = {
+      name: formValue.name,
+      description: formValue.description,
+      costPrice: formValue.costPrice,
+      salePrice: formValue.salePrice,
+      active: formValue.active,
+      category: formValue.category ? { id: formValue.category.id } : undefined,
     };
 
-    const id = this.productStore.selectSelectedProductForEdit()?.id;
+    const id = this.inputProduct()?.id;
     if (id) {
       this.productStore.update({ id, productData });
     } else {
       this.productStore.create(productData);
     }
+    this.closeDialog();
+  }
+
+  closeDialog() {
+    this.visible.set(false);
+    this.inputProduct.set(null);
   }
 }
