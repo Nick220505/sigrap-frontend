@@ -10,9 +10,9 @@ import { CategoryStore } from '@features/categories/store/category.store';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { CreateProductDto, Product } from '../../models/product.model';
 import { ProductStore } from '../../store/product.store';
@@ -27,7 +27,7 @@ import { ProductStore } from '../../store/product.store';
     InputTextModule,
     TextareaModule,
     InputNumberModule,
-    DropdownModule,
+    SelectModule,
     CheckboxModule,
   ],
   template: `
@@ -128,7 +128,7 @@ import { ProductStore } from '../../store/product.store';
 
         <div class="flex flex-col gap-2">
           <label for="category" class="font-bold">Categoría</label>
-          <p-dropdown
+          <p-select
             id="category"
             formControlName="category"
             [options]="categoryStore.entities()"
@@ -138,7 +138,7 @@ import { ProductStore } from '../../store/product.store';
             filterBy="name"
             [showClear]="true"
             appendTo="body"
-            fluid
+            styleClass="w-full"
           />
         </div>
 
