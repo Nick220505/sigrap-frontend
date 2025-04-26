@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
-import { ProductDialogComponent } from './components/product-dialog/product-dialog.component';
-import { ProductTableComponent } from './components/product-table/product-table.component';
+import { ProductDialogComponent } from './product-dialog/product-dialog.component';
+import { ProductTableComponent } from './product-table/product-table.component';
 
 @Component({
   selector: 'app-products',

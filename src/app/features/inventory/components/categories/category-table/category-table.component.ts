@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -9,8 +10,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { Category } from '../../models/category.model';
-import { CategoryStore } from '../../store/category.store';
+import { Category } from '../../../models/category.model';
 import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
 
 @Component({

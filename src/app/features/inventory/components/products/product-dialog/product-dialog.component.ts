@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CategoryStore } from '@features/categories/store/category.store';
+import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -14,8 +14,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { CreateProductDto, Product } from '../../models/product.model';
-import { ProductStore } from '../../store/product.store';
+import { CreateProductDto, Product } from '../../../models/product.model';
+import { ProductStore } from '../../../stores/product.store';
 
 @Component({
   selector: 'app-product-dialog',

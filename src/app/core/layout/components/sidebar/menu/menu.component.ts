@@ -43,12 +43,12 @@ export class MenuComponent {
         {
           label: 'Productos',
           icon: 'pi pi-fw pi-box',
-          routerLink: ['/productos'],
+          routerLink: ['/inventario/productos'],
         },
         {
           label: 'Categorías',
           icon: 'pi pi-fw pi-tags',
-          routerLink: ['/categorias'],
+          routerLink: ['/inventario/categorias'],
         },
         {
           label: 'Stock',

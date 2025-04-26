@@ -10,8 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { Product } from '../../models/product.model';
-import { ProductStore } from '../../store/product.store';
+import { Product } from '../../../models/product.model';
+import { ProductStore } from '../../../stores/product.store';
 import { ProductDialogComponent } from '../product-dialog/product-dialog.component';
 
 @Component({

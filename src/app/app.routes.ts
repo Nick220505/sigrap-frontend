@@ -9,20 +9,12 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'productos',
-    loadComponent: () =>
-      import('./features/products/products.component').then(
-        (m) => m.ProductsComponent,
+    path: 'inventario',
+    loadChildren: () =>
+      import('./features/inventory/inventory.routes').then(
+        (m) => m.inventoryRoutes,
       ),
   },
-  {
-    path: 'categorias',
-    loadComponent: () =>
-      import('./features/categories/categories.component').then(
-        (m) => m.CategoriesComponent,
-      ),
-  },
-
   {
     path: 'notfound',
     loadComponent: () =>
@@ -30,6 +22,5 @@ export const routes: Routes = [
         (m) => m.NotFoundComponent,
       ),
   },
-
   { path: '**', redirectTo: '/notfound' },
 ];
