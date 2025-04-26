@@ -1,4 +1,4 @@
-import { Category } from '../../categories/models/category.model';
+import { Category } from '@features/categories/models/category.model';
 
 export interface Product {
   id: number;
@@ -16,7 +16,7 @@ export interface CreateProductDto {
   description?: string;
   costPrice: number;
   salePrice: number;
-  category?: { id: number };
+  category?: Category;
 }
 
 export type UpdateProductDto = Partial<CreateProductDto>;
