@@ -212,7 +212,6 @@ export class ProductDialogComponent {
   saveProduct(): void {
     const formValue = this.productForm.value;
 
-    // Format the data for the API
     const productData: CreateProductDto = {
       name: formValue.name,
       description: formValue.description,
