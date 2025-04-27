@@ -298,6 +298,7 @@ import { TooltipModule } from 'primeng/tooltip';
               mode="currency"
               currency="COP"
               locale="es-CO"
+              [maxFractionDigits]="0"
               [class.ng-dirty]="costPriceControlInvalid"
               [class.ng-invalid]="costPriceControlInvalid"
               required
@@ -326,6 +327,7 @@ import { TooltipModule } from 'primeng/tooltip';
               mode="currency"
               currency="COP"
               locale="es-CO"
+              [maxFractionDigits]="0"
               [class.ng-dirty]="salePriceControlInvalid"
               [class.ng-invalid]="salePriceControlInvalid"
               required
