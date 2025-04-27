@@ -139,13 +139,14 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
             <th>Acciones</th>
           </tr>
         </ng-template>
-        <ng-template #body let-category>
+        <ng-template #body let-category let-columns="columns">
           <tr>
             <td style="width: 3rem">
               <p-tableCheckbox [value]="category" />
             </td>
-            <td>{{ category.name }}</td>
-            <td>{{ category.description }}</td>
+            @for (column of columns; track column.field) {
+              <td>{{ category[column.field] }}</td>
+            }
             <td>
               <p-button
                 icon="pi pi-pencil"
