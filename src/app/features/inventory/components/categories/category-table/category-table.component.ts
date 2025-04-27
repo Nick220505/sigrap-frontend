@@ -114,7 +114,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                   (input)="
                     dt.filterGlobal($any($event.target).value, 'contains')
                   "
-                  [(ngModel)]="searchTerm"
+                  [(ngModel)]="searchValue"
                   placeholder="Buscar..."
                 />
               </p-iconfield>
@@ -210,7 +210,7 @@ export class CategoryTableComponent {
 
   dialogVisible = signal(false);
   selectedCategory = signal<Category | null>(null);
-  searchTerm = signal('');
+  searchValue = signal('');
   selectedCategories = linkedSignal<Category[], Category[]>({
     source: this.categoryStore.entities,
     computation: (entities, previous) => {
@@ -260,7 +260,7 @@ export class CategoryTableComponent {
   }
 
   clearAllFilters(dt: Table): void {
-    this.searchTerm.set('');
+    this.searchValue.set('');
     dt.clear();
   }
 }
