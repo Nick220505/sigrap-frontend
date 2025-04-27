@@ -168,11 +168,10 @@ import { ProductDialogComponent } from '../product-dialog/product-dialog.compone
                 }}
               } @else if (column.field === 'category.name') {
                 {{ product.category?.name || 'Sin categoría' }}
+              } @else if (column.field === 'description') {
+                {{ product[column.field] || 'Sin descripción' }}
               } @else {
-                {{
-                  product[column.field] ||
-                    (column.field === 'description' ? 'Sin descripción' : '')
-                }}
+                {{ product[column.field] }}
               }
             </td>
           }
