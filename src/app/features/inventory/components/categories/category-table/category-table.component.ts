@@ -6,6 +6,7 @@ import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { FileUploadModule } from 'primeng/fileupload';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -28,6 +29,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
     ConfirmDialogModule,
     CategoryDialogComponent,
     ToolbarModule,
+    FileUploadModule,
   ],
   template: `
     @if (categoryStore.error(); as error) {
@@ -105,30 +107,16 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         <ng-template #caption>
           <div class="flex items-center justify-between">
             <h5 class="m-0">Administrar Categorías</h5>
-            <div class="flex gap-2 items-center">
-              <p-iconfield>
-                <p-inputicon><i class="pi pi-search"></i></p-inputicon>
-                <input
-                  pInputText
-                  type="text"
-                  (input)="
-                    dt.filterGlobal($any($event.target).value, 'contains')
-                  "
-                  [(ngModel)]="searchValue"
-                  placeholder="Buscar..."
-                />
-              </p-iconfield>
-              <p-button
-                label="Limpiar filtros"
-                icon="pi pi-filter-slash"
-                severity="secondary"
-                outlined
-                class="ml-2"
-                (onClick)="clearAllFilters(dt)"
-                pTooltip="Limpiar todos los filtros"
-                tooltipPosition="top"
+            <p-iconfield>
+              <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                [(ngModel)]="searchValue"
+                placeholder="Buscar..."
               />
-            </div>
+            </p-iconfield>
           </div>
         </ng-template>
         <ng-template #header>
@@ -147,11 +135,27 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                     display="menu"
                     class="ml-auto"
                     placeholder="Filtrar por {{ column.header | lowercase }}"
+                    pTooltip="Filtrar por {{ column.header | lowercase }}"
+                    tooltipPosition="top"
                   />
                 </div>
               </th>
             }
-            <th>Acciones</th>
+            <th>
+              <div class="flex items-center gap-2">
+                <span>Acciones</span>
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-filter-slash"
+                  class="p-button-rounded p-button-text p-button-secondary"
+                  pTooltip="Limpiar todos los filtros"
+                  tooltipPosition="top"
+                  (click)="clearAllFilters(dt)"
+                  aria-label="Limpiar todos los filtros"
+                ></button>
+              </div>
+            </th>
           </tr>
         </ng-template>
         <ng-template #body let-category let-columns="columns">
