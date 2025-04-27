@@ -10,6 +10,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
@@ -30,20 +31,25 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
     CategoryDialogComponent,
     ToolbarModule,
     FileUploadModule,
+    MessageModule,
   ],
   template: `
     @if (categoryStore.error(); as error) {
-      <div
-        class="p-4 text-center text-red-600 bg-red-100 border border-red-400 rounded"
-      >
-        <p>Error al cargar categorías:</p>
-        <p>{{ error }}</p>
-        <p-button
-          label="Reintentar"
-          (onClick)="categoryStore.loadAll()"
-          styleClass="p-button-sm mt-2"
-          [loading]="categoryStore.loading()"
-        />
+      <div class="flex justify-center p-6">
+        <p-message severity="error">
+          <div class="flex flex-col gap-4 text-center p-3">
+            <strong>Error al cargar categorías:</strong>
+            <p>{{ error }}</p>
+            <div class="flex justify-center">
+              <p-button
+                label="Reintentar"
+                (onClick)="categoryStore.loadAll()"
+                styleClass="p-button-sm"
+                [loading]="categoryStore.loading()"
+              />
+            </div>
+          </div>
+        </p-message>
       </div>
     } @else {
       <p-toolbar styleClass="mb-6">
