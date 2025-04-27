@@ -407,10 +407,7 @@ export class ProductsComponent {
   openProductDialog(product?: Product): void {
     this.selectedProduct.set(product ?? null);
     if (product) {
-      this.productForm.patchValue({
-        ...product,
-        category: product.category || null,
-      });
+      this.productForm.patchValue(product);
     } else {
       this.productForm.reset();
     }
@@ -457,13 +454,7 @@ export class ProductsComponent {
   }
 
   saveProduct(): void {
-    const formValue = this.productForm.value;
-
-    const productData = {
-      ...formValue,
-      category: formValue.category ? { id: formValue.category.id } : undefined,
-    };
-
+    const productData = this.productForm.value;
     const id = this.selectedProduct()?.id;
     if (id) {
       this.productStore.update({ id, productData });
