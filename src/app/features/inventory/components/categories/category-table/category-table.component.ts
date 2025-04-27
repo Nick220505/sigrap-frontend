@@ -46,7 +46,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         />
       </div>
     } @else {
-      <p-toolbar class="mb-6">
+      <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <p-button
             label="Nueva"
@@ -110,7 +110,9 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
           <div class="flex items-center justify-between">
             <h5 class="m-0">Administrar Categorías</h5>
             <p-iconfield>
-              <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+              <p-inputicon>
+                <i class="pi pi-search"></i>
+              </p-inputicon>
               <input
                 pInputText
                 type="text"
