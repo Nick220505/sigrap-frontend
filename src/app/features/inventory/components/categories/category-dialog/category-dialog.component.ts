@@ -89,10 +89,10 @@ export class CategoryDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly categoryStore = inject(CategoryStore);
 
-  visible = model(false);
-  inputCategory = model<Category | null>(null);
+  readonly visible = model(false);
+  readonly inputCategory = model<Category | null>(null);
 
-  categoryForm: FormGroup = this.fb.group({
+  readonly categoryForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
   });
