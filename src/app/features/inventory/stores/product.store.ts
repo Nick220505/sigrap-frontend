@@ -47,11 +47,11 @@ export const ProductStore = signalStore(
     messageService: inject(MessageService),
   })),
   withMethods(({ productService, messageService, ...store }) => ({
-    loadAll: rxMethod<void>(
+    findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() =>
-          productService.getAll().pipe(
+          productService.findAll().pipe(
             tapResponse({
               next: (products) => {
                 patchState(store, setAllEntities(products));
@@ -152,11 +152,11 @@ export const ProductStore = signalStore(
         ),
       ),
     ),
-    deleteMany: rxMethod<number[]>(
+    deleteAllById: rxMethod<number[]>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         concatMap((ids) =>
-          productService.deleteMany(ids).pipe(
+          productService.deleteAllById(ids).pipe(
             tapResponse({
               next: () => {
                 patchState(store, removeEntities(ids));
@@ -182,8 +182,8 @@ export const ProductStore = signalStore(
     ),
   })),
   withHooks({
-    onInit({ loadAll }) {
-      loadAll();
+    onInit({ findAll }) {
+      findAll();
     },
   }),
 );

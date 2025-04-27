@@ -15,11 +15,11 @@ export class CategoryService {
   private readonly http = inject(HttpClient);
   private readonly categoriesUrl = `${environment.apiUrl}/categories`;
 
-  getAll(): Observable<Category[]> {
+  findAll(): Observable<Category[]> {
     return this.http.get<Category[]>(this.categoriesUrl);
   }
 
-  getById(id: number): Observable<Category> {
+  findById(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.categoriesUrl}/${id}`);
   }
 
@@ -35,7 +35,7 @@ export class CategoryService {
     return this.http.delete<void>(`${this.categoriesUrl}/${id}`);
   }
 
-  deleteMany(ids: number[]): Observable<void> {
+  deleteAllById(ids: number[]): Observable<void> {
     return this.http.request<void>(
       'delete',
       `${this.categoriesUrl}/delete-many`,

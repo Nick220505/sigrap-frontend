@@ -15,11 +15,11 @@ export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly productsUrl = `${environment.apiUrl}/products`;
 
-  getAll(): Observable<Product[]> {
+  findAll(): Observable<Product[]> {
     return this.http.get<Product[]>(this.productsUrl);
   }
 
-  getById(id: number): Observable<Product> {
+  findById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.productsUrl}/${id}`);
   }
 
@@ -35,7 +35,7 @@ export class ProductService {
     return this.http.delete<void>(`${this.productsUrl}/${id}`);
   }
 
-  deleteMany(ids: number[]): Observable<void> {
+  deleteAllById(ids: number[]): Observable<void> {
     return this.http.request<void>(
       'delete',
       `${this.productsUrl}/delete-many`,

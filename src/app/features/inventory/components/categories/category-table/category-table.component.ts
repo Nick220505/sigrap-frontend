@@ -194,7 +194,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                     <div class="flex justify-center">
                       <p-button
                         label="Reintentar"
-                        (onClick)="categoryStore.loadAll()"
+                        (onClick)="categoryStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="categoryStore.loading()"
                       />
@@ -268,7 +268,7 @@ export class CategoryTableComponent {
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         const ids = this.selectedCategories().map(({ id }) => id);
-        this.categoryStore.deleteMany(ids);
+        this.categoryStore.deleteAllById(ids);
       },
     });
   }

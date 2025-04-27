@@ -212,7 +212,7 @@ import { ProductDialogComponent } from '../product-dialog/product-dialog.compone
                     <div class="flex justify-center">
                       <p-button
                         label="Reintentar"
-                        (onClick)="productStore.loadAll()"
+                        (onClick)="productStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="productStore.loading()"
                       />
@@ -286,7 +286,7 @@ export class ProductTableComponent {
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         const ids = this.selectedProducts().map(({ id }) => id);
-        this.productStore.deleteMany(ids);
+        this.productStore.deleteAllById(ids);
       },
     });
   }
