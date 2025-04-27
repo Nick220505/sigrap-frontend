@@ -64,7 +64,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
             (onClick)="
               selectedCategories().length > 1
                 ? deleteSelectedCategories()
-                : confirmDelete(selectedCategories()[0])
+                : deleteCategory(selectedCategories()[0])
             "
             [disabled]="!selectedCategories().length"
           />
@@ -178,7 +178,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                 severity="danger"
                 [rounded]="true"
                 [outlined]="true"
-                (click)="confirmDelete(category)"
+                (click)="deleteCategory(category)"
                 pTooltip="Eliminar"
                 tooltipPosition="top"
                 [disabled]="categoryStore.loading()"
@@ -225,7 +225,7 @@ export class CategoryTableComponent {
     this.dialogVisible.set(true);
   }
 
-  confirmDelete({ id, name }: Category): void {
+  deleteCategory({ id, name }: Category): void {
     this.confirmationService.confirm({
       header: 'Eliminar categoría',
       message: `¿Está seguro de que desea eliminar la categoría <b>${name}</b>?`,
