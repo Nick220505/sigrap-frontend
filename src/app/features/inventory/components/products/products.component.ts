@@ -180,9 +180,7 @@ import { TooltipModule } from 'primeng/tooltip';
               @if (
                 column.field === 'costPrice' || column.field === 'salePrice'
               ) {
-                {{
-                  product[column.field] | currency: 'USD' : 'symbol' : '1.2-2'
-                }}
+                {{ product[column.field] | currency: 'COP' : '$' : '1.0-0' }}
               } @else if (column.field === 'category.name') {
                 {{ product.category?.name || 'Sin categoría' }}
               } @else if (column.field === 'description') {
@@ -295,11 +293,11 @@ import { TooltipModule } from 'primeng/tooltip';
             <p-inputNumber
               id="costPrice"
               formControlName="costPrice"
-              placeholder="0.00"
+              placeholder="0"
               min="0"
               mode="currency"
-              currency="USD"
-              locale="en-US"
+              currency="COP"
+              locale="es-CO"
               [class.ng-dirty]="costPriceControlInvalid"
               [class.ng-invalid]="costPriceControlInvalid"
               required
@@ -323,11 +321,11 @@ import { TooltipModule } from 'primeng/tooltip';
             <p-inputNumber
               id="salePrice"
               formControlName="salePrice"
-              placeholder="0.00"
+              placeholder="0"
               min="0"
               mode="currency"
-              currency="USD"
-              locale="en-US"
+              currency="COP"
+              locale="es-CO"
               [class.ng-dirty]="salePriceControlInvalid"
               [class.ng-invalid]="salePriceControlInvalid"
               required
