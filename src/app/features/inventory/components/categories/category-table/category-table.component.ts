@@ -80,6 +80,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
             pTooltip="Exportar categorías a CSV"
             tooltipPosition="top"
             (onClick)="dt.exportCSV()"
+            [disabled]="!categoryStore.entities().length"
           />
         </ng-template>
       </p-toolbar>
@@ -191,10 +192,10 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
             </td>
           </tr>
         </ng-template>
-        <ng-template #empty>
+        <ng-template #emptymessage>
           <tr>
             <td [attr.colspan]="columns.length + 2" class="text-center py-4">
-              No hay categorías disponibles.
+              No se encontraron categorías.
             </td>
           </tr>
         </ng-template>
