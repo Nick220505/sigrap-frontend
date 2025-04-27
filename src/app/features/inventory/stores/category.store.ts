@@ -11,6 +11,7 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
   removeEntity,
   setAllEntities,
   updateEntity,
@@ -143,6 +144,34 @@ export const CategoryStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail: 'Error al eliminar categoría',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+    deleteMany: rxMethod<number[]>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((ids) =>
+          categoryService.deleteMany(ids).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntities(ids));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Éxito',
+                  detail: 'Categorías eliminadas',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar categorías',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

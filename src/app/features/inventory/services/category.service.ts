@@ -34,4 +34,12 @@ export class CategoryService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.categoriesUrl}/${id}`);
   }
+
+  deleteMany(ids: number[]): Observable<void> {
+    return this.http.request<void>(
+      'delete',
+      `${this.categoriesUrl}/delete-many`,
+      { body: ids },
+    );
+  }
 }

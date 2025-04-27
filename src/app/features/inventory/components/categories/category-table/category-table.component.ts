@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, linkedSignal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Category } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -9,8 +10,8 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { Category } from '../../../models/category.model';
 import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
 
 @Component({
@@ -26,6 +27,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
     TooltipModule,
     ConfirmDialogModule,
     CategoryDialogComponent,
+    ToolbarModule,
   ],
   template: `
     @if (categoryStore.error(); as error) {
@@ -42,6 +44,43 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         />
       </div>
     } @else {
+      <p-toolbar class="mb-6">
+        <ng-template #start>
+          <p-button
+            label="Nueva"
+            icon="pi pi-plus"
+            class="mr-2"
+            pTooltip="Crear nueva categoría"
+            tooltipPosition="top"
+            (onClick)="openCategoryDialog()"
+          />
+          <p-button
+            severity="danger"
+            label="Eliminar"
+            icon="pi pi-trash"
+            pTooltip="Eliminar categorías seleccionadas"
+            tooltipPosition="top"
+            outlined
+            (onClick)="
+              selectedCategories().length > 1
+                ? deleteSelectedCategories()
+                : confirmDelete(selectedCategories()[0])
+            "
+            [disabled]="!selectedCategories().length"
+          />
+        </ng-template>
+        <ng-template #end>
+          <p-button
+            label="Exportar"
+            icon="pi pi-download"
+            severity="secondary"
+            pTooltip="Exportar categorías a CSV"
+            tooltipPosition="top"
+            (onClick)="dt.exportCSV()"
+          />
+        </ng-template>
+      </p-toolbar>
+
       @let columns =
         [
           { field: 'name', header: 'Nombre' },
@@ -54,82 +93,60 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         [rows]="10"
         [columns]="columns"
         [paginator]="true"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} categorías"
         [globalFilterFields]="['name', 'description']"
-        [tableStyle]="{ 'min-width': '40rem' }"
+        [tableStyle]="{ 'min-width': '50rem' }"
         [rowHover]="true"
         dataKey="id"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} categorías"
-        [showCurrentPageReport]="true"
-        [rowsPerPageOptions]="[10, 20, 30]"
+        [(selection)]="selectedCategories"
       >
         <ng-template #caption>
-          <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-2"
-          >
-            <h5 class="text-xl font-semibold m-0">Administrar Categorías</h5>
-            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-              <p-iconfield iconPosition="left">
-                <p-inputicon class="pi pi-search" />
-                <input
-                  pInputText
-                  type="text"
-                  (input)="
-                    dt.filterGlobal($any($event.target).value, 'contains')
-                  "
-                  placeholder="Buscar..."
-                  class="w-full sm:w-auto"
-                  [disabled]="
-                    !categoryStore.categoriesCount() || categoryStore.loading()
-                  "
-                />
-              </p-iconfield>
-              <div class="flex gap-2">
-                <p-button
-                  label="Nueva"
-                  icon="pi pi-plus"
-                  severity="secondary"
-                  (onClick)="openCategoryDialog()"
-                  pTooltip="Crear nueva categoría"
-                  tooltipPosition="top"
-                  [disabled]="categoryStore.loading()"
-                />
-                <p-button
-                  label="Exportar"
-                  icon="pi pi-upload"
-                  severity="secondary"
-                  (onClick)="dt.exportCSV()"
-                  pTooltip="Exportar datos a CSV"
-                  tooltipPosition="top"
-                  [disabled]="
-                    categoryStore.loading() || !categoryStore.categoriesCount()
-                  "
-                />
-              </div>
-            </div>
+          <div class="flex items-center justify-between">
+            <h5 class="m-0">Administrar Categorías</h5>
+            <p-iconfield>
+              <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Buscar..."
+              />
+            </p-iconfield>
           </div>
         </ng-template>
         <ng-template #header>
           <tr>
-            <th scope="col" pSortableColumn="name" style="min-width: 16rem">
-              {{ columns[0].header }}
-              <p-sortIcon field="name" />
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox />
             </th>
-            <th
-              scope="col"
-              pSortableColumn="description"
-              style="min-width: 20rem"
-            >
-              {{ columns[1].header }}
-              <p-sortIcon field="description" />
-            </th>
-            <th scope="col" style="width: 8rem">Acciones</th>
+            @for (column of columns; track column.field) {
+              <th pSortableColumn="{{ column.field }}">
+                <div class="flex items-center gap-2">
+                  <span>{{ column.header }}</span>
+                  <p-sortIcon field="{{ column.field }}" />
+                  <p-columnFilter
+                    type="text"
+                    field="{{ column.field }}"
+                    display="menu"
+                    class="ml-auto"
+                    placeholder="Filtrar por {{ column.header | lowercase }}"
+                  />
+                </div>
+              </th>
+            }
+            <th>Acciones</th>
           </tr>
         </ng-template>
         <ng-template #body let-category>
           <tr>
-            <td style="min-width: 16rem">{{ category.name }}</td>
-            <td style="min-width: 20rem">{{ category.description }}</td>
-            <td style="width: 8rem">
+            <td style="width: 3rem">
+              <p-tableCheckbox [value]="category" />
+            </td>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description }}</td>
+            <td>
               <p-button
                 icon="pi pi-pencil"
                 class="mr-2"
@@ -154,13 +171,11 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
           </tr>
         </ng-template>
         <ng-template #empty>
-          @if (!categoryStore.loading() && !categoryStore.categoriesCount()) {
-            <tr>
-              <td [attr.colspan]="3" class="text-center py-4">
-                No hay categorías disponibles.
-              </td>
-            </tr>
-          }
+          <tr>
+            <td [attr.colspan]="4" class="text-center py-4">
+              No hay categorías disponibles.
+            </td>
+          </tr>
         </ng-template>
       </p-table>
 
@@ -179,22 +194,51 @@ export class CategoryTableComponent {
 
   dialogVisible = signal(false);
   selectedCategory = signal<Category | null>(null);
+  selectedCategories = linkedSignal<Category[], Category[]>({
+    source: this.categoryStore.entities,
+    computation: (entities, previous) => {
+      const prevSelected = previous?.value ?? [];
+      const entityIds = new Set(entities.map((e) => e.id));
+      return prevSelected.filter((cat) => entityIds.has(cat.id));
+    },
+  });
 
-  openCategoryDialog(category?: Category) {
+  openCategoryDialog(category?: Category): void {
     this.selectedCategory.set(category ?? null);
     this.dialogVisible.set(true);
   }
 
   confirmDelete({ id, name }: Category): void {
     this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar la categoría "${name}"?`,
       header: 'Eliminar categoría',
+      message: `¿Está seguro de que desea eliminar la categoría <b>${name}</b>?`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => this.categoryStore.delete(id),
+    });
+  }
+
+  deleteSelectedCategories(): void {
+    this.confirmationService.confirm({
+      message: `
+        ¿Está seguro de que desea eliminar las ${this.selectedCategories().length} categorías seleccionadas?
+        <ul class='mt-2 mb-0'>
+          ${this.selectedCategories()
+            .map((cat) => `<li>• <b>${cat.name}</b></li>`)
+            .join('')}
+        </ul>
+      `,
+      header: 'Eliminar categorías',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Eliminar',
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => this.categoryStore.delete(id),
+      accept: () => {
+        const ids = this.selectedCategories().map((cat) => cat.id);
+        this.categoryStore.deleteMany(ids);
+      },
     });
   }
 }

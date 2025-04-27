@@ -6,12 +6,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Category } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { Category } from '../../../models/category.model';
 
 @Component({
   selector: 'app-category-dialog',
