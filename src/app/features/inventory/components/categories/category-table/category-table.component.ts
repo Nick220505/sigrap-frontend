@@ -34,188 +34,188 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
     MessageModule,
   ],
   template: `
-    @if (categoryStore.error(); as error) {
-      <div class="flex justify-center p-6">
-        <p-message severity="error">
-          <div class="flex flex-col gap-4 text-center p-3">
-            <strong>Error al cargar categorías:</strong>
-            <p>{{ error }}</p>
-            <div class="flex justify-center">
-              <p-button
-                label="Reintentar"
-                (onClick)="categoryStore.loadAll()"
-                styleClass="p-button-sm"
-                [loading]="categoryStore.loading()"
-              />
-            </div>
-          </div>
-        </p-message>
-      </div>
-    } @else {
-      <p-toolbar styleClass="mb-6">
-        <ng-template #start>
-          <p-button
-            label="Nueva"
-            icon="pi pi-plus"
-            outlined
-            class="mr-2"
-            pTooltip="Crear nueva categoría"
-            tooltipPosition="top"
-            (onClick)="openCategoryDialog()"
-          />
-          <p-button
-            severity="danger"
-            label="Eliminar"
-            icon="pi pi-trash"
-            outlined
-            pTooltip="Eliminar categorías seleccionadas"
-            tooltipPosition="top"
-            (onClick)="
-              selectedCategories().length > 1
-                ? deleteSelectedCategories()
-                : deleteCategory(selectedCategories()[0])
-            "
-            [disabled]="!selectedCategories().length"
-          />
-        </ng-template>
-        <ng-template #end>
-          <p-button
-            label="Exportar"
-            icon="pi pi-download"
-            severity="secondary"
-            pTooltip="Exportar categorías a CSV"
-            tooltipPosition="top"
-            (onClick)="dt.exportCSV()"
-            [disabled]="!categoryStore.entities().length"
-          />
-        </ng-template>
-      </p-toolbar>
+    <p-toolbar styleClass="mb-6">
+      <ng-template #start>
+        <p-button
+          label="Nueva"
+          icon="pi pi-plus"
+          outlined
+          class="mr-2"
+          pTooltip="Crear nueva categoría"
+          tooltipPosition="top"
+          (onClick)="openCategoryDialog()"
+        />
+        <p-button
+          severity="danger"
+          label="Eliminar"
+          icon="pi pi-trash"
+          outlined
+          pTooltip="Eliminar categorías seleccionadas"
+          tooltipPosition="top"
+          (onClick)="
+            selectedCategories().length > 1
+              ? deleteSelectedCategories()
+              : deleteCategory(selectedCategories()[0])
+          "
+          [disabled]="!selectedCategories().length"
+        />
+      </ng-template>
+      <ng-template #end>
+        <p-button
+          label="Exportar"
+          icon="pi pi-download"
+          severity="secondary"
+          pTooltip="Exportar categorías a CSV"
+          tooltipPosition="top"
+          (onClick)="dt.exportCSV()"
+          [disabled]="!categoryStore.entities().length"
+        />
+      </ng-template>
+    </p-toolbar>
 
-      @let columns =
-        [
-          { field: 'name', header: 'Nombre' },
-          { field: 'description', header: 'Descripción' },
-        ];
-      <p-table
-        #dt
-        [value]="categoryStore.entities()"
-        [loading]="categoryStore.loading()"
-        [rows]="10"
-        [columns]="columns"
-        [paginator]="true"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} categorías"
-        [globalFilterFields]="['name', 'description']"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        [rowHover]="true"
-        dataKey="id"
-        [(selection)]="selectedCategories"
-      >
-        <ng-template #caption>
-          <div class="flex items-center justify-between">
-            <h5 class="m-0">Administrar Categorías</h5>
-            <p-iconfield>
-              <p-inputicon>
-                <i class="pi pi-search"></i>
-              </p-inputicon>
-              <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                [(ngModel)]="searchValue"
-                placeholder="Buscar..."
-              />
-            </p-iconfield>
-          </div>
-        </ng-template>
-        <ng-template #header>
-          <tr>
-            <th style="width: 3rem">
-              <p-tableHeaderCheckbox />
-            </th>
-            @for (column of columns; track column.field) {
-              <th pSortableColumn="{{ column.field }}">
-                <div class="flex items-center gap-2">
-                  <span>{{ column.header }}</span>
-                  <p-sortIcon field="{{ column.field }}" />
-                  <p-columnFilter
-                    type="text"
-                    field="{{ column.field }}"
-                    display="menu"
-                    class="ml-auto"
-                    placeholder="Filtrar por {{ column.header | lowercase }}"
-                    pTooltip="Filtrar por {{ column.header | lowercase }}"
-                    tooltipPosition="top"
-                  />
-                </div>
-              </th>
-            }
-            <th>
+    @let columns =
+      [
+        { field: 'name', header: 'Nombre' },
+        { field: 'description', header: 'Descripción' },
+      ];
+    <p-table
+      #dt
+      [value]="categoryStore.entities()"
+      [loading]="categoryStore.loading()"
+      [rows]="10"
+      [columns]="columns"
+      [paginator]="true"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} categorías"
+      [globalFilterFields]="['name', 'description']"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [rowHover]="true"
+      dataKey="id"
+      [(selection)]="selectedCategories"
+    >
+      <ng-template #caption>
+        <div class="flex items-center justify-between">
+          <h5 class="m-0">Administrar Categorías</h5>
+          <p-iconfield>
+            <p-inputicon>
+              <i class="pi pi-search"></i>
+            </p-inputicon>
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              [(ngModel)]="searchValue"
+              placeholder="Buscar..."
+            />
+          </p-iconfield>
+        </div>
+      </ng-template>
+      <ng-template #header>
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox />
+          </th>
+          @for (column of columns; track column.field) {
+            <th pSortableColumn="{{ column.field }}">
               <div class="flex items-center gap-2">
-                <span>Acciones</span>
-                <button
-                  type="button"
-                  pButton
-                  icon="pi pi-filter-slash"
-                  class="p-button-rounded p-button-text p-button-secondary"
-                  pTooltip="Limpiar todos los filtros"
+                <span>{{ column.header }}</span>
+                <p-sortIcon field="{{ column.field }}" />
+                <p-columnFilter
+                  type="text"
+                  field="{{ column.field }}"
+                  display="menu"
+                  class="ml-auto"
+                  placeholder="Filtrar por {{ column.header | lowercase }}"
+                  pTooltip="Filtrar por {{ column.header | lowercase }}"
                   tooltipPosition="top"
-                  (click)="clearAllFilters(dt)"
-                  aria-label="Limpiar todos los filtros"
-                ></button>
+                />
               </div>
             </th>
-          </tr>
-        </ng-template>
-        <ng-template #body let-category let-columns="columns">
-          <tr>
-            <td style="width: 3rem">
-              <p-tableCheckbox [value]="category" />
-            </td>
-            @for (column of columns; track column.field) {
-              <td>{{ category[column.field] }}</td>
+          }
+          <th>
+            <div class="flex items-center gap-2">
+              <span>Acciones</span>
+              <button
+                type="button"
+                pButton
+                icon="pi pi-filter-slash"
+                class="p-button-rounded p-button-text p-button-secondary"
+                pTooltip="Limpiar todos los filtros"
+                tooltipPosition="top"
+                (click)="clearAllFilters(dt)"
+                aria-label="Limpiar todos los filtros"
+              ></button>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-category let-columns="columns">
+        <tr>
+          <td style="width: 3rem">
+            <p-tableCheckbox [value]="category" />
+          </td>
+          @for (column of columns; track column.field) {
+            <td>{{ category[column.field] }}</td>
+          }
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              class="mr-2"
+              [rounded]="true"
+              [outlined]="true"
+              (click)="openCategoryDialog(category)"
+              pTooltip="Editar categoría"
+              tooltipPosition="top"
+              [disabled]="categoryStore.loading()"
+            />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [rounded]="true"
+              [outlined]="true"
+              (click)="deleteCategory(category)"
+              pTooltip="Eliminar categoría"
+              tooltipPosition="top"
+              [disabled]="categoryStore.loading()"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td [attr.colspan]="columns.length + 2" class="text-center py-4">
+            @if (categoryStore.error(); as error) {
+              <div class="flex justify-center p-6">
+                <p-message severity="error">
+                  <div class="flex flex-col gap-4 text-center p-3">
+                    <strong>Error al cargar categorías:</strong>
+                    <p>{{ error }}</p>
+                    <div class="flex justify-center">
+                      <p-button
+                        label="Reintentar"
+                        (onClick)="categoryStore.loadAll()"
+                        styleClass="p-button-sm"
+                        [loading]="categoryStore.loading()"
+                      />
+                    </div>
+                  </div>
+                </p-message>
+              </div>
+            } @else {
+              <p>No se encontraron categorías.</p>
             }
-            <td>
-              <p-button
-                icon="pi pi-pencil"
-                class="mr-2"
-                [rounded]="true"
-                [outlined]="true"
-                (click)="openCategoryDialog(category)"
-                pTooltip="Editar categoría"
-                tooltipPosition="top"
-                [disabled]="categoryStore.loading()"
-              />
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [rounded]="true"
-                [outlined]="true"
-                (click)="deleteCategory(category)"
-                pTooltip="Eliminar categoría"
-                tooltipPosition="top"
-                [disabled]="categoryStore.loading()"
-              />
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template #emptymessage>
-          <tr>
-            <td [attr.colspan]="columns.length + 2" class="text-center py-4">
-              No se encontraron categorías.
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
 
-      <app-category-dialog
-        [(visible)]="dialogVisible"
-        [(inputCategory)]="selectedCategory"
-      />
+    <app-category-dialog
+      [(visible)]="dialogVisible"
+      [(inputCategory)]="selectedCategory"
+    />
 
-      <p-confirmdialog [style]="{ width: '450px' }" />
-    }
+    <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
 export class CategoryTableComponent {
