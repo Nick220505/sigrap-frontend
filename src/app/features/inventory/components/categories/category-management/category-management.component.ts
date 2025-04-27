@@ -14,10 +14,10 @@ import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
+import { CategoryDialogComponent } from '@features/inventory/components/categories/category-dialog/category-dialog.component';
 
 @Component({
-  selector: 'app-category-table',
+  selector: 'app-category-management',
   imports: [
     CommonModule,
     FormsModule,
@@ -218,7 +218,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
-export class CategoryTableComponent {
+export class CategoryManagementComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly categoryStore = inject(CategoryStore);
 

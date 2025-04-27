@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
-import { ProductTableComponent } from './product-table/product-table.component';
+import { ProductManagementComponent } from './product-management/product-management.component';
 
 @Component({
   selector: 'app-products',
-  imports: [ToastModule, ProductDialogComponent, ProductTableComponent],
+  imports: [ToastModule, ProductDialogComponent, ProductManagementComponent],
   template: `
     <p-toast />
     <app-product-dialog />
-    <app-product-table />
+    <app-product-management />
   `,
 })
 export class ProductsComponent {}

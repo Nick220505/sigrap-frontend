@@ -14,10 +14,10 @@ import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { ProductDialogComponent } from '../product-dialog/product-dialog.component';
+import { ProductDialogComponent } from '@features/inventory/components/products/product-dialog/product-dialog.component';
 
 @Component({
-  selector: 'app-product-table',
+  selector: 'app-product-management',
   imports: [
     CommonModule,
     FormsModule,
@@ -235,7 +235,7 @@ import { ProductDialogComponent } from '../product-dialog/product-dialog.compone
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
-export class ProductTableComponent {
+export class ProductManagementComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly productStore = inject(ProductStore);
 
