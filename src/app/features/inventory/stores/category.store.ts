@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -138,13 +139,27 @@ export const CategoryStore = signalStore(
                   detail: 'Categoría Eliminada',
                 });
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al eliminar categoría',
-                });
+              error: ({ error: { status, message } }: HttpErrorResponse) => {
+                patchState(store, { error: message });
+                if (
+                  status === 409 &&
+                  typeof message === 'string' &&
+                  message.includes('violates foreign key constraint')
+                ) {
+                  const category = store.entities().find((c) => c.id === id);
+                  const categoryName = category ? category.name : `ID ${id}`;
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: `No se puede eliminar la categoría "${categoryName}" porque está siendo utilizada por un producto.`,
+                  });
+                } else {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al eliminar categoría',
+                  });
+                }
               },
               finalize: () => patchState(store, { loading: false }),
             }),
@@ -166,13 +181,41 @@ export const CategoryStore = signalStore(
                   detail: 'Categorías eliminadas',
                 });
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al eliminar categorías',
-                });
+              error: ({ error: { status, message } }: HttpErrorResponse) => {
+                patchState(store, { error: message });
+                if (
+                  status === 409 &&
+                  typeof message === 'string' &&
+                  message.includes('violates foreign key constraint')
+                ) {
+                  let categoryId: number | undefined = undefined;
+                  const match = /Key \(id\)=\((\d+)\)/.exec(message);
+                  if (match) {
+                    categoryId = Number(match[1]);
+                  }
+                  const category = categoryId
+                    ? store.entities().find((c) => c.id === categoryId)
+                    : undefined;
+                  let categoryName: string;
+                  if (category) {
+                    categoryName = category.name;
+                  } else if (categoryId !== undefined) {
+                    categoryName = `ID ${categoryId}`;
+                  } else {
+                    categoryName = 'desconocida';
+                  }
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: `No se puede eliminar la categoría "${categoryName}" porque está siendo utilizada por un producto.`,
+                  });
+                } else {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al eliminar categorías',
+                  });
+                }
               },
               finalize: () => patchState(store, { loading: false }),
             }),
