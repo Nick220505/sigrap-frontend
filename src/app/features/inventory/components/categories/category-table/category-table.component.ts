@@ -51,6 +51,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
           <p-button
             label="Nueva"
             icon="pi pi-plus"
+            outlined
             class="mr-2"
             pTooltip="Crear nueva categoría"
             tooltipPosition="top"
@@ -60,9 +61,9 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
             severity="danger"
             label="Eliminar"
             icon="pi pi-trash"
+            outlined
             pTooltip="Eliminar categorías seleccionadas"
             tooltipPosition="top"
-            outlined
             (onClick)="
               selectedCategories().length > 1
                 ? deleteSelectedCategories()
@@ -173,7 +174,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                 [rounded]="true"
                 [outlined]="true"
                 (click)="openCategoryDialog(category)"
-                pTooltip="Editar"
+                pTooltip="Editar categoría"
                 tooltipPosition="top"
                 [disabled]="categoryStore.loading()"
               />
@@ -183,7 +184,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
                 [rounded]="true"
                 [outlined]="true"
                 (click)="deleteCategory(category)"
-                pTooltip="Eliminar"
+                pTooltip="Eliminar categoría"
                 tooltipPosition="top"
                 [disabled]="categoryStore.loading()"
               />
@@ -192,7 +193,7 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         </ng-template>
         <ng-template #empty>
           <tr>
-            <td [attr.colspan]="4" class="text-center py-4">
+            <td [attr.colspan]="columns.length + 2" class="text-center py-4">
               No hay categorías disponibles.
             </td>
           </tr>
