@@ -9,7 +9,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
@@ -105,15 +105,30 @@ import { CategoryDialogComponent } from '../category-dialog/category-dialog.comp
         <ng-template #caption>
           <div class="flex items-center justify-between">
             <h5 class="m-0">Administrar Categorías</h5>
-            <p-iconfield>
-              <p-inputicon><i class="pi pi-search"></i></p-inputicon>
-              <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                placeholder="Buscar..."
+            <div class="flex gap-2 items-center">
+              <p-iconfield>
+                <p-inputicon><i class="pi pi-search"></i></p-inputicon>
+                <input
+                  pInputText
+                  type="text"
+                  (input)="
+                    dt.filterGlobal($any($event.target).value, 'contains')
+                  "
+                  [(ngModel)]="searchTerm"
+                  placeholder="Buscar..."
+                />
+              </p-iconfield>
+              <p-button
+                label="Limpiar filtros"
+                icon="pi pi-filter-slash"
+                severity="secondary"
+                outlined
+                class="ml-2"
+                (onClick)="clearAllFilters(dt)"
+                pTooltip="Limpiar todos los filtros"
+                tooltipPosition="top"
               />
-            </p-iconfield>
+            </div>
           </div>
         </ng-template>
         <ng-template #header>
@@ -195,12 +210,13 @@ export class CategoryTableComponent {
 
   dialogVisible = signal(false);
   selectedCategory = signal<Category | null>(null);
+  searchTerm = signal('');
   selectedCategories = linkedSignal<Category[], Category[]>({
     source: this.categoryStore.entities,
     computation: (entities, previous) => {
       const prevSelected = previous?.value ?? [];
-      const entityIds = new Set(entities.map((e) => e.id));
-      return prevSelected.filter((cat) => entityIds.has(cat.id));
+      const entityIds = new Set(entities.map(({ id }) => id));
+      return prevSelected.filter(({ id }) => entityIds.has(id));
     },
   });
 
@@ -226,7 +242,7 @@ export class CategoryTableComponent {
         ¿Está seguro de que desea eliminar las ${this.selectedCategories().length} categorías seleccionadas?
         <ul class='mt-2 mb-0'>
           ${this.selectedCategories()
-            .map((cat) => `<li>• <b>${cat.name}</b></li>`)
+            .map(({ name }) => `<li>• <b>${name}</b></li>`)
             .join('')}
         </ul>
       `,
@@ -237,9 +253,14 @@ export class CategoryTableComponent {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        const ids = this.selectedCategories().map((cat) => cat.id);
+        const ids = this.selectedCategories().map(({ id }) => id);
         this.categoryStore.deleteMany(ids);
       },
     });
+  }
+
+  clearAllFilters(dt: Table): void {
+    this.searchTerm.set('');
+    dt.clear();
   }
 }
