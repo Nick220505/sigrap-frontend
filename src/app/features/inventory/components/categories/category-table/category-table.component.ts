@@ -208,10 +208,10 @@ export class CategoryTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly categoryStore = inject(CategoryStore);
 
-  dialogVisible = signal(false);
-  selectedCategory = signal<Category | null>(null);
-  searchValue = signal('');
-  selectedCategories = linkedSignal<Category[], Category[]>({
+  readonly dialogVisible = signal(false);
+  readonly selectedCategory = signal<Category | null>(null);
+  readonly searchValue = signal('');
+  readonly selectedCategories = linkedSignal<Category[], Category[]>({
     source: this.categoryStore.entities,
     computation: (entities, previous) => {
       const prevSelected = previous?.value ?? [];
