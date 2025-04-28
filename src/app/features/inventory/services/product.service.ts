@@ -6,7 +6,7 @@ import {
   CreateProductDto,
   Product,
   UpdateProductDto,
-} from '../../inventory/models/product.model';
+} from '../models/product.model';
 
 @Injectable({
   providedIn: 'root',
