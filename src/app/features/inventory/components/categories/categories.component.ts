@@ -1,11 +1,5 @@
 import { Component, inject, linkedSignal, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Category } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
@@ -22,6 +16,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 
 @Component({
   selector: 'app-categories',
@@ -41,6 +36,7 @@ import { TooltipModule } from 'primeng/tooltip';
     TextareaModule,
     ReactiveFormsModule,
     FormsModule,
+    CategoryDialogComponent,
   ],
   template: `
     <p-toast />
@@ -220,72 +216,16 @@ import { TooltipModule } from 'primeng/tooltip';
       </ng-template>
     </p-table>
 
-    <p-dialog
+    <app-category-dialog
       [(visible)]="dialogVisible"
-      [style]="{ width: '450px' }"
-      [header]="selectedCategory() ? 'Editar Categoría' : 'Crear Categoría'"
-      modal
-    >
-      <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
-        @let nameControlInvalid =
-          categoryForm.get('name')?.invalid &&
-          categoryForm.get('name')?.touched;
-        <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
-          <label for="name" class="font-bold">Nombre</label>
-          <input
-            type="text"
-            pInputText
-            id="name"
-            formControlName="name"
-            placeholder="Ingrese el nombre de la categoría"
-            [class.ng-dirty]="nameControlInvalid"
-            [class.ng-invalid]="nameControlInvalid"
-            required
-            fluid
-          />
-          @if (nameControlInvalid) {
-            <small class="text-red-500">El nombre es obligatorio.</small>
-          }
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="description" class="font-bold">Descripción</label>
-          <textarea
-            rows="3"
-            pTextarea
-            id="description"
-            formControlName="description"
-            placeholder="Ingrese una descripción (opcional)"
-            fluid
-          ></textarea>
-        </div>
-      </form>
-      <ng-template #footer>
-        <p-button
-          label="Cancelar"
-          icon="pi pi-times"
-          text
-          (click)="dialogVisible.set(false)"
-        />
-        <p-button
-          label="Guardar"
-          icon="pi pi-check"
-          (click)="
-            categoryForm.valid
-              ? saveCategory()
-              : categoryForm.markAllAsTouched()
-          "
-          [disabled]="categoryStore.loading()"
-        />
-      </ng-template>
-    </p-dialog>
+      [category]="selectedCategory()"
+    />
 
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
 export class CategoriesComponent {
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly fb = inject(FormBuilder);
   readonly categoryStore = inject(CategoryStore);
 
   readonly dialogVisible = signal(false);
@@ -300,18 +240,8 @@ export class CategoriesComponent {
     },
   });
 
-  readonly categoryForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    description: [''],
-  });
-
   openCategoryDialog(category?: Category): void {
     this.selectedCategory.set(category ?? null);
-    if (category) {
-      this.categoryForm.patchValue(category);
-    } else {
-      this.categoryForm.reset();
-    }
     this.dialogVisible.set(true);
   }
 
@@ -352,16 +282,5 @@ export class CategoriesComponent {
   clearAllFilters(dt: Table): void {
     this.searchValue.set('');
     dt.clear();
-  }
-
-  saveCategory(): void {
-    const categoryData = this.categoryForm.value;
-    const id = this.selectedCategory()?.id;
-    if (id) {
-      this.categoryStore.update({ id, categoryData });
-    } else {
-      this.categoryStore.create(categoryData);
-    }
-    this.dialogVisible.set(false);
   }
 }
