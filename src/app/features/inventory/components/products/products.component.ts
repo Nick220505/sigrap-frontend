@@ -129,7 +129,6 @@ import { TooltipModule } from 'primeng/tooltip';
               (input)="dt.filterGlobal($any($event.target).value, 'contains')"
               [(ngModel)]="searchValue"
               placeholder="Buscar..."
-              class="w-full"
             />
           </p-iconfield>
         </div>
