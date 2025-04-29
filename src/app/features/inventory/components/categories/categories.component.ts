@@ -105,7 +105,9 @@ import { TooltipModule } from 'primeng/tooltip';
       [(selection)]="selectedCategories"
     >
       <ng-template #caption>
-        <div class="flex items-center justify-between">
+        <div
+          class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between"
+        >
           <h5 class="m-0">Administrar Categorías</h5>
           <p-iconfield>
             <p-inputicon>
@@ -117,6 +119,7 @@ import { TooltipModule } from 'primeng/tooltip';
               (input)="dt.filterGlobal($any($event.target).value, 'contains')"
               [(ngModel)]="searchValue"
               placeholder="Buscar..."
+              class="w-full"
             />
           </p-iconfield>
         </div>
