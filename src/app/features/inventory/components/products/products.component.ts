@@ -116,21 +116,26 @@ import { TooltipModule } from 'primeng/tooltip';
     >
       <ng-template #caption>
         <div
-          class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between"
+          class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
-          <h5 class="m-0">Administrar Productos</h5>
-          <p-iconfield>
-            <p-inputicon>
-              <i class="pi pi-search"></i>
-            </p-inputicon>
-            <input
-              pInputText
-              type="text"
-              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-              [(ngModel)]="searchValue"
-              placeholder="Buscar..."
-            />
-          </p-iconfield>
+          <div class="self-start">
+            <h5 class="m-0 text-left">Administrar Productos</h5>
+          </div>
+          <div class="flex items-center w-full sm:w-auto">
+            <p-iconfield class="w-full">
+              <p-inputicon>
+                <i class="pi pi-search"></i>
+              </p-inputicon>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                [(ngModel)]="searchValue"
+                placeholder="Buscar..."
+                class="w-full"
+              />
+            </p-iconfield>
+          </div>
         </div>
       </ng-template>
       <ng-template #header>
