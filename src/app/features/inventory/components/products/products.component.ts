@@ -400,8 +400,8 @@ export class ProductsComponent {
     source: this.productStore.entities,
     computation: (entities, previous) => {
       const prevSelected = previous?.value ?? [];
-      const entityIds = new Set(entities.map(({ id }) => id));
-      return prevSelected.filter(({ id }) => entityIds.has(id));
+      const entityIds = new Set(entities.map(({ id }: Product) => id));
+      return prevSelected.filter(({ id }: Product) => entityIds.has(id));
     },
   });
 

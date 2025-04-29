@@ -298,8 +298,8 @@ export class CategoriesComponent {
     source: this.categoryStore.entities,
     computation: (entities, previous) => {
       const prevSelected = previous?.value ?? [];
-      const entityIds = new Set(entities.map(({ id }) => id));
-      return prevSelected.filter(({ id }) => entityIds.has(id));
+      const entityIds = new Set(entities.map(({ id }: Category) => id));
+      return prevSelected.filter(({ id }: Category) => entityIds.has(id));
     },
   });
 
