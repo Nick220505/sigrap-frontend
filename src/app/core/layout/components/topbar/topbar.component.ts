@@ -144,25 +144,26 @@ export class TopbarComponent {
   themeMode = computed(() => this.layoutService.layoutConfig().themeMode);
 
   getThemeTooltip(): string {
-    const mode = this.themeMode();
-    if (mode === 'auto') {
-      return 'Automático (Basado en hora)';
-    } else if (mode === 'dark') {
-      return 'Modo Oscuro';
-    } else {
-      return 'Modo Claro';
+    switch (this.themeMode()) {
+      case 'auto':
+        return 'Automático (Basado en hora)';
+      case 'dark':
+        return 'Modo Oscuro';
+      default:
+        return 'Modo Claro';
     }
   }
 
-  toggleThemeMode() {
-    const currentMode = this.themeMode();
-
-    if (currentMode === 'auto') {
-      this.layoutService.setThemeMode('light');
-    } else if (currentMode === 'light') {
-      this.layoutService.setThemeMode('dark');
-    } else {
-      this.layoutService.setThemeMode('auto');
+  toggleThemeMode(): void {
+    switch (this.themeMode()) {
+      case 'auto':
+        this.layoutService.setThemeMode('light');
+        break;
+      case 'light':
+        this.layoutService.setThemeMode('dark');
+        break;
+      default:
+        this.layoutService.setThemeMode('auto');
     }
   }
 }

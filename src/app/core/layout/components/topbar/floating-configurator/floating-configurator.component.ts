@@ -5,6 +5,7 @@ import { ConfiguratorComponent } from './configurator/configurator.component';
 
 @Component({
   selector: 'app-floating-configurator',
+  imports: [ButtonModule, StyleClassModule, ConfiguratorComponent],
   template: `
     <div class="fixed flex gap-4 top-8 right-8 z-50">
       <div class="relative">
@@ -24,6 +25,5 @@ import { ConfiguratorComponent } from './configurator/configurator.component';
       </div>
     </div>
   `,
-  imports: [ButtonModule, StyleClassModule, ConfiguratorComponent],
 })
 export class FloatingConfiguratorComponent {}
