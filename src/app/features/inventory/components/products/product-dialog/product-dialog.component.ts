@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -191,11 +191,13 @@ export class ProductDialogComponent {
   constructor() {
     effect(() => {
       const product = this.productStore.selectedProduct();
-      if (product) {
-        this.productForm.patchValue(product);
-      } else {
-        this.productForm.reset();
-      }
+      untracked(() => {
+        if (product) {
+          this.productForm.patchValue(product);
+        } else {
+          this.productForm.reset();
+        }
+      });
     });
   }
 
