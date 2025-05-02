@@ -23,6 +23,11 @@ export const routes: Routes = [
     ],
   },
   {
+    path: '',
+    loadChildren: () =>
+      import('./core/auth/auth.routes').then((m) => m.authRoutes),
+  },
+  {
     path: 'no-encontrado',
     loadComponent: () =>
       import('./shared/components/not-found/not-found.component').then(
