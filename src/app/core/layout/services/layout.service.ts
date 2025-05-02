@@ -38,7 +38,7 @@ interface DocumentWithTransition extends Omit<Document, 'startViewTransition'> {
   providedIn: 'root',
 })
 export class LayoutService implements OnDestroy {
-  _config: LayoutConfig = {
+  private readonly _config: LayoutConfig = {
     preset: 'Aura',
     primary: 'blue',
     surface: null,
@@ -47,7 +47,7 @@ export class LayoutService implements OnDestroy {
     themeMode: 'auto',
   };
 
-  _state: LayoutState = {
+  private readonly _state: LayoutState = {
     staticMenuDesktopInactive: false,
     overlayMenuActive: false,
     configSidebarVisible: false,
@@ -55,9 +55,9 @@ export class LayoutService implements OnDestroy {
     menuHoverActive: false,
   };
 
-  layoutConfig = signal<LayoutConfig>(this._config);
+  readonly layoutConfig = signal<LayoutConfig>(this._config);
 
-  layoutState = signal<LayoutState>(this._state);
+  readonly layoutState = signal<LayoutState>(this._state);
 
   private readonly configUpdate = new Subject<LayoutConfig>();
 
@@ -67,31 +67,35 @@ export class LayoutService implements OnDestroy {
 
   private readonly resetSource = new Subject<boolean>();
 
-  menuSource$ = this.menuSource.asObservable();
+  readonly menuSource$ = this.menuSource.asObservable();
 
-  resetSource$ = this.resetSource.asObservable();
+  readonly resetSource$ = this.resetSource.asObservable();
 
-  configUpdate$ = this.configUpdate.asObservable();
+  readonly configUpdate$ = this.configUpdate.asObservable();
 
-  overlayOpen$ = this.overlayOpen.asObservable();
+  readonly overlayOpen$ = this.overlayOpen.asObservable();
 
-  theme = computed(() => (this.layoutConfig()?.darkTheme ? 'light' : 'dark'));
+  readonly theme = computed(() =>
+    this.layoutConfig()?.darkTheme ? 'light' : 'dark',
+  );
 
-  isSidebarActive = computed(
+  readonly isSidebarActive = computed(
     () =>
       this.layoutState().overlayMenuActive ||
       this.layoutState().staticMenuMobileActive,
   );
 
-  isDarkTheme = computed(() => this.layoutConfig().darkTheme);
+  readonly isDarkTheme = computed(() => this.layoutConfig().darkTheme);
 
-  getPrimary = computed(() => this.layoutConfig().primary);
+  readonly getPrimary = computed(() => this.layoutConfig().primary);
 
-  getSurface = computed(() => this.layoutConfig().surface);
+  readonly getSurface = computed(() => this.layoutConfig().surface);
 
-  isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
+  readonly isOverlay = computed(
+    () => this.layoutConfig().menuMode === 'overlay',
+  );
 
-  transitionComplete = signal<boolean>(false);
+  readonly transitionComplete = signal<boolean>(false);
 
   private initialized = false;
   private timeCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -325,8 +329,8 @@ export class LayoutService implements OnDestroy {
   }
 
   onConfigUpdate(): void {
-    this._config = { ...this.layoutConfig() };
-    this.configUpdate.next(this.layoutConfig());
+    const config = { ...this.layoutConfig() };
+    this.configUpdate.next(config);
   }
 
   onMenuStateChange(event: MenuChangeEvent): void {

@@ -41,13 +41,13 @@ import { LayoutService } from './services/layout.service';
   `,
 })
 export class LayoutComponent implements OnDestroy {
-  layoutService = inject(LayoutService);
-  renderer = inject(Renderer2);
-  router = inject(Router);
+  readonly layoutService = inject(LayoutService);
+  readonly renderer = inject(Renderer2);
+  readonly router = inject(Router);
 
-  overlayMenuOpenSubscription: Subscription;
+  private readonly overlayMenuOpenSubscription: Subscription;
 
-  menuOutsideClickListener: (() => void) | null = null;
+  private menuOutsideClickListener: (() => void) | null = null;
 
   readonly sidebar = viewChild.required(SidebarComponent);
 
