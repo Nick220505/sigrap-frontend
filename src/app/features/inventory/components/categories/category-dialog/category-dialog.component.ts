@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -103,11 +103,13 @@ export class CategoryDialogComponent {
   constructor() {
     effect(() => {
       const category = this.categoryStore.selectedCategory();
-      if (category) {
-        this.categoryForm.patchValue(category);
-      } else {
-        this.categoryForm.reset();
-      }
+      untracked(() => {
+        if (category) {
+          this.categoryForm.patchValue(category);
+        } else {
+          this.categoryForm.reset();
+        }
+      });
     });
   }
 
