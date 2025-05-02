@@ -31,6 +31,8 @@ import { CategoryService } from '../services/category.service';
 export interface CategoryState {
   loading: boolean;
   error: string | null;
+  selectedCategory: Category | null;
+  dialogVisible: boolean;
 }
 
 export const CategoryStore = signalStore(
@@ -39,6 +41,8 @@ export const CategoryStore = signalStore(
   withState<CategoryState>({
     loading: false,
     error: null,
+    selectedCategory: null,
+    dialogVisible: false,
   }),
   withComputed(({ entities }) => ({
     categoriesCount: computed(() => entities().length),
@@ -223,6 +227,21 @@ export const CategoryStore = signalStore(
         ),
       ),
     ),
+
+    openCategoryDialog: (category?: Category) => {
+      patchState(store, {
+        selectedCategory: category,
+        dialogVisible: true,
+      });
+    },
+
+    closeCategoryDialog: () => {
+      patchState(store, { dialogVisible: false });
+    },
+
+    clearSelectedCategory: () => {
+      patchState(store, { selectedCategory: null });
+    },
   })),
   withHooks({
     onInit({ findAll }) {

@@ -2,7 +2,6 @@ import {
   Component,
   inject,
   linkedSignal,
-  model,
   signal,
   viewChild,
 } from '@angular/core';
@@ -131,7 +130,7 @@ import { TooltipModule } from 'primeng/tooltip';
               class="mr-2"
               rounded
               outlined
-              (click)="openCategoryDialog(category)"
+              (click)="categoryStore.openCategoryDialog(category)"
               pTooltip="Editar categoría"
               tooltipPosition="top"
               [disabled]="categoryStore.loading()"
@@ -183,8 +182,6 @@ export class CategoryTableComponent {
   readonly categoryStore = inject(CategoryStore);
 
   readonly dt = viewChild.required<Table>('dt');
-  readonly dialogVisible = model.required<boolean>();
-  readonly selectedCategory = model<Category | null>(null);
   readonly searchValue = signal('');
   readonly selectedCategories = linkedSignal<Category[], Category[]>({
     source: this.categoryStore.entities,
@@ -198,11 +195,6 @@ export class CategoryTableComponent {
   clearAllFilters(): void {
     this.searchValue.set('');
     this.dt().clear();
-  }
-
-  openCategoryDialog(category: Category): void {
-    this.selectedCategory.set(category);
-    this.dialogVisible.set(true);
   }
 
   deleteCategory({ id, name }: Category): void {

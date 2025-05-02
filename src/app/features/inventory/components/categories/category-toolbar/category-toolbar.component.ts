@@ -1,5 +1,4 @@
-import { Component, inject, input, model } from '@angular/core';
-import { Category } from '@features/inventory/models/category.model';
+import { Component, inject, input } from '@angular/core';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +19,7 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
           class="mr-2"
           pTooltip="Crear nueva categoría"
           tooltipPosition="top"
-          (onClick)="openCategoryDialog()"
+          (onClick)="categoryStore.openCategoryDialog()"
         />
         <p-button
           severity="danger"
@@ -41,7 +40,7 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
           pTooltip="Exportar categorías a CSV"
           tooltipPosition="top"
           (onClick)="categoryTable().dt().exportCSV()"
-          [disabled]="categoryStore.entities().length === 0"
+          [disabled]="categoryStore.categoriesCount() === 0"
         />
       </ng-template>
     </p-toolbar>
@@ -52,13 +51,6 @@ export class CategoryToolbarComponent {
   readonly categoryStore = inject(CategoryStore);
 
   readonly categoryTable = input.required<CategoryTableComponent>();
-  readonly dialogVisible = model.required<boolean>();
-  readonly selectedCategory = model<Category | null>(null);
-
-  openCategoryDialog(): void {
-    this.selectedCategory.set(null);
-    this.dialogVisible.set(true);
-  }
 
   deleteSelectedCategories(): void {
     const categories = this.categoryTable().selectedCategories();

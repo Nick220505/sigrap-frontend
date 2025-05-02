@@ -1,11 +1,10 @@
-import { Component, effect, inject, input, model } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Category } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -23,9 +22,18 @@ import { TextareaModule } from 'primeng/textarea';
   ],
   template: `
     <p-dialog
-      [(visible)]="visible"
+      [visible]="categoryStore.dialogVisible()"
+      (visibleChange)="
+        $event
+          ? categoryStore.openCategoryDialog()
+          : categoryStore.closeCategoryDialog()
+      "
       [style]="{ width: '450px' }"
-      [header]="selectedCategory() ? 'Editar Categoría' : 'Crear Categoría'"
+      [header]="
+        categoryStore.selectedCategory()
+          ? 'Editar Categoría'
+          : 'Crear Categoría'
+      "
       modal
     >
       <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
@@ -67,7 +75,7 @@ import { TextareaModule } from 'primeng/textarea';
           label="Cancelar"
           icon="pi pi-times"
           text
-          (click)="visible.set(false)"
+          (click)="categoryStore.closeCategoryDialog()"
         />
         <p-button
           label="Guardar"
@@ -87,9 +95,6 @@ export class CategoryDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly categoryStore = inject(CategoryStore);
 
-  readonly visible = model<boolean>(false);
-  readonly selectedCategory = input<Category | null>(null);
-
   readonly categoryForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
@@ -97,7 +102,7 @@ export class CategoryDialogComponent {
 
   constructor() {
     effect(() => {
-      const category = this.selectedCategory();
+      const category = this.categoryStore.selectedCategory();
       if (category) {
         this.categoryForm.patchValue(category);
       } else {
@@ -108,12 +113,12 @@ export class CategoryDialogComponent {
 
   saveCategory(): void {
     const categoryData = this.categoryForm.value;
-    const id = this.selectedCategory()?.id;
+    const id = this.categoryStore.selectedCategory()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });
     } else {
       this.categoryStore.create(categoryData);
     }
-    this.visible.set(false);
+    this.categoryStore.closeCategoryDialog();
   }
 }
