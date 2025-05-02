@@ -25,13 +25,17 @@ import { LayoutService } from './services/layout.service';
   template: `
     <div class="layout-wrapper" [ngClass]="containerClass">
       <app-topbar />
+
       <app-sidebar />
+
       <div class="layout-main-container">
         <div class="layout-main">
           <router-outlet />
         </div>
+
         <app-footer />
       </div>
+
       <div class="layout-mask animate-fadein"></div>
     </div>
   `,
