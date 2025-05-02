@@ -1,5 +1,5 @@
-import { Component, signal, viewChild } from '@angular/core';
-import { Product } from '@features/inventory/models/product.model';
+import { Component, inject, viewChild } from '@angular/core';
+import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
@@ -18,28 +18,16 @@ import { ProductToolbarComponent } from './product-toolbar/product-toolbar.compo
   template: `
     <p-toast />
 
-    <app-product-toolbar
-      [productTable]="productTable"
-      [(dialogVisible)]="dialogVisible"
-      [(selectedProduct)]="selectedProduct"
-    />
+    <app-product-toolbar [productTable]="productTable" />
 
-    <app-product-table
-      #productTable
-      [(dialogVisible)]="dialogVisible"
-      [(selectedProduct)]="selectedProduct"
-    />
+    <app-product-table #productTable />
 
-    <app-product-dialog
-      [(visible)]="dialogVisible"
-      [selectedProduct]="selectedProduct()"
-    />
+    <app-product-dialog />
 
     <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
 export class ProductsComponent {
+  readonly productStore = inject(ProductStore);
   readonly productTable = viewChild.required(ProductTableComponent);
-  readonly dialogVisible = signal(false);
-  readonly selectedProduct = signal<Product | null>(null);
 }

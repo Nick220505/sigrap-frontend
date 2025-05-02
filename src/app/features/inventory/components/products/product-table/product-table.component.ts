@@ -3,7 +3,6 @@ import {
   Component,
   inject,
   linkedSignal,
-  model,
   signal,
   viewChild,
 } from '@angular/core';
@@ -148,7 +147,7 @@ import { TooltipModule } from 'primeng/tooltip';
               class="mr-2"
               rounded
               outlined
-              (click)="openProductDialog(product)"
+              (click)="productStore.openProductDialog(product)"
               pTooltip="Editar producto"
               tooltipPosition="top"
               [disabled]="productStore.loading()"
@@ -200,8 +199,6 @@ export class ProductTableComponent {
   readonly productStore = inject(ProductStore);
 
   readonly dt = viewChild.required<Table>('dt');
-  readonly dialogVisible = model.required<boolean>();
-  readonly selectedProduct = model<Product | null>(null);
   readonly searchValue = signal('');
   readonly selectedProducts = linkedSignal<Product[], Product[]>({
     source: this.productStore.entities,
@@ -215,11 +212,6 @@ export class ProductTableComponent {
   clearAllFilters(): void {
     this.searchValue.set('');
     this.dt().clear();
-  }
-
-  openProductDialog(product: Product): void {
-    this.selectedProduct.set(product);
-    this.dialogVisible.set(true);
   }
 
   deleteProduct({ id, name }: Product): void {

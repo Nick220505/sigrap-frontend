@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, model } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,7 +6,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Product } from '@features/inventory/models/product.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ButtonModule } from 'primeng/button';
@@ -30,9 +29,16 @@ import { TextareaModule } from 'primeng/textarea';
   ],
   template: `
     <p-dialog
-      [(visible)]="visible"
+      [visible]="productStore.dialogVisible()"
+      (visibleChange)="
+        $event
+          ? productStore.openProductDialog()
+          : productStore.closeProductDialog()
+      "
       [style]="{ width: '500px' }"
-      [header]="selectedProduct() ? 'Editar Producto' : 'Crear Producto'"
+      [header]="
+        productStore.selectedProduct() ? 'Editar Producto' : 'Crear Producto'
+      "
       modal
     >
       <form [formGroup]="productForm" class="flex flex-col gap-4 pt-4">
@@ -155,7 +161,7 @@ import { TextareaModule } from 'primeng/textarea';
           label="Cancelar"
           icon="pi pi-times"
           text
-          (click)="visible.set(false)"
+          (click)="productStore.closeProductDialog()"
         />
         <p-button
           label="Guardar"
@@ -174,9 +180,6 @@ export class ProductDialogComponent {
   readonly productStore = inject(ProductStore);
   readonly categoryStore = inject(CategoryStore);
 
-  readonly visible = model.required<boolean>();
-  readonly selectedProduct = input.required<Product | null>();
-
   readonly productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     description: [''],
@@ -187,7 +190,7 @@ export class ProductDialogComponent {
 
   constructor() {
     effect(() => {
-      const product = this.selectedProduct();
+      const product = this.productStore.selectedProduct();
       if (product) {
         this.productForm.patchValue(product);
       } else {
@@ -198,12 +201,12 @@ export class ProductDialogComponent {
 
   saveProduct(): void {
     const productData = this.productForm.value;
-    const id = this.selectedProduct()?.id;
+    const id = this.productStore.selectedProduct()?.id;
     if (id) {
       this.productStore.update({ id, productData });
     } else {
       this.productStore.create(productData);
     }
-    this.visible.set(false);
+    this.productStore.closeProductDialog();
   }
 }

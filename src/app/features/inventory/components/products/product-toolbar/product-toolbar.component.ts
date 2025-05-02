@@ -1,5 +1,4 @@
-import { Component, inject, input, model } from '@angular/core';
-import { Product } from '@features/inventory/models/product.model';
+import { Component, inject, input } from '@angular/core';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +19,7 @@ import { ProductTableComponent } from '../product-table/product-table.component'
           class="mr-2"
           pTooltip="Crear nuevo producto"
           tooltipPosition="top"
-          (onClick)="openProductDialog()"
+          (onClick)="productStore.openProductDialog()"
         />
         <p-button
           severity="danger"
@@ -41,7 +40,7 @@ import { ProductTableComponent } from '../product-table/product-table.component'
           pTooltip="Exportar productos a CSV"
           tooltipPosition="top"
           (onClick)="productTable().dt().exportCSV()"
-          [disabled]="productStore.entities().length === 0"
+          [disabled]="productStore.productsCount() === 0"
         />
       </ng-template>
     </p-toolbar>
@@ -52,13 +51,6 @@ export class ProductToolbarComponent {
   readonly productStore = inject(ProductStore);
 
   readonly productTable = input.required<ProductTableComponent>();
-  readonly dialogVisible = model.required<boolean>();
-  readonly selectedProduct = model<Product | null>(null);
-
-  openProductDialog(): void {
-    this.selectedProduct.set(null);
-    this.dialogVisible.set(true);
-  }
 
   deleteSelectedProducts(): void {
     const products = this.productTable().selectedProducts();

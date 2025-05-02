@@ -30,6 +30,8 @@ import { ProductService } from '../services/product.service';
 export interface ProductState {
   loading: boolean;
   error: string | null;
+  selectedProduct: Product | null;
+  dialogVisible: boolean;
 }
 
 export const ProductStore = signalStore(
@@ -38,6 +40,8 @@ export const ProductStore = signalStore(
   withState<ProductState>({
     loading: false,
     error: null,
+    selectedProduct: null,
+    dialogVisible: false,
   }),
   withComputed(({ entities }) => ({
     productsCount: computed(() => entities().length),
@@ -180,6 +184,21 @@ export const ProductStore = signalStore(
         ),
       ),
     ),
+
+    openProductDialog: (product?: Product) => {
+      patchState(store, {
+        selectedProduct: product,
+        dialogVisible: true,
+      });
+    },
+
+    closeProductDialog: () => {
+      patchState(store, { dialogVisible: false });
+    },
+
+    clearSelectedProduct: () => {
+      patchState(store, { selectedProduct: null });
+    },
   })),
   withHooks({
     onInit({ findAll }) {
