@@ -37,6 +37,7 @@ import { TooltipModule } from 'primeng/tooltip';
         { field: 'name', header: 'Nombre' },
         { field: 'description', header: 'Descripción' },
       ];
+
     <p-table
       #dt
       [value]="categoryStore.entities()"
@@ -60,6 +61,7 @@ import { TooltipModule } from 'primeng/tooltip';
           <div class="self-start">
             <h5 class="m-0 text-left">Administrar Categorías</h5>
           </div>
+
           <div class="flex items-center w-full sm:w-auto">
             <p-iconfield class="w-full">
               <p-inputicon>
@@ -77,11 +79,13 @@ import { TooltipModule } from 'primeng/tooltip';
           </div>
         </div>
       </ng-template>
+
       <ng-template #header>
         <tr>
           <th style="width: 3rem">
             <p-tableHeaderCheckbox />
           </th>
+
           @for (column of columns; track column.field) {
             <th pSortableColumn="{{ column.field }}">
               <div class="flex items-center gap-2">
@@ -99,6 +103,7 @@ import { TooltipModule } from 'primeng/tooltip';
               </div>
             </th>
           }
+
           <th>
             <div class="flex items-center gap-2">
               <span>Acciones</span>
@@ -116,14 +121,17 @@ import { TooltipModule } from 'primeng/tooltip';
           </th>
         </tr>
       </ng-template>
+
       <ng-template #body let-category let-columns="columns">
         <tr>
           <td style="width: 3rem">
             <p-tableCheckbox [value]="category" />
           </td>
+
           @for (column of columns; track column.field) {
             <td>{{ category[column.field] }}</td>
           }
+
           <td>
             <p-button
               icon="pi pi-pencil"
@@ -135,6 +143,7 @@ import { TooltipModule } from 'primeng/tooltip';
               tooltipPosition="top"
               [disabled]="categoryStore.loading()"
             />
+
             <p-button
               icon="pi pi-trash"
               severity="danger"
@@ -148,6 +157,7 @@ import { TooltipModule } from 'primeng/tooltip';
           </td>
         </tr>
       </ng-template>
+
       <ng-template #emptymessage>
         <tr>
           <td [attr.colspan]="columns.length + 2" class="text-center py-4">

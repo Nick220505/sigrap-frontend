@@ -21,6 +21,7 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
           tooltipPosition="top"
           (onClick)="categoryStore.openCategoryDialog()"
         />
+
         <p-button
           severity="danger"
           label="Eliminar"
@@ -32,6 +33,7 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
           [disabled]="categoryTable().selectedCategories().length === 0"
         />
       </ng-template>
+
       <ng-template #end>
         <p-button
           label="Exportar"

@@ -40,6 +40,7 @@ import { TextareaModule } from 'primeng/textarea';
         @let nameControlInvalid =
           categoryForm.get('name')?.invalid &&
           categoryForm.get('name')?.touched;
+
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
           <label for="name" class="font-bold">Nombre</label>
           <input
@@ -53,6 +54,7 @@ import { TextareaModule } from 'primeng/textarea';
             required
             fluid
           />
+
           @if (nameControlInvalid) {
             <small class="text-red-500">El nombre es obligatorio.</small>
           }
@@ -70,6 +72,7 @@ import { TextareaModule } from 'primeng/textarea';
           ></textarea>
         </div>
       </form>
+
       <ng-template #footer>
         <p-button
           label="Cancelar"
@@ -77,6 +80,7 @@ import { TextareaModule } from 'primeng/textarea';
           text
           (click)="categoryStore.closeCategoryDialog()"
         />
+
         <p-button
           label="Guardar"
           icon="pi pi-check"

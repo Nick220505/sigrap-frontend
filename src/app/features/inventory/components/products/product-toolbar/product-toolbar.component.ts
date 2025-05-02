@@ -21,6 +21,7 @@ import { ProductTableComponent } from '../product-table/product-table.component'
           tooltipPosition="top"
           (onClick)="productStore.openProductDialog()"
         />
+
         <p-button
           severity="danger"
           label="Eliminar"
@@ -32,6 +33,7 @@ import { ProductTableComponent } from '../product-table/product-table.component'
           [disabled]="productTable().selectedProducts().length === 0"
         />
       </ng-template>
+
       <ng-template #end>
         <p-button
           label="Exportar"
