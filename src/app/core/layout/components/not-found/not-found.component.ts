@@ -6,7 +6,9 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-notfound',
   imports: [RouterModule, ButtonModule, FloatingConfiguratorComponent],
-  template: ` <app-floating-configurator />
+  template: `
+    <app-floating-configurator />
+
     <div class="flex items-center justify-center min-h-screen overflow-hidden">
       <div class="flex flex-col items-center justify-center">
         <img
@@ -14,6 +16,7 @@ import { ButtonModule } from 'primeng/button';
           alt="SIGRAP Logo"
           class="mb-8 w-40 h-40 object-contain drop-shadow-lg"
         />
+
         <div
           style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, color-mix(in srgb, var(--primary-color), transparent 60%) 10%, var(--surface-ground) 30%)"
         >
@@ -22,15 +25,18 @@ import { ButtonModule } from 'primeng/button';
             style="border-radius: 53px"
           >
             <span class="text-primary font-bold text-3xl">404</span>
+
             <h1
               class="text-surface-900 dark:text-surface-0 font-bold text-3xl lg:text-5xl mb-2"
             >
               Página no encontrada
             </h1>
+
             <div class="text-surface-600 dark:text-surface-200 mb-8">
               El recurso solicitado no existe o no está disponible en el sistema
               de inventario.
             </div>
+
             <a
               routerLink="/inventario/productos"
               class="w-full flex items-center py-8 border-surface-300 dark:border-surface-500 border-b"
@@ -41,6 +47,7 @@ import { ButtonModule } from 'primeng/button';
               >
                 <i class="pi pi-fw pi-database !text-2xl"></i>
               </span>
+
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
@@ -51,6 +58,7 @@ import { ButtonModule } from 'primeng/button';
                 >
               </span>
             </a>
+
             <a
               routerLink="/"
               class="w-full flex items-center py-8 border-surface-300 dark:border-surface-500 border-b"
@@ -61,6 +69,7 @@ import { ButtonModule } from 'primeng/button';
               >
                 <i class="pi pi-fw pi-box !text-2xl"></i>
               </span>
+
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
@@ -71,6 +80,7 @@ import { ButtonModule } from 'primeng/button';
                 >
               </span>
             </a>
+
             <a
               routerLink="/"
               class="w-full flex items-center mb-8 py-8 border-surface-300 dark:border-surface-500 border-b"
@@ -81,6 +91,7 @@ import { ButtonModule } from 'primeng/button';
               >
                 <i class="pi pi-fw pi-truck !text-2xl"></i>
               </span>
+
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
@@ -91,10 +102,12 @@ import { ButtonModule } from 'primeng/button';
                 >
               </span>
             </a>
+
             <p-button label="Ir al Panel Principal" routerLink="/" />
           </div>
         </div>
       </div>
-    </div>`,
+    </div>
+  `,
 })
 export class NotFoundComponent {}

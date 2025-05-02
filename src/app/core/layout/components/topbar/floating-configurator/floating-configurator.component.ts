@@ -15,6 +15,7 @@ import { ConfiguratorComponent } from './configurator/configurator.component';
         [icon]="isDarkTheme() ? 'pi pi-moon' : 'pi pi-sun'"
         severity="secondary"
       />
+
       <div class="relative">
         <p-button
           icon="pi pi-palette"
@@ -27,6 +28,7 @@ import { ConfiguratorComponent } from './configurator/configurator.component';
           type="button"
           rounded
         />
+
         <app-configurator />
       </div>
     </div>

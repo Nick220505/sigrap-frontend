@@ -6,7 +6,7 @@ import { MenuComponent } from './menu/menu.component';
   imports: [MenuComponent],
   template: `
     <div class="layout-sidebar">
-      <app-menu></app-menu>
+      <app-menu />
     </div>
   `,
 })

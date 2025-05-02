@@ -32,6 +32,7 @@ import { filter } from 'rxjs/operators';
           {{ item().label }}
         </div>
       }
+
       @if ((!item().routerLink || item().items) && item().visible !== false) {
         <a
           [attr.href]="item().url"
@@ -43,11 +44,13 @@ import { filter } from 'rxjs/operators';
         >
           <i [ngClass]="item().icon" class="layout-menuitem-icon"></i>
           <span class="layout-menuitem-text">{{ item().label }}</span>
+
           @if (item().items) {
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
           }
         </a>
       }
+
       @if (item().routerLink && !item().items && item().visible !== false) {
         <a
           (click)="itemClick($event)"
@@ -75,6 +78,7 @@ import { filter } from 'rxjs/operators';
         >
           <i [ngClass]="item().icon" class="layout-menuitem-icon"></i>
           <span class="layout-menuitem-text">{{ item().label }}</span>
+
           @if (item().items) {
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
           }

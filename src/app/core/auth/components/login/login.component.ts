@@ -25,6 +25,7 @@ import { RippleModule } from 'primeng/ripple';
   ],
   template: `
     <app-floating-configurator />
+
     <div
       class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"
     >
@@ -41,11 +42,13 @@ import { RippleModule } from 'primeng/ripple';
                 alt="SIGRAP Logo"
                 class="w-16 mx-auto mb-8 object-contain drop-shadow-lg"
               />
+
               <div
                 class="mb-4 text-3xl font-medium text-surface-900 dark:text-surface-0"
               >
                 Iniciar Sesión
               </div>
+
               <span class="font-medium text-muted-color">
                 Ingresa tus datos para continuar
               </span>
@@ -55,6 +58,7 @@ import { RippleModule } from 'primeng/ripple';
               @let emailControlInvalid =
                 loginForm.get('email')?.invalid &&
                 loginForm.get('email')?.touched;
+
               <div
                 class="flex flex-col gap-2"
                 [class.p-invalid]="emailControlInvalid"
@@ -65,6 +69,7 @@ import { RippleModule } from 'primeng/ripple';
                 >
                   Email
                 </label>
+
                 <input
                   pInputText
                   id="email"
@@ -75,6 +80,7 @@ import { RippleModule } from 'primeng/ripple';
                   [class.ng-dirty]="emailControlInvalid"
                   [class.ng-invalid]="emailControlInvalid"
                 />
+
                 @if (emailControlInvalid) {
                   @if (loginForm.get('email')?.hasError('required')) {
                     <small class="text-red-500"
@@ -91,6 +97,7 @@ import { RippleModule } from 'primeng/ripple';
               @let passwordControlInvalid =
                 loginForm.get('password')?.invalid &&
                 loginForm.get('password')?.touched;
+
               <div
                 class="flex flex-col gap-2 mt-4"
                 [class.p-invalid]="passwordControlInvalid"
@@ -101,6 +108,7 @@ import { RippleModule } from 'primeng/ripple';
                 >
                   Contraseña
                 </label>
+
                 <p-password
                   id="password"
                   formControlName="password"
@@ -112,6 +120,7 @@ import { RippleModule } from 'primeng/ripple';
                   [class.ng-dirty]="passwordControlInvalid"
                   [class.ng-invalid]="passwordControlInvalid"
                 />
+
                 @if (passwordControlInvalid) {
                   <small class="text-red-500"
                     >La contraseña es obligatoria.</small
@@ -140,6 +149,7 @@ import { RippleModule } from 'primeng/ripple';
                 <span class="text-surface-600 dark:text-surface-200">
                   ¿No tienes una cuenta?
                 </span>
+
                 <a
                   routerLink="/registro"
                   class="ml-2 font-medium text-primary cursor-pointer"

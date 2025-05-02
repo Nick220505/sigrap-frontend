@@ -26,7 +26,7 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
   `,
 })
 export class MenuComponent {
-  menuItems: MenuItem[] = [
+  readonly menuItems: MenuItem[] = [
     {
       label: 'PRINCIPAL',
       items: [

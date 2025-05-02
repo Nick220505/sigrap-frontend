@@ -14,5 +14,5 @@ import { Component, signal } from '@angular/core';
   `,
 })
 export class FooterComponent {
-  currentYear = signal(new Date().getFullYear());
+  readonly currentYear = signal(new Date().getFullYear());
 }

@@ -28,6 +28,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         >
           <i class="pi pi-bars text-5 text-[1.25rem]"></i>
         </button>
+
         <a
           class="layout-topbar-logo flex items-center text-2xl text-[var(--text-color)] font-medium gap-3"
           routerLink="/"
@@ -54,6 +55,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
               class="text-[1.25rem]"
             ></i>
           </button>
+
           <div class="relative">
             <button
               class="flex justify-center items-center rounded-full w-10 h-10 cursor-pointer bg-[var(--primary-color)] text-[var(--primary-contrast-color)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
@@ -67,6 +69,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
             >
               <i class="pi pi-palette text-[1.25rem]"></i>
             </button>
+
             <app-configurator />
           </div>
         </div>
@@ -100,6 +103,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                 >Calendar</span
               >
             </button>
+
             <button
               type="button"
               class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)] max-lg:w-full max-lg:h-auto max-lg:justify-start max-lg:rounded-[var(--content-border-radius)] max-lg:py-2 max-lg:px-4"
@@ -111,6 +115,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                 >Messages</span
               >
             </button>
+
             <button
               type="button"
               class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)] max-lg:w-full max-lg:h-auto max-lg:justify-start max-lg:rounded-[var(--content-border-radius)] max-lg:py-2 max-lg:px-4"

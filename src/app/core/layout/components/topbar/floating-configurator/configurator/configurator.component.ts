@@ -49,6 +49,7 @@ declare interface SurfacesType {
     <div class="flex flex-col gap-4">
       <div>
         <span class="text-sm text-muted-color font-semibold">Primario</span>
+
         <div class="pt-2 flex gap-2 flex-wrap justify-start">
           @for (primaryColor of primaryColors(); track primaryColor.name) {
             <button
@@ -72,8 +73,10 @@ declare interface SurfacesType {
           }
         </div>
       </div>
+
       <div>
         <span class="text-sm text-muted-color font-semibold">Superficie</span>
+
         <div class="pt-2 flex gap-2 flex-wrap justify-start">
           @for (surface of surfaces; track surface.name) {
             <button
@@ -101,8 +104,10 @@ declare interface SurfacesType {
           }
         </div>
       </div>
+
       <div class="flex flex-col gap-2">
         <span class="text-sm text-muted-color font-semibold">Preajustes</span>
+
         <p-selectbutton
           [options]="presets"
           [ngModel]="selectedPreset()"
@@ -111,9 +116,11 @@ declare interface SurfacesType {
           size="small"
         />
       </div>
+
       @if (showMenuModeButton()) {
         <div class="flex flex-col gap-2">
           <span class="text-sm text-muted-color font-semibold">Modo Menú</span>
+
           <p-selectbutton
             [ngModel]="menuMode()"
             (ngModelChange)="onMenuModeChange($event)"
