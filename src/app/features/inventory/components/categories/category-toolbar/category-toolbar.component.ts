@@ -30,7 +30,7 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
           pTooltip="Eliminar categorías seleccionadas"
           tooltipPosition="top"
           (onClick)="deleteSelectedCategories()"
-          [disabled]="categoryTable().selectedItems().length === 0"
+          [disabled]="categoryTable().selectedCategories().length === 0"
         />
       </ng-template>
       <ng-template #end>
@@ -61,7 +61,7 @@ export class CategoryToolbarComponent {
   }
 
   deleteSelectedCategories(): void {
-    const categories = this.categoryTable().selectedItems();
+    const categories = this.categoryTable().selectedCategories();
     this.confirmationService.confirm({
       message: `
       ¿Está seguro de que desea eliminar las ${categories.length} categorías seleccionadas?

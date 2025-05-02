@@ -25,7 +25,7 @@ import { TextareaModule } from 'primeng/textarea';
     <p-dialog
       [(visible)]="visible"
       [style]="{ width: '450px' }"
-      [header]="selectedCategory()?.id ? 'Editar Categoría' : 'Crear Categoría'"
+      [header]="selectedCategory() ? 'Editar Categoría' : 'Crear Categoría'"
       modal
     >
       <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
@@ -97,24 +97,23 @@ export class CategoryDialogComponent {
 
   constructor() {
     effect(() => {
-      if (this.visible() && this.selectedCategory()) {
-        this.categoryForm.patchValue(this.selectedCategory() || {});
-      } else if (this.visible() && !this.selectedCategory()) {
+      const category = this.selectedCategory();
+      if (category) {
+        this.categoryForm.patchValue(category);
+      } else {
         this.categoryForm.reset();
       }
     });
   }
 
   saveCategory(): void {
-    if (this.categoryForm.valid) {
-      const categoryData = this.categoryForm.value;
-      const id = this.selectedCategory()?.id;
-      if (id) {
-        this.categoryStore.update({ id, categoryData });
-      } else {
-        this.categoryStore.create(categoryData);
-      }
-      this.visible.set(false);
+    const categoryData = this.categoryForm.value;
+    const id = this.selectedCategory()?.id;
+    if (id) {
+      this.categoryStore.update({ id, categoryData });
+    } else {
+      this.categoryStore.create(categoryData);
     }
+    this.visible.set(false);
   }
 }
