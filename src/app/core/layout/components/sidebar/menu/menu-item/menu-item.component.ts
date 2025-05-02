@@ -113,7 +113,7 @@ import { filter } from 'rxjs/operators';
   ],
 })
 export class MenuItemComponent implements OnInit, OnDestroy {
-  router = inject(Router);
+  readonly router = inject(Router);
   private readonly layoutService = inject(LayoutService);
 
   readonly item = input.required<MenuItem>();
@@ -129,13 +129,13 @@ export class MenuItemComponent implements OnInit, OnDestroy {
 
   readonly parentKey = input.required<string>();
 
-  active = signal(false);
+  readonly active = signal(false);
 
-  menuSourceSubscription: Subscription;
+  readonly key = signal('');
 
-  menuResetSubscription: Subscription;
+  private readonly menuSourceSubscription: Subscription;
 
-  key = signal('');
+  private readonly menuResetSubscription: Subscription;
 
   constructor() {
     this.menuSourceSubscription = this.layoutService.menuSource$.subscribe(

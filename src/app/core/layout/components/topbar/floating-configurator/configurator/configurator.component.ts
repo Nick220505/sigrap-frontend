@@ -139,32 +139,26 @@ declare interface SurfacesType {
   },
 })
 export class ConfiguratorComponent implements OnInit {
-  router = inject(Router);
+  readonly router = inject(Router);
 
-  config: PrimeNG = inject(PrimeNG);
+  readonly config: PrimeNG = inject(PrimeNG);
 
-  layoutService: LayoutService = inject(LayoutService);
+  readonly layoutService: LayoutService = inject(LayoutService);
 
-  platformId = inject(PLATFORM_ID);
+  readonly platformId = inject(PLATFORM_ID);
 
-  primeng = inject(PrimeNG);
+  readonly primeng = inject(PrimeNG);
 
-  presets = Object.keys(presets);
+  readonly presets = Object.keys(presets);
 
-  showMenuModeButton = signal(!this.router.url.includes('auth'));
+  readonly showMenuModeButton = signal(!this.router.url.includes('auth'));
 
-  menuModeOptions = [
+  readonly menuModeOptions = [
     { label: 'Estático', value: 'static' },
     { label: 'Superpuesto', value: 'overlay' },
   ];
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.onPresetChange(this.layoutService.layoutConfig().preset ?? 'Aura');
-    }
-  }
-
-  surfaces: SurfacesType[] = [
+  readonly surfaces: SurfacesType[] = [
     {
       name: 'slate',
       palette: {
@@ -303,23 +297,23 @@ export class ConfiguratorComponent implements OnInit {
     },
   ];
 
-  selectedPrimaryColor = computed(() => {
+  readonly selectedPrimaryColor = computed(() => {
     return this.layoutService.layoutConfig().primary ?? '';
   });
 
-  selectedSurfaceColor = computed(
+  readonly selectedSurfaceColor = computed(
     () => this.layoutService.layoutConfig().surface ?? '',
   );
 
-  selectedPreset = computed(
+  readonly selectedPreset = computed(
     () => this.layoutService.layoutConfig().preset ?? 'Aura',
   );
 
-  menuMode = computed(
+  readonly menuMode = computed(
     () => this.layoutService.layoutConfig().menuMode ?? 'static',
   );
 
-  primaryColors = computed<SurfacesType[]>(() => {
+  readonly primaryColors = computed<SurfacesType[]>(() => {
     const presetPalette =
       presets[
         (this.layoutService.layoutConfig().preset ?? 'Aura') as KeyOfType<
@@ -357,6 +351,12 @@ export class ConfiguratorComponent implements OnInit {
 
     return palettes;
   });
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.onPresetChange(this.layoutService.layoutConfig().preset ?? 'Aura');
+    }
+  }
 
   getPresetExt() {
     const color: SurfacesType = this.primaryColors().find(

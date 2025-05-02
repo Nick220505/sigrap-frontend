@@ -139,9 +139,11 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
   `,
 })
 export class TopbarComponent {
-  layoutService = inject(LayoutService);
+  readonly layoutService = inject(LayoutService);
 
-  themeMode = computed(() => this.layoutService.layoutConfig().themeMode);
+  readonly themeMode = computed(
+    () => this.layoutService.layoutConfig().themeMode,
+  );
 
   getThemeTooltip(): string {
     switch (this.themeMode()) {
