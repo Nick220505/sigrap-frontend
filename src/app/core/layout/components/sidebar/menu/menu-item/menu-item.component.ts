@@ -13,6 +13,7 @@ import {
   input,
   OnDestroy,
   OnInit,
+  signal,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { LayoutService } from '@core/layout/services/layout.service';
@@ -92,7 +93,7 @@ import { filter } from 'rxjs/operators';
               app-menuitem
               [item]="child"
               [index]="i"
-              [parentKey]="key"
+              [parentKey]="key()"
               [class]="child['badgeClass']"
             ></li>
           }
@@ -128,26 +129,28 @@ export class MenuItemComponent implements OnInit, OnDestroy {
 
   readonly parentKey = input.required<string>();
 
-  active = false;
+  active = signal(false);
 
   menuSourceSubscription: Subscription;
 
   menuResetSubscription: Subscription;
 
-  key = '';
+  key = signal('');
 
   constructor() {
     this.menuSourceSubscription = this.layoutService.menuSource$.subscribe(
       (value) => {
         Promise.resolve(null).then(() => {
           if (value.routeEvent) {
-            this.active =
-              value.key === this.key || value.key.startsWith(this.key + '-');
+            this.active.set(
+              value.key === this.key() ||
+                value.key.startsWith(this.key() + '-'),
+            );
           } else if (
-            value.key !== this.key &&
-            !value.key.startsWith(this.key + '-')
+            value.key !== this.key() &&
+            !value.key.startsWith(this.key() + '-')
           ) {
-            this.active = false;
+            this.active.set(false);
           }
         });
       },
@@ -155,7 +158,7 @@ export class MenuItemComponent implements OnInit, OnDestroy {
 
     this.menuResetSubscription = this.layoutService.resetSource$.subscribe(
       () => {
-        this.active = false;
+        this.active.set(false);
       },
     );
 
@@ -169,10 +172,12 @@ export class MenuItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const parentKey = this.parentKey();
-    this.key = parentKey
-      ? parentKey + '-' + this.index()
+    const parentKeyValue = this.parentKey();
+    const keyValue = parentKeyValue
+      ? parentKeyValue + '-' + this.index()
       : String(this.index());
+
+    this.key.set(keyValue);
 
     if (this.item().routerLink) {
       this.updateActiveStateFromRoute();
@@ -189,7 +194,7 @@ export class MenuItemComponent implements OnInit, OnDestroy {
 
     if (activeRoute) {
       this.layoutService.onMenuStateChange({
-        key: this.key,
+        key: this.key(),
         routeEvent: true,
       });
     }
@@ -209,10 +214,10 @@ export class MenuItemComponent implements OnInit, OnDestroy {
     }
 
     if (this.item().items) {
-      this.active = !this.active;
+      this.active.update((current) => !current);
     }
 
-    this.layoutService.onMenuStateChange({ key: this.key });
+    this.layoutService.onMenuStateChange({ key: this.key() });
   }
 
   get submenuAnimation() {
@@ -220,12 +225,12 @@ export class MenuItemComponent implements OnInit, OnDestroy {
       return 'expanded';
     }
 
-    return this.active ? 'expanded' : 'collapsed';
+    return this.active() ? 'expanded' : 'collapsed';
   }
 
   @HostBinding('class.active-menuitem')
   get activeClass() {
-    return this.active && !this.root();
+    return this.active() && !this.root();
   }
 
   ngOnDestroy() {

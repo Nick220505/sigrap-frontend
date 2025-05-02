@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -9,7 +9,7 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
   imports: [MenuItemComponent, RouterModule],
   template: `
     <ul class="layout-menu">
-      @for (menuItem of menuItems; track menuItem; let i = $index) {
+      @for (menuItem of menuItems(); track menuItem; let i = $index) {
         @if (menuItem.separator) {
           <li class="menu-separator"></li>
         } @else {
@@ -26,7 +26,7 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
   `,
 })
 export class MenuComponent {
-  readonly menuItems: MenuItem[] = [
+  readonly menuItems = signal<MenuItem[]>([
     {
       label: 'PRINCIPAL',
       items: [
@@ -202,5 +202,5 @@ export class MenuComponent {
         },
       ],
     },
-  ];
+  ]);
 }
