@@ -30,7 +30,7 @@ export const routes: Routes = [
   {
     path: 'no-encontrado',
     loadComponent: () =>
-      import('./shared/components/not-found/not-found.component').then(
+      import('./core/layout/components/not-found/not-found.component').then(
         (m) => m.NotFoundComponent,
       ),
   },
