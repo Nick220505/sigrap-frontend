@@ -196,13 +196,11 @@ export class MenuItemComponent implements OnInit, OnDestroy {
   }
 
   itemClick(event: Event) {
-    // avoid processing disabled items
     if (this.item().disabled) {
       event.preventDefault();
       return;
     }
 
-    // execute command
     if (this.item().command) {
       const command = this.item().command;
       if (command) {
@@ -210,7 +208,6 @@ export class MenuItemComponent implements OnInit, OnDestroy {
       }
     }
 
-    // toggle active state
     if (this.item().items) {
       this.active = !this.active;
     }

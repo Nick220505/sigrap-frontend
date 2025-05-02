@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LayoutService } from '@core/layout/services/layout.service';
 import { StyleClassModule } from 'primeng/styleclass';
+import { TooltipModule } from 'primeng/tooltip';
 import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
 
 @Component({
@@ -12,6 +13,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     CommonModule,
     StyleClassModule,
     ConfiguratorComponent,
+    TooltipModule,
   ],
   template: `
     <div
@@ -43,14 +45,17 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
           <button
             type="button"
             class="flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
-            (click)="toggleDarkMode()"
-            aria-label="Toggle dark mode"
+            (click)="toggleThemeMode()"
+            aria-label="Toggle theme mode"
+            [pTooltip]="getThemeTooltip()"
+            tooltipPosition="bottom"
           >
             <i
               [ngClass]="{
-                'pi ': true,
-                'pi-moon': layoutService.isDarkTheme(),
-                'pi-sun': !layoutService.isDarkTheme(),
+                pi: true,
+                'pi-moon': themeMode() === 'dark',
+                'pi-sun': themeMode() === 'light',
+                'pi-sync': themeMode() === 'auto',
               }"
               class="text-[1.25rem]"
             ></i>
@@ -136,10 +141,28 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 export class TopbarComponent {
   layoutService = inject(LayoutService);
 
-  toggleDarkMode() {
-    this.layoutService.layoutConfig.update((state) => ({
-      ...state,
-      darkTheme: !state.darkTheme,
-    }));
+  themeMode = computed(() => this.layoutService.layoutConfig().themeMode);
+
+  getThemeTooltip(): string {
+    const mode = this.themeMode();
+    if (mode === 'auto') {
+      return 'Automático (Basado en hora)';
+    } else if (mode === 'dark') {
+      return 'Modo Oscuro';
+    } else {
+      return 'Modo Claro';
+    }
+  }
+
+  toggleThemeMode() {
+    const currentMode = this.themeMode();
+
+    if (currentMode === 'auto') {
+      this.layoutService.setThemeMode('light');
+    } else if (currentMode === 'light') {
+      this.layoutService.setThemeMode('dark');
+    } else {
+      this.layoutService.setThemeMode('auto');
+    }
   }
 }

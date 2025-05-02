@@ -1,5 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
-import { LayoutService } from '@core/layout/services/layout.service';
+import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ConfiguratorComponent } from './configurator/configurator.component';
@@ -8,14 +7,6 @@ import { ConfiguratorComponent } from './configurator/configurator.component';
   selector: 'app-floating-configurator',
   template: `
     <div class="fixed flex gap-4 top-8 right-8 z-50">
-      <p-button
-        type="button"
-        (onClick)="toggleDarkMode()"
-        [rounded]="true"
-        [icon]="isDarkTheme() ? 'pi pi-moon' : 'pi pi-sun'"
-        severity="secondary"
-      />
-
       <div class="relative">
         <p-button
           icon="pi pi-palette"
@@ -35,15 +26,4 @@ import { ConfiguratorComponent } from './configurator/configurator.component';
   `,
   imports: [ButtonModule, StyleClassModule, ConfiguratorComponent],
 })
-export class FloatingConfiguratorComponent {
-  LayoutService = inject(LayoutService);
-
-  isDarkTheme = computed(() => this.LayoutService.layoutConfig().darkTheme);
-
-  toggleDarkMode() {
-    this.LayoutService.layoutConfig.update((state) => ({
-      ...state,
-      darkTheme: !state.darkTheme,
-    }));
-  }
-}
+export class FloatingConfiguratorComponent {}

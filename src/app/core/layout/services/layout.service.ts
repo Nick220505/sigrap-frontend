@@ -1,4 +1,4 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, OnDestroy, computed, effect, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface LayoutConfig {
@@ -7,6 +7,7 @@ export interface LayoutConfig {
   surface?: string | null;
   darkTheme?: boolean;
   menuMode?: string;
+  themeMode?: 'auto' | 'dark' | 'light';
 }
 
 interface LayoutState {
@@ -36,13 +37,14 @@ interface DocumentWithTransition extends Omit<Document, 'startViewTransition'> {
 @Injectable({
   providedIn: 'root',
 })
-export class LayoutService {
+export class LayoutService implements OnDestroy {
   _config: LayoutConfig = {
     preset: 'Aura',
     primary: 'blue',
     surface: null,
     darkTheme: false,
     menuMode: 'static',
+    themeMode: 'auto',
   };
 
   _state: LayoutState = {
@@ -92,8 +94,13 @@ export class LayoutService {
   transitionComplete = signal<boolean>(false);
 
   private initialized = false;
+  private timeCheckInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
+    this.applyInitialTheme();
+
+    this.loadThemeFromStorage();
+
     effect(() => {
       const config = this.layoutConfig();
       if (config) {
@@ -109,7 +116,130 @@ export class LayoutService {
         return;
       }
 
+      this.saveThemeToStorage(config);
       this.handleDarkModeTransition(config);
+    });
+
+    this.setupTimeBasedTheme();
+  }
+
+  private applyInitialTheme(): void {
+    try {
+      const storedConfig = localStorage.getItem('layout-config');
+      if (storedConfig) {
+        const parsedConfig = JSON.parse(storedConfig);
+
+        if (parsedConfig.darkTheme) {
+          document.documentElement.classList.add('app-dark');
+          this._config.darkTheme = true;
+          this._config.themeMode = parsedConfig.themeMode;
+          this.layoutConfig.set(this._config);
+        } else if (parsedConfig.themeMode === 'auto') {
+          const currentHour = new Date().getHours();
+          const shouldBeDark = currentHour >= 18 || currentHour < 6;
+          if (shouldBeDark) {
+            document.documentElement.classList.add('app-dark');
+            this._config.darkTheme = true;
+            this._config.themeMode = 'auto';
+            this.layoutConfig.set(this._config);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error applying initial theme:', error);
+    }
+  }
+
+  private loadThemeFromStorage(): void {
+    try {
+      const storedConfig = localStorage.getItem('layout-config');
+      if (storedConfig) {
+        const parsedConfig = JSON.parse(storedConfig);
+        this.layoutConfig.update((config) => ({
+          ...config,
+          ...parsedConfig,
+        }));
+      } else {
+        this.applyTimeBasedTheme();
+      }
+    } catch (error) {
+      console.error('Error loading theme from storage:', error);
+    }
+  }
+
+  private saveThemeToStorage(config: LayoutConfig): void {
+    try {
+      localStorage.setItem(
+        'layout-config',
+        JSON.stringify({
+          darkTheme: config.darkTheme,
+          themeMode: config.themeMode,
+        }),
+      );
+    } catch (error) {
+      console.error('Error saving theme to storage:', error);
+    }
+  }
+
+  private setupTimeBasedTheme(): void {
+    this.applyTimeBasedTheme();
+
+    this.timeCheckInterval = setInterval(
+      () => {
+        if (this.layoutConfig().themeMode === 'auto') {
+          this.applyTimeBasedTheme();
+        }
+      },
+      60 * 60 * 1000,
+    );
+  }
+
+  private applyTimeBasedTheme(): void {
+    const config = this.layoutConfig();
+
+    if (config.themeMode === 'auto') {
+      const currentHour = new Date().getHours();
+      const shouldBeDark = currentHour >= 18 || currentHour < 6;
+
+      if (config.darkTheme !== shouldBeDark) {
+        this.layoutConfig.update((state) => ({
+          ...state,
+          darkTheme: shouldBeDark,
+        }));
+      }
+    }
+  }
+
+  setThemeMode(mode: 'auto' | 'dark' | 'light'): void {
+    this.layoutConfig.update((state) => {
+      const newState = {
+        ...state,
+        themeMode: mode,
+      };
+
+      if (mode === 'dark') {
+        newState.darkTheme = true;
+      } else if (mode === 'light') {
+        newState.darkTheme = false;
+      } else if (mode === 'auto') {
+        const currentHour = new Date().getHours();
+        newState.darkTheme = currentHour >= 18 || currentHour < 6;
+      }
+
+      return newState;
+    });
+  }
+
+  toggleDarkMode() {
+    this.layoutConfig.update((state) => {
+      const darkTheme = !state.darkTheme;
+      const themeMode = darkTheme ? 'dark' : 'light';
+
+      return {
+        ...state,
+        darkTheme,
+        themeMode,
+      };
     });
   }
 
@@ -118,7 +248,7 @@ export class LayoutService {
     if (doc.startViewTransition) {
       this.startViewTransition(config);
     } else {
-      this.toggleDarkMode(config);
+      this.toggleDarkModeClass(config);
       this.onTransitionEnd();
     }
   }
@@ -128,7 +258,7 @@ export class LayoutService {
     if (!doc.startViewTransition) return;
 
     const transition = doc.startViewTransition(() => {
-      this.toggleDarkMode(config);
+      this.toggleDarkModeClass(config);
     });
 
     transition.ready
@@ -140,7 +270,7 @@ export class LayoutService {
       });
   }
 
-  toggleDarkMode(config?: LayoutConfig): void {
+  toggleDarkModeClass(config?: LayoutConfig): void {
     const _config = config || this.layoutConfig();
     if (_config.darkTheme) {
       document.documentElement.classList.add('app-dark');
@@ -205,5 +335,11 @@ export class LayoutService {
 
   reset(): void {
     this.resetSource.next(true);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeCheckInterval !== null) {
+      clearInterval(this.timeCheckInterval);
+    }
   }
 }
