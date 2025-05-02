@@ -205,14 +205,14 @@ export class CategoryTableComponent {
     this.dialogVisible.set(true);
   }
 
-  deleteCategory(category: Category): void {
+  deleteCategory({ id, name }: Category): void {
     this.confirmationService.confirm({
       header: 'Eliminar categoría',
-      message: `¿Está seguro de que desea eliminar la categoría <b>${category.name}</b>?`,
+      message: `¿Está seguro de que desea eliminar la categoría <b>${name}</b>?`,
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => this.categoryStore.delete(category.id),
+      accept: () => this.categoryStore.delete(id),
     });
   }
 }
