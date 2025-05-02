@@ -1,4 +1,11 @@
-import { Component, inject, model, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  linkedSignal,
+  model,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Category } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
@@ -179,7 +186,14 @@ export class CategoryTableComponent {
   readonly dialogVisible = model.required<boolean>();
   readonly selectedCategory = model<Category | null>(null);
   readonly searchValue = signal('');
-  readonly selectedCategories = signal<Category[]>([]);
+  readonly selectedCategories = linkedSignal<Category[], Category[]>({
+    source: this.categoryStore.entities,
+    computation: (entities, previous) => {
+      const prevSelected = previous?.value ?? [];
+      const entityIds = new Set(entities.map(({ id }: Category) => id));
+      return prevSelected.filter(({ id }: Category) => entityIds.has(id));
+    },
+  });
 
   clearAllFilters(): void {
     this.searchValue.set('');

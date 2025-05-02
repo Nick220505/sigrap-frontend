@@ -1,5 +1,12 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, model, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  linkedSignal,
+  model,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Product } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product.store';
@@ -196,7 +203,14 @@ export class ProductTableComponent {
   readonly dialogVisible = model.required<boolean>();
   readonly selectedProduct = model<Product | null>(null);
   readonly searchValue = signal('');
-  readonly selectedProducts = signal<Product[]>([]);
+  readonly selectedProducts = linkedSignal<Product[], Product[]>({
+    source: this.productStore.entities,
+    computation: (entities, previous) => {
+      const prevSelected = previous?.value ?? [];
+      const entityIds = new Set(entities.map(({ id }: Product) => id));
+      return prevSelected.filter(({ id }: Product) => entityIds.has(id));
+    },
+  });
 
   clearAllFilters(): void {
     this.searchValue.set('');
