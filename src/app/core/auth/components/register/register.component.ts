@@ -176,8 +176,6 @@ import { RippleModule } from 'primeng/ripple';
                     "
                     [class.ng-dirty]="passwordControlInvalid"
                     [class.ng-invalid]="passwordControlInvalid"
-                    (onChange)="checkPasswordCriteria($event)"
-                    (onFocus)="checkPasswordFromControl()"
                   >
                     <ng-template pTemplate="header">
                       <div class="font-semibold text-xm mb-4">
@@ -342,27 +340,12 @@ export class RegisterComponent implements OnInit {
   hasMinLength = signal(false);
 
   ngOnInit(): void {
-    this.checkPasswordFromControl();
     this.registerForm.get('password')?.valueChanges.subscribe((password) => {
-      this.checkPasswordCriteria({
-        target: { value: password },
-      } as unknown as Event);
+      this.hasLowercase.set(/[a-z]/.test(password));
+      this.hasUppercase.set(/[A-Z]/.test(password));
+      this.hasNumber.set(/\d/.test(password));
+      this.hasMinLength.set(password.length >= 8);
     });
-  }
-
-  checkPasswordFromControl(): void {
-    const password = this.registerForm.get('password')?.value ?? '';
-    this.checkPasswordCriteria({
-      target: { value: password },
-    } as unknown as Event);
-  }
-
-  checkPasswordCriteria(event: Event): void {
-    const password = (event.target as HTMLInputElement).value;
-    this.hasLowercase.set(/[a-z]/.test(password));
-    this.hasUppercase.set(/[A-Z]/.test(password));
-    this.hasNumber.set(/\d/.test(password));
-    this.hasMinLength.set(password.length >= 8);
   }
 
   register(): void {
