@@ -8,6 +8,8 @@ import {
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 
@@ -19,6 +21,8 @@ import { TextareaModule } from 'primeng/textarea';
     InputTextModule,
     TextareaModule,
     ReactiveFormsModule,
+    IconFieldModule,
+    InputIconModule,
   ],
   template: `
     <p-dialog
@@ -43,17 +47,20 @@ import { TextareaModule } from 'primeng/textarea';
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
           <label for="name" class="font-bold">Nombre</label>
-          <input
-            type="text"
-            pInputText
-            id="name"
-            formControlName="name"
-            placeholder="Ingrese el nombre de la categoría"
-            [class.ng-dirty]="nameControlInvalid"
-            [class.ng-invalid]="nameControlInvalid"
-            required
-            fluid
-          />
+          <p-iconfield>
+            <p-inputicon styleClass="pi pi-tag" />
+            <input
+              type="text"
+              pInputText
+              id="name"
+              formControlName="name"
+              placeholder="Ingrese el nombre de la categoría"
+              [class.ng-dirty]="nameControlInvalid"
+              [class.ng-invalid]="nameControlInvalid"
+              required
+              fluid
+            />
+          </p-iconfield>
 
           @if (nameControlInvalid) {
             <small class="text-red-500">El nombre es obligatorio.</small>
@@ -62,14 +69,18 @@ import { TextareaModule } from 'primeng/textarea';
 
         <div class="flex flex-col gap-2">
           <label for="description" class="font-bold">Descripción</label>
-          <textarea
-            rows="3"
-            pTextarea
-            id="description"
-            formControlName="description"
-            placeholder="Ingrese una descripción (opcional)"
-            fluid
-          ></textarea>
+          <div class="relative flex items-start">
+            <i class="pi pi-align-left absolute left-3 top-3 text-gray-500"></i>
+            <textarea
+              rows="3"
+              pTextarea
+              id="description"
+              formControlName="description"
+              placeholder="Ingrese una descripción (opcional)"
+              class="pl-9 w-full"
+              fluid
+            ></textarea>
+          </div>
         </div>
       </form>
 
