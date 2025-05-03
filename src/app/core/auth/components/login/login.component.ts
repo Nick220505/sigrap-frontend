@@ -128,11 +128,11 @@ import { RippleModule } from 'primeng/ripple';
                     placeholder="Ingrese su contraseña"
                     [toggleMask]="true"
                     styleClass="w-full"
-                    inputStyleClass="pl-8 w-full"
-                    [fluid]="true"
+                    inputStyleClass="pl-10 w-full"
                     [feedback]="false"
                     [class.ng-dirty]="passwordControlInvalid"
                     [class.ng-invalid]="passwordControlInvalid"
+                    [fluid]="true"
                   />
                 </div>
 
