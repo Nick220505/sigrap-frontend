@@ -189,6 +189,16 @@ import { RippleModule } from 'primeng/ripple';
                           <i
                             class="pi"
                             [ngClass]="{
+                              'pi-check-circle text-green-500': hasMinLength(),
+                              'pi-times-circle text-gray-400': !hasMinLength(),
+                            }"
+                          ></i>
+                          Mínimo 8 caracteres
+                        </li>
+                        <li class="flex items-center gap-2">
+                          <i
+                            class="pi"
+                            [ngClass]="{
                               'pi-check-circle text-green-500': hasLowercase(),
                               'pi-times-circle text-gray-400': !hasLowercase(),
                             }"
@@ -226,16 +236,6 @@ import { RippleModule } from 'primeng/ripple';
                             }"
                           ></i>
                           Al menos un carácter especial
-                        </li>
-                        <li class="flex items-center gap-2">
-                          <i
-                            class="pi"
-                            [ngClass]="{
-                              'pi-check-circle text-green-500': hasMinLength(),
-                              'pi-times-circle text-gray-400': !hasMinLength(),
-                            }"
-                          ></i>
-                          Mínimo 8 caracteres
                         </li>
                       </ul>
                     </ng-template>
@@ -348,19 +348,19 @@ export class RegisterComponent implements OnInit {
     confirmPassword: ['', [Validators.required]],
   });
 
+  hasMinLength = signal(false);
   hasLowercase = signal(false);
   hasUppercase = signal(false);
   hasNumber = signal(false);
-  hasMinLength = signal(false);
   hasSpecialChar = signal(false);
 
   ngOnInit(): void {
     this.registerForm.get('password')?.valueChanges.subscribe((password) => {
+      this.hasMinLength.set(password.length >= 8);
       this.hasLowercase.set(/[a-z]/.test(password));
       this.hasUppercase.set(/[A-Z]/.test(password));
       this.hasNumber.set(/\d/.test(password));
       this.hasSpecialChar.set(/[@$!%*?&]/.test(password));
-      this.hasMinLength.set(password.length >= 8);
     });
   }
 
