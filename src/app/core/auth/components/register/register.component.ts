@@ -172,7 +172,7 @@ import { RippleModule } from 'primeng/ripple';
                     fluid
                     feedback
                     strongRegex="
-                      '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$'
+                      '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$'
                     "
                     [class.ng-dirty]="passwordControlInvalid"
                     [class.ng-invalid]="passwordControlInvalid"
@@ -214,6 +214,18 @@ import { RippleModule } from 'primeng/ripple';
                             }"
                           ></i>
                           Al menos un número
+                        </li>
+                        <li class="flex items-center gap-2">
+                          <i
+                            class="pi"
+                            [ngClass]="{
+                              'pi-check-circle text-green-500':
+                                hasSpecialChar(),
+                              'pi-times-circle text-gray-400':
+                                !hasSpecialChar(),
+                            }"
+                          ></i>
+                          Al menos un carácter especial
                         </li>
                         <li class="flex items-center gap-2">
                           <i
@@ -328,7 +340,9 @@ export class RegisterComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$'),
+        Validators.pattern(
+          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+        ),
       ],
     ],
     confirmPassword: ['', [Validators.required]],
@@ -338,12 +352,14 @@ export class RegisterComponent implements OnInit {
   hasUppercase = signal(false);
   hasNumber = signal(false);
   hasMinLength = signal(false);
+  hasSpecialChar = signal(false);
 
   ngOnInit(): void {
     this.registerForm.get('password')?.valueChanges.subscribe((password) => {
       this.hasLowercase.set(/[a-z]/.test(password));
       this.hasUppercase.set(/[A-Z]/.test(password));
       this.hasNumber.set(/\d/.test(password));
+      this.hasSpecialChar.set(/[@$!%*?&]/.test(password));
       this.hasMinLength.set(password.length >= 8);
     });
   }
