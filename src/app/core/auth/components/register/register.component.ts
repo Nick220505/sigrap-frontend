@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,6 +9,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
 import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -26,6 +28,8 @@ import { RippleModule } from 'primeng/ripple';
     FloatingConfiguratorComponent,
     IconFieldModule,
     InputIconModule,
+    DividerModule,
+    NgClass,
   ],
   template: `
     <app-floating-configurator />
@@ -161,15 +165,71 @@ import { RippleModule } from 'primeng/ripple';
                   <p-password
                     id="password"
                     formControlName="password"
-                    placeholder="Ingrese su contraseña"
+                    placeholder="Elija una contraseña"
                     toggleMask
                     styleClass="w-full"
                     inputStyleClass="pl-10 w-full"
                     fluid
-                    feedback="true"
+                    feedback
+                    strongRegex="
+                      '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$'
+                    "
                     [class.ng-dirty]="passwordControlInvalid"
                     [class.ng-invalid]="passwordControlInvalid"
-                  />
+                    (onChange)="checkPasswordCriteria($event)"
+                    (onFocus)="checkPasswordFromControl()"
+                  >
+                    <ng-template pTemplate="header">
+                      <div class="font-semibold text-xm mb-4">
+                        Elija una contraseña
+                      </div>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                      <p-divider />
+                      <ul class="pl-2 ml-2 my-0 leading-normal">
+                        <li class="flex items-center gap-2">
+                          <i
+                            class="pi"
+                            [ngClass]="{
+                              'pi-check-circle text-green-500': hasLowercase,
+                              'pi-times-circle text-gray-400': !hasLowercase,
+                            }"
+                          ></i>
+                          Al menos una minúscula
+                        </li>
+                        <li class="flex items-center gap-2">
+                          <i
+                            class="pi"
+                            [ngClass]="{
+                              'pi-check-circle text-green-500': hasUppercase,
+                              'pi-times-circle text-gray-400': !hasUppercase,
+                            }"
+                          ></i>
+                          Al menos una mayúscula
+                        </li>
+                        <li class="flex items-center gap-2">
+                          <i
+                            class="pi"
+                            [ngClass]="{
+                              'pi-check-circle text-green-500': hasNumber,
+                              'pi-times-circle text-gray-400': !hasNumber,
+                            }"
+                          ></i>
+                          Al menos un número
+                        </li>
+                        <li class="flex items-center gap-2">
+                          <i
+                            class="pi"
+                            [ngClass]="{
+                              'pi-check-circle text-green-500': hasMinLength,
+                              'pi-times-circle text-gray-400': !hasMinLength,
+                            }"
+                          ></i>
+                          Mínimo 8 caracteres
+                        </li>
+                      </ul>
+                    </ng-template>
+                  </p-password>
                 </div>
 
                 @if (passwordControlInvalid) {
@@ -178,10 +238,10 @@ import { RippleModule } from 'primeng/ripple';
                       >La contraseña es obligatoria.</small
                     >
                   } @else if (
-                    registerForm.get('password')?.hasError('minlength')
+                    registerForm.get('password')?.hasError('pattern')
                   ) {
                     <small class="text-red-500"
-                      >La contraseña debe tener al menos 6 caracteres.</small
+                      >La contraseña debe cumplir todos los requisitos.</small
                     >
                   }
                 }
@@ -259,16 +319,52 @@ import { RippleModule } from 'primeng/ripple';
     </div>
   `,
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
   readonly registerForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$'),
+      ],
+    ],
     confirmPassword: ['', [Validators.required]],
   });
+
+  hasLowercase = false;
+  hasUppercase = false;
+  hasNumber = false;
+  hasMinLength = false;
+
+  ngOnInit(): void {
+    this.checkPasswordFromControl();
+    this.registerForm.get('password')?.valueChanges.subscribe((password) => {
+      this.checkPasswordCriteria({
+        target: { value: password },
+      } as unknown as Event);
+    });
+  }
+
+  checkPasswordFromControl(): void {
+    const password = this.registerForm.get('password')?.value ?? '';
+    this.checkPasswordCriteria({
+      target: { value: password },
+    } as unknown as Event);
+  }
+
+  checkPasswordCriteria(event: Event): void {
+    const password = (event.target as HTMLInputElement).value;
+    this.hasLowercase = /[a-z]/.test(password);
+    this.hasUppercase = /[A-Z]/.test(password);
+    this.hasNumber = /\d/.test(password);
+    this.hasMinLength = password.length >= 8;
+  }
 
   register(): void {
     this.router.navigate(['/']);
