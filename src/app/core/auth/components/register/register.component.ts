@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -191,8 +191,8 @@ import { RippleModule } from 'primeng/ripple';
                           <i
                             class="pi"
                             [ngClass]="{
-                              'pi-check-circle text-green-500': hasLowercase,
-                              'pi-times-circle text-gray-400': !hasLowercase,
+                              'pi-check-circle text-green-500': hasLowercase(),
+                              'pi-times-circle text-gray-400': !hasLowercase(),
                             }"
                           ></i>
                           Al menos una minúscula
@@ -201,8 +201,8 @@ import { RippleModule } from 'primeng/ripple';
                           <i
                             class="pi"
                             [ngClass]="{
-                              'pi-check-circle text-green-500': hasUppercase,
-                              'pi-times-circle text-gray-400': !hasUppercase,
+                              'pi-check-circle text-green-500': hasUppercase(),
+                              'pi-times-circle text-gray-400': !hasUppercase(),
                             }"
                           ></i>
                           Al menos una mayúscula
@@ -211,8 +211,8 @@ import { RippleModule } from 'primeng/ripple';
                           <i
                             class="pi"
                             [ngClass]="{
-                              'pi-check-circle text-green-500': hasNumber,
-                              'pi-times-circle text-gray-400': !hasNumber,
+                              'pi-check-circle text-green-500': hasNumber(),
+                              'pi-times-circle text-gray-400': !hasNumber(),
                             }"
                           ></i>
                           Al menos un número
@@ -221,8 +221,8 @@ import { RippleModule } from 'primeng/ripple';
                           <i
                             class="pi"
                             [ngClass]="{
-                              'pi-check-circle text-green-500': hasMinLength,
-                              'pi-times-circle text-gray-400': !hasMinLength,
+                              'pi-check-circle text-green-500': hasMinLength(),
+                              'pi-times-circle text-gray-400': !hasMinLength(),
                             }"
                           ></i>
                           Mínimo 8 caracteres
@@ -330,17 +330,16 @@ export class RegisterComponent implements OnInit {
       '',
       [
         Validators.required,
-        Validators.minLength(8),
         Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$'),
       ],
     ],
     confirmPassword: ['', [Validators.required]],
   });
 
-  hasLowercase = false;
-  hasUppercase = false;
-  hasNumber = false;
-  hasMinLength = false;
+  hasLowercase = signal(false);
+  hasUppercase = signal(false);
+  hasNumber = signal(false);
+  hasMinLength = signal(false);
 
   ngOnInit(): void {
     this.checkPasswordFromControl();
@@ -360,10 +359,10 @@ export class RegisterComponent implements OnInit {
 
   checkPasswordCriteria(event: Event): void {
     const password = (event.target as HTMLInputElement).value;
-    this.hasLowercase = /[a-z]/.test(password);
-    this.hasUppercase = /[A-Z]/.test(password);
-    this.hasNumber = /\d/.test(password);
-    this.hasMinLength = password.length >= 8;
+    this.hasLowercase.set(/[a-z]/.test(password));
+    this.hasUppercase.set(/[A-Z]/.test(password));
+    this.hasNumber.set(/\d/.test(password));
+    this.hasMinLength.set(password.length >= 8);
   }
 
   register(): void {
