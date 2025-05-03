@@ -61,7 +61,7 @@ export class CategoryToolbarComponent {
       ¿Está seguro de que desea eliminar las ${categories.length} categorías seleccionadas?
       <ul class='mt-2 mb-0'>
           ${categories.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
-          </ul>
+      </ul>
       `,
       header: 'Eliminar categorías',
       icon: 'pi pi-exclamation-triangle',
