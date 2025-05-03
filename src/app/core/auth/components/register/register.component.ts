@@ -8,6 +8,8 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
@@ -22,6 +24,8 @@ import { RippleModule } from 'primeng/ripple';
     RouterModule,
     RippleModule,
     FloatingConfiguratorComponent,
+    IconFieldModule,
+    InputIconModule,
   ],
   template: `
     <app-floating-configurator />
@@ -70,16 +74,21 @@ import { RippleModule } from 'primeng/ripple';
                   Nombre
                 </label>
 
-                <input
-                  pInputText
-                  id="name"
-                  type="text"
-                  formControlName="name"
-                  placeholder="Ingrese su nombre completo"
-                  class="w-full md:w-[30rem] mb-2"
-                  [class.ng-dirty]="nameControlInvalid"
-                  [class.ng-invalid]="nameControlInvalid"
-                />
+                <div class="w-full md:w-[30rem] mb-2">
+                  <p-iconfield>
+                    <p-inputicon class="pi pi-user" />
+                    <input
+                      pInputText
+                      id="name"
+                      type="text"
+                      formControlName="name"
+                      placeholder="Ingrese su nombre completo"
+                      [class.ng-dirty]="nameControlInvalid"
+                      [class.ng-invalid]="nameControlInvalid"
+                      fluid
+                    />
+                  </p-iconfield>
+                </div>
 
                 @if (nameControlInvalid) {
                   <small class="text-red-500">El nombre es obligatorio.</small>
@@ -101,16 +110,21 @@ import { RippleModule } from 'primeng/ripple';
                   Email
                 </label>
 
-                <input
-                  pInputText
-                  id="email"
-                  type="text"
-                  formControlName="email"
-                  placeholder="Ingrese su correo electrónico"
-                  class="w-full md:w-[30rem] mb-2"
-                  [class.ng-dirty]="emailControlInvalid"
-                  [class.ng-invalid]="emailControlInvalid"
-                />
+                <div class="w-full md:w-[30rem] mb-2">
+                  <p-iconfield>
+                    <p-inputicon class="pi pi-envelope" />
+                    <input
+                      pInputText
+                      id="email"
+                      type="text"
+                      formControlName="email"
+                      placeholder="Ingrese su correo electrónico"
+                      [class.ng-dirty]="emailControlInvalid"
+                      [class.ng-invalid]="emailControlInvalid"
+                      fluid
+                    />
+                  </p-iconfield>
+                </div>
 
                 @if (emailControlInvalid) {
                   @if (registerForm.get('email')?.hasError('required')) {
@@ -140,17 +154,23 @@ import { RippleModule } from 'primeng/ripple';
                   Contraseña
                 </label>
 
-                <p-password
-                  id="password"
-                  formControlName="password"
-                  placeholder="Ingrese su contraseña"
-                  [toggleMask]="true"
-                  styleClass="mb-2"
-                  [fluid]="true"
-                  [feedback]="true"
-                  [class.ng-dirty]="passwordControlInvalid"
-                  [class.ng-invalid]="passwordControlInvalid"
-                />
+                <div class="w-full md:w-[30rem] mb-2 relative">
+                  <i
+                    class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-500"
+                  ></i>
+                  <p-password
+                    id="password"
+                    formControlName="password"
+                    placeholder="Ingrese su contraseña"
+                    [toggleMask]="true"
+                    styleClass="w-full"
+                    inputStyleClass="pl-8 w-full"
+                    [fluid]="true"
+                    [feedback]="true"
+                    [class.ng-dirty]="passwordControlInvalid"
+                    [class.ng-invalid]="passwordControlInvalid"
+                  />
+                </div>
 
                 @if (passwordControlInvalid) {
                   @if (registerForm.get('password')?.hasError('required')) {
@@ -182,17 +202,23 @@ import { RippleModule } from 'primeng/ripple';
                   Confirmar Contraseña
                 </label>
 
-                <p-password
-                  id="confirmPassword"
-                  formControlName="confirmPassword"
-                  placeholder="Confirme su contraseña"
-                  [toggleMask]="true"
-                  styleClass="mb-2"
-                  [fluid]="true"
-                  [feedback]="false"
-                  [class.ng-dirty]="confirmPasswordControlInvalid"
-                  [class.ng-invalid]="confirmPasswordControlInvalid"
-                />
+                <div class="w-full md:w-[30rem] mb-2 relative">
+                  <i
+                    class="pi pi-lock-open absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-500"
+                  ></i>
+                  <p-password
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    placeholder="Confirme su contraseña"
+                    [toggleMask]="true"
+                    styleClass="w-full"
+                    inputStyleClass="pl-8 w-full"
+                    [fluid]="true"
+                    [feedback]="false"
+                    [class.ng-dirty]="confirmPasswordControlInvalid"
+                    [class.ng-invalid]="confirmPasswordControlInvalid"
+                  />
+                </div>
 
                 @if (confirmPasswordControlInvalid) {
                   <small class="text-red-500"

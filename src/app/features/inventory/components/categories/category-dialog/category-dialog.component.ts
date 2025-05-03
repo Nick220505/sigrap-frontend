@@ -48,7 +48,7 @@ import { TextareaModule } from 'primeng/textarea';
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
           <label for="name" class="font-bold">Nombre</label>
           <p-iconfield>
-            <p-inputicon styleClass="pi pi-tag" />
+            <p-inputicon class="pi pi-tag" />
             <input
               type="text"
               pInputText
