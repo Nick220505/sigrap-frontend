@@ -162,11 +162,11 @@ import { RippleModule } from 'primeng/ripple';
                     id="password"
                     formControlName="password"
                     placeholder="Ingrese su contraseña"
-                    [toggleMask]="true"
+                    toggleMask
                     styleClass="w-full"
                     inputStyleClass="pl-10 w-full"
-                    [fluid]="true"
-                    [feedback]="true"
+                    fluid
+                    feedback="true"
                     [class.ng-dirty]="passwordControlInvalid"
                     [class.ng-invalid]="passwordControlInvalid"
                   />
@@ -210,13 +210,13 @@ import { RippleModule } from 'primeng/ripple';
                     id="confirmPassword"
                     formControlName="confirmPassword"
                     placeholder="Confirme su contraseña"
-                    [toggleMask]="true"
+                    toggleMask
                     styleClass="w-full"
                     inputStyleClass="pl-10 w-full"
-                    [fluid]="true"
-                    [feedback]="false"
+                    feedback="false"
                     [class.ng-dirty]="confirmPasswordControlInvalid"
                     [class.ng-invalid]="confirmPasswordControlInvalid"
+                    fluid
                   />
                 </div>
 
