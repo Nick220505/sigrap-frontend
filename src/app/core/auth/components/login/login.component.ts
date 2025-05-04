@@ -7,12 +7,16 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
+import { ToastModule } from 'primeng/toast';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -26,13 +30,17 @@ import { RippleModule } from 'primeng/ripple';
     FloatingConfiguratorComponent,
     IconFieldModule,
     InputIconModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   template: `
     <app-floating-configurator />
 
     <div
       class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"
     >
+      <p-toast></p-toast>
+
       <div class="flex flex-col items-center justify-center">
         <div
           class="relative p-[0.3rem] rounded-[56px] bg-gradient-to-b from-primary from-10% via-[rgba(33,150,243,0)] via-30%"
@@ -155,6 +163,7 @@ import { RippleModule } from 'primeng/ripple';
                 label="Ingresar"
                 type="button"
                 styleClass="w-full mb-8"
+                [loading]="isLoading"
                 (onClick)="
                   loginForm.valid ? login() : loginForm.markAllAsTouched()
                 "
@@ -182,13 +191,44 @@ import { RippleModule } from 'primeng/ripple';
 export class LoginComponent {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly messageService = inject(MessageService);
 
   readonly loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
 
+  isLoading = false;
+
   login(): void {
-    this.router.navigate(['/']);
+    if (this.loginForm.invalid) return;
+
+    this.isLoading = true;
+
+    this.authService
+      .login(this.loginForm.value)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (success) => {
+          if (success) {
+            this.router.navigate(['/']);
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Credenciales inválidas',
+            });
+          }
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+          });
+        },
+      });
   }
 }

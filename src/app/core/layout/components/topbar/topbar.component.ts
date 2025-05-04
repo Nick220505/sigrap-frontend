@@ -1,8 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  computed,
+  inject,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '@core/auth/services/auth.service';
 import { LayoutService } from '@core/layout/services/layout.service';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { StyleClassModule } from 'primeng/styleclass';
+import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
 
@@ -14,6 +24,8 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     StyleClassModule,
     ConfiguratorComponent,
     TooltipModule,
+    ConfirmDialogModule,
+    ToastModule,
   ],
   template: `
     <div
@@ -121,29 +133,89 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
               >
             </button>
 
-            <button
-              type="button"
-              class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)] max-lg:w-full max-lg:h-auto max-lg:justify-start max-lg:rounded-[var(--content-border-radius)] max-lg:py-2 max-lg:px-4"
-            >
-              <i
-                class="pi pi-user text-[1.25rem] max-lg:text-base max-lg:mr-2"
-              ></i>
-              <span class="hidden max-lg:block max-lg:font-medium"
-                >Profile</span
+            <div class="relative" id="userMenuContainer">
+              <button
+                type="button"
+                class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)] max-lg:w-full max-lg:h-auto max-lg:justify-start max-lg:rounded-[var(--content-border-radius)] max-lg:py-2 max-lg:px-4"
+                (click)="toggleUserMenu($event)"
+                pTooltip="Perfil"
+                tooltipPosition="bottom"
               >
-            </button>
+                <i
+                  class="pi pi-user text-[1.25rem] max-lg:text-base max-lg:mr-2"
+                ></i>
+                <span class="hidden max-lg:block max-lg:font-medium"
+                  >Perfil</span
+                >
+              </button>
+
+              <div
+                *ngIf="userMenuVisible"
+                class="absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-[var(--surface-overlay)] border border-solid border-[var(--surface-border)] z-50 animate-scalein"
+              >
+                <div
+                  class="px-4 py-2 text-sm border-b border-[var(--surface-border)]"
+                >
+                  <div class="font-medium">{{ currentUser()?.name }}</div>
+                  <div class="text-[var(--text-color-secondary)] truncate">
+                    {{ currentUser()?.email }}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--surface-hover)] flex items-center gap-2 text-[var(--text-color)]"
+                  (click)="confirmLogout()"
+                >
+                  <i class="pi pi-sign-out"></i> Cerrar sesión
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <p-confirmDialog
+      key="logout"
+      header="Confirmar Cierre de Sesión"
+      message="¿Estás seguro de que deseas cerrar sesión?"
+      icon="pi pi-exclamation-triangle"
+      [style]="{ width: '90%', maxWidth: '400px' }"
+      acceptLabel="Sí, cerrar sesión"
+      rejectLabel="No"
+      acceptButtonStyleClass="p-button-danger"
+    ></p-confirmDialog>
+
+    <p-toast></p-toast>
   `,
 })
 export class TopbarComponent {
   readonly layoutService = inject(LayoutService);
+  private readonly authService = inject(AuthService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly elementRef = inject(ElementRef);
 
+  readonly currentUser = computed(() => this.authService.currentUser());
   readonly themeMode = computed(
     () => this.layoutService.layoutConfig().themeMode,
   );
+
+  userMenuVisible = false;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const clickedElement = event.target as HTMLElement;
+    const userMenuContainer =
+      this.elementRef.nativeElement.querySelector('#userMenuContainer');
+
+    if (
+      this.userMenuVisible &&
+      userMenuContainer &&
+      !userMenuContainer.contains(clickedElement)
+    ) {
+      this.userMenuVisible = false;
+    }
+  }
 
   getThemeTooltip(): string {
     switch (this.themeMode()) {
@@ -167,5 +239,19 @@ export class TopbarComponent {
       default:
         this.layoutService.setThemeMode('auto');
     }
+  }
+
+  toggleUserMenu(event: Event): void {
+    event.stopPropagation();
+    this.userMenuVisible = !this.userMenuVisible;
+  }
+
+  confirmLogout(): void {
+    this.confirmationService.confirm({
+      key: 'logout',
+      accept: () => {
+        this.authService.logout();
+      },
+    });
   }
 }

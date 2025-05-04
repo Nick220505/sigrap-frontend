@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -15,6 +16,9 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
+import { ToastModule } from 'primeng/toast';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -30,6 +34,7 @@ import { RippleModule } from 'primeng/ripple';
     InputIconModule,
     DividerModule,
     NgClass,
+    ToastModule,
   ],
   template: `
     <app-floating-configurator />
@@ -37,6 +42,8 @@ import { RippleModule } from 'primeng/ripple';
     <div
       class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"
     >
+      <p-toast></p-toast>
+
       <div class="flex flex-col items-center justify-center">
         <div
           class="relative p-[0.3rem] rounded-[56px] bg-gradient-to-b from-primary from-10% via-[rgba(33,150,243,0)] via-30%"
@@ -295,6 +302,15 @@ import { RippleModule } from 'primeng/ripple';
                     >Debe confirmar la contraseña.</small
                   >
                 }
+
+                @if (
+                  registerForm.errors?.['passwordMismatch'] &&
+                  registerForm.get('confirmPassword')?.touched
+                ) {
+                  <small class="text-red-500"
+                    >Las contraseñas no coinciden.</small
+                  >
+                }
               </div>
 
               <div class="mt-6">
@@ -302,6 +318,7 @@ import { RippleModule } from 'primeng/ripple';
                   label="Registrarse"
                   type="button"
                   styleClass="w-full mb-8"
+                  [loading]="isLoading"
                   (onClick)="
                     registerForm.valid
                       ? register()
@@ -332,21 +349,28 @@ import { RippleModule } from 'primeng/ripple';
 export class RegisterComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly messageService = inject(MessageService);
 
-  readonly registerForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(
-          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
-        ),
+  isLoading = false;
+
+  readonly registerForm: FormGroup = this.fb.group(
+    {
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+          ),
+        ],
       ],
-    ],
-    confirmPassword: ['', [Validators.required]],
-  });
+      confirmPassword: ['', [Validators.required]],
+    },
+    { validators: this.passwordMatchValidator },
+  );
 
   hasMinLength = signal(false);
   hasLowercase = signal(false);
@@ -356,7 +380,7 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.registerForm.get('password')?.valueChanges.subscribe((password) => {
-      this.hasMinLength.set(password.length >= 8);
+      this.hasMinLength.set(password?.length >= 8);
       this.hasLowercase.set(/[a-z]/.test(password));
       this.hasUppercase.set(/[A-Z]/.test(password));
       this.hasNumber.set(/\d/.test(password));
@@ -365,6 +389,53 @@ export class RegisterComponent implements OnInit {
   }
 
   register(): void {
-    this.router.navigate(['/']);
+    if (this.registerForm.invalid) return;
+
+    this.isLoading = true;
+
+    const userData = { ...this.registerForm.value };
+    delete userData.confirmPassword;
+
+    this.authService
+      .register(userData)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (success) => {
+          if (success) {
+            this.router.navigate(['/']);
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se pudo completar el registro. Intente nuevamente.',
+            });
+          }
+        },
+        error: (err) => {
+          let errorMessage =
+            'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
+
+          if (err?.error?.message === 'Email already exists') {
+            errorMessage = 'El correo electrónico ya está registrado.';
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: errorMessage,
+          });
+        },
+      });
+  }
+
+  private passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+
+    if (password && confirmPassword && password !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+
+    return null;
   }
 }
