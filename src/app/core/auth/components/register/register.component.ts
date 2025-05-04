@@ -17,6 +17,7 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { AuthStore } from '../../stores/auth.store';
+import { passwordMatchValidator } from '../../validators/password-match.validator';
 
 @Component({
   selector: 'app-register',
@@ -350,7 +351,7 @@ export class RegisterComponent implements OnInit {
 
   readonly registerForm: FormGroup = this.fb.group(
     {
-      name: ['', [Validators.required]],
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
@@ -361,16 +362,16 @@ export class RegisterComponent implements OnInit {
           ),
         ],
       ],
-      confirmPassword: ['', [Validators.required]],
+      confirmPassword: ['', Validators.required],
     },
-    { validators: this.passwordMatchValidator },
+    { validators: passwordMatchValidator },
   );
 
-  readonly hasMinLength = signal(false);
-  readonly hasLowercase = signal(false);
-  readonly hasUppercase = signal(false);
-  readonly hasNumber = signal(false);
-  readonly hasSpecialChar = signal(false);
+  hasMinLength = signal(false);
+  hasLowercase = signal(false);
+  hasUppercase = signal(false);
+  hasNumber = signal(false);
+  hasSpecialChar = signal(false);
 
   ngOnInit(): void {
     this.registerForm.get('password')?.valueChanges.subscribe((password) => {
@@ -389,16 +390,5 @@ export class RegisterComponent implements OnInit {
     delete userData.confirmPassword;
 
     this.authStore.register(userData);
-  }
-
-  private passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-
-    if (password && confirmPassword && password !== confirmPassword) {
-      return { passwordMismatch: true };
-    }
-
-    return null;
   }
 }
