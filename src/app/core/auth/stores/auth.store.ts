@@ -1,11 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { computed, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
   signalStore,
-  withComputed,
   withHooks,
   withMethods,
   withProps,
@@ -21,8 +20,8 @@ import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
 
 export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
+  currentUser: User | null;
+  isLoggedIn: boolean;
   token: string | null;
   loading: boolean;
   error: string | null;
@@ -34,16 +33,12 @@ const USER_KEY = 'user_data';
 export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState<AuthState>({
-    user: null,
-    isAuthenticated: false,
+    currentUser: null,
+    isLoggedIn: false,
     token: null,
     loading: false,
     error: null,
   }),
-  withComputed(({ user, isAuthenticated }) => ({
-    currentUser: computed(() => user()),
-    isLoggedIn: computed(() => isAuthenticated()),
-  })),
   withProps(() => ({
     authService: inject(AuthService),
     messageService: inject(MessageService),
@@ -64,9 +59,9 @@ export const AuthStore = signalStore(
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
 
                 patchState(store, {
-                  user,
+                  currentUser: user,
                   token,
-                  isAuthenticated: true,
+                  isLoggedIn: true,
                 });
                 router.navigate(['/']);
               },
@@ -111,9 +106,9 @@ export const AuthStore = signalStore(
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
 
                 patchState(store, {
-                  user,
+                  currentUser: user,
                   token,
-                  isAuthenticated: true,
+                  isLoggedIn: true,
                 });
                 router.navigate(['/']);
               },
@@ -147,8 +142,8 @@ export const AuthStore = signalStore(
       localStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
       patchState(store, {
-        user: null,
-        isAuthenticated: false,
+        currentUser: null,
+        isLoggedIn: false,
         token: null,
       });
       router.navigate(['/iniciar-sesion']);
@@ -164,9 +159,9 @@ export const AuthStore = signalStore(
         try {
           const user = JSON.parse(userJson) as User;
           patchState(store, {
-            user,
+            currentUser: user,
             token,
-            isAuthenticated: true,
+            isLoggedIn: true,
           });
         } catch {
           localStorage.removeItem(AUTH_TOKEN_KEY);

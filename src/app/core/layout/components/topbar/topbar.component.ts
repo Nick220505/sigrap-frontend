@@ -5,6 +5,7 @@ import {
   HostListener,
   computed,
   inject,
+  signal,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth.store';
@@ -149,26 +150,29 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                 >
               </button>
 
-              <div
-                *ngIf="userMenuVisible"
-                class="absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-[var(--surface-overlay)] border border-solid border-[var(--surface-border)] z-50 animate-scalein"
-              >
+              @if (userMenuVisible()) {
                 <div
-                  class="px-4 py-2 text-sm border-b border-[var(--surface-border)]"
+                  class="absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-[var(--surface-overlay)] border border-solid border-[var(--surface-border)] z-50 animate-scalein"
                 >
-                  <div class="font-medium">{{ currentUser()?.name }}</div>
-                  <div class="text-[var(--text-color-secondary)] truncate">
-                    {{ currentUser()?.email }}
+                  <div
+                    class="px-4 py-2 text-sm border-b border-[var(--surface-border)]"
+                  >
+                    <div class="font-medium">
+                      {{ authStore.currentUser()?.name }}
+                    </div>
+                    <div class="text-[var(--text-color-secondary)] truncate">
+                      {{ authStore.currentUser()?.email }}
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--surface-hover)] flex items-center gap-2 text-[var(--text-color)]"
+                    (click)="confirmLogout()"
+                  >
+                    <i class="pi pi-sign-out"></i> Cerrar sesión
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--surface-hover)] flex items-center gap-2 text-[var(--text-color)]"
-                  (click)="confirmLogout()"
-                >
-                  <i class="pi pi-sign-out"></i> Cerrar sesión
-                </button>
-              </div>
+              }
             </div>
           </div>
         </div>
@@ -191,16 +195,15 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 })
 export class TopbarComponent {
   readonly layoutService = inject(LayoutService);
-  private readonly authStore = inject(AuthStore);
+  readonly authStore = inject(AuthStore);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly elementRef = inject(ElementRef);
 
-  readonly currentUser = this.authStore.currentUser;
   readonly themeMode = computed(
     () => this.layoutService.layoutConfig().themeMode,
   );
 
-  userMenuVisible = false;
+  userMenuVisible = signal(false);
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -209,11 +212,11 @@ export class TopbarComponent {
       this.elementRef.nativeElement.querySelector('#userMenuContainer');
 
     if (
-      this.userMenuVisible &&
+      this.userMenuVisible() &&
       userMenuContainer &&
       !userMenuContainer.contains(clickedElement)
     ) {
-      this.userMenuVisible = false;
+      this.userMenuVisible.set(false);
     }
   }
 
@@ -243,7 +246,7 @@ export class TopbarComponent {
 
   toggleUserMenu(event: Event): void {
     event.stopPropagation();
-    this.userMenuVisible = !this.userMenuVisible;
+    this.userMenuVisible.update((value) => !value);
   }
 
   confirmLogout(): void {
