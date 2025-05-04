@@ -14,6 +14,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, tap } from 'rxjs';
+import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
 import { RegisterRequest } from '../models/register-request.model';
 import { User } from '../models/user.model';
@@ -22,15 +23,20 @@ import { AuthService } from '../services/auth.service';
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  token: string | null;
   loading: boolean;
   error: string | null;
 }
+
+const AUTH_TOKEN_KEY = 'auth_token';
+const USER_KEY = 'user_data';
 
 export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState<AuthState>({
     user: null,
     isAuthenticated: false,
+    token: null,
     loading: false,
     error: null,
   }),
@@ -50,9 +56,16 @@ export const AuthStore = signalStore(
         concatMap((credentials) =>
           authService.login(credentials).pipe(
             tapResponse({
-              next: (response) => {
+              next: (response: AuthResponse) => {
+                const { token, email, name } = response;
+                const user = { email, name };
+
+                localStorage.setItem(AUTH_TOKEN_KEY, token);
+                localStorage.setItem(USER_KEY, JSON.stringify(user));
+
                 patchState(store, {
-                  user: { email: response.email, name: response.name },
+                  user,
+                  token,
                   isAuthenticated: true,
                 });
                 router.navigate(['/']);
@@ -90,9 +103,16 @@ export const AuthStore = signalStore(
         concatMap((userData) =>
           authService.register(userData).pipe(
             tapResponse({
-              next: (response) => {
+              next: (response: AuthResponse) => {
+                const { token, email, name } = response;
+                const user = { email, name };
+
+                localStorage.setItem(AUTH_TOKEN_KEY, token);
+                localStorage.setItem(USER_KEY, JSON.stringify(user));
+
                 patchState(store, {
-                  user: { email: response.email, name: response.name },
+                  user,
+                  token,
                   isAuthenticated: true,
                 });
                 router.navigate(['/']);
@@ -124,22 +144,40 @@ export const AuthStore = signalStore(
       ),
     ),
     logout: () => {
-      authService.logout();
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
       patchState(store, {
         user: null,
         isAuthenticated: false,
+        token: null,
       });
       router.navigate(['/iniciar-sesion']);
     },
-    checkAuthState: () => {
-      const user = authService.currentUser();
-      const isAuthenticated = authService.isAuthenticated();
-      patchState(store, { user, isAuthenticated });
+    getToken: (): string | null => {
+      return store.token() ?? localStorage.getItem(AUTH_TOKEN_KEY);
+    },
+    loadAuthStateFromStorage: () => {
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
+      const userJson = localStorage.getItem(USER_KEY);
+
+      if (token && userJson) {
+        try {
+          const user = JSON.parse(userJson) as User;
+          patchState(store, {
+            user,
+            token,
+            isAuthenticated: true,
+          });
+        } catch {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
+        }
+      }
     },
   })),
   withHooks({
-    onInit({ checkAuthState }) {
-      checkAuthState();
+    onInit({ loadAuthStateFromStorage }) {
+      loadAuthStateFromStorage();
     },
   }),
 );

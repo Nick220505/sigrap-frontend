@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
 import { RegisterRequest } from '../models/register-request.model';
-import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,59 +13,11 @@ export class AuthService {
   private readonly baseUrl = `${environment.apiUrl}/auth`;
   private readonly http = inject(HttpClient);
 
-  private readonly AUTH_TOKEN_KEY = 'auth_token';
-  private readonly USER_KEY = 'user_data';
-
-  currentUser = signal<User | null>(this.getUserFromStorage());
-  isAuthenticated = signal<boolean>(!!this.getToken());
-
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/login`, credentials)
-      .pipe(
-        map((response) => {
-          this.handleAuthResponse(response);
-          return response;
-        }),
-        catchError((error) => throwError(() => error)),
-      );
+    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials);
   }
 
   register(userData: RegisterRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/register`, userData)
-      .pipe(
-        map((response) => {
-          this.handleAuthResponse(response);
-          return response;
-        }),
-        catchError((error) => throwError(() => error)),
-      );
-  }
-
-  logout(): void {
-    localStorage.removeItem(this.AUTH_TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
-    this.currentUser.set(null);
-    this.isAuthenticated.set(false);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(this.AUTH_TOKEN_KEY);
-  }
-
-  private handleAuthResponse(response: AuthResponse): void {
-    const { token, email, name } = response;
-
-    localStorage.setItem(this.AUTH_TOKEN_KEY, token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify({ email, name }));
-
-    this.currentUser.set({ email, name });
-    this.isAuthenticated.set(true);
-  }
-
-  private getUserFromStorage(): User | null {
-    const userData = localStorage.getItem(this.USER_KEY);
-    return userData ? JSON.parse(userData) : null;
+    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, userData);
   }
 }
