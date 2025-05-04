@@ -61,12 +61,14 @@ export const AuthStore = signalStore(
                 let errorMessage =
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
-                if (err.status === 400) {
-                  errorMessage = 'Datos de inicio de sesión incorrectos';
-                } else if (err.status === 401 || err.status === 403) {
+                if (err.status === 401 || err.status === 403) {
                   errorMessage = 'Credenciales inválidas';
                 } else if (err.error?.message) {
-                  errorMessage = err.error.message;
+                  if (err.error.message === 'Invalid credentials') {
+                    errorMessage = 'Credenciales inválidas';
+                  } else {
+                    errorMessage = err.error.message;
+                  }
                 }
 
                 patchState(store, { error: errorMessage });
@@ -117,7 +119,11 @@ export const AuthStore = signalStore(
                 } else if (err.status === 401) {
                   errorMessage = 'Credenciales inválidas';
                 } else if (err.error?.message) {
-                  errorMessage = err.error.message;
+                  if (err.error.message === 'Invalid credentials') {
+                    errorMessage = 'Credenciales inválidas';
+                  } else {
+                    errorMessage = err.error.message;
+                  }
                 }
 
                 patchState(store, { error: errorMessage });
