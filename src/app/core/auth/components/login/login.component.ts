@@ -7,7 +7,6 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -31,7 +30,6 @@ import { AuthStore } from '../../stores/auth.store';
     InputIconModule,
     ToastModule,
   ],
-  providers: [MessageService],
   template: `
     <app-floating-configurator />
 
@@ -162,9 +160,11 @@ import { AuthStore } from '../../stores/auth.store';
                 label="Ingresar"
                 type="button"
                 styleClass="w-full mb-8"
-                [loading]="loading()"
+                [loading]="authStore.loading()"
                 (onClick)="
-                  loginForm.valid ? login() : loginForm.markAllAsTouched()
+                  loginForm.valid
+                    ? authStore.login(loginForm.value)
+                    : loginForm.markAllAsTouched()
                 "
               />
 
@@ -189,17 +189,10 @@ import { AuthStore } from '../../stores/auth.store';
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authStore = inject(AuthStore);
+  readonly authStore = inject(AuthStore);
 
   readonly loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
-
-  readonly loading = this.authStore.loading;
-
-  login(): void {
-    if (this.loginForm.invalid) return;
-    this.authStore.login(this.loginForm.value);
-  }
 }

@@ -316,7 +316,7 @@ import { AuthStore } from '../../stores/auth.store';
                   label="Registrarse"
                   type="button"
                   styleClass="w-full mb-8"
-                  [loading]="loading()"
+                  [loading]="authStore.loading()"
                   (onClick)="
                     registerForm.valid
                       ? register()
@@ -346,7 +346,7 @@ import { AuthStore } from '../../stores/auth.store';
 })
 export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly authStore = inject(AuthStore);
+  readonly authStore = inject(AuthStore);
 
   readonly registerForm: FormGroup = this.fb.group(
     {
@@ -366,13 +366,11 @@ export class RegisterComponent implements OnInit {
     { validators: this.passwordMatchValidator },
   );
 
-  readonly loading = this.authStore.loading;
-
-  hasMinLength = signal(false);
-  hasLowercase = signal(false);
-  hasUppercase = signal(false);
-  hasNumber = signal(false);
-  hasSpecialChar = signal(false);
+  readonly hasMinLength = signal(false);
+  readonly hasLowercase = signal(false);
+  readonly hasUppercase = signal(false);
+  readonly hasNumber = signal(false);
+  readonly hasSpecialChar = signal(false);
 
   ngOnInit(): void {
     this.registerForm.get('password')?.valueChanges.subscribe((password) => {
