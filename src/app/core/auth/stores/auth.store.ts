@@ -101,29 +101,13 @@ export const AuthStore = signalStore(
                 let errorMessage =
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
-                if (err.status === 400) {
-                  if (err.error?.errors) {
-                    const validationErrors = err.error.errors;
-                    const firstError = Object.values(
-                      validationErrors,
-                    )[0] as string;
-                    errorMessage = firstError || 'Datos de registro inválidos';
-                  } else {
-                    errorMessage = 'Los datos de registro no son válidos';
-                  }
-                } else if (
+                if (
                   err.status === 409 ||
                   err.error?.message === 'Email already exists'
                 ) {
                   errorMessage = 'El correo electrónico ya está registrado';
-                } else if (err.status === 401) {
-                  errorMessage = 'Credenciales inválidas';
                 } else if (err.error?.message) {
-                  if (err.error.message === 'Invalid credentials') {
-                    errorMessage = 'Credenciales inválidas';
-                  } else {
-                    errorMessage = err.error.message;
-                  }
+                  errorMessage = err.error.message;
                 }
 
                 patchState(store, { error: errorMessage });
