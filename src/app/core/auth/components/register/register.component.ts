@@ -384,11 +384,7 @@ export class RegisterComponent implements OnInit {
   }
 
   register(): void {
-    if (this.registerForm.invalid) return;
-
-    const userData = { ...this.registerForm.value };
-    delete userData.confirmPassword;
-
-    this.authStore.register(userData);
+    const { name, email, password } = this.registerForm.value;
+    this.authStore.register({ name, email, password });
   }
 }

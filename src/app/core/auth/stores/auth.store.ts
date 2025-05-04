@@ -100,7 +100,6 @@ export const AuthStore = signalStore(
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
                 if (err.status === 400) {
-                  // Handle validation errors
                   if (err.error?.errors) {
                     const validationErrors = err.error.errors;
                     const firstError = Object.values(
