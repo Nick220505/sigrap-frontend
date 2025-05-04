@@ -1,11 +1,7 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {
-  provideRouter,
-  withInMemoryScrolling,
-  withViewTransitions,
-} from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import Aura from '@primeng/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
@@ -21,7 +17,6 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
         scrollPositionRestoration: 'enabled',
       }),
-      withViewTransitions(),
     ),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([authInterceptor])),

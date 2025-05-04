@@ -50,34 +50,30 @@ export const AuthStore = signalStore(
         concatMap((credentials) =>
           authService.login(credentials).pipe(
             tapResponse({
-              next: (success) => {
-                if (success) {
-                  patchState(store, {
-                    user: authService.currentUser(),
-                    isAuthenticated: true,
-                  });
-                  router.navigate(['/']);
-                } else {
-                  patchState(store, {
-                    error: 'Credenciales inválidas',
-                  });
-                  messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Credenciales inválidas',
-                  });
-                }
-              },
-              error: () => {
+              next: () => {
                 patchState(store, {
-                  error:
-                    'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+                  user: authService.currentUser(),
+                  isAuthenticated: true,
                 });
+                router.navigate(['/']);
+              },
+              error: (err: HttpErrorResponse) => {
+                let errorMessage =
+                  'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
+
+                if (err.status === 400) {
+                  errorMessage = 'Datos de inicio de sesión incorrectos';
+                } else if (err.status === 401 || err.status === 403) {
+                  errorMessage = 'Credenciales inválidas';
+                } else if (err.error?.message) {
+                  errorMessage = err.error.message;
+                }
+
+                patchState(store, { error: errorMessage });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail:
-                    'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+                  detail: errorMessage,
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -92,31 +88,35 @@ export const AuthStore = signalStore(
         concatMap((userData) =>
           authService.register(userData).pipe(
             tapResponse({
-              next: (success) => {
-                if (success) {
-                  patchState(store, {
-                    user: authService.currentUser(),
-                    isAuthenticated: true,
-                  });
-                  router.navigate(['/']);
-                } else {
-                  patchState(store, {
-                    error:
-                      'No se pudo completar el registro. Intente nuevamente.',
-                  });
-                  messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail:
-                      'No se pudo completar el registro. Intente nuevamente.',
-                  });
-                }
+              next: () => {
+                patchState(store, {
+                  user: authService.currentUser(),
+                  isAuthenticated: true,
+                });
+                router.navigate(['/']);
               },
               error: (err: HttpErrorResponse) => {
                 let errorMessage =
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
-                if (err?.error?.message === 'Email already exists') {
-                  errorMessage = 'El correo electrónico ya está registrado.';
+
+                if (err.status === 400) {
+                  // Handle validation errors
+                  if (err.error?.errors) {
+                    const validationErrors = err.error.errors;
+                    const firstError = Object.values(
+                      validationErrors,
+                    )[0] as string;
+                    errorMessage = firstError || 'Datos de registro inválidos';
+                  } else {
+                    errorMessage = 'Los datos de registro no son válidos';
+                  }
+                } else if (
+                  err.status === 409 ||
+                  err.error?.message === 'Email already exists'
+                ) {
+                  errorMessage = 'El correo electrónico ya está registrado';
+                } else if (err.error?.message) {
+                  errorMessage = err.error.message;
                 }
 
                 patchState(store, { error: errorMessage });
