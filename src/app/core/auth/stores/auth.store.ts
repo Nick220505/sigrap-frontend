@@ -64,17 +64,17 @@ export const AuthStore = signalStore(
                 });
                 router.navigate(['/']);
               },
-              error: (err: HttpErrorResponse) => {
+              error: ({ status, error }: HttpErrorResponse) => {
                 let errorMessage =
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
-                if (err.status === 401 || err.status === 403) {
+                if (status === 401 || status === 403) {
                   errorMessage = 'Credenciales inválidas';
-                } else if (err.error?.message) {
-                  if (err.error.message === 'Invalid credentials') {
+                } else if (error?.message) {
+                  if (error.message === 'Invalid credentials') {
                     errorMessage = 'Credenciales inválidas';
                   } else {
-                    errorMessage = err.error.message;
+                    errorMessage = error.message;
                   }
                 }
 
@@ -110,17 +110,17 @@ export const AuthStore = signalStore(
                 });
                 router.navigate(['/']);
               },
-              error: (err: HttpErrorResponse) => {
+              error: ({ status, error }: HttpErrorResponse) => {
                 let errorMessage =
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
                 if (
-                  err.status === 409 ||
-                  err.error?.message === 'Email already exists'
+                  status === 409 ||
+                  error?.message === 'Email already exists'
                 ) {
                   errorMessage = 'El correo electrónico ya está registrado';
-                } else if (err.error?.message) {
-                  errorMessage = err.error.message;
+                } else if (error?.message) {
+                  errorMessage = error.message;
                 }
 
                 patchState(store, { error: errorMessage });
