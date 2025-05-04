@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Product } from '@features/inventory/models/product.model';
+import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -210,12 +210,12 @@ export class ProductTableComponent {
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');
-  readonly selectedProducts = linkedSignal<Product[], Product[]>({
+  readonly selectedProducts = linkedSignal<ProductInfo[], ProductInfo[]>({
     source: this.productStore.entities,
     computation: (entities, previous) => {
       const prevSelected = previous?.value ?? [];
-      const entityIds = new Set(entities.map(({ id }: Product) => id));
-      return prevSelected.filter(({ id }: Product) => entityIds.has(id));
+      const entityIds = new Set(entities.map(({ id }: ProductInfo) => id));
+      return prevSelected.filter(({ id }: ProductInfo) => entityIds.has(id));
     },
   });
 
@@ -224,7 +224,7 @@ export class ProductTableComponent {
     this.dt().clear();
   }
 
-  deleteProduct({ id, name }: Product): void {
+  deleteProduct({ id, name }: ProductInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar producto',
       message: `¿Está seguro de que desea eliminar el producto <b>${name}</b>?`,

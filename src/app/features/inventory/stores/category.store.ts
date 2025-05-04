@@ -21,23 +21,19 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import {
-  Category,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-} from '../models/category.model';
+import { CategoryData, CategoryInfo } from '../models/category.model';
 import { CategoryService } from '../services/category.service';
 
 export interface CategoryState {
   loading: boolean;
   error: string | null;
-  selectedCategory: Category | null;
+  selectedCategory: CategoryInfo | null;
   dialogVisible: boolean;
 }
 
 export const CategoryStore = signalStore(
   { providedIn: 'root' },
-  withEntities<Category>(),
+  withEntities<CategoryInfo>(),
   withState<CategoryState>({
     loading: false,
     error: null,
@@ -70,13 +66,13 @@ export const CategoryStore = signalStore(
         ),
       ),
     ),
-    create: rxMethod<CreateCategoryDto>(
+    create: rxMethod<CategoryData>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        concatMap((category) =>
-          categoryService.create(category).pipe(
+        concatMap((categoryData) =>
+          categoryService.create(categoryData).pipe(
             tapResponse({
-              next: (createdCategory: Category) => {
+              next: (createdCategory: CategoryInfo) => {
                 patchState(store, addEntity(createdCategory));
                 messageService.add({
                   severity: 'success',
@@ -98,13 +94,13 @@ export const CategoryStore = signalStore(
         ),
       ),
     ),
-    update: rxMethod<{ id: number; categoryData: UpdateCategoryDto }>(
+    update: rxMethod<{ id: number; categoryData: Partial<CategoryData> }>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         concatMap(({ id, categoryData }) =>
           categoryService.update(id, categoryData).pipe(
             tapResponse({
-              next: (updatedCategory: Category) => {
+              next: (updatedCategory: CategoryInfo) => {
                 patchState(
                   store,
                   updateEntity({ id, changes: updatedCategory }),
@@ -228,7 +224,7 @@ export const CategoryStore = signalStore(
       ),
     ),
 
-    openCategoryDialog: (category?: Category) => {
+    openCategoryDialog: (category?: CategoryInfo) => {
       patchState(store, {
         selectedCategory: category,
         dialogVisible: true,

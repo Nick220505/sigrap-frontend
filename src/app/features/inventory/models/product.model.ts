@@ -1,22 +1,20 @@
-import { Category } from './category.model';
+import { CategoryInfo } from './category.model';
 
-export interface Product {
+export interface ProductInfo {
   id: number;
   name: string;
   description?: string;
   costPrice: number;
   salePrice: number;
-  category?: Category;
+  category?: CategoryInfo;
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface CreateProductDto {
+export interface ProductData {
   name: string;
   description?: string;
   costPrice: number;
   salePrice: number;
-  category?: Category;
+  categoryId?: number;
 }
-
-export type UpdateProductDto = Partial<CreateProductDto>;

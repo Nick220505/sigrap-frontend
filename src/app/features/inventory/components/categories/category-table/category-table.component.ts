@@ -6,7 +6,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Category } from '@features/inventory/models/category.model';
+import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -193,12 +193,12 @@ export class CategoryTableComponent {
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');
-  readonly selectedCategories = linkedSignal<Category[], Category[]>({
+  readonly selectedCategories = linkedSignal<CategoryInfo[], CategoryInfo[]>({
     source: this.categoryStore.entities,
     computation: (entities, previous) => {
       const prevSelected = previous?.value ?? [];
-      const entityIds = new Set(entities.map(({ id }: Category) => id));
-      return prevSelected.filter(({ id }: Category) => entityIds.has(id));
+      const entityIds = new Set(entities.map(({ id }: CategoryInfo) => id));
+      return prevSelected.filter(({ id }: CategoryInfo) => entityIds.has(id));
     },
   });
 
@@ -207,7 +207,7 @@ export class CategoryTableComponent {
     this.dt().clear();
   }
 
-  deleteCategory({ id, name }: Category): void {
+  deleteCategory({ id, name }: CategoryInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar categoría',
       message: `¿Está seguro de que desea eliminar la categoría <b>${name}</b>?`,

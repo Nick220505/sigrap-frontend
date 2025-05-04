@@ -2,11 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '@env';
 import { Observable } from 'rxjs';
-import {
-  Category,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-} from '../models/category.model';
+import { CategoryData, CategoryInfo } from '../models/category.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,20 +11,26 @@ export class CategoryService {
   private readonly http = inject(HttpClient);
   private readonly categoriesUrl = `${environment.apiUrl}/categories`;
 
-  findAll(): Observable<Category[]> {
-    return this.http.get<Category[]>(this.categoriesUrl);
+  findAll(): Observable<CategoryInfo[]> {
+    return this.http.get<CategoryInfo[]>(this.categoriesUrl);
   }
 
-  findById(id: number): Observable<Category> {
-    return this.http.get<Category>(`${this.categoriesUrl}/${id}`);
+  findById(id: number): Observable<CategoryInfo> {
+    return this.http.get<CategoryInfo>(`${this.categoriesUrl}/${id}`);
   }
 
-  create(newCategory: CreateCategoryDto): Observable<Category> {
-    return this.http.post<Category>(this.categoriesUrl, newCategory);
+  create(categoryData: CategoryData): Observable<CategoryInfo> {
+    return this.http.post<CategoryInfo>(this.categoriesUrl, categoryData);
   }
 
-  update(id: number, categoryData: UpdateCategoryDto): Observable<Category> {
-    return this.http.put<Category>(`${this.categoriesUrl}/${id}`, categoryData);
+  update(
+    id: number,
+    categoryData: Partial<CategoryData>,
+  ): Observable<CategoryInfo> {
+    return this.http.put<CategoryInfo>(
+      `${this.categoriesUrl}/${id}`,
+      categoryData,
+    );
   }
 
   delete(id: number): Observable<void> {

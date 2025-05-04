@@ -1,4 +1,4 @@
-export interface Category {
+export interface CategoryInfo {
   id: number;
   name: string;
   description?: string;
@@ -6,9 +6,7 @@ export interface Category {
   updatedAt?: string;
 }
 
-export interface CreateCategoryDto {
+export interface CategoryData {
   name: string;
   description?: string;
 }
-
-export type UpdateCategoryDto = Partial<CreateCategoryDto>;

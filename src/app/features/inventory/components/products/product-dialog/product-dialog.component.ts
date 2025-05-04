@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ProductData } from '@features/inventory/models/product.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ButtonModule } from 'primeng/button';
@@ -169,9 +170,10 @@ import { TextareaModule } from 'primeng/textarea';
             </p-inputgroup-addon>
             <p-select
               id="category"
-              formControlName="category"
+              formControlName="categoryId"
               [options]="categoryStore.entities()"
               optionLabel="name"
+              optionValue="id"
               placeholder="Seleccione una categoría"
               filter
               filterBy="name"
@@ -213,7 +215,7 @@ export class ProductDialogComponent {
     description: [''],
     costPrice: [0, [Validators.required, Validators.min(0)]],
     salePrice: [0, [Validators.required, Validators.min(0)]],
-    category: [null],
+    categoryId: [null],
   });
 
   constructor() {
@@ -221,7 +223,11 @@ export class ProductDialogComponent {
       const product = this.productStore.selectedProduct();
       untracked(() => {
         if (product) {
-          this.productForm.patchValue(product);
+          const formValue = {
+            ...product,
+            categoryId: product.category?.id ?? null,
+          };
+          this.productForm.patchValue(formValue);
         } else {
           this.productForm.reset();
         }
@@ -230,7 +236,7 @@ export class ProductDialogComponent {
   }
 
   saveProduct(): void {
-    const productData = this.productForm.value;
+    const productData: ProductData = this.productForm.value;
     const id = this.productStore.selectedProduct()?.id;
     if (id) {
       this.productStore.update({ id, productData });

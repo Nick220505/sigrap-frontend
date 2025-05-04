@@ -20,23 +20,19 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import {
-  CreateProductDto,
-  Product,
-  UpdateProductDto,
-} from '../models/product.model';
+import { ProductData, ProductInfo } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 
 export interface ProductState {
   loading: boolean;
   error: string | null;
-  selectedProduct: Product | null;
+  selectedProduct: ProductInfo | null;
   dialogVisible: boolean;
 }
 
 export const ProductStore = signalStore(
   { providedIn: 'root' },
-  withEntities<Product>(),
+  withEntities<ProductInfo>(),
   withState<ProductState>({
     loading: false,
     error: null,
@@ -69,13 +65,13 @@ export const ProductStore = signalStore(
         ),
       ),
     ),
-    create: rxMethod<CreateProductDto>(
+    create: rxMethod<ProductData>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        concatMap((product) =>
-          productService.create(product).pipe(
+        concatMap((productData) =>
+          productService.create(productData).pipe(
             tapResponse({
-              next: (createdProduct: Product) => {
+              next: (createdProduct: ProductInfo) => {
                 patchState(store, addEntity(createdProduct));
                 messageService.add({
                   severity: 'success',
@@ -97,13 +93,13 @@ export const ProductStore = signalStore(
         ),
       ),
     ),
-    update: rxMethod<{ id: number; productData: UpdateProductDto }>(
+    update: rxMethod<{ id: number; productData: Partial<ProductData> }>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         concatMap(({ id, productData }) =>
           productService.update(id, productData).pipe(
             tapResponse({
-              next: (updatedProduct: Product) => {
+              next: (updatedProduct: ProductInfo) => {
                 patchState(
                   store,
                   updateEntity({ id, changes: updatedProduct }),
@@ -185,7 +181,7 @@ export const ProductStore = signalStore(
       ),
     ),
 
-    openProductDialog: (product?: Product) => {
+    openProductDialog: (product?: ProductInfo) => {
       patchState(store, {
         selectedProduct: product,
         dialogVisible: true,

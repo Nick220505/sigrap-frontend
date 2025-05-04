@@ -5,6 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { CategoryData } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -133,7 +134,7 @@ export class CategoryDialogComponent {
   }
 
   saveCategory(): void {
-    const categoryData = this.categoryForm.value;
+    const categoryData: CategoryData = this.categoryForm.value;
     const id = this.categoryStore.selectedCategory()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });
