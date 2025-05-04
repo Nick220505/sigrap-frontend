@@ -50,9 +50,9 @@ export const AuthStore = signalStore(
         concatMap((credentials) =>
           authService.login(credentials).pipe(
             tapResponse({
-              next: () => {
+              next: (response) => {
                 patchState(store, {
-                  user: authService.currentUser(),
+                  user: { email: response.email, name: response.name },
                   isAuthenticated: true,
                 });
                 router.navigate(['/']);
@@ -88,9 +88,9 @@ export const AuthStore = signalStore(
         concatMap((userData) =>
           authService.register(userData).pipe(
             tapResponse({
-              next: () => {
+              next: (response) => {
                 patchState(store, {
-                  user: authService.currentUser(),
+                  user: { email: response.email, name: response.name },
                   isAuthenticated: true,
                 });
                 router.navigate(['/']);
@@ -114,6 +114,8 @@ export const AuthStore = signalStore(
                   err.error?.message === 'Email already exists'
                 ) {
                   errorMessage = 'El correo electrónico ya está registrado';
+                } else if (err.status === 401) {
+                  errorMessage = 'Credenciales inválidas';
                 } else if (err.error?.message) {
                   errorMessage = err.error.message;
                 }

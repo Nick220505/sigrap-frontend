@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, catchError, map, of, tap } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
@@ -20,23 +20,27 @@ export class AuthService {
   currentUser = signal<User | null>(this.getUserFromStorage());
   isAuthenticated = signal<boolean>(!!this.getToken());
 
-  login(credentials: LoginRequest): Observable<boolean> {
+  login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.baseUrl}/login`, credentials)
       .pipe(
-        tap((response) => this.handleAuthResponse(response)),
-        map(() => true),
-        catchError(() => of(false)),
+        map((response) => {
+          this.handleAuthResponse(response);
+          return response;
+        }),
+        catchError((error) => throwError(() => error)),
       );
   }
 
-  register(userData: RegisterRequest): Observable<boolean> {
+  register(userData: RegisterRequest): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.baseUrl}/register`, userData)
       .pipe(
-        tap((response) => this.handleAuthResponse(response)),
-        map(() => true),
-        catchError(() => of(false)),
+        map((response) => {
+          this.handleAuthResponse(response);
+          return response;
+        }),
+        catchError((error) => throwError(() => error)),
       );
   }
 
