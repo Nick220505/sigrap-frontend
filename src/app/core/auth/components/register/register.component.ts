@@ -6,9 +6,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -17,8 +16,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import { finalize } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-register',
@@ -318,7 +316,7 @@ import { AuthService } from '../../services/auth.service';
                   label="Registrarse"
                   type="button"
                   styleClass="w-full mb-8"
-                  [loading]="isLoading"
+                  [loading]="loading()"
                   (onClick)="
                     registerForm.valid
                       ? register()
@@ -347,12 +345,8 @@ import { AuthService } from '../../services/auth.service';
   `,
 })
 export class RegisterComponent implements OnInit {
-  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly messageService = inject(MessageService);
-
-  isLoading = false;
+  private readonly authStore = inject(AuthStore);
 
   readonly registerForm: FormGroup = this.fb.group(
     {
@@ -371,6 +365,8 @@ export class RegisterComponent implements OnInit {
     },
     { validators: this.passwordMatchValidator },
   );
+
+  readonly loading = this.authStore.loading;
 
   hasMinLength = signal(false);
   hasLowercase = signal(false);
@@ -391,41 +387,10 @@ export class RegisterComponent implements OnInit {
   register(): void {
     if (this.registerForm.invalid) return;
 
-    this.isLoading = true;
-
     const userData = { ...this.registerForm.value };
     delete userData.confirmPassword;
 
-    this.authService
-      .register(userData)
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (success) => {
-          if (success) {
-            this.router.navigate(['/']);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'No se pudo completar el registro. Intente nuevamente.',
-            });
-          }
-        },
-        error: (err) => {
-          let errorMessage =
-            'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
-
-          if (err?.error?.message === 'Email already exists') {
-            errorMessage = 'El correo electrónico ya está registrado.';
-          }
-
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: errorMessage,
-          });
-        },
-      });
+    this.authStore.register(userData);
   }
 
   private passwordMatchValidator(form: FormGroup) {

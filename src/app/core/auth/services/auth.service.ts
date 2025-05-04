@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AuthResponse } from '../models/auth-response.model';
@@ -14,7 +13,6 @@ import { User } from '../models/user.model';
 export class AuthService {
   private readonly baseUrl = `${environment.apiUrl}/auth`;
   private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
 
   private readonly AUTH_TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
@@ -47,7 +45,6 @@ export class AuthService {
     localStorage.removeItem(this.USER_KEY);
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
-    this.router.navigate(['/iniciar-sesion']);
   }
 
   getToken(): string | null {

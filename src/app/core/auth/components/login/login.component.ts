@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -15,8 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import { finalize } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-login',
@@ -163,7 +162,7 @@ import { AuthService } from '../../services/auth.service';
                 label="Ingresar"
                 type="button"
                 styleClass="w-full mb-8"
-                [loading]="isLoading"
+                [loading]="loading()"
                 (onClick)="
                   loginForm.valid ? login() : loginForm.markAllAsTouched()
                 "
@@ -189,46 +188,18 @@ import { AuthService } from '../../services/auth.service';
   `,
 })
 export class LoginComponent {
-  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly messageService = inject(MessageService);
+  private readonly authStore = inject(AuthStore);
 
   readonly loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
 
-  isLoading = false;
+  readonly loading = this.authStore.loading;
 
   login(): void {
     if (this.loginForm.invalid) return;
-
-    this.isLoading = true;
-
-    this.authService
-      .login(this.loginForm.value)
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (success) => {
-          if (success) {
-            this.router.navigate(['/']);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Credenciales inválidas',
-            });
-          }
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail:
-              'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
-          });
-        },
-      });
+    this.authStore.login(this.loginForm.value);
   }
 }

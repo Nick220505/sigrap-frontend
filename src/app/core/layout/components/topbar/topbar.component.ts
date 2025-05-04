@@ -7,7 +7,7 @@ import {
   inject,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '@core/auth/services/auth.service';
+import { AuthStore } from '@core/auth/stores/auth.store';
 import { LayoutService } from '@core/layout/services/layout.service';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -191,11 +191,11 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
 })
 export class TopbarComponent {
   readonly layoutService = inject(LayoutService);
-  private readonly authService = inject(AuthService);
+  private readonly authStore = inject(AuthStore);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly elementRef = inject(ElementRef);
 
-  readonly currentUser = computed(() => this.authService.currentUser());
+  readonly currentUser = this.authStore.currentUser;
   readonly themeMode = computed(
     () => this.layoutService.layoutConfig().themeMode,
   );
@@ -250,7 +250,7 @@ export class TopbarComponent {
     this.confirmationService.confirm({
       key: 'logout',
       accept: () => {
-        this.authService.logout();
+        this.authStore.logout();
       },
     });
   }
