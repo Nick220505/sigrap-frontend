@@ -1,4 +1,9 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { LayoutComponent } from './layout.component';
 
@@ -8,7 +13,14 @@ describe('LayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LayoutComponent],
+      imports: [LayoutComponent, NoopAnimationsModule],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        ConfirmationService,
+        MessageService,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LayoutComponent);
