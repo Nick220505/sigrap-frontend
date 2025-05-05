@@ -4,7 +4,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, provideRouter } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
-import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
+import { FloatingConfiguratorComponent } from '../topbar/floating-configurator/floating-configurator.component';
 import { NotFoundComponent } from './not-found.component';
 
 describe('NotFoundComponent', () => {
