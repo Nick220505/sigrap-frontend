@@ -12,7 +12,6 @@ describe('MenuItemComponent', () => {
   });
 
   it('should create the component class', () => {
-    // Just verify the component class can be defined
     expect(MenuItemComponent).toBeDefined();
   });
 });

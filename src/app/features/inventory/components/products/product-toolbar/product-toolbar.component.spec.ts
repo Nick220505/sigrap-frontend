@@ -6,7 +6,6 @@ import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProductToolbarComponent } from './product-toolbar.component';
 
-// Create a mock product store service
 const mockProductStore = {
   openProductDialog: jasmine.createSpy('openProductDialog'),
   deleteAllById: jasmine.createSpy('deleteAllById'),
@@ -28,8 +27,6 @@ describe('ProductToolbarComponent', () => {
   });
 
   it('should create the component instance', () => {
-    // Instead of creating the component through the TestBed,
-    // we can verify that the component class is at least constructable
     expect(ProductToolbarComponent).toBeDefined();
   });
 });

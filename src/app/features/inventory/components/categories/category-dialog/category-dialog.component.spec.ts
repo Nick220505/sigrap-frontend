@@ -23,7 +23,6 @@ describe('CategoryDialogComponent', () => {
   });
 
   it('should create the component class', () => {
-    // Verify the component can be defined
     expect(CategoryDialogComponent).toBeDefined();
   });
 });
