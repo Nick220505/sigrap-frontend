@@ -4,7 +4,7 @@ import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/fl
 import { ButtonModule } from 'primeng/button';
 
 @Component({
-  selector: 'app-notfound',
+  selector: 'app-not-found',
   imports: [RouterModule, ButtonModule, FloatingConfiguratorComponent],
   template: `
     <app-floating-configurator />
