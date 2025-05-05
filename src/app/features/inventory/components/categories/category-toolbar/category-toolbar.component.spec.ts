@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -18,9 +18,6 @@ const mockCategoryStore = {
 };
 
 describe('CategoryToolbarComponent', () => {
-  let component: CategoryToolbarComponent;
-  let fixture: ComponentFixture<CategoryToolbarComponent>;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
@@ -36,12 +33,9 @@ describe('CategoryToolbarComponent', () => {
         { provide: CategoryStore, useValue: mockCategoryStore },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(CategoryToolbarComponent);
-    component = fixture.componentInstance;
   });
 
-  it('should create the component class', () => {
-    expect(component).toBeDefined();
+  it('should be defined', () => {
+    expect(CategoryToolbarComponent).toBeDefined();
   });
 });

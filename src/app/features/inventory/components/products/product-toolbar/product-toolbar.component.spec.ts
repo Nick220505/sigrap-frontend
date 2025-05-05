@@ -35,7 +35,7 @@ describe('ProductToolbarComponent', () => {
     }).compileComponents();
   });
 
-  it('should create the component instance', () => {
+  it('should be defined', () => {
     expect(ProductToolbarComponent).toBeDefined();
   });
 });
