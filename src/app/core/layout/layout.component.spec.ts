@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { LayoutService } from './services/layout.service';
 
-// Create a simple test component that we can test
 @Component({
   template: '',
 })
@@ -79,7 +78,6 @@ describe('Layout Component Tests', () => {
     const fixture = TestBed.createComponent(TestLayoutComponent);
     component = fixture.componentInstance;
 
-    // Mock document.body.classList
     spyOn(document.body.classList, 'add').and.stub();
     spyOn(document.body.classList, 'remove').and.stub();
   });
@@ -95,7 +93,6 @@ describe('Layout Component Tests', () => {
         menuMode: 'overlay',
       }));
 
-      // Need to recreate the component since containerClass is set in constructor
       const fixture = TestBed.createComponent(TestLayoutComponent);
       component = fixture.componentInstance;
 
@@ -109,7 +106,6 @@ describe('Layout Component Tests', () => {
         staticMenuDesktopInactive: true,
       }));
 
-      // Need to recreate the component since containerClass is set in constructor
       const fixture = TestBed.createComponent(TestLayoutComponent);
       component = fixture.componentInstance;
 
@@ -122,7 +118,6 @@ describe('Layout Component Tests', () => {
         overlayMenuActive: true,
       }));
 
-      // Need to recreate the component since containerClass is set in constructor
       const fixture = TestBed.createComponent(TestLayoutComponent);
       component = fixture.componentInstance;
 
@@ -135,7 +130,6 @@ describe('Layout Component Tests', () => {
         staticMenuMobileActive: true,
       }));
 
-      // Need to recreate the component since containerClass is set in constructor
       const fixture = TestBed.createComponent(TestLayoutComponent);
       component = fixture.componentInstance;
 
@@ -145,7 +139,6 @@ describe('Layout Component Tests', () => {
 
   describe('hideMenu', () => {
     it('should update layoutState to hide menus', () => {
-      // Set initial state with menus active
       layoutService.layoutState.update((state) => ({
         ...state,
         overlayMenuActive: true,
