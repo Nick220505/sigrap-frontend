@@ -11,7 +11,7 @@ describe('FloatingConfiguratorComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FloatingConfiguratorComponent],
-      schemas: [NO_ERRORS_SCHEMA], // To avoid issues with any nested components
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });
 
