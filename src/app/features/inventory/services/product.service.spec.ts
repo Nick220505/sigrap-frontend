@@ -5,12 +5,8 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '@env';
-import { Category } from '../models/category.model';
-import {
-  CreateProductDto,
-  Product,
-  UpdateProductDto,
-} from '../models/product.model';
+import { CategoryInfo } from '../models/category.model';
+import { ProductData, ProductInfo } from '../models/product.model';
 import { ProductService } from './product.service';
 
 describe('ProductService', () => {
@@ -18,12 +14,12 @@ describe('ProductService', () => {
   let httpMock: HttpTestingController;
   const apiUrl = `${environment.apiUrl}/products`;
 
-  const mockCategory: Category = {
+  const mockCategory: CategoryInfo = {
     id: 1,
     name: 'Category 1',
   };
 
-  const mockProduct: Product = {
+  const mockProduct: ProductInfo = {
     id: 1,
     name: 'Test Product',
     description: 'A test product',
@@ -55,7 +51,7 @@ describe('ProductService', () => {
   });
 
   it('should find all products', () => {
-    const mockProducts: Product[] = [mockProduct];
+    const mockProducts: ProductInfo[] = [mockProduct];
     service.findAll().subscribe((products) => {
       expect(products).toEqual(mockProducts);
     });
@@ -74,12 +70,12 @@ describe('ProductService', () => {
   });
 
   it('should create a product', () => {
-    const createDto: CreateProductDto = {
+    const createDto: ProductData = {
       name: 'New Product',
       description: 'Desc',
       costPrice: 5,
       salePrice: 10,
-      category: mockCategory,
+      categoryId: mockCategory.id,
     };
     service.create(createDto).subscribe((product) => {
       expect(product).toEqual(mockProduct);
@@ -91,7 +87,7 @@ describe('ProductService', () => {
   });
 
   it('should update a product', () => {
-    const updateDto: UpdateProductDto = { name: 'Updated Product' };
+    const updateDto: Partial<ProductData> = { name: 'Updated Product' };
     service.update(1, updateDto).subscribe((product) => {
       expect(product).toEqual(mockProduct);
     });

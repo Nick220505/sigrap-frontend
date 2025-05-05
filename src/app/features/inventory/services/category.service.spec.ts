@@ -5,11 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '@env';
-import {
-  Category,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-} from '../models/category.model';
+import { CategoryData, CategoryInfo } from '../models/category.model';
 import { CategoryService } from './category.service';
 
 describe('CategoryService', () => {
@@ -17,7 +13,7 @@ describe('CategoryService', () => {
   let httpMock: HttpTestingController;
   const apiUrl = `${environment.apiUrl}/categories`;
 
-  const mockCategory: Category = {
+  const mockCategory: CategoryInfo = {
     id: 1,
     name: 'Test Category',
     description: 'A test category',
@@ -46,7 +42,7 @@ describe('CategoryService', () => {
   });
 
   it('should find all categories', () => {
-    const mockCategories: Category[] = [mockCategory];
+    const mockCategories: CategoryInfo[] = [mockCategory];
     service.findAll().subscribe((categories) => {
       expect(categories).toEqual(mockCategories);
     });
@@ -65,7 +61,7 @@ describe('CategoryService', () => {
   });
 
   it('should create a category', () => {
-    const createDto: CreateCategoryDto = {
+    const createDto: CategoryData = {
       name: 'New Category',
       description: 'Desc',
     };
@@ -79,7 +75,7 @@ describe('CategoryService', () => {
   });
 
   it('should update a category', () => {
-    const updateDto: UpdateCategoryDto = { name: 'Updated Category' };
+    const updateDto: Partial<CategoryData> = { name: 'Updated Category' };
     service.update(1, updateDto).subscribe((category) => {
       expect(category).toEqual(mockCategory);
     });
