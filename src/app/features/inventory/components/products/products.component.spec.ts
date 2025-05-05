@@ -4,6 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ProductDialogComponent } from './product-dialog/product-dialog.component';
+import { ProductTableComponent } from './product-table/product-table.component';
+import { ProductToolbarComponent } from './product-toolbar/product-toolbar.component';
 import { ProductsComponent } from './products.component';
 
 describe('ProductsComponent', () => {
@@ -12,7 +15,13 @@ describe('ProductsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductsComponent, NoopAnimationsModule],
+      imports: [
+        ProductsComponent,
+        NoopAnimationsModule,
+        ProductTableComponent,
+        ProductToolbarComponent,
+        ProductDialogComponent,
+      ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

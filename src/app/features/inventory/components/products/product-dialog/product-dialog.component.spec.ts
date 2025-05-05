@@ -4,6 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 import { ProductDialogComponent } from './product-dialog.component';
 
 describe('ProductDialogComponent', () => {
@@ -16,6 +22,12 @@ describe('ProductDialogComponent', () => {
         ProductDialogComponent,
         ReactiveFormsModule,
         NoopAnimationsModule,
+        DialogModule,
+        ButtonModule,
+        InputTextModule,
+        InputNumberModule,
+        DropdownModule,
+        TextareaModule,
       ],
       providers: [
         provideHttpClient(),

@@ -3,6 +3,15 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { SliderModule } from 'primeng/slider';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { CategoryTableComponent } from './category-table.component';
 
 describe('CategoryTableComponent', () => {
@@ -11,7 +20,19 @@ describe('CategoryTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryTableComponent, NoopAnimationsModule],
+      imports: [
+        CategoryTableComponent,
+        NoopAnimationsModule,
+        TableModule,
+        ButtonModule,
+        TagModule,
+        InputTextModule,
+        TooltipModule,
+        MultiSelectModule,
+        DropdownModule,
+        SliderModule,
+        ProgressBarModule,
+      ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

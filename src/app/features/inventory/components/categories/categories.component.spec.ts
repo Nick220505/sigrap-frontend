@@ -5,6 +5,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CategoriesComponent } from './categories.component';
+import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
+import { CategoryTableComponent } from './category-table/category-table.component';
+import { CategoryToolbarComponent } from './category-toolbar/category-toolbar.component';
 
 describe('CategoriesComponent', () => {
   let component: CategoriesComponent;
@@ -12,7 +15,13 @@ describe('CategoriesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoriesComponent, NoopAnimationsModule],
+      imports: [
+        CategoriesComponent,
+        NoopAnimationsModule,
+        CategoryTableComponent,
+        CategoryToolbarComponent,
+        CategoryDialogComponent,
+      ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ButtonModule } from 'primeng/button';
+import { ConfiguratorComponent } from './configurator/configurator.component';
 
 import { FloatingConfiguratorComponent } from './floating-configurator.component';
 
@@ -8,7 +10,11 @@ describe('FloatingConfiguratorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FloatingConfiguratorComponent],
+      imports: [
+        FloatingConfiguratorComponent,
+        ConfiguratorComponent,
+        ButtonModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FloatingConfiguratorComponent);

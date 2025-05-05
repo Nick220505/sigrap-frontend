@@ -2,8 +2,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import { RouterModule, provideRouter } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
+import { MenuModule } from 'primeng/menu';
 import { TopbarComponent } from './topbar.component';
 
 describe('TopbarComponent', () => {
@@ -12,7 +15,14 @@ describe('TopbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopbarComponent, NoopAnimationsModule],
+      imports: [
+        TopbarComponent,
+        NoopAnimationsModule,
+        RouterModule,
+        MenuModule,
+        AvatarModule,
+        BadgeModule,
+      ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
