@@ -6,7 +6,6 @@ describe('LayoutService', () => {
   let localStorageSpy: jasmine.SpyObj<Storage>;
 
   beforeEach(() => {
-    // Mock localStorage
     const storageMock = jasmine.createSpyObj('Storage', [
       'getItem',
       'setItem',
@@ -23,7 +22,6 @@ describe('LayoutService', () => {
   });
 
   afterEach(() => {
-    // Cleanup mocks
     jasmine.clock().uninstall();
   });
 
@@ -39,33 +37,26 @@ describe('LayoutService', () => {
   });
 
   it('should load theme from localStorage on initialization', () => {
-    // Verificar que se intentó leer desde localStorage durante la inicialización
     expect(localStorageSpy.getItem).toHaveBeenCalledWith('layout-config');
   });
 
   it('should update layout configuration when toggling dark mode', () => {
-    // Guarda el estado inicial
     const initialConfig = { ...service.layoutConfig() };
 
-    // Act
     service.toggleDarkMode();
 
-    // Assert - La configuración debe ser diferente después de cambiar el modo oscuro
     expect(service.layoutConfig().darkTheme).toBe(!initialConfig.darkTheme);
   });
 
   it('should set theme mode correctly', () => {
-    // Test light mode
     service.setThemeMode('light');
     expect(service.layoutConfig().themeMode).toBe('light');
     expect(service.layoutConfig().darkTheme).toBeFalse();
 
-    // Test dark mode
     service.setThemeMode('dark');
     expect(service.layoutConfig().themeMode).toBe('dark');
     expect(service.layoutConfig().darkTheme).toBeTrue();
 
-    // Test auto mode
     const currentHour = new Date().getHours();
     const shouldBeDark = currentHour >= 18 || currentHour < 6;
 
@@ -75,10 +66,8 @@ describe('LayoutService', () => {
   });
 
   it('should detect desktop and mobile correctly', () => {
-    // Mock window.innerWidth
     const originalInnerWidth = window.innerWidth;
 
-    // Test desktop
     Object.defineProperty(window, 'innerWidth', {
       value: 1200,
       configurable: true,
@@ -86,7 +75,6 @@ describe('LayoutService', () => {
     expect(service.isDesktop()).toBeTrue();
     expect(service.isMobile()).toBeFalse();
 
-    // Test mobile
     Object.defineProperty(window, 'innerWidth', {
       value: 500,
       configurable: true,
@@ -94,7 +82,6 @@ describe('LayoutService', () => {
     expect(service.isDesktop()).toBeFalse();
     expect(service.isMobile()).toBeTrue();
 
-    // Restore original value
     Object.defineProperty(window, 'innerWidth', {
       value: originalInnerWidth,
       configurable: true,
@@ -102,7 +89,6 @@ describe('LayoutService', () => {
   });
 
   it('should handle menu toggle', () => {
-    // Set initial state
     service.layoutState.update((state) => ({
       ...state,
       staticMenuDesktopInactive: false,
@@ -110,17 +96,13 @@ describe('LayoutService', () => {
       staticMenuMobileActive: false,
     }));
 
-    // Mock isDesktop to return true
     spyOn(service, 'isDesktop').and.returnValue(true);
 
-    // Toggle menu in desktop mode
     service.onMenuToggle();
     expect(service.layoutState().staticMenuDesktopInactive).toBeTrue();
 
-    // Mock isDesktop to return false
     service['isDesktop'] = jasmine.createSpy().and.returnValue(false);
 
-    // Toggle menu in mobile mode
     service.onMenuToggle();
     expect(service.layoutState().staticMenuMobileActive).toBeTrue();
   });
@@ -153,10 +135,7 @@ describe('LayoutService', () => {
   });
 
   it('should cleanup on destroy', () => {
-    // Set a time check interval with an empty function (just for testing cleanup)
-    service['timeCheckInterval'] = setInterval(() => {
-      /* empty interval for testing */
-    }, 1000);
+    service['timeCheckInterval'] = setInterval(() => {}, 1000);
 
     spyOn(window, 'clearInterval');
 

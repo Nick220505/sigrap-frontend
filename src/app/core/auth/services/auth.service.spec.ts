@@ -33,7 +33,6 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should send a POST request to the login endpoint with credentials', () => {
-      // Arrange
       const credentials: LoginRequest = {
         email: 'test@example.com',
         password: 'password123',
@@ -44,13 +43,10 @@ describe('AuthService', () => {
         name: 'Test User',
       };
 
-      // Act
       service.login(credentials).subscribe((response) => {
-        // Assert
         expect(response).toEqual(mockResponse);
       });
 
-      // Assert
       const req = httpMock.expectOne(`${baseUrl}/login`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(credentials);
@@ -60,7 +56,6 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should send a POST request to the register endpoint with user data', () => {
-      // Arrange
       const userData: RegisterRequest = {
         name: 'Test User',
         email: 'test@example.com',
@@ -72,13 +67,10 @@ describe('AuthService', () => {
         name: 'Test User',
       };
 
-      // Act
       service.register(userData).subscribe((response) => {
-        // Assert
         expect(response).toEqual(mockResponse);
       });
 
-      // Assert
       const req = httpMock.expectOne(`${baseUrl}/register`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(userData);

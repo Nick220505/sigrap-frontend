@@ -20,7 +20,6 @@ import { ProductTableComponent } from './product-table.component';
 describe('ProductTableComponent', () => {
   let component: ProductTableComponent;
   let fixture: ComponentFixture<ProductTableComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockProductStore: any;
   let mockConfirmationService: jasmine.SpyObj<ConfirmationService>;
 
@@ -48,7 +47,6 @@ describe('ProductTableComponent', () => {
   ];
 
   beforeEach(async () => {
-    // Mock ProductStore
     mockProductStore = {
       entities: jasmine.createSpy('entities').and.returnValue(mockProducts),
       loading: jasmine.createSpy('loading').and.returnValue(false),
@@ -58,7 +56,6 @@ describe('ProductTableComponent', () => {
       openProductDialog: jasmine.createSpy('openProductDialog'),
     };
 
-    // Mock ConfirmationService
     mockConfirmationService = jasmine.createSpyObj('ConfirmationService', [
       'confirm',
     ]);
@@ -96,11 +93,9 @@ describe('ProductTableComponent', () => {
   it('should display products from the store', () => {
     expect(mockProductStore.entities).toHaveBeenCalled();
 
-    // Check if products are rendered in the table
     const rows = fixture.debugElement.queryAll(By.css('tbody tr'));
     expect(rows.length).toBe(mockProducts.length);
 
-    // Check product name in first row
     const firstRowCells = rows[0].queryAll(By.css('td'));
     expect(firstRowCells[1].nativeElement.textContent.trim()).toBe(
       mockProducts[0].name,
@@ -119,7 +114,6 @@ describe('ProductTableComponent', () => {
   });
 
   it('should call deleteProduct when delete button is clicked', () => {
-    // Spy on component's deleteProduct method
     spyOn(component, 'deleteProduct');
 
     const deleteButton = fixture.debugElement.query(
@@ -136,13 +130,11 @@ describe('ProductTableComponent', () => {
 
     expect(mockConfirmationService.confirm).toHaveBeenCalled();
 
-    // Get the confirm callback
     const confirmArgs =
       mockConfirmationService.confirm.calls.mostRecent().args[0];
     expect(confirmArgs.header).toBe('Eliminar producto');
     expect(confirmArgs.message).toContain(product.name);
 
-    // Simulate accepting the confirmation
     if (confirmArgs.accept) {
       confirmArgs.accept();
       expect(mockProductStore.delete).toHaveBeenCalledWith(product.id);
@@ -150,7 +142,6 @@ describe('ProductTableComponent', () => {
   });
 
   it('should clear filters when clearAllFilters is called', () => {
-    // Mock the dt viewChild (PrimeNG Table)
     component.dt().clear = jasmine.createSpy('clear');
     component.searchValue.set('test search');
 
@@ -161,17 +152,12 @@ describe('ProductTableComponent', () => {
   });
 
   it('should handle error state', () => {
-    // Update store mock to return an error
     mockProductStore.error.and.returnValue('Test error message');
 
-    // Force re-render
     fixture.detectChanges();
 
-    // Just verify the error is passed through from the store
     expect(mockProductStore.error()).toBe('Test error message');
 
-    // When retry is clicked, findAll should be called
-    // Validate the binding directly instead of DOM interaction
     const component2 = fixture.componentInstance;
     expect(component2.productStore.findAll).not.toHaveBeenCalled();
     component2.productStore.findAll();

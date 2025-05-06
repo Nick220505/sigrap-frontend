@@ -32,14 +32,11 @@ describe('authInterceptor', () => {
   });
 
   it('should add Authorization header when token is available', () => {
-    // Arrange
     const testToken = 'test-token';
     mockAuthStore.getToken.and.returnValue(testToken);
 
-    // Act
     interceptor(mockRequest, mockHandler);
 
-    // Assert
     expect(mockHandler).toHaveBeenCalledTimes(1);
     const modifiedRequest = mockHandler.calls.mostRecent().args[0];
     expect(modifiedRequest.headers.has('Authorization')).toBeTrue();
@@ -50,17 +47,14 @@ describe('authInterceptor', () => {
   });
 
   it('should not modify the request when token is not available', () => {
-    // Arrange
     mockAuthStore.getToken.and.returnValue(null);
 
-    // Act
     interceptor(mockRequest, mockHandler);
 
-    // Assert
     expect(mockHandler).toHaveBeenCalledTimes(1);
     const modifiedRequest = mockHandler.calls.mostRecent().args[0];
     expect(modifiedRequest.headers.has('Authorization')).toBeFalse();
     expect(mockAuthStore.getToken).toHaveBeenCalled();
-    expect(modifiedRequest).toBe(mockRequest); // Should pass the original request without modification
+    expect(modifiedRequest).toBe(mockRequest);
   });
 });
