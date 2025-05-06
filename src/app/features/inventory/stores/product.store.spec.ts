@@ -1,177 +1,323 @@
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { of, throwError } from 'rxjs';
 import { CategoryInfo } from '../models/category.model';
 import { ProductData, ProductInfo } from '../models/product.model';
 import { ProductService } from '../services/product.service';
+import { ProductStore } from './product.store';
 
-describe('ProductService Tests', () => {
+interface ProductStoreInterface {
+  loading(): boolean;
+  error(): string | null;
+  selectedProduct(): ProductInfo | null | undefined;
+  dialogVisible(): boolean;
+  entities(): ProductInfo[];
+  create(data: ProductData): void;
+  update(params: { id: number; productData: Partial<ProductData> }): void;
+  delete(id: number): void;
+  deleteAllById(ids: number[]): void;
+  openProductDialog(product?: ProductInfo): void;
+  closeProductDialog(): void;
+  clearSelectedProduct(): void;
+}
+
+describe('ProductStore', () => {
+  let store: ProductStoreInterface;
   let productService: jasmine.SpyObj<ProductService>;
+  let messageService: jasmine.SpyObj<MessageService>;
+  let httpMock: HttpTestingController;
+
+  const mockCategory: CategoryInfo = {
+    id: 1,
+    name: 'Category 1',
+    description: 'Description 1',
+  };
+
+  const mockProducts: ProductInfo[] = [
+    {
+      id: 1,
+      name: 'Product 1',
+      description: 'Description 1',
+      costPrice: 10,
+      salePrice: 15,
+      category: mockCategory,
+    },
+    {
+      id: 2,
+      name: 'Product 2',
+      description: 'Description 2',
+      costPrice: 20,
+      salePrice: 30,
+      category: mockCategory,
+    },
+  ];
 
   beforeEach(() => {
-    const productServiceSpy = jasmine.createSpyObj('ProductService', [
+    productService = jasmine.createSpyObj('ProductService', [
       'findAll',
-      'findById',
       'create',
       'update',
       'delete',
       'deleteAllById',
     ]);
+    messageService = jasmine.createSpyObj('MessageService', ['add']);
+
+    productService.findAll.and.returnValue(of(mockProducts));
+    productService.create.and.returnValue(
+      of({
+        id: 3,
+        name: 'New Product',
+        description: 'New Description',
+        costPrice: 15,
+        salePrice: 25,
+        category: mockCategory,
+      }),
+    );
+    productService.update.and.returnValue(
+      of({
+        id: 1,
+        name: 'Updated Product',
+        description: 'Updated Description',
+        costPrice: 12,
+        salePrice: 18,
+        category: mockCategory,
+      }),
+    );
+    productService.delete.and.returnValue(of(undefined));
+    productService.deleteAllById.and.returnValue(of(undefined));
 
     TestBed.configureTestingModule({
       providers: [
+        ProductStore,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: ProductService, useValue: productServiceSpy },
+        { provide: ProductService, useValue: productService },
+        { provide: MessageService, useValue: messageService },
       ],
     });
 
-    productService = TestBed.inject(
-      ProductService,
-    ) as jasmine.SpyObj<ProductService>;
+    store = TestBed.inject(ProductStore);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should be created', () => {
-    expect(productService).toBeTruthy();
+    expect(store).toBeTruthy();
   });
 
   describe('findAll', () => {
-    it('should return products when findAll is called', () => {
-      const mockProducts: ProductInfo[] = [
-        {
-          id: 1,
-          name: 'Product 1',
-          description: 'Description 1',
-          costPrice: 8.99,
-          salePrice: 10.99,
-          category: { id: 1, name: 'Category 1' } as CategoryInfo,
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          description: 'Description 2',
-          costPrice: 15.99,
-          salePrice: 20.99,
-          category: { id: 1, name: 'Category 1' } as CategoryInfo,
-        },
-      ];
-
-      productService.findAll.and.returnValue(of(mockProducts));
-
-      productService.findAll().subscribe((products) => {
-        expect(products).toEqual(mockProducts);
-        expect(products.length).toBe(2);
-      });
-
+    it('should call the service method and set entities', () => {
       expect(productService.findAll).toHaveBeenCalled();
-    });
-  });
-
-  describe('findById', () => {
-    it('should return a product when findById is called', () => {
-      const mockProduct: ProductInfo = {
-        id: 1,
-        name: 'Product 1',
-        description: 'Description 1',
-        costPrice: 8.99,
-        salePrice: 10.99,
-        category: { id: 1, name: 'Category 1' } as CategoryInfo,
-      };
-
-      productService.findById.and.returnValue(of(mockProduct));
-
-      productService.findById(1).subscribe((product) => {
-        expect(product).toEqual(mockProduct);
-        expect(product.id).toBe(1);
-      });
-
-      expect(productService.findById).toHaveBeenCalledWith(1);
+      expect(store.loading()).toBeFalse();
     });
   });
 
   describe('create', () => {
-    it('should create a product', () => {
-      const productToCreate: ProductData = {
+    it('should call the service method and show success message', () => {
+      const productData: ProductData = {
         name: 'New Product',
-        description: 'Description',
-        costPrice: 12.99,
-        salePrice: 15.99,
-        categoryId: 1,
+        description: 'New Description',
+        costPrice: 15,
+        salePrice: 25,
+        categoryId: mockCategory.id,
       };
 
-      const createdProduct: ProductInfo = {
-        id: 3,
-        name: 'New Product',
-        description: 'Description',
-        costPrice: 12.99,
-        salePrice: 15.99,
-        category: { id: 1, name: 'Category 1' } as CategoryInfo,
-      };
+      store.create(productData);
 
-      productService.create.and.returnValue(of(createdProduct));
-
-      productService.create(productToCreate).subscribe((product) => {
-        expect(product).toEqual(createdProduct);
-        expect(product.id).toBe(3);
+      expect(productService.create).toHaveBeenCalledWith(productData);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Producto Creado',
       });
+    });
 
-      expect(productService.create).toHaveBeenCalledWith(productToCreate);
+    it('should handle error when creating product fails', () => {
+      productService.create.calls.reset();
+      productService.create.and.returnValue(
+        throwError(() => new Error('Failed to create product')),
+      );
+
+      const productData: ProductData = {
+        name: 'New Product',
+        description: 'New Description',
+        costPrice: 15,
+        salePrice: 25,
+        categoryId: mockCategory.id,
+      };
+
+      store.create(productData);
+
+      expect(productService.create).toHaveBeenCalledWith(productData);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al crear producto',
+      });
     });
   });
 
   describe('update', () => {
-    it('should update a product', () => {
-      const productToUpdate: Partial<ProductData> = {
+    it('should call the service method and show success message', () => {
+      const productData: Partial<ProductData> = {
         name: 'Updated Product',
         description: 'Updated Description',
-        costPrice: 20.99,
-        salePrice: 25.99,
-        categoryId: 2,
+        costPrice: 12,
+        salePrice: 18,
       };
 
-      const updatedProduct: ProductInfo = {
-        id: 1,
-        name: 'Updated Product',
-        description: 'Updated Description',
-        costPrice: 20.99,
-        salePrice: 25.99,
-        category: { id: 2, name: 'Category 2' } as CategoryInfo,
-      };
+      store.update({ id: 1, productData });
 
-      productService.update.and.returnValue(of(updatedProduct));
-
-      productService.update(1, productToUpdate).subscribe((product) => {
-        expect(product).toEqual(updatedProduct);
-        expect(product.name).toBe('Updated Product');
+      expect(productService.update).toHaveBeenCalledWith(1, productData);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Producto Actualizado',
       });
+    });
 
-      expect(productService.update).toHaveBeenCalledWith(1, productToUpdate);
+    it('should handle error when updating product fails', () => {
+      productService.update.calls.reset();
+      productService.update.and.returnValue(
+        throwError(() => new Error('Failed to update product')),
+      );
+
+      const productData: Partial<ProductData> = {
+        name: 'Updated Product',
+        description: 'Updated Description',
+      };
+
+      store.update({ id: 1, productData });
+
+      expect(productService.update).toHaveBeenCalledWith(1, productData);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al actualizar producto',
+      });
     });
   });
 
   describe('delete', () => {
-    it('should delete a product', () => {
-      productService.delete.and.returnValue(of(undefined));
-
-      productService.delete(1).subscribe((response) => {
-        expect(response).toBeUndefined();
-      });
+    it('should call the service method and show success message', () => {
+      store.delete(1);
 
       expect(productService.delete).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Producto Eliminado',
+      });
+    });
+
+    it('should handle error when deleting product', () => {
+      productService.delete.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Server error' },
+        status: 500,
+        statusText: 'Server Error',
+      });
+
+      productService.delete.and.returnValue(throwError(() => errorResponse));
+
+      store.delete(1);
+
+      expect(productService.delete).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al eliminar producto',
+      });
     });
   });
 
   describe('deleteAllById', () => {
-    it('should delete multiple products', () => {
-      const ids = [1, 2];
-      productService.deleteAllById.and.returnValue(of(undefined));
+    it('should call the service method and show success message', () => {
+      store.deleteAllById([1, 2]);
 
-      productService.deleteAllById(ids).subscribe((response) => {
-        expect(response).toBeUndefined();
+      expect(productService.deleteAllById).toHaveBeenCalledWith([1, 2]);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Productos eliminados',
+      });
+    });
+
+    it('should handle error when deleting multiple products', () => {
+      productService.deleteAllById.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Server error' },
+        status: 500,
+        statusText: 'Server Error',
       });
 
-      expect(productService.deleteAllById).toHaveBeenCalledWith(ids);
+      productService.deleteAllById.and.returnValue(
+        throwError(() => errorResponse),
+      );
+
+      store.deleteAllById([1, 2]);
+
+      expect(productService.deleteAllById).toHaveBeenCalledWith([1, 2]);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al eliminar productos',
+      });
+    });
+  });
+
+  describe('dialog operations', () => {
+    it('should open product dialog without product', () => {
+      store.openProductDialog();
+      expect(store.dialogVisible()).toBeTrue();
+      expect(store.selectedProduct()).toBeFalsy();
+    });
+
+    it('should open product dialog with product', () => {
+      const product = {
+        id: 1,
+        name: 'Test Product',
+        description: 'Test Description',
+        costPrice: 10,
+        salePrice: 15,
+        category: mockCategory,
+      };
+
+      store.openProductDialog(product);
+      expect(store.dialogVisible()).toBeTrue();
+      expect(store.selectedProduct()).toEqual(product);
+    });
+
+    it('should close product dialog', () => {
+      store.openProductDialog();
+      expect(store.dialogVisible()).toBeTrue();
+
+      store.closeProductDialog();
+      expect(store.dialogVisible()).toBeFalse();
+    });
+
+    it('should clear selected product', () => {
+      const product = {
+        id: 1,
+        name: 'Test Product',
+        description: 'Test Description',
+        costPrice: 10,
+        salePrice: 15,
+        category: mockCategory,
+      };
+      store.openProductDialog(product);
+      expect(store.selectedProduct()).toEqual(product);
+
+      store.clearSelectedProduct();
+      expect(store.selectedProduct()).toBeNull();
     });
   });
 });
