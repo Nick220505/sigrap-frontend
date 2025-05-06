@@ -23,6 +23,7 @@ interface CategoryStoreInterface {
   openCategoryDialog(category?: CategoryInfo): void;
   closeCategoryDialog(): void;
   clearSelectedCategory(): void;
+  findAll(): void;
 }
 
 describe('CategoryStore', () => {
@@ -86,6 +87,14 @@ describe('CategoryStore', () => {
     it('should call the service method and set entities', () => {
       expect(categoryService.findAll).toHaveBeenCalled();
       expect(store.loading()).toBeFalse();
+    });
+
+    it('should update error state when findAll fails', () => {
+      categoryService.findAll.calls.reset();
+      const testError = new Error('Failed to fetch categories');
+      categoryService.findAll.and.returnValue(throwError(() => testError));
+      store.findAll();
+      expect(store.error()).toBe('Failed to fetch categories');
     });
   });
 

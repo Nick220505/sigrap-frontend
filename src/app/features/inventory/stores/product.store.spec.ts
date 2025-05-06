@@ -24,6 +24,7 @@ interface ProductStoreInterface {
   openProductDialog(product?: ProductInfo): void;
   closeProductDialog(): void;
   clearSelectedProduct(): void;
+  findAll(): void;
 }
 
 describe('ProductStore', () => {
@@ -117,6 +118,14 @@ describe('ProductStore', () => {
     it('should call the service method and set entities', () => {
       expect(productService.findAll).toHaveBeenCalled();
       expect(store.loading()).toBeFalse();
+    });
+
+    it('should update error state when findAll fails', () => {
+      productService.findAll.calls.reset();
+      const testError = new Error('Failed to fetch products');
+      productService.findAll.and.returnValue(throwError(() => testError));
+      store['findAll']();
+      expect(store.error()).toBe('Failed to fetch products');
     });
   });
 
