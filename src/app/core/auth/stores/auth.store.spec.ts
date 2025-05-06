@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -118,11 +118,11 @@ describe('AuthStore', () => {
     });
 
     it('should handle 401 error during login', () => {
-      const errorResponse = {
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Invalid credentials' },
         status: 401,
         statusText: 'Unauthorized',
-        error: { message: 'Invalid credentials' },
-      };
+      });
 
       authService.login.and.returnValue(throwError(() => errorResponse));
 
@@ -138,11 +138,11 @@ describe('AuthStore', () => {
     });
 
     it('should handle generic error during login', () => {
-      const errorResponse = {
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Server error occurred' },
         status: 500,
         statusText: 'Server Error',
-        error: { message: 'Server error occurred' },
-      };
+      });
 
       authService.login.and.returnValue(throwError(() => errorResponse));
 
@@ -161,11 +161,11 @@ describe('AuthStore', () => {
     });
 
     it('should handle error with message "Invalid credentials" during login', () => {
-      const errorResponse = {
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Invalid credentials' },
         status: 500,
         statusText: 'Server Error',
-        error: { message: 'Invalid credentials' },
-      };
+      });
 
       authService.login.and.returnValue(throwError(() => errorResponse));
 
@@ -180,6 +180,32 @@ describe('AuthStore', () => {
         severity: 'error',
         summary: 'Error',
         detail: 'Credenciales inválidas',
+      });
+    });
+
+    it('should use default error message when no specific error is provided', () => {
+      const errorResponse = new HttpErrorResponse({
+        error: {},
+        status: 500,
+        statusText: 'Server Error',
+      });
+
+      authService.login.and.returnValue(throwError(() => errorResponse));
+
+      store.login({
+        email: 'test@example.com',
+        password: 'password123',
+      });
+
+      expect(store.loading()).toBeFalse();
+      expect(store.error()).toBe(
+        'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+      );
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
       });
     });
   });
@@ -232,11 +258,35 @@ describe('AuthStore', () => {
     });
 
     it('should handle duplicate email error during registration', () => {
-      const errorResponse = {
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Email already exists' },
         status: 409,
         statusText: 'Conflict',
+      });
+
+      authService.register.and.returnValue(throwError(() => errorResponse));
+
+      store.register({
+        name: 'Test User',
+        email: 'existing@example.com',
+        password: 'password123',
+      });
+
+      expect(store.loading()).toBeFalse();
+      expect(store.error()).toBe('El correo electrónico ya está registrado');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'El correo electrónico ya está registrado',
+      });
+    });
+
+    it('should handle "Email already exists" message with different status', () => {
+      const errorResponse = new HttpErrorResponse({
         error: { message: 'Email already exists' },
-      };
+        status: 500,
+        statusText: 'Server Error',
+      });
 
       authService.register.and.returnValue(throwError(() => errorResponse));
 
@@ -256,11 +306,11 @@ describe('AuthStore', () => {
     });
 
     it('should handle generic error during registration', () => {
-      const errorResponse = {
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Server error occurred' },
         status: 500,
         statusText: 'Server Error',
-        error: { message: 'Server error occurred' },
-      };
+      });
 
       authService.register.and.returnValue(throwError(() => errorResponse));
 
@@ -276,6 +326,33 @@ describe('AuthStore', () => {
         severity: 'error',
         summary: 'Error',
         detail: 'Server error occurred',
+      });
+    });
+
+    it('should use default error message when no specific error is provided during registration', () => {
+      const errorResponse = new HttpErrorResponse({
+        error: {},
+        status: 500,
+        statusText: 'Server Error',
+      });
+
+      authService.register.and.returnValue(throwError(() => errorResponse));
+
+      store.register({
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password123',
+      });
+
+      expect(store.loading()).toBeFalse();
+      expect(store.error()).toBe(
+        'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+      );
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
       });
     });
   });
