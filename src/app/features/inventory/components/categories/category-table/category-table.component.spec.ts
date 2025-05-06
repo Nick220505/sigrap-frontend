@@ -35,7 +35,6 @@ describe('CategoryTableComponent', () => {
     { id: 3, name: 'Category 3', description: 'Description 3' },
   ];
 
-  // Expected columns based on the component template
   const expectedColumns = [
     { field: 'name', header: 'Nombre' },
     { field: 'description', header: 'Descripción' },
@@ -100,14 +99,12 @@ describe('CategoryTableComponent', () => {
       const firstRowCells = fixture.debugElement.queryAll(
         By.css('tbody tr:first-child td'),
       );
-      // Skip the first cell (checkbox) and the last cell (actions)
       expect(firstRowCells[1].nativeElement.textContent).toBe('Category 1');
       expect(firstRowCells[2].nativeElement.textContent).toBe('Description 1');
     });
 
     it('should set up columns correctly', () => {
       const headerCells = fixture.debugElement.queryAll(By.css('th'));
-      // +2 for checkbox column and actions column
       expect(headerCells.length).toBe(expectedColumns.length + 2);
     });
 
@@ -183,15 +180,12 @@ describe('CategoryTableComponent', () => {
         name: 'Non-existent',
         description: 'Not in entities',
       };
-      // Manually update the selected categories signal
       component.selectedCategories.set([selectedCategory]);
 
-      // Force update of the entities to trigger the linked signal computation
       (categoryStore.entities as WritableSignal<CategoryInfo[]>).set([
         ...mockCategories,
       ]);
 
-      // Since the category doesn't exist in entities, it should be filtered out
       expect(component.selectedCategories().length).toBe(0);
     });
 
@@ -199,7 +193,6 @@ describe('CategoryTableComponent', () => {
       const selectedCategory = mockCategories[0];
       component.selectedCategories.set([selectedCategory]);
 
-      // Update entities but keep the selected category
       (categoryStore.entities as WritableSignal<CategoryInfo[]>).set([
         selectedCategory,
         { id: 4, name: 'New Category', description: 'New Description' },
