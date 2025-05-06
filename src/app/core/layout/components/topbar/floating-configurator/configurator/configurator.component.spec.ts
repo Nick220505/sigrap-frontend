@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-
 import { LayoutService } from '@core/layout/services/layout.service';
 import { ConfiguratorComponent } from './configurator.component';
 
@@ -14,15 +13,13 @@ interface ColorType {
   palette: PaletteType;
 }
 
-const mockUpdatePreset = jasmine.createSpy('updatePreset');
-const mockUpdateSurfacePalette = jasmine.createSpy('updateSurfacePalette');
-
 describe('ConfiguratorComponent', () => {
   let component: ConfiguratorComponent;
   let fixture: ComponentFixture<ConfiguratorComponent>;
   let layoutService: jasmine.SpyObj<LayoutService>;
   let layoutConfigUpdateSpy: jasmine.Spy;
   let routerSpy: jasmine.SpyObj<Router>;
+  let applyThemeSpy: jasmine.Spy;
 
   beforeEach(async () => {
     const layoutServiceSpy = jasmine.createSpyObj('LayoutService', [], {
@@ -96,13 +93,7 @@ describe('ConfiguratorComponent', () => {
       },
     });
 
-    component.applyTheme = (type: string, color: ColorType) => {
-      if (type === 'primary') {
-        mockUpdatePreset(component.getPresetExt());
-      } else if (type === 'surface') {
-        mockUpdateSurfacePalette(color.palette);
-      }
-    };
+    applyThemeSpy = spyOn(component, 'applyTheme').and.callThrough();
 
     fixture.detectChanges();
   });
@@ -160,53 +151,8 @@ describe('ConfiguratorComponent', () => {
     });
   });
 
-  describe('applyTheme method', () => {
-    it('should call updatePreset when type is primary', () => {
-      const colorMock: ColorType = {
-        name: 'blue',
-        palette: { 500: '#3b82f6' },
-      };
-
-      mockUpdatePreset.calls.reset();
-
-      component.applyTheme('primary', colorMock);
-
-      expect(mockUpdatePreset).toHaveBeenCalledWith(component.getPresetExt());
-    });
-
-    it('should call updateSurfacePalette when type is surface', () => {
-      const colorMock: ColorType = {
-        name: 'slate',
-        palette: { 500: '#64748b' },
-      };
-
-      mockUpdateSurfacePalette.calls.reset();
-
-      component.applyTheme('surface', colorMock);
-
-      expect(mockUpdateSurfacePalette).toHaveBeenCalledWith(colorMock.palette);
-    });
-
-    it('should not call any update function for other types', () => {
-      const colorMock: ColorType = {
-        name: 'blue',
-        palette: { 500: '#3b82f6' },
-      };
-
-      mockUpdatePreset.calls.reset();
-      mockUpdateSurfacePalette.calls.reset();
-
-      component.applyTheme('unknown', colorMock);
-
-      expect(mockUpdatePreset).not.toHaveBeenCalled();
-      expect(mockUpdateSurfacePalette).not.toHaveBeenCalled();
-    });
-  });
-
   describe('updateColors method', () => {
-    it('should update layout config with primary color', () => {
-      mockUpdatePreset.calls.reset();
-
+    it('should update layout config with primary color and call applyTheme', () => {
       const event = new MouseEvent('click');
       const stopPropagationSpy = spyOn(event, 'stopPropagation');
       const color: ColorType = {
@@ -214,16 +160,16 @@ describe('ConfiguratorComponent', () => {
         palette: { 500: '#10b981' },
       };
 
+      applyThemeSpy.calls.reset();
+
       component.updateColors(event, 'primary', color);
 
       expect(layoutConfigUpdateSpy).toHaveBeenCalled();
       expect(stopPropagationSpy).toHaveBeenCalled();
-      expect(mockUpdatePreset).toHaveBeenCalled();
+      expect(applyThemeSpy).toHaveBeenCalledWith('primary', color);
     });
 
-    it('should update layout config with surface color', () => {
-      mockUpdateSurfacePalette.calls.reset();
-
+    it('should update layout config with surface color and call applyTheme', () => {
       const event = new MouseEvent('click');
       const stopPropagationSpy = spyOn(event, 'stopPropagation');
       const color: ColorType = {
@@ -231,11 +177,13 @@ describe('ConfiguratorComponent', () => {
         palette: { 500: '#71717a' },
       };
 
+      applyThemeSpy.calls.reset();
+
       component.updateColors(event, 'surface', color);
 
       expect(layoutConfigUpdateSpy).toHaveBeenCalled();
       expect(stopPropagationSpy).toHaveBeenCalled();
-      expect(mockUpdateSurfacePalette).toHaveBeenCalledWith(color.palette);
+      expect(applyThemeSpy).toHaveBeenCalledWith('surface', color);
     });
 
     it('should call stopPropagation when updating colors', () => {
@@ -251,9 +199,6 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should handle any color type and call applyTheme', () => {
-      mockUpdatePreset.calls.reset();
-      mockUpdateSurfacePalette.calls.reset();
-
       const event = new MouseEvent('click');
       spyOn(event, 'stopPropagation');
       const color: ColorType = {
@@ -261,12 +206,11 @@ describe('ConfiguratorComponent', () => {
         palette: { 500: '#3b82f6' },
       };
 
-      layoutConfigUpdateSpy.calls.reset();
+      applyThemeSpy.calls.reset();
 
       component.updateColors(event, 'custom', color);
 
-      expect(mockUpdatePreset).not.toHaveBeenCalled();
-      expect(mockUpdateSurfacePalette).not.toHaveBeenCalled();
+      expect(applyThemeSpy).toHaveBeenCalledWith('custom', color);
     });
   });
 
