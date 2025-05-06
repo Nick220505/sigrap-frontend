@@ -1,13 +1,15 @@
 import { Injectable, OnDestroy, computed, effect, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
+export type ThemeMode = 'auto' | 'dark' | 'light';
+
 export interface LayoutConfig {
   preset?: string;
   primary?: string;
   surface?: string | null;
   darkTheme?: boolean;
   menuMode?: string;
-  themeMode?: 'auto' | 'dark' | 'light';
+  themeMode?: ThemeMode;
 }
 
 interface LayoutState {
@@ -136,7 +138,7 @@ export class LayoutService implements OnDestroy {
         if (parsedConfig.darkTheme) {
           document.documentElement.classList.add('app-dark');
           this._config.darkTheme = true;
-          this._config.themeMode = parsedConfig.themeMode;
+          this._config.themeMode = parsedConfig.themeMode as ThemeMode;
           this.layoutConfig.set(this._config);
         } else if (parsedConfig.themeMode === 'auto') {
           const currentHour = new Date().getHours();
@@ -214,7 +216,7 @@ export class LayoutService implements OnDestroy {
     }
   }
 
-  setThemeMode(mode: 'auto' | 'dark' | 'light'): void {
+  setThemeMode(mode: ThemeMode): void {
     this.layoutConfig.update((state) => {
       const newState = {
         ...state,
