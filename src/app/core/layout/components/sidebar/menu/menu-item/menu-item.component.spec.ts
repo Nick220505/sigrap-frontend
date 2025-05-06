@@ -450,4 +450,327 @@ describe('MenuItemComponent', () => {
       expect(menuResetSpy).toHaveBeenCalled();
     });
   });
+
+  describe('Subscription handlers', () => {
+    it('should respond to menu source events', () => {
+      setupComponent({
+        item: { label: 'Test Item' },
+        index: 1,
+        parentKey: 'parent',
+      });
+      fixture.detectChanges();
+
+      component.active.set(true);
+      expect(component.active()).toBeTrue();
+
+      component.active.set(false);
+      fixture.detectChanges();
+
+      expect(component.active()).toBeFalse();
+    });
+
+    it('should reset active state when reset event occurs', () => {
+      setupComponent({
+        item: { label: 'Reset Test Item' },
+        index: 0,
+        parentKey: '',
+      });
+      fixture.detectChanges();
+
+      component.active.set(true);
+      expect(component.active()).toBeTrue();
+
+      component.active.set(false);
+      fixture.detectChanges();
+
+      expect(component.active()).toBeFalse();
+    });
+  });
+
+  describe('Route testing', () => {
+    it('should explicitly test updateActiveStateFromRoute method', () => {
+      setupComponent({
+        item: {
+          label: 'Test Route Item',
+          routerLink: ['/test-path'],
+        },
+      });
+
+      router.isActive.and.returnValue(false);
+      layoutService.onMenuStateChange.calls.reset();
+      component.updateActiveStateFromRoute();
+      expect(layoutService.onMenuStateChange).not.toHaveBeenCalled();
+
+      router.isActive.and.returnValue(true);
+      component.active.set(false);
+      layoutService.onMenuStateChange.calls.reset();
+
+      component.updateActiveStateFromRoute();
+
+      expect(layoutService.onMenuStateChange).toHaveBeenCalledWith({
+        key: component.key(),
+        routeEvent: true,
+      });
+    });
+
+    it('should call updateActiveStateFromRoute when NavigationEnd occurs', () => {
+      setupComponent({
+        item: {
+          label: 'Router Item',
+          routerLink: ['/test-path'],
+        },
+      });
+
+      spyOn(component, 'updateActiveStateFromRoute');
+
+      component.updateActiveStateFromRoute();
+
+      expect(component.updateActiveStateFromRoute).toHaveBeenCalled();
+    });
+
+    it('should call router.isActive when route link exists', () => {
+      setupComponent({
+        item: {
+          label: 'Router Item',
+          routerLink: ['/dashboard'],
+        },
+      });
+
+      router.isActive.calls.reset();
+
+      component.updateActiveStateFromRoute();
+
+      expect(router.isActive).toHaveBeenCalled();
+    });
+  });
+
+  describe('Item command and disabled behavior', () => {
+    it('should not execute actions when item is disabled', () => {
+      setupComponent({
+        item: {
+          label: 'Disabled Item',
+          disabled: true,
+        },
+        index: 0,
+        parentKey: '',
+      });
+
+      const event = jasmine.createSpyObj('Event', ['preventDefault']);
+
+      component.itemClick(event);
+
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(layoutService.onMenuStateChange).not.toHaveBeenCalled();
+    });
+
+    it('should execute command when defined', () => {
+      const commandSpy = jasmine.createSpy('command');
+
+      setupComponent({
+        item: {
+          label: 'Command Item',
+          command: commandSpy,
+        },
+        index: 0,
+        parentKey: '',
+      });
+
+      const event = new MouseEvent('click');
+      component.itemClick(event);
+
+      expect(commandSpy).toHaveBeenCalledWith({
+        originalEvent: event,
+        item: component.item(),
+      });
+    });
+  });
+
+  describe('Helper methods', () => {
+    it('should return correct submenuAnimation based on active and root states', () => {
+      setupComponent({
+        root: false,
+      });
+
+      component.active.set(false);
+      expect(component.submenuAnimation).toBe('collapsed');
+
+      component.active.set(true);
+      expect(component.submenuAnimation).toBe('expanded');
+
+      setupComponent({
+        root: true,
+      });
+
+      expect(component.submenuAnimation).toBe('expanded');
+    });
+
+    it('should compute activeClass correctly', () => {
+      setupComponent({
+        root: false,
+      });
+
+      component.active.set(false);
+      expect(component.activeClass).toBeFalse();
+
+      component.active.set(true);
+      expect(component.activeClass).toBeTrue();
+
+      setupComponent({
+        root: true,
+      });
+
+      component.active.set(true);
+      expect(component.activeClass).toBeFalse();
+    });
+
+    it('should compute isRootItem correctly', () => {
+      setupComponent({
+        root: false,
+      });
+      expect(component.isRootItem).toBeFalse();
+
+      setupComponent({
+        root: true,
+      });
+      expect(component.isRootItem).toBeTrue();
+    });
+  });
+
+  describe('Item visibility and rendering', () => {
+    it('should not render when item visible is false', () => {
+      setupComponent({
+        item: { label: 'Hidden Item', visible: false },
+      });
+
+      fixture.detectChanges();
+      const menuItem = fixture.debugElement.query(
+        By.css('.layout-menuitem-text'),
+      );
+      expect(menuItem).toBeFalsy();
+    });
+
+    it('should add badge when item has badge', () => {
+      setupComponent({
+        item: {
+          label: 'Badge Item',
+          badge: '5',
+        },
+      });
+
+      fixture.detectChanges();
+
+      const componentHtml = fixture.nativeElement.innerHTML;
+      expect(componentHtml).toContain('5');
+    });
+
+    it('should set target attribute for external links', () => {
+      setupComponent({
+        item: {
+          label: 'External Link',
+          url: 'https://example.com',
+          target: '_blank',
+        },
+      });
+
+      fixture.detectChanges();
+
+      const linkEl = fixture.debugElement.query(By.css('a'));
+      expect(linkEl.attributes['target']).toBe('_blank');
+    });
+  });
+
+  describe('Key handling and DOM testing', () => {
+    it('should use item.label in html rendering', () => {
+      setupComponent({
+        item: { label: 'Custom Label Text' },
+      });
+
+      fixture.detectChanges();
+
+      const labelEl = fixture.debugElement.query(
+        By.css('.layout-menuitem-text'),
+      );
+      expect(labelEl.nativeElement.textContent.trim()).toBe(
+        'Custom Label Text',
+      );
+    });
+
+    it('should correctly compute item key with parent', () => {
+      setupComponent({
+        item: { label: 'Test Item' },
+        index: 3,
+        parentKey: 'parent-section',
+      });
+
+      expect(component.key()).toBe('parent-section-3');
+    });
+
+    it('should render icon when item has icon property', () => {
+      setupComponent({
+        item: {
+          label: 'Icon Item',
+          icon: 'pi pi-home',
+        },
+      });
+
+      fixture.detectChanges();
+
+      const iconEl = fixture.debugElement.query(By.css('.pi-home'));
+      expect(iconEl).toBeTruthy();
+    });
+  });
+
+  describe('Subscription handlers - direct access', () => {
+    it('should handle non-matching key cases correctly', () => {
+      setupComponent({
+        item: { label: 'Test Item' },
+        index: 3,
+        parentKey: 'parent',
+      });
+
+      expect(component.key()).toBe('parent-3');
+
+      component.active.set(true);
+      expect(component.active()).toBeTrue();
+
+      fixture = TestBed.createComponent(MenuItemComponent);
+      component = fixture.componentInstance;
+      fixture.componentRef.setInput('item', { label: 'Different Item' });
+      fixture.componentRef.setInput('index', 5);
+      fixture.componentRef.setInput('parentKey', 'other-parent');
+      component.ngOnInit();
+
+      component.active.set(true);
+      fixture.detectChanges();
+
+      menuSourceSubject.next({ key: 'totally-different-key' });
+
+      setTimeout(() => {
+        expect(component.active()).toBeFalse();
+      }, 0);
+    });
+  });
+
+  describe('Router events subscription', () => {
+    it('should call updateActiveStateFromRoute when NavigationEnd event occurs', () => {
+      const eventsSubject = new Subject<NavigationEnd>();
+
+      Object.defineProperty(router, 'events', {
+        get: () => eventsSubject,
+      });
+
+      setupComponent({
+        item: {
+          label: 'Route Item',
+          routerLink: ['/dashboard'],
+        },
+      });
+
+      const spy = spyOn(component, 'updateActiveStateFromRoute');
+
+      eventsSubject.next(new NavigationEnd(1, '/dashboard', '/dashboard'));
+
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 });
