@@ -159,6 +159,29 @@ describe('AuthStore', () => {
         detail: 'Server error occurred',
       });
     });
+
+    it('should handle error with message "Invalid credentials" during login', () => {
+      const errorResponse = {
+        status: 500,
+        statusText: 'Server Error',
+        error: { message: 'Invalid credentials' },
+      };
+
+      authService.login.and.returnValue(throwError(() => errorResponse));
+
+      store.login({
+        email: 'test@example.com',
+        password: 'password123',
+      });
+
+      expect(store.loading()).toBeFalse();
+      expect(store.error()).toBe('Credenciales inválidas');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Credenciales inválidas',
+      });
+    });
   });
 
   describe('register', () => {
