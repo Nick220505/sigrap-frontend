@@ -1,11 +1,11 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CategoryData, CategoryInfo } from '../models/category.model';
 import { CategoryService } from '../services/category.service';
 import { CategoryStore } from './category.store';
@@ -83,13 +83,14 @@ describe('CategoryStore', () => {
   });
 
   describe('findAll', () => {
-    it('should call the service method', () => {
+    it('should call the service method and set entities', () => {
       expect(categoryService.findAll).toHaveBeenCalled();
+      expect(store.loading()).toBeFalse();
     });
   });
 
   describe('create', () => {
-    it('should call the service method with category data', () => {
+    it('should call the service method and show success message', () => {
       const categoryData: CategoryData = {
         name: 'New Category',
         description: 'New Description',
@@ -98,13 +99,38 @@ describe('CategoryStore', () => {
       store.create(categoryData);
 
       expect(categoryService.create).toHaveBeenCalledWith(categoryData);
-      expect(messageService.add).toHaveBeenCalled();
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Categoría Creada',
+      });
+    });
+
+    it('should handle error when creating category fails', () => {
+      categoryService.create.calls.reset();
+      categoryService.create.and.returnValue(
+        throwError(() => new Error('Failed to create category')),
+      );
+
+      const categoryData: CategoryData = {
+        name: 'New Category',
+        description: 'New Description',
+      };
+
+      store.create(categoryData);
+
+      expect(categoryService.create).toHaveBeenCalledWith(categoryData);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al crear categoría',
+      });
     });
   });
 
   describe('update', () => {
-    it('should call the service method with id and category data', () => {
-      const categoryData: CategoryData = {
+    it('should call the service method and show success message', () => {
+      const categoryData: Partial<CategoryData> = {
         name: 'Updated Category',
         description: 'Updated Description',
       };
@@ -112,25 +138,206 @@ describe('CategoryStore', () => {
       store.update({ id: 1, categoryData });
 
       expect(categoryService.update).toHaveBeenCalledWith(1, categoryData);
-      expect(messageService.add).toHaveBeenCalled();
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Categoría Actualizada',
+      });
+    });
+
+    it('should handle error when updating category fails', () => {
+      categoryService.update.calls.reset();
+      categoryService.update.and.returnValue(
+        throwError(() => new Error('Failed to update category')),
+      );
+
+      const categoryData: Partial<CategoryData> = {
+        name: 'Updated Category',
+        description: 'Updated Description',
+      };
+
+      store.update({ id: 1, categoryData });
+
+      expect(categoryService.update).toHaveBeenCalledWith(1, categoryData);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al actualizar categoría',
+      });
     });
   });
 
   describe('delete', () => {
-    it('should call the service method with id', () => {
+    it('should call the service method and show success message', () => {
       store.delete(1);
 
       expect(categoryService.delete).toHaveBeenCalledWith(1);
-      expect(messageService.add).toHaveBeenCalled();
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Categoría Eliminada',
+      });
+    });
+
+    it('should handle foreign key constraint error when deleting category', () => {
+      categoryService.delete.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: {
+          status: 409,
+          message:
+            'update or delete on table "categories" violates foreign key constraint "fk_product_category" on table "products" Key (id)=(1) is still referenced from table "products"',
+        },
+        status: 409,
+        statusText: 'Conflict',
+      });
+
+      categoryService.delete.and.returnValue(throwError(() => errorResponse));
+
+      store.delete(1);
+
+      expect(categoryService.delete).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'No se puede eliminar la categoría "Category 1" porque está siendo utilizada por un producto.',
+      });
+    });
+
+    it('should handle generic error when deleting category', () => {
+      categoryService.delete.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Server error' },
+        status: 500,
+        statusText: 'Server Error',
+      });
+
+      categoryService.delete.and.returnValue(throwError(() => errorResponse));
+
+      store.delete(1);
+
+      expect(categoryService.delete).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al eliminar categoría',
+      });
     });
   });
 
   describe('deleteAllById', () => {
-    it('should call the service method with ids array', () => {
+    it('should call the service method and show success message', () => {
       store.deleteAllById([1, 2]);
 
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
-      expect(messageService.add).toHaveBeenCalled();
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Categorías eliminadas',
+      });
+    });
+
+    it('should handle foreign key constraint error when deleting multiple categories', () => {
+      categoryService.deleteAllById.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: {
+          status: 409,
+          message:
+            'update or delete on table "categories" violates foreign key constraint "fk_product_category" on table "products" Key (id)=(1) is still referenced from table "products"',
+        },
+        status: 409,
+        statusText: 'Conflict',
+      });
+
+      categoryService.deleteAllById.and.returnValue(
+        throwError(() => errorResponse),
+      );
+
+      store.deleteAllById([1, 2]);
+
+      expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'No se puede eliminar la categoría "Category 1" porque está siendo utilizada por un producto.',
+      });
+    });
+
+    it('should handle foreign key constraint error with unknown category ID', () => {
+      categoryService.deleteAllById.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: {
+          status: 409,
+          message:
+            'update or delete on table "categories" violates foreign key constraint "fk_product_category" on table "products" Key (id)=(3) is still referenced from table "products"',
+        },
+        status: 409,
+        statusText: 'Conflict',
+      });
+
+      categoryService.deleteAllById.and.returnValue(
+        throwError(() => errorResponse),
+      );
+
+      store.deleteAllById([1, 2, 3]);
+
+      expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2, 3]);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'No se puede eliminar la categoría "ID 3" porque está siendo utilizada por un producto.',
+      });
+    });
+
+    it('should handle foreign key constraint error with missing ID pattern', () => {
+      categoryService.deleteAllById.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: {
+          status: 409,
+          message:
+            'update or delete on table "categories" violates foreign key constraint',
+        },
+        status: 409,
+        statusText: 'Conflict',
+      });
+
+      categoryService.deleteAllById.and.returnValue(
+        throwError(() => errorResponse),
+      );
+
+      store.deleteAllById([1, 2]);
+
+      expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'No se puede eliminar la categoría "desconocida" porque está siendo utilizada por un producto.',
+      });
+    });
+
+    it('should handle generic error when deleting multiple categories', () => {
+      categoryService.deleteAllById.calls.reset();
+      const errorResponse = new HttpErrorResponse({
+        error: { message: 'Server error' },
+        status: 500,
+        statusText: 'Server Error',
+      });
+
+      categoryService.deleteAllById.and.returnValue(
+        throwError(() => errorResponse),
+      );
+
+      store.deleteAllById([1, 2]);
+
+      expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al eliminar categorías',
+      });
     });
   });
 
@@ -171,7 +378,7 @@ describe('CategoryStore', () => {
       expect(store.selectedCategory()).toEqual(category);
 
       store.clearSelectedCategory();
-      expect(store.selectedCategory()).toBeFalsy();
+      expect(store.selectedCategory()).toBeNull();
     });
   });
 });

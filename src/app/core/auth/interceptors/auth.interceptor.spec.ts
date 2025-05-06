@@ -1,5 +1,6 @@
 import {
   HttpClient,
+  HttpErrorResponse,
   provideHttpClient,
   withInterceptors,
 } from '@angular/common/http';
@@ -63,6 +64,36 @@ describe('authInterceptor', () => {
     expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
   });
 
+  it('should handle successful responses correctly with token', () => {
+    authStore.getToken.and.returnValue('test-token');
+    const mockResponse = { data: 'test data' };
+
+    httpClient.get('/api/test').subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
+    httpRequest.flush(mockResponse);
+    expect(authStore.logout).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should handle successful responses correctly without token', () => {
+    authStore.getToken.and.returnValue(null);
+    const mockResponse = { data: 'test data' };
+
+    httpClient.get('/api/test').subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
+    httpRequest.flush(mockResponse);
+    expect(authStore.logout).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
   it('should redirect to login and logout on 401 Unauthorized response', () => {
     authStore.getToken.and.returnValue('test-token');
 
@@ -116,5 +147,51 @@ describe('authInterceptor', () => {
       status: 500,
       statusText: 'Server Error',
     });
+  });
+
+  it('should pass through network errors without logout', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.get('/api/test').subscribe({
+      next: () => fail('should have failed with network error'),
+      error: (error) => {
+        expect(error instanceof HttpErrorResponse).toBeTrue();
+        expect(error.status).toBe(0);
+        expect(authStore.logout).not.toHaveBeenCalled();
+      },
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    const mockError = new ProgressEvent('error');
+    httpRequest.error(mockError);
+  });
+
+  it('should work with different HTTP methods (POST)', () => {
+    authStore.getToken.and.returnValue('test-token');
+    const postData = { name: 'Test' };
+    const mockResponse = { id: 1, name: 'Test' };
+
+    httpClient.post('/api/test', postData).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    expect(httpRequest.request.method).toBe('POST');
+    expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
+    expect(httpRequest.request.body).toEqual(postData);
+    httpRequest.flush(mockResponse);
+  });
+
+  it('should work with empty response bodies', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.delete('/api/test/1').subscribe((response) => {
+      expect(response).toBeNull();
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test/1');
+    expect(httpRequest.request.method).toBe('DELETE');
+    expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
+    httpRequest.flush(null, { status: 204, statusText: 'No Content' });
   });
 });
