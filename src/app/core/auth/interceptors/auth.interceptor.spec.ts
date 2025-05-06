@@ -1,60 +1,120 @@
 import {
-  HttpEvent,
-  HttpHandlerFn,
-  HttpInterceptorFn,
-  HttpRequest,
+  HttpClient,
+  provideHttpClient,
+  withInterceptors,
 } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-
+import { Router } from '@angular/router';
 import { AuthStore } from '../stores/auth.store';
 import { authInterceptor } from './auth.interceptor';
 
 describe('authInterceptor', () => {
-  let interceptor: HttpInterceptorFn;
-  let mockAuthStore: jasmine.SpyObj<{ getToken: () => string | null }>;
-  let mockRequest: HttpRequest<unknown>;
-  let mockHandler: jasmine.Spy<HttpHandlerFn>;
+  let httpClient: HttpClient;
+  let httpMock: HttpTestingController;
+  let authStore: jasmine.SpyObj<{
+    getToken: () => string | null;
+    logout: () => void;
+  }>;
+  let router: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    mockAuthStore = jasmine.createSpyObj('AuthStore', ['getToken']);
-    mockRequest = new HttpRequest('GET', '/api/test');
-    mockHandler = jasmine
-      .createSpy()
-      .and.returnValue(of({} as HttpEvent<unknown>));
+    authStore = jasmine.createSpyObj('AuthStore', ['getToken', 'logout']);
+    router = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: AuthStore, useValue: mockAuthStore }],
+      providers: [
+        { provide: AuthStore, useValue: authStore },
+        { provide: Router, useValue: router },
+        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClientTesting(),
+      ],
     });
 
-    interceptor = (req, next) =>
-      TestBed.runInInjectionContext(() => authInterceptor(req, next));
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should add Authorization header when token is available', () => {
-    const testToken = 'test-token';
-    mockAuthStore.getToken.and.returnValue(testToken);
+  afterEach(() => {
+    httpMock.verify();
+  });
 
-    interceptor(mockRequest, mockHandler);
+  it('should add an Authorization header with token', () => {
+    authStore.getToken.and.returnValue('test-token');
 
-    expect(mockHandler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = mockHandler.calls.mostRecent().args[0];
-    expect(modifiedRequest.headers.has('Authorization')).toBeTrue();
-    expect(modifiedRequest.headers.get('Authorization')).toBe(
-      `Bearer ${testToken}`,
+    httpClient.get('/api/test').subscribe();
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
+    expect(httpRequest.request.headers.get('Authorization')).toBe(
+      'Bearer test-token',
     );
-    expect(mockAuthStore.getToken).toHaveBeenCalled();
   });
 
-  it('should not modify the request when token is not available', () => {
-    mockAuthStore.getToken.and.returnValue(null);
+  it('should not add an Authorization header if no token is available', () => {
+    authStore.getToken.and.returnValue(null);
 
-    interceptor(mockRequest, mockHandler);
+    httpClient.get('/api/test').subscribe();
 
-    expect(mockHandler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = mockHandler.calls.mostRecent().args[0];
-    expect(modifiedRequest.headers.has('Authorization')).toBeFalse();
-    expect(mockAuthStore.getToken).toHaveBeenCalled();
-    expect(modifiedRequest).toBe(mockRequest);
+    const httpRequest = httpMock.expectOne('/api/test');
+    expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
+  });
+
+  it('should redirect to login and logout on 401 Unauthorized response', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.get('/api/test').subscribe({
+      next: () => fail('should have failed with 401 error'),
+      error: (error) => {
+        expect(error.status).toBe(401);
+        expect(authStore.logout).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+      },
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    httpRequest.flush('Unauthorized', {
+      status: 401,
+      statusText: 'Unauthorized',
+    });
+  });
+
+  it('should pass through 403 Forbidden response without logout', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.get('/api/test').subscribe({
+      next: () => fail('should have failed with 403 error'),
+      error: (error) => {
+        expect(error.status).toBe(403);
+        expect(authStore.logout).not.toHaveBeenCalled();
+      },
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    httpRequest.flush('Forbidden', {
+      status: 403,
+      statusText: 'Forbidden',
+    });
+  });
+
+  it('should pass through other error responses without logout', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.get('/api/test').subscribe({
+      next: () => fail('should have failed with 500 error'),
+      error: (error) => {
+        expect(error.status).toBe(500);
+        expect(authStore.logout).not.toHaveBeenCalled();
+      },
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    httpRequest.flush('Server Error', {
+      status: 500,
+      statusText: 'Server Error',
+    });
   });
 });
