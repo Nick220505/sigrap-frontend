@@ -1,4 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -20,8 +21,15 @@ import { ProductTableComponent } from './product-table.component';
 describe('ProductTableComponent', () => {
   let component: ProductTableComponent;
   let fixture: ComponentFixture<ProductTableComponent>;
-  let mockProductStore: any;
-  let mockConfirmationService: jasmine.SpyObj<ConfirmationService>;
+  let productStore: jasmine.SpyObj<{
+    entities: WritableSignal<ProductInfo[]>;
+    loading: WritableSignal<boolean>;
+    error: WritableSignal<string | null>;
+    openProductDialog: jasmine.Spy;
+    delete: jasmine.Spy;
+    findAll: jasmine.Spy;
+  }>;
+  let confirmationService: jasmine.SpyObj<ConfirmationService>;
 
   const mockProducts: ProductInfo[] = [
     {
@@ -46,17 +54,32 @@ describe('ProductTableComponent', () => {
     },
   ];
 
-  beforeEach(async () => {
-    mockProductStore = {
-      entities: jasmine.createSpy('entities').and.returnValue(mockProducts),
-      loading: jasmine.createSpy('loading').and.returnValue(false),
-      error: jasmine.createSpy('error').and.returnValue(null),
-      findAll: jasmine.createSpy('findAll'),
-      delete: jasmine.createSpy('delete').and.returnValue(of(void 0)),
-      openProductDialog: jasmine.createSpy('openProductDialog'),
-    };
+  const expectedColumns = [
+    { field: 'name', header: 'Nombre' },
+    { field: 'description', header: 'Descripción' },
+    { field: 'costPrice', header: 'Precio Costo' },
+    { field: 'salePrice', header: 'Precio Venta' },
+    { field: 'category.name', header: 'Categoría' },
+  ];
 
-    mockConfirmationService = jasmine.createSpyObj('ConfirmationService', [
+  beforeEach(async () => {
+    const entitiesSignal = signal<ProductInfo[]>(mockProducts);
+    const loadingSignal = signal<boolean>(false);
+    const errorSignal = signal<string | null>(null);
+
+    productStore = jasmine.createSpyObj(
+      'ProductStore',
+      ['openProductDialog', 'delete', 'findAll'],
+      {
+        entities: entitiesSignal,
+        loading: loadingSignal,
+        error: errorSignal,
+      },
+    );
+
+    productStore.delete.and.returnValue(of(void 0));
+
+    confirmationService = jasmine.createSpyObj('ConfirmationService', [
       'confirm',
     ]);
 
@@ -76,8 +99,8 @@ describe('ProductTableComponent', () => {
         ProductTableComponent,
       ],
       providers: [
-        { provide: ProductStore, useValue: mockProductStore },
-        { provide: ConfirmationService, useValue: mockConfirmationService },
+        { provide: ProductStore, useValue: productStore },
+        { provide: ConfirmationService, useValue: confirmationService },
       ],
     }).compileComponents();
 
@@ -90,77 +113,272 @@ describe('ProductTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display products from the store', () => {
-    expect(mockProductStore.entities).toHaveBeenCalled();
+  describe('Table initialization', () => {
+    it('should display the products from the store', () => {
+      const tableRows = fixture.debugElement.queryAll(By.css('tbody tr'));
+      expect(tableRows.length).toBe(mockProducts.length);
+    });
 
-    const rows = fixture.debugElement.queryAll(By.css('tbody tr'));
-    expect(rows.length).toBe(mockProducts.length);
+    it('should display the correct product data in each row', () => {
+      const firstRowCells = fixture.debugElement.queryAll(
+        By.css('tbody tr:first-child td'),
+      );
+      expect(firstRowCells[1].nativeElement.textContent.trim()).toBe(
+        'Test Product 1',
+      );
+      expect(firstRowCells[2].nativeElement.textContent.trim()).toBe(
+        'Test Description 1',
+      );
+    });
 
-    const firstRowCells = rows[0].queryAll(By.css('td'));
-    expect(firstRowCells[1].nativeElement.textContent.trim()).toBe(
-      mockProducts[0].name,
-    );
+    it('should set up columns correctly', () => {
+      const headerCells = fixture.debugElement.queryAll(By.css('th'));
+      expect(headerCells.length).toBe(expectedColumns.length + 2);
+    });
+
+    it('should initialize with empty searchValue', () => {
+      expect(component.searchValue()).toBe('');
+    });
+
+    it('should initialize with empty selectedProducts', () => {
+      expect(component.selectedProducts()).toEqual([]);
+    });
   });
 
-  it('should call openProductDialog when edit button is clicked', () => {
-    const editButton = fixture.debugElement.query(
-      By.css('p-button[icon="pi pi-pencil"]'),
-    );
-    editButton.triggerEventHandler('click', null);
+  describe('Search functionality', () => {
+    it('should update searchValue when search input changes', () => {
+      const searchInput = fixture.debugElement.query(
+        By.css('input[type="text"]'),
+      );
+      searchInput.nativeElement.value = 'test search';
+      searchInput.nativeElement.dispatchEvent(new Event('input'));
+      expect(component.searchValue()).toBe('test search');
+    });
 
-    expect(mockProductStore.openProductDialog).toHaveBeenCalledWith(
-      mockProducts[0],
-    );
+    it('should call filterGlobal on the table when search input changes', () => {
+      spyOn(component.dt(), 'filterGlobal');
+      const searchInput = fixture.debugElement.query(
+        By.css('input[type="text"]'),
+      );
+      searchInput.nativeElement.value = 'test search';
+      searchInput.nativeElement.dispatchEvent(new Event('input'));
+      expect(component.dt().filterGlobal).toHaveBeenCalledWith(
+        'test search',
+        'contains',
+      );
+    });
   });
 
-  it('should call deleteProduct when delete button is clicked', () => {
-    spyOn(component, 'deleteProduct');
+  describe('Clear filters functionality', () => {
+    it('should reset searchValue when clearAllFilters is called', () => {
+      component.searchValue.set('test search');
+      expect(component.searchValue()).toBe('test search');
 
-    const deleteButton = fixture.debugElement.query(
-      By.css('p-button[icon="pi pi-trash"]'),
-    );
-    deleteButton.triggerEventHandler('click', null);
+      component.clearAllFilters();
+      expect(component.searchValue()).toBe('');
+    });
 
-    expect(component.deleteProduct).toHaveBeenCalledWith(mockProducts[0]);
+    it('should call clear on the table when clearAllFilters is called', () => {
+      spyOn(component.dt(), 'clear');
+      component.clearAllFilters();
+      expect(component.dt().clear).toHaveBeenCalled();
+    });
+
+    it('should clear filters when clear button is clicked', () => {
+      spyOn(component, 'clearAllFilters');
+      const clearButton = fixture.debugElement.query(
+        By.css('button[icon="pi pi-filter-slash"]'),
+      );
+      clearButton.triggerEventHandler('click', null);
+      expect(component.clearAllFilters).toHaveBeenCalled();
+    });
   });
 
-  it('should show confirm dialog when deleteProduct is called', () => {
-    const product = mockProducts[0];
-    component.deleteProduct(product);
+  describe('Selection functionality', () => {
+    it('should update selectedProducts when selection changes', () => {
+      const selectedProduct = mockProducts[0];
+      component.selectedProducts.set([selectedProduct]);
+      expect(component.selectedProducts().length).toBe(1);
+      expect(component.selectedProducts()[0]).toBe(selectedProduct);
+    });
 
-    expect(mockConfirmationService.confirm).toHaveBeenCalled();
+    it('should filter out selected products that no longer exist in entities', () => {
+      const selectedProduct = {
+        id: 99,
+        name: 'Non-existent Product',
+        description: 'Not in entities',
+        category: { id: 1, name: 'Test Category' },
+        costPrice: 100,
+        salePrice: 150,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      component.selectedProducts.set([selectedProduct]);
 
-    const confirmArgs =
-      mockConfirmationService.confirm.calls.mostRecent().args[0];
-    expect(confirmArgs.header).toBe('Eliminar producto');
-    expect(confirmArgs.message).toContain(product.name);
+      (productStore.entities as WritableSignal<ProductInfo[]>).set([
+        ...mockProducts,
+      ]);
 
-    if (confirmArgs.accept) {
-      confirmArgs.accept();
-      expect(mockProductStore.delete).toHaveBeenCalledWith(product.id);
-    }
+      expect(component.selectedProducts().length).toBe(0);
+    });
+
+    it('should maintain selections that still exist in entities', () => {
+      const selectedProduct = mockProducts[0];
+      component.selectedProducts.set([selectedProduct]);
+
+      (productStore.entities as WritableSignal<ProductInfo[]>).set([
+        selectedProduct,
+        {
+          id: 3,
+          name: 'New Product',
+          description: 'New Description',
+          category: { id: 1, name: 'Test Category' },
+          costPrice: 300,
+          salePrice: 450,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ]);
+
+      expect(component.selectedProducts().length).toBe(1);
+      expect(component.selectedProducts()[0]).toBe(selectedProduct);
+    });
+
+    it('should handle undefined or null in previous selection', () => {
+      component.selectedProducts.set(null as unknown as ProductInfo[]);
+
+      (productStore.entities as WritableSignal<ProductInfo[]>).set([
+        ...mockProducts,
+      ]);
+
+      expect(component.selectedProducts()).toEqual([]);
+    });
   });
 
-  it('should clear filters when clearAllFilters is called', () => {
-    component.dt().clear = jasmine.createSpy('clear');
-    component.searchValue.set('test search');
+  describe('Edit functionality', () => {
+    it('should call openProductDialog when edit button is clicked', () => {
+      const editButton = fixture.debugElement.query(
+        By.css('p-button[icon="pi pi-pencil"]'),
+      );
+      editButton.triggerEventHandler('click', null);
+      expect(productStore.openProductDialog).toHaveBeenCalledWith(
+        mockProducts[0],
+      );
+    });
 
-    component.clearAllFilters();
+    it('should disable edit button when loading is true', () => {
+      (productStore.loading as WritableSignal<boolean>).set(true);
+      fixture.detectChanges();
 
-    expect(component.dt().clear).toHaveBeenCalled();
-    expect(component.searchValue()).toBe('');
+      const editButton = fixture.debugElement.query(
+        By.css('p-button[icon="pi pi-pencil"]'),
+      );
+      expect(editButton.componentInstance.disabled).toBeTrue();
+    });
   });
 
-  it('should handle error state', () => {
-    mockProductStore.error.and.returnValue('Test error message');
+  describe('Delete functionality', () => {
+    it('should call deleteProduct when delete button is clicked', () => {
+      spyOn(component, 'deleteProduct');
+      const deleteButton = fixture.debugElement.query(
+        By.css('p-button[icon="pi pi-trash"]'),
+      );
+      deleteButton.triggerEventHandler('click', null);
+      expect(component.deleteProduct).toHaveBeenCalledWith(mockProducts[0]);
+    });
 
-    fixture.detectChanges();
+    it('should show confirmation dialog when deleteProduct is called', () => {
+      const productToDelete = mockProducts[0];
+      component.deleteProduct(productToDelete);
 
-    expect(mockProductStore.error()).toBe('Test error message');
+      expect(confirmationService.confirm).toHaveBeenCalled();
+      const confirmOptions =
+        confirmationService.confirm.calls.mostRecent().args[0];
+      expect(confirmOptions.header).toBe('Eliminar producto');
+      expect(confirmOptions.message).toContain(productToDelete.name);
+      expect(confirmOptions.icon).toBe('pi pi-exclamation-triangle');
+      expect(confirmOptions.acceptButtonStyleClass).toBe('p-button-danger');
+      expect(confirmOptions.rejectButtonStyleClass).toBe('p-button-secondary');
+    });
 
-    const component2 = fixture.componentInstance;
-    expect(component2.productStore.findAll).not.toHaveBeenCalled();
-    component2.productStore.findAll();
-    expect(component2.productStore.findAll).toHaveBeenCalled();
+    it('should call productStore.delete when confirmation is accepted', () => {
+      const productToDelete = mockProducts[0];
+      component.deleteProduct(productToDelete);
+
+      const confirmOptions =
+        confirmationService.confirm.calls.mostRecent().args[0];
+      confirmOptions.accept!();
+
+      expect(productStore.delete).toHaveBeenCalledWith(productToDelete.id);
+    });
+
+    it('should disable delete button when loading is true', () => {
+      (productStore.loading as WritableSignal<boolean>).set(true);
+      fixture.detectChanges();
+
+      const deleteButton = fixture.debugElement.query(
+        By.css('p-button[icon="pi pi-trash"]'),
+      );
+      expect(deleteButton.componentInstance.disabled).toBeTrue();
+    });
+  });
+
+  describe('Loading state', () => {
+    it('should reflect loading state in the table', () => {
+      expect(
+        fixture.debugElement.query(By.css('p-table')).componentInstance.loading,
+      ).toBeFalse();
+
+      (productStore.loading as WritableSignal<boolean>).set(true);
+      fixture.detectChanges();
+
+      expect(
+        fixture.debugElement.query(By.css('p-table')).componentInstance.loading,
+      ).toBeTrue();
+    });
+  });
+
+  describe('Error state', () => {
+    it('should display error message when there is an error', () => {
+      (productStore.error as WritableSignal<string | null>).set(
+        'Test error message',
+      );
+      (productStore.entities as WritableSignal<ProductInfo[]>).set([]);
+      fixture.detectChanges();
+
+      const errorMessage = fixture.debugElement.query(By.css('p-message'));
+      expect(errorMessage).toBeTruthy();
+      expect(errorMessage.nativeElement.textContent).toContain(
+        'Test error message',
+      );
+    });
+
+    it('should provide a retry button when there is an error', () => {
+      (productStore.error as WritableSignal<string | null>).set(
+        'Test error message',
+      );
+      (productStore.entities as WritableSignal<ProductInfo[]>).set([]);
+      fixture.detectChanges();
+
+      const retryButton = fixture.debugElement.query(
+        By.css('p-message p-button'),
+      );
+      expect(retryButton).toBeTruthy();
+
+      retryButton.triggerEventHandler('onClick', null);
+      expect(productStore.findAll).toHaveBeenCalled();
+    });
+  });
+
+  describe('Empty state', () => {
+    it('should display empty message when there are no products and no error', () => {
+      (productStore.entities as WritableSignal<ProductInfo[]>).set([]);
+      fixture.detectChanges();
+
+      const emptyMessage = fixture.debugElement.query(By.css('tbody tr td'));
+      expect(emptyMessage.nativeElement.textContent).toContain(
+        'No se encontraron productos.',
+      );
+    });
   });
 });
