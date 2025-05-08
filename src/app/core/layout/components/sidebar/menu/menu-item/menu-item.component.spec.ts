@@ -4,7 +4,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationEnd, Router, provideRouter } from '@angular/router';
 import { LayoutService } from '@core/layout/services/layout.service';
 import { MenuItem } from 'primeng/api';
-import { Subject, of } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MenuItemComponent } from './menu-item.component';
 
 describe('MenuItemComponent', () => {
@@ -18,6 +18,7 @@ describe('MenuItemComponent', () => {
     routeEvent?: boolean;
   }>();
   const resetSourceSubject = new Subject<boolean>();
+  const routerEventsSubject = new Subject<NavigationEnd>();
 
   beforeEach(async () => {
     layoutService = jasmine.createSpyObj(
@@ -30,7 +31,7 @@ describe('MenuItemComponent', () => {
     );
 
     router = jasmine.createSpyObj('Router', ['isActive'], {
-      events: of(new NavigationEnd(1, '/', '/')),
+      events: routerEventsSubject.asObservable(),
     });
     router.isActive.and.returnValue(false);
 
@@ -480,7 +481,7 @@ describe('MenuItemComponent', () => {
       component.active.set(true);
       expect(component.active()).toBeTrue();
 
-      component.active.set(false);
+      resetSourceSubject.next(true);
       fixture.detectChanges();
 
       expect(component.active()).toBeFalse();
@@ -771,6 +772,54 @@ describe('MenuItemComponent', () => {
       eventsSubject.next(new NavigationEnd(1, '/dashboard', '/dashboard'));
 
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call updateActiveStateFromRoute when NavigationEnd event occurs with routerLink', () => {
+      setupComponent({
+        item: {
+          label: 'Route Item',
+          routerLink: ['/dashboard'],
+        },
+      });
+
+      spyOn(component, 'updateActiveStateFromRoute');
+
+      routerEventsSubject.next(
+        new NavigationEnd(1, '/dashboard', '/dashboard'),
+      );
+
+      expect(component.updateActiveStateFromRoute).toHaveBeenCalled();
+    });
+
+    it('should not call updateActiveStateFromRoute when NavigationEnd event occurs without routerLink', () => {
+      setupComponent({
+        item: {
+          label: 'Non Route Item',
+        },
+      });
+
+      spyOn(component, 'updateActiveStateFromRoute');
+
+      routerEventsSubject.next(
+        new NavigationEnd(1, '/dashboard', '/dashboard'),
+      );
+
+      expect(component.updateActiveStateFromRoute).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Reset source subscription', () => {
+    it('should set active to false when resetSource$ emits', () => {
+      setupComponent({
+        item: { label: 'Test Reset Item' },
+      });
+
+      component.active.set(true);
+      expect(component.active()).toBeTrue();
+
+      resetSourceSubject.next(true);
+
+      expect(component.active()).toBeFalse();
     });
   });
 });
