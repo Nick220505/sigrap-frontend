@@ -57,42 +57,6 @@ describe('ConfiguratorComponent', () => {
       LayoutService,
     ) as jasmine.SpyObj<LayoutService>;
 
-    spyOn(component, 'getPresetExt').and.returnValue({
-      semantic: {
-        primary: {},
-        colorScheme: {
-          light: {
-            primary: {
-              color: '{primary.500}',
-              contrastColor: '#ffffff',
-              hoverColor: '{primary.600}',
-              activeColor: '{primary.700}',
-            },
-            highlight: {
-              background: '{surface.300}',
-              color: '{text.900}',
-              focusBackground: '{surface.400}',
-              focusColor: '{text.900}',
-            },
-          },
-          dark: {
-            primary: {
-              color: '{primary.400}',
-              contrastColor: '{surface.900}',
-              hoverColor: '{primary.300}',
-              activeColor: '{primary.200}',
-            },
-            highlight: {
-              background: '{surface.700}',
-              color: '{text.100}',
-              focusBackground: '{surface.600}',
-              focusColor: '{text.100}',
-            },
-          },
-        },
-      },
-    });
-
     applyThemeSpy = spyOn(component, 'applyTheme').and.callThrough();
 
     fixture.detectChanges();
@@ -148,6 +112,72 @@ describe('ConfiguratorComponent', () => {
       const component2 = fixture2.componentInstance;
 
       expect(component2.showMenuModeButton()).toBeFalse();
+    });
+  });
+
+  describe('getPresetExt method', () => {
+    it('should return noir preset config when color.name is noir', () => {
+      // We'll test the implementation directly
+      const noirResult = component['getPresetExt'].call({
+        primaryColors: () => [{ name: 'noir', palette: {} }],
+        selectedPrimaryColor: () => 'noir',
+        layoutService: {
+          layoutConfig: () => ({ preset: 'Aura' }),
+        },
+      });
+
+      // Verify noir-specific properties
+      expect(noirResult.semantic.primary?.[50]).toBe('{surface.50}');
+      expect(noirResult.semantic.colorScheme.light.primary.color).toBe(
+        '{primary.950}',
+      );
+      expect(noirResult.semantic.colorScheme.dark.highlight.color).toBe(
+        '{primary.950}',
+      );
+    });
+
+    it('should return Nora preset config when preset is Nora', () => {
+      // We'll test the implementation directly
+      const colorMock = { name: 'blue', palette: { '500': '#3b82f6' } };
+
+      const noraResult = component['getPresetExt'].call({
+        primaryColors: () => [colorMock],
+        selectedPrimaryColor: () => 'blue',
+        layoutService: {
+          layoutConfig: () => ({ preset: 'Nora' }),
+        },
+      });
+
+      // Verify Nora-specific properties
+      expect(noraResult.semantic.primary).toBe(colorMock.palette);
+      expect(noraResult.semantic.colorScheme.light.primary.color).toBe(
+        '{primary.600}',
+      );
+      expect(noraResult.semantic.colorScheme.dark.primary.color).toBe(
+        '{primary.500}',
+      );
+    });
+
+    it('should return default preset config for other cases', () => {
+      // We'll test the implementation directly
+      const colorMock = { name: 'green', palette: { '500': '#10b981' } };
+
+      const defaultResult = component['getPresetExt'].call({
+        primaryColors: () => [colorMock],
+        selectedPrimaryColor: () => 'green',
+        layoutService: {
+          layoutConfig: () => ({ preset: 'Lara' }),
+        },
+      });
+
+      // Verify default config properties
+      expect(defaultResult.semantic.primary).toBe(colorMock.palette);
+      expect(defaultResult.semantic.colorScheme.light.primary.color).toBe(
+        '{primary.500}',
+      );
+      expect(
+        defaultResult.semantic.colorScheme.dark.highlight.background,
+      ).toContain('color-mix');
     });
   });
 
@@ -216,6 +246,47 @@ describe('ConfiguratorComponent', () => {
 
   describe('onPresetChange method', () => {
     it('should update layout config when preset changes', () => {
+      // Create a proper mock for getPresetExt
+      const mockPresetExt = {
+        semantic: {
+          primary: { '500': '#3b82f6' },
+          colorScheme: {
+            light: {
+              primary: {
+                color: '{primary.500}',
+                contrastColor: '#ffffff',
+                hoverColor: '{primary.600}',
+                activeColor: '{primary.700}',
+              },
+              highlight: {
+                background: '{primary.50}',
+                focusBackground: '{primary.100}',
+                color: '{primary.700}',
+                focusColor: '{primary.800}',
+              },
+            },
+            dark: {
+              primary: {
+                color: '{primary.400}',
+                contrastColor: '{surface.900}',
+                hoverColor: '{primary.300}',
+                activeColor: '{primary.200}',
+              },
+              highlight: {
+                background:
+                  'color-mix(in srgb, {primary.400}, transparent 84%)',
+                focusBackground:
+                  'color-mix(in srgb, {primary.400}, transparent 76%)',
+                color: 'rgba(255,255,255,.87)',
+                focusColor: 'rgba(255,255,255,.87)',
+              },
+            },
+          },
+        },
+      };
+
+      spyOn(component, 'getPresetExt').and.returnValue(mockPresetExt);
+
       component.onPresetChange('Lara');
 
       expect(layoutConfigUpdateSpy).toHaveBeenCalled();
@@ -226,6 +297,47 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should handle all available presets', () => {
+      // Create a proper mock for getPresetExt
+      const mockPresetExt = {
+        semantic: {
+          primary: { '500': '#3b82f6' },
+          colorScheme: {
+            light: {
+              primary: {
+                color: '{primary.500}',
+                contrastColor: '#ffffff',
+                hoverColor: '{primary.600}',
+                activeColor: '{primary.700}',
+              },
+              highlight: {
+                background: '{primary.50}',
+                focusBackground: '{primary.100}',
+                color: '{primary.700}',
+                focusColor: '{primary.800}',
+              },
+            },
+            dark: {
+              primary: {
+                color: '{primary.400}',
+                contrastColor: '{surface.900}',
+                hoverColor: '{primary.300}',
+                activeColor: '{primary.200}',
+              },
+              highlight: {
+                background:
+                  'color-mix(in srgb, {primary.400}, transparent 84%)',
+                focusBackground:
+                  'color-mix(in srgb, {primary.400}, transparent 76%)',
+                color: 'rgba(255,255,255,.87)',
+                focusColor: 'rgba(255,255,255,.87)',
+              },
+            },
+          },
+        },
+      };
+
+      spyOn(component, 'getPresetExt').and.returnValue(mockPresetExt);
+
       component.presets.forEach((preset) => {
         layoutConfigUpdateSpy.calls.reset();
         component.onPresetChange(preset);
@@ -234,6 +346,47 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should not update config when preset value is not valid', () => {
+      // Create a proper mock for getPresetExt
+      const mockPresetExt = {
+        semantic: {
+          primary: { '500': '#3b82f6' },
+          colorScheme: {
+            light: {
+              primary: {
+                color: '{primary.500}',
+                contrastColor: '#ffffff',
+                hoverColor: '{primary.600}',
+                activeColor: '{primary.700}',
+              },
+              highlight: {
+                background: '{primary.50}',
+                focusBackground: '{primary.100}',
+                color: '{primary.700}',
+                focusColor: '{primary.800}',
+              },
+            },
+            dark: {
+              primary: {
+                color: '{primary.400}',
+                contrastColor: '{surface.900}',
+                hoverColor: '{primary.300}',
+                activeColor: '{primary.200}',
+              },
+              highlight: {
+                background:
+                  'color-mix(in srgb, {primary.400}, transparent 84%)',
+                focusBackground:
+                  'color-mix(in srgb, {primary.400}, transparent 76%)',
+                color: 'rgba(255,255,255,.87)',
+                focusColor: 'rgba(255,255,255,.87)',
+              },
+            },
+          },
+        },
+      };
+
+      spyOn(component, 'getPresetExt').and.returnValue(mockPresetExt);
+
       layoutConfigUpdateSpy.calls.reset();
       component.onPresetChange('InvalidPreset');
 
