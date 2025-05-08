@@ -10,6 +10,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { AuthStore } from '../stores/auth.store';
 import { authInterceptor } from './auth.interceptor';
 
@@ -21,15 +22,18 @@ describe('authInterceptor', () => {
     logout: () => void;
   }>;
   let router: jasmine.SpyObj<Router>;
+  let messageService: jasmine.SpyObj<MessageService>;
 
   beforeEach(() => {
     authStore = jasmine.createSpyObj('AuthStore', ['getToken', 'logout']);
     router = jasmine.createSpyObj('Router', ['navigate']);
+    messageService = jasmine.createSpyObj('MessageService', ['add']);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: AuthStore, useValue: authStore },
         { provide: Router, useValue: router },
+        { provide: MessageService, useValue: messageService },
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
       ],
