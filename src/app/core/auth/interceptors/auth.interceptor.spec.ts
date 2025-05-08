@@ -117,6 +117,62 @@ describe('authInterceptor', () => {
     });
   });
 
+  it('should show message, logout and redirect on TOKEN_EXPIRED error', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.get('/api/test').subscribe({
+      next: () => fail('should have failed with TOKEN_EXPIRED error'),
+      error: (error) => {
+        expect(error.status).toBe(401);
+        expect(messageService.add).toHaveBeenCalledWith({
+          severity: 'info',
+          summary: 'Sesión expirada',
+          detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
+          life: 5000,
+        });
+        expect(authStore.logout).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+      },
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    httpRequest.flush(
+      { code: 'TOKEN_EXPIRED', message: 'Token has expired' },
+      {
+        status: 401,
+        statusText: 'Unauthorized',
+      },
+    );
+  });
+
+  it('should show message, logout and redirect on "Token has expired" message', () => {
+    authStore.getToken.and.returnValue('test-token');
+
+    httpClient.get('/api/test').subscribe({
+      next: () => fail('should have failed with Token expired message'),
+      error: (error) => {
+        expect(error.status).toBe(401);
+        expect(messageService.add).toHaveBeenCalledWith({
+          severity: 'info',
+          summary: 'Sesión expirada',
+          detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
+          life: 5000,
+        });
+        expect(authStore.logout).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+      },
+    });
+
+    const httpRequest = httpMock.expectOne('/api/test');
+    httpRequest.flush(
+      { message: 'Token has expired' },
+      {
+        status: 401,
+        statusText: 'Unauthorized',
+      },
+    );
+  });
+
   it('should pass through 403 Forbidden response without logout', () => {
     authStore.getToken.and.returnValue('test-token');
 
