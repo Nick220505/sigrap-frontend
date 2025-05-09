@@ -10,24 +10,8 @@ import { CategoryData, CategoryInfo } from '../models/category.model';
 import { CategoryService } from '../services/category.service';
 import { CategoryStore } from './category.store';
 
-interface CategoryStoreInterface {
-  loading(): boolean;
-  error(): string | null;
-  selectedCategory(): CategoryInfo | null | undefined;
-  dialogVisible(): boolean;
-  entities(): CategoryInfo[];
-  create(data: CategoryData): void;
-  update(params: { id: number; categoryData: Partial<CategoryData> }): void;
-  delete(id: number): void;
-  deleteAllById(ids: number[]): void;
-  openCategoryDialog(category?: CategoryInfo): void;
-  closeCategoryDialog(): void;
-  clearSelectedCategory(): void;
-  findAll(): void;
-}
-
 describe('CategoryStore', () => {
-  let store: CategoryStoreInterface;
+  let store: InstanceType<typeof CategoryStore>;
   let categoryService: jasmine.SpyObj<CategoryService>;
   let messageService: jasmine.SpyObj<MessageService>;
   let httpMock: HttpTestingController;

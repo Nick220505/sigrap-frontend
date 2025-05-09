@@ -11,24 +11,8 @@ import { ProductData, ProductInfo } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { ProductStore } from './product.store';
 
-interface ProductStoreInterface {
-  loading(): boolean;
-  error(): string | null;
-  selectedProduct(): ProductInfo | null | undefined;
-  dialogVisible(): boolean;
-  entities(): ProductInfo[];
-  create(data: ProductData): void;
-  update(params: { id: number; productData: Partial<ProductData> }): void;
-  delete(id: number): void;
-  deleteAllById(ids: number[]): void;
-  openProductDialog(product?: ProductInfo): void;
-  closeProductDialog(): void;
-  clearSelectedProduct(): void;
-  findAll(): void;
-}
-
 describe('ProductStore', () => {
-  let store: ProductStoreInterface;
+  let store: InstanceType<typeof ProductStore>;
   let productService: jasmine.SpyObj<ProductService>;
   let messageService: jasmine.SpyObj<MessageService>;
   let httpMock: HttpTestingController;
