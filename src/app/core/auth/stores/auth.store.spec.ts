@@ -11,22 +11,8 @@ import { AuthResponse } from '../models/auth-response.model';
 import { AuthService } from '../services/auth.service';
 import { AuthStore } from './auth.store';
 
-interface AuthStoreInterface {
-  currentUser(): unknown;
-  isLoggedIn(): boolean;
-  token(): string | null;
-  loading(): boolean;
-  error(): string | null;
-  login(credentials: { email: string; password: string }): void;
-  register(userData: { name: string; email: string; password: string }): void;
-  logout(): void;
-  getToken(): string | null;
-  loadAuthStateFromStorage(): void;
-  logoutWithExpiredSession(): void;
-}
-
 describe('AuthStore', () => {
-  let store: AuthStoreInterface;
+  let store: InstanceType<typeof AuthStore>;
   let authService: jasmine.SpyObj<AuthService>;
   let messageService: jasmine.SpyObj<MessageService>;
   let router: jasmine.SpyObj<Router>;
