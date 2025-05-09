@@ -146,6 +146,23 @@ export const AuthStore = signalStore(
       });
       router.navigate(['/iniciar-sesion']);
     },
+    logoutWithExpiredSession: () => {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      patchState(store, {
+        currentUser: null,
+        isLoggedIn: false,
+        token: null,
+      });
+      router.navigate(['/iniciar-sesion']).then(() => {
+        messageService.add({
+          severity: 'info',
+          summary: 'Sesión expirada',
+          detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
+          life: 5000,
+        });
+      });
+    },
     getToken: (): string | null => {
       return store.token() ?? localStorage.getItem(AUTH_TOKEN_KEY);
     },
