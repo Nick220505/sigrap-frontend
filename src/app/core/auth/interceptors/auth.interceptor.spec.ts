@@ -20,12 +20,17 @@ describe('authInterceptor', () => {
   let authStore: jasmine.SpyObj<{
     getToken: () => string | null;
     logout: () => void;
+    logoutWithExpiredSession: () => void;
   }>;
   let router: jasmine.SpyObj<Router>;
   let messageService: jasmine.SpyObj<MessageService>;
 
   beforeEach(() => {
-    authStore = jasmine.createSpyObj('AuthStore', ['getToken', 'logout']);
+    authStore = jasmine.createSpyObj('AuthStore', [
+      'getToken',
+      'logout',
+      'logoutWithExpiredSession',
+    ]);
     router = jasmine.createSpyObj('Router', ['navigate']);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
@@ -80,7 +85,6 @@ describe('authInterceptor', () => {
     expect(httpRequest.request.headers.has('Authorization')).toBeTrue();
     httpRequest.flush(mockResponse);
     expect(authStore.logout).not.toHaveBeenCalled();
-    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should handle successful responses correctly without token', () => {
@@ -95,18 +99,17 @@ describe('authInterceptor', () => {
     expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
     httpRequest.flush(mockResponse);
     expect(authStore.logout).not.toHaveBeenCalled();
-    expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should redirect to login and logout on 401 Unauthorized response', () => {
+  it('should handle unauthorized response silently and logout', (done) => {
     authStore.getToken.and.returnValue('test-token');
 
     httpClient.get('/api/test').subscribe({
-      next: () => fail('should have failed with 401 error'),
-      error: (error) => {
-        expect(error.status).toBe(401);
+      next: () => done.fail('should not emit next'),
+      error: () => done.fail('should not emit error'),
+      complete: () => {
         expect(authStore.logout).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+        done();
       },
     });
 
@@ -117,88 +120,54 @@ describe('authInterceptor', () => {
     });
   });
 
-  it('should show message, logout and redirect on TOKEN_EXPIRED error', () => {
+  it('should handle expired token silently and logout with expired session', (done) => {
     authStore.getToken.and.returnValue('test-token');
 
     httpClient.get('/api/test').subscribe({
-      next: () => fail('should have failed with TOKEN_EXPIRED error'),
-      error: (error) => {
-        expect(error.status).toBe(401);
-        expect(messageService.add).toHaveBeenCalledWith({
-          severity: 'info',
-          summary: 'Sesión expirada',
-          detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
-          life: 5000,
-        });
-        expect(authStore.logout).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+      next: () => done.fail('should not emit next'),
+      error: () => done.fail('should not emit error'),
+      complete: () => {
+        expect(authStore.logoutWithExpiredSession).toHaveBeenCalled();
+        done();
       },
     });
 
     const httpRequest = httpMock.expectOne('/api/test');
     httpRequest.flush(
       { code: 'TOKEN_EXPIRED', message: 'Token has expired' },
-      {
-        status: 401,
-        statusText: 'Unauthorized',
-      },
+      { status: 401, statusText: 'Unauthorized' },
     );
   });
 
-  it('should show message, logout and redirect on "Token has expired" message', () => {
+  it('should handle "Token has expired" message silently and logout with expired session', (done) => {
     authStore.getToken.and.returnValue('test-token');
 
     httpClient.get('/api/test').subscribe({
-      next: () => fail('should have failed with Token expired message'),
-      error: (error) => {
-        expect(error.status).toBe(401);
-        expect(messageService.add).toHaveBeenCalledWith({
-          severity: 'info',
-          summary: 'Sesión expirada',
-          detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
-          life: 5000,
-        });
-        expect(authStore.logout).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+      next: () => done.fail('should not emit next'),
+      error: () => done.fail('should not emit error'),
+      complete: () => {
+        expect(authStore.logoutWithExpiredSession).toHaveBeenCalled();
+        done();
       },
     });
 
     const httpRequest = httpMock.expectOne('/api/test');
     httpRequest.flush(
       { message: 'Token has expired' },
-      {
-        status: 401,
-        statusText: 'Unauthorized',
-      },
+      { status: 401, statusText: 'Unauthorized' },
     );
   });
 
-  it('should pass through 403 Forbidden response without logout', () => {
+  it('should pass through other error responses', (done) => {
     authStore.getToken.and.returnValue('test-token');
 
     httpClient.get('/api/test').subscribe({
-      next: () => fail('should have failed with 403 error'),
-      error: (error) => {
-        expect(error.status).toBe(403);
-        expect(authStore.logout).not.toHaveBeenCalled();
-      },
-    });
-
-    const httpRequest = httpMock.expectOne('/api/test');
-    httpRequest.flush('Forbidden', {
-      status: 403,
-      statusText: 'Forbidden',
-    });
-  });
-
-  it('should pass through other error responses without logout', () => {
-    authStore.getToken.and.returnValue('test-token');
-
-    httpClient.get('/api/test').subscribe({
-      next: () => fail('should have failed with 500 error'),
-      error: (error) => {
+      next: () => done.fail('should not emit next'),
+      error: (error: HttpErrorResponse) => {
         expect(error.status).toBe(500);
         expect(authStore.logout).not.toHaveBeenCalled();
+        expect(authStore.logoutWithExpiredSession).not.toHaveBeenCalled();
+        done();
       },
     });
 
@@ -209,15 +178,17 @@ describe('authInterceptor', () => {
     });
   });
 
-  it('should pass through network errors without logout', () => {
+  it('should pass through network errors', (done) => {
     authStore.getToken.and.returnValue('test-token');
 
     httpClient.get('/api/test').subscribe({
-      next: () => fail('should have failed with network error'),
-      error: (error) => {
+      next: () => done.fail('should not emit next'),
+      error: (error: HttpErrorResponse) => {
         expect(error instanceof HttpErrorResponse).toBeTrue();
         expect(error.status).toBe(0);
         expect(authStore.logout).not.toHaveBeenCalled();
+        expect(authStore.logoutWithExpiredSession).not.toHaveBeenCalled();
+        done();
       },
     });
 

@@ -3,7 +3,7 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Observable, of, throwError } from 'rxjs';
@@ -22,6 +22,7 @@ interface AuthStoreInterface {
   logout(): void;
   getToken(): string | null;
   loadAuthStateFromStorage(): void;
+  logoutWithExpiredSession(): void;
 }
 
 describe('AuthStore', () => {
@@ -445,5 +446,44 @@ describe('AuthStore', () => {
       expect(localStorage.getItem('auth_token')).toBeNull();
       expect(localStorage.getItem('user_data')).toBeNull();
     });
+  });
+
+  describe('logoutWithExpiredSession', () => {
+    it('should clear state, navigate to login page, and show expired session message', fakeAsync(() => {
+      localStorage.setItem('auth_token', 'test-token');
+      localStorage.setItem(
+        'user_data',
+        JSON.stringify({ email: 'test@example.com', name: 'Test User' }),
+      );
+
+      store.loadAuthStateFromStorage();
+
+      expect(store.isLoggedIn()).toBeTrue();
+      expect(store.token()).toBe('test-token');
+      expect(store.currentUser()).toEqual({
+        email: 'test@example.com',
+        name: 'Test User',
+      });
+
+      router.navigate.and.returnValue(Promise.resolve(true));
+
+      store.logoutWithExpiredSession();
+
+      expect(store.isLoggedIn()).toBeFalse();
+      expect(store.token()).toBeNull();
+      expect(store.currentUser()).toBeNull();
+      expect(localStorage.getItem('auth_token')).toBeNull();
+      expect(localStorage.getItem('user_data')).toBeNull();
+      expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+
+      tick();
+
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'info',
+        summary: 'Sesión expirada',
+        detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
+        life: 5000,
+      });
+    }));
   });
 });
