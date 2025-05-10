@@ -177,7 +177,8 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       </div>
     </div>
 
-    <p-confirmDialog key="logout"
+    <p-confirmDialog
+      key="logout"
       header="Confirmar Cierre de Sesión"
       message="¿Estás seguro de que deseas cerrar sesión?"
       icon="pi pi-exclamation-triangle"
@@ -185,7 +186,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       acceptLabel="Sí, cerrar sesión"
       rejectLabel="No"
       acceptButtonStyleClass="p-button-danger"
-     />
+    />
   `,
 })
 export class TopbarComponent {
