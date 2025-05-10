@@ -154,10 +154,10 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                     class="px-4 py-2 text-sm border-b border-[var(--surface-border)]"
                   >
                     <div class="font-medium">
-                      {{ authStore.currentUser()?.name }}
+                      {{ authStore.user()?.name }}
                     </div>
                     <div class="text-[var(--text-color-secondary)] truncate">
-                      {{ authStore.currentUser()?.email }}
+                      {{ authStore.user()?.email }}
                     </div>
                   </div>
                   <button

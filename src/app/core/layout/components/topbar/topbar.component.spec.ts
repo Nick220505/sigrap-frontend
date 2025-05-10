@@ -49,7 +49,7 @@ class MockLayoutService {
 }
 
 class MockAuthStore {
-  currentUser: WritableSignal<User | null> = signal({
+  user: WritableSignal<User | null> = signal({
     id: 1,
     name: 'Test User',
     email: 'test@example.com',
