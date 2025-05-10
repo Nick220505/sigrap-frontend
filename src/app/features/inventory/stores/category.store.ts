@@ -147,11 +147,10 @@ export const CategoryStore = signalStore(
                   message.includes('violates foreign key constraint')
                 ) {
                   const category = store.entities().find((c) => c.id === id);
-                  const categoryName = category ? category.name : `ID ${id}`;
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: `No se puede eliminar la categoría "${categoryName}" porque está siendo utilizada por un producto.`,
+                    detail: `No se puede eliminar la categoría "${category?.name}" porque está siendo utilizada por un producto.`,
                   });
                 } else {
                   messageService.add({
