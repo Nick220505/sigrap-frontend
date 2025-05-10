@@ -1,4 +1,8 @@
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpStatusCode,
+  provideHttpClient,
+} from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -215,7 +219,7 @@ describe('ProductStore', () => {
       productService.delete.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Server error' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -248,7 +252,7 @@ describe('ProductStore', () => {
       productService.deleteAllById.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Server error' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 

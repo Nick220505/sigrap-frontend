@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { tapResponse } from '@ngrx/operators';
@@ -68,7 +68,10 @@ export const AuthStore = signalStore(
                 let errorMessage =
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
-                if (status === 401 || status === 403) {
+                if (
+                  status === HttpStatusCode.Unauthorized ||
+                  status === HttpStatusCode.Forbidden
+                ) {
                   errorMessage = 'Credenciales inválidas';
                 } else if (error?.message) {
                   if (error.message === 'Invalid credentials') {
@@ -115,7 +118,7 @@ export const AuthStore = signalStore(
                   'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
 
                 if (
-                  status === 409 ||
+                  status === HttpStatusCode.Conflict ||
                   error?.message === 'Email already exists'
                 ) {
                   errorMessage = 'El correo electrónico ya está registrado';

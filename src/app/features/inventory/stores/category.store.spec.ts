@@ -1,4 +1,8 @@
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpStatusCode,
+  provideHttpClient,
+} from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -176,11 +180,11 @@ describe('CategoryStore', () => {
       categoryService.delete.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: {
-          status: 409,
+          status: HttpStatusCode.Conflict,
           message:
             'update or delete on table "categories" violates foreign key constraint "fk_product_category" on table "products" Key (id)=(1) is still referenced from table "products"',
         },
-        status: 409,
+        status: HttpStatusCode.Conflict,
         statusText: 'Conflict',
       });
 
@@ -201,7 +205,7 @@ describe('CategoryStore', () => {
       categoryService.delete.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Server error' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -234,11 +238,11 @@ describe('CategoryStore', () => {
       categoryService.deleteAllById.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: {
-          status: 409,
+          status: HttpStatusCode.Conflict,
           message:
             'update or delete on table "categories" violates foreign key constraint "fk_product_category" on table "products" Key (id)=(1) is still referenced from table "products"',
         },
-        status: 409,
+        status: HttpStatusCode.Conflict,
         statusText: 'Conflict',
       });
 
@@ -261,11 +265,11 @@ describe('CategoryStore', () => {
       categoryService.deleteAllById.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: {
-          status: 409,
+          status: HttpStatusCode.Conflict,
           message:
             'update or delete on table "categories" violates foreign key constraint "fk_product_category" on table "products" Key (id)=(3) is still referenced from table "products"',
         },
-        status: 409,
+        status: HttpStatusCode.Conflict,
         statusText: 'Conflict',
       });
 
@@ -288,11 +292,11 @@ describe('CategoryStore', () => {
       categoryService.deleteAllById.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: {
-          status: 409,
+          status: HttpStatusCode.Conflict,
           message:
             'update or delete on table "categories" violates foreign key constraint',
         },
-        status: 409,
+        status: HttpStatusCode.Conflict,
         statusText: 'Conflict',
       });
 
@@ -315,7 +319,7 @@ describe('CategoryStore', () => {
       categoryService.deleteAllById.calls.reset();
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Server error' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 

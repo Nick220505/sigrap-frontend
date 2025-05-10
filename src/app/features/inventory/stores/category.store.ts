@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -142,7 +142,7 @@ export const CategoryStore = signalStore(
               error: ({ error: { status, message } }: HttpErrorResponse) => {
                 patchState(store, { error: message });
                 if (
-                  status === 409 &&
+                  status === HttpStatusCode.Conflict &&
                   typeof message === 'string' &&
                   message.includes('violates foreign key constraint')
                 ) {
@@ -184,7 +184,7 @@ export const CategoryStore = signalStore(
               error: ({ error: { status, message } }: HttpErrorResponse) => {
                 patchState(store, { error: message });
                 if (
-                  status === 409 &&
+                  status === HttpStatusCode.Conflict &&
                   typeof message === 'string' &&
                   message.includes('violates foreign key constraint')
                 ) {

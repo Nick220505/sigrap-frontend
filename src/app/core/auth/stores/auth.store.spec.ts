@@ -1,4 +1,8 @@
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpStatusCode,
+  provideHttpClient,
+} from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -107,7 +111,7 @@ describe('AuthStore', () => {
     it('should handle 401 error during login', () => {
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Invalid credentials' },
-        status: 401,
+        status: HttpStatusCode.Unauthorized,
         statusText: 'Unauthorized',
       });
 
@@ -127,7 +131,7 @@ describe('AuthStore', () => {
     it('should handle generic error during login', () => {
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Server error occurred' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -150,7 +154,7 @@ describe('AuthStore', () => {
     it('should handle error with message "Invalid credentials" during login', () => {
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Invalid credentials' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -173,7 +177,7 @@ describe('AuthStore', () => {
     it('should use default error message when no specific error is provided', () => {
       const errorResponse = new HttpErrorResponse({
         error: {},
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -247,7 +251,7 @@ describe('AuthStore', () => {
     it('should handle duplicate email error during registration', () => {
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Email already exists' },
-        status: 409,
+        status: HttpStatusCode.Conflict,
         statusText: 'Conflict',
       });
 
@@ -271,7 +275,7 @@ describe('AuthStore', () => {
     it('should handle "Email already exists" message with different status', () => {
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Email already exists' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -295,7 +299,7 @@ describe('AuthStore', () => {
     it('should handle generic error during registration', () => {
       const errorResponse = new HttpErrorResponse({
         error: { message: 'Server error occurred' },
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
@@ -319,7 +323,7 @@ describe('AuthStore', () => {
     it('should use default error message when no specific error is provided during registration', () => {
       const errorResponse = new HttpErrorResponse({
         error: {},
-        status: 500,
+        status: HttpStatusCode.InternalServerError,
         statusText: 'Server Error',
       });
 
