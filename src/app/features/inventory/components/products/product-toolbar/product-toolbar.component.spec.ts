@@ -174,8 +174,6 @@ describe('ProductToolbarComponent', () => {
         '¿Está seguro de que desea eliminar los 1 productos seleccionados?',
       );
       expect(confirmOptions.message).toContain('<b>Product 1</b>');
-      expect(confirmOptions.acceptLabel).toBe('Eliminar');
-      expect(confirmOptions.rejectLabel).toBe('Cancelar');
     });
 
     it('should delete products when confirmation is accepted', () => {

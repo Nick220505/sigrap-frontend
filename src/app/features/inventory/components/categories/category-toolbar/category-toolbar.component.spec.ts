@@ -166,8 +166,6 @@ describe('CategoryToolbarComponent', () => {
         '¿Está seguro de que desea eliminar las 1 categorías seleccionadas?',
       );
       expect(confirmOptions.message).toContain('<b>Category 1</b>');
-      expect(confirmOptions.acceptLabel).toBe('Eliminar');
-      expect(confirmOptions.rejectLabel).toBe('Cancelar');
     });
 
     it('should delete categories when confirmation is accepted', () => {

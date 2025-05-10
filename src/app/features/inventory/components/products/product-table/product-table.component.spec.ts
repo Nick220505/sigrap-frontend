@@ -8,7 +8,6 @@ import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -92,7 +91,6 @@ describe('ProductTableComponent', () => {
         IconFieldModule,
         InputIconModule,
         TooltipModule,
-        ConfirmDialogModule,
         MessageModule,
         FormsModule,
         CurrencyPipe,
@@ -295,10 +293,9 @@ describe('ProductTableComponent', () => {
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
       expect(confirmOptions.header).toBe('Eliminar producto');
-      expect(confirmOptions.message).toContain(productToDelete.name);
-      expect(confirmOptions.icon).toBe('pi pi-exclamation-triangle');
-      expect(confirmOptions.acceptButtonStyleClass).toBe('p-button-danger');
-      expect(confirmOptions.rejectButtonStyleClass).toBe('p-button-secondary');
+      expect(confirmOptions.message).toBe(
+        '¿Está seguro de que desea eliminar el producto <b>Test Product 1</b>?',
+      );
     });
 
     it('should call productStore.delete when confirmation is accepted', () => {

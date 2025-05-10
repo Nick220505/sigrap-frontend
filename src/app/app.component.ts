@@ -11,8 +11,6 @@ import { ToastModule } from 'primeng/toast';
     <router-outlet />
     <p-confirmDialog
       icon="pi pi-exclamation-triangle"
-      acceptLabel="Sí"
-      rejectLabel="No"
       acceptButtonStyleClass="p-button-danger"
       rejectButtonStyleClass="p-button-secondary"
     />
