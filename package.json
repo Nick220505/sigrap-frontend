@@ -35,8 +35,8 @@
     "@angular-devkit/build-angular": "^19.2.11",
     "@angular/cli": "^19.2.11",
     "@angular/compiler-cli": "^19.2.10",
-    "@tailwindcss/postcss": "^4.1.5",
-    "@types/jasmine": "~5.1.7",
+    "@tailwindcss/postcss": "^4.1.6",
+    "@types/jasmine": "~5.1.8",
     "angular-eslint": "19.4.0",
     "eslint": "^9.26.0",
     "jasmine-core": "~5.7.1",
@@ -47,8 +47,8 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.3",
     "prettier": "3.5.3",
-    "tailwindcss": "^4.1.5",
+    "tailwindcss": "^4.1.6",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.1"
+    "typescript-eslint": "^8.32.0"
   }
 }
