@@ -18,14 +18,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     return next(authReq).pipe(
       catchError((error) => {
         if (error.status === HttpStatusCode.Unauthorized) {
-          if (
-            error.error?.code === 'TOKEN_EXPIRED' ||
-            error.error?.message === 'Token has expired'
-          ) {
-            authStore.logoutWithExpiredSession();
-          } else {
-            authStore.logout();
-          }
+          authStore.logout();
           return EMPTY;
         }
         return throwError(() => error);
