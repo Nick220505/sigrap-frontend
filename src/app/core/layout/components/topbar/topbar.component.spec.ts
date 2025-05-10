@@ -21,7 +21,7 @@ import {
   LayoutService,
 } from '@core/layout/services/layout.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { StyleClassModule } from 'primeng/styleclass';
 import { TooltipModule } from 'primeng/tooltip';
 import { NEVER } from 'rxjs';
@@ -100,7 +100,6 @@ describe('TopbarComponent', () => {
         CommonModule,
         StyleClassModule,
         TooltipModule,
-        ConfirmDialogModule,
         NoopAnimationsModule,
       ],
       providers: [
@@ -122,7 +121,6 @@ describe('TopbarComponent', () => {
         set: {
           selector: 'p-confirmDialog',
           template: '',
-          imports: [],
         },
       })
       .compileComponents();

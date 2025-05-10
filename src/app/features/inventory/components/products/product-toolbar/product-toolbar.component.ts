@@ -57,18 +57,13 @@ export class ProductToolbarComponent {
   deleteSelectedProducts(): void {
     const products = this.productTable().selectedProducts();
     this.confirmationService.confirm({
+      header: 'Eliminar productos',
       message: `
           ¿Está seguro de que desea eliminar los ${products.length} productos seleccionados?
           <ul class='mt-2 mb-0'>
             ${products.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
           </ul>
         `,
-      header: 'Eliminar productos',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         const ids = products.map(({ id }) => id);
         this.productStore.deleteAllById(ids);

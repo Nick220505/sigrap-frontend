@@ -10,7 +10,6 @@ import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -27,7 +26,6 @@ import { TooltipModule } from 'primeng/tooltip';
     IconFieldModule,
     InputIconModule,
     TooltipModule,
-    ConfirmDialogModule,
     MessageModule,
     FormsModule,
   ],
@@ -211,9 +209,6 @@ export class CategoryTableComponent {
     this.confirmationService.confirm({
       header: 'Eliminar categoría',
       message: `¿Está seguro de que desea eliminar la categoría <b>${name}</b>?`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => this.categoryStore.delete(id),
     });
   }

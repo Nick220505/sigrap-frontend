@@ -11,7 +11,6 @@ import { RouterModule } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth.store';
 import { LayoutService } from '@core/layout/services/layout.service';
 import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { StyleClassModule } from 'primeng/styleclass';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
@@ -24,7 +23,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     StyleClassModule,
     ConfiguratorComponent,
     TooltipModule,
-    ConfirmDialogModule,
   ],
   template: `
     <div
@@ -176,17 +174,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
         </div>
       </div>
     </div>
-
-    <p-confirmDialog
-      key="logout"
-      header="Confirmar Cierre de Sesión"
-      message="¿Estás seguro de que deseas cerrar sesión?"
-      icon="pi pi-exclamation-triangle"
-      [style]="{ width: '90%', maxWidth: '400px' }"
-      acceptLabel="Sí, cerrar sesión"
-      rejectLabel="No"
-      acceptButtonStyleClass="p-button-danger"
-    />
   `,
 })
 export class TopbarComponent {
@@ -247,10 +234,9 @@ export class TopbarComponent {
 
   confirmLogout(): void {
     this.confirmationService.confirm({
-      key: 'logout',
-      accept: () => {
-        this.authStore.logout();
-      },
+      header: 'Confirmar Cierre de Sesión',
+      message: '¿Estás seguro de que deseas cerrar sesión?',
+      accept: this.authStore.logout,
     });
   }
 }

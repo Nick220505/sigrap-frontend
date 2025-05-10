@@ -57,18 +57,13 @@ export class CategoryToolbarComponent {
   deleteSelectedCategories(): void {
     const categories = this.categoryTable().selectedCategories();
     this.confirmationService.confirm({
+      header: 'Eliminar categorías',
       message: `
       ¿Está seguro de que desea eliminar las ${categories.length} categorías seleccionadas?
       <ul class='mt-2 mb-0'>
           ${categories.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
       </ul>
       `,
-      header: 'Eliminar categorías',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         const ids = categories.map(({ id }) => id);
         this.categoryStore.deleteAllById(ids);

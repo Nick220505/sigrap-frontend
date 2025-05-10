@@ -1,6 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
 import { CategoryStore } from '@features/inventory/stores/category.store';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryTableComponent } from './category-table/category-table.component';
 import { CategoryToolbarComponent } from './category-toolbar/category-toolbar.component';
@@ -8,7 +7,6 @@ import { CategoryToolbarComponent } from './category-toolbar/category-toolbar.co
 @Component({
   selector: 'app-categories',
   imports: [
-    ConfirmDialogModule,
     CategoryToolbarComponent,
     CategoryTableComponent,
     CategoryDialogComponent,
@@ -19,8 +17,6 @@ import { CategoryToolbarComponent } from './category-toolbar/category-toolbar.co
     <app-category-table #categoryTable />
 
     <app-category-dialog />
-
-    <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
 export class CategoriesComponent {

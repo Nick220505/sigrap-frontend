@@ -11,7 +11,6 @@ import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -28,7 +27,6 @@ import { TooltipModule } from 'primeng/tooltip';
     IconFieldModule,
     InputIconModule,
     TooltipModule,
-    ConfirmDialogModule,
     MessageModule,
     FormsModule,
     CurrencyPipe,
@@ -228,9 +226,6 @@ export class ProductTableComponent {
     this.confirmationService.confirm({
       header: 'Eliminar producto',
       message: `¿Está seguro de que desea eliminar el producto <b>${name}</b>?`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => this.productStore.delete(id),
     });
   }

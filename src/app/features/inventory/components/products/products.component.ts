@@ -1,6 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
 import { ProductStore } from '@features/inventory/stores/product.store';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
 import { ProductTableComponent } from './product-table/product-table.component';
 import { ProductToolbarComponent } from './product-toolbar/product-toolbar.component';
@@ -8,7 +7,6 @@ import { ProductToolbarComponent } from './product-toolbar/product-toolbar.compo
 @Component({
   selector: 'app-products',
   imports: [
-    ConfirmDialogModule,
     ProductToolbarComponent,
     ProductTableComponent,
     ProductDialogComponent,
@@ -19,8 +17,6 @@ import { ProductToolbarComponent } from './product-toolbar/product-toolbar.compo
     <app-product-table #productTable />
 
     <app-product-dialog />
-
-    <p-confirmdialog [style]="{ width: '450px' }" />
   `,
 })
 export class ProductsComponent {
