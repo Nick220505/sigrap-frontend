@@ -23,7 +23,6 @@ import {
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
 import { StyleClassModule } from 'primeng/styleclass';
-import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { NEVER } from 'rxjs';
 import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
@@ -102,7 +101,6 @@ describe('TopbarComponent', () => {
         StyleClassModule,
         TooltipModule,
         ConfirmDialogModule,
-        ToastModule,
         NoopAnimationsModule,
       ],
       providers: [

@@ -18,7 +18,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { ToastModule } from 'primeng/toast';
 
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
 import { AuthStore } from '../../stores/auth.store';
@@ -50,7 +49,6 @@ describe('RegisterComponent', () => {
         InputIconModule,
         DividerModule,
         NgClass,
-        ToastModule,
         NoopAnimationsModule,
       ],
       providers: [

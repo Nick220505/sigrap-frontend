@@ -1,7 +1,6 @@
 import { Component, inject, viewChild } from '@angular/core';
 import { CategoryStore } from '@features/inventory/stores/category.store';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { CategoryTableComponent } from './category-table/category-table.component';
 import { CategoryToolbarComponent } from './category-toolbar/category-toolbar.component';
@@ -9,15 +8,12 @@ import { CategoryToolbarComponent } from './category-toolbar/category-toolbar.co
 @Component({
   selector: 'app-categories',
   imports: [
-    ToastModule,
     ConfirmDialogModule,
     CategoryToolbarComponent,
     CategoryTableComponent,
     CategoryDialogComponent,
   ],
   template: `
-    <p-toast />
-
     <app-category-toolbar [categoryTable]="categoryTable" />
 
     <app-category-table #categoryTable />

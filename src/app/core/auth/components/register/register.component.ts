@@ -15,7 +15,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { ToastModule } from 'primeng/toast';
 import { AuthStore } from '../../stores/auth.store';
 import { passwordMatchValidator } from '../../validators/password-match.validator';
 
@@ -33,7 +32,6 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
     InputIconModule,
     DividerModule,
     NgClass,
-    ToastModule,
   ],
   template: `
     <app-floating-configurator />
@@ -41,8 +39,6 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
     <div
       class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"
     >
-      <p-toast />
-
       <div class="flex flex-col items-center justify-center">
         <div
           class="relative p-[0.3rem] rounded-[56px] bg-gradient-to-b from-primary from-10% via-[rgba(33,150,243,0)] via-30%"

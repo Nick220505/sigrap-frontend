@@ -1,7 +1,6 @@
 import { Component, inject, viewChild } from '@angular/core';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
 import { ProductDialogComponent } from './product-dialog/product-dialog.component';
 import { ProductTableComponent } from './product-table/product-table.component';
 import { ProductToolbarComponent } from './product-toolbar/product-toolbar.component';
@@ -9,15 +8,12 @@ import { ProductToolbarComponent } from './product-toolbar/product-toolbar.compo
 @Component({
   selector: 'app-products',
   imports: [
-    ToastModule,
     ConfirmDialogModule,
     ProductToolbarComponent,
     ProductTableComponent,
     ProductDialogComponent,
   ],
   template: `
-    <p-toast />
-
     <app-product-toolbar [productTable]="productTable" />
 
     <app-product-table #productTable />

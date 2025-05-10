@@ -13,7 +13,6 @@ import { LayoutService } from '@core/layout/services/layout.service';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { StyleClassModule } from 'primeng/styleclass';
-import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfiguratorComponent } from './floating-configurator/configurator/configurator.component';
 
@@ -26,7 +25,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
     ConfiguratorComponent,
     TooltipModule,
     ConfirmDialogModule,
-    ToastModule,
   ],
   template: `
     <div
@@ -188,8 +186,6 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
       rejectLabel="No"
       acceptButtonStyleClass="p-button-danger"
      />
-
-    <p-toast />
   `,
 })
 export class TopbarComponent {

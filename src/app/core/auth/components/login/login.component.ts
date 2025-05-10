@@ -13,7 +13,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { ToastModule } from 'primeng/toast';
 import { AuthStore } from '../../stores/auth.store';
 
 @Component({
@@ -28,7 +27,6 @@ import { AuthStore } from '../../stores/auth.store';
     FloatingConfiguratorComponent,
     IconFieldModule,
     InputIconModule,
-    ToastModule,
   ],
   template: `
     <app-floating-configurator />
@@ -36,8 +34,6 @@ import { AuthStore } from '../../stores/auth.store';
     <div
       class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden"
     >
-      <p-toast />
-
       <div class="flex flex-col items-center justify-center">
         <div
           class="relative p-[0.3rem] rounded-[56px] bg-gradient-to-b from-primary from-10% via-[rgba(33,150,243,0)] via-30%"
