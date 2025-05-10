@@ -20,8 +20,8 @@ import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
 
 export interface AuthState {
-  currentUser: User | null;
-  isLoggedIn: boolean;
+  user: User | null;
+  loggedIn: boolean;
   token: string | null;
   loading: boolean;
   error: string | null;
@@ -33,8 +33,8 @@ const USER_KEY = 'user_data';
 export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState<AuthState>({
-    currentUser: null,
-    isLoggedIn: false,
+    user: null,
+    loggedIn: false,
     token: null,
     loading: false,
     error: null,
@@ -57,11 +57,7 @@ export const AuthStore = signalStore(
                 localStorage.setItem(AUTH_TOKEN_KEY, token);
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
 
-                patchState(store, {
-                  currentUser: user,
-                  token,
-                  isLoggedIn: true,
-                });
+                patchState(store, { user, token, loggedIn: true });
                 router.navigate(['/']);
               },
               error: ({ status, error }: HttpErrorResponse) => {
@@ -106,11 +102,7 @@ export const AuthStore = signalStore(
                 localStorage.setItem(AUTH_TOKEN_KEY, token);
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
 
-                patchState(store, {
-                  currentUser: user,
-                  token,
-                  isLoggedIn: true,
-                });
+                patchState(store, { user, token, loggedIn: true });
                 router.navigate(['/']);
               },
               error: ({ status, error }: HttpErrorResponse) => {
@@ -143,8 +135,8 @@ export const AuthStore = signalStore(
       localStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
       patchState(store, {
-        currentUser: null,
-        isLoggedIn: false,
+        user: null,
+        loggedIn: false,
         token: null,
       });
       router.navigate(['/iniciar-sesion']);
@@ -159,11 +151,7 @@ export const AuthStore = signalStore(
       if (token && userJson) {
         try {
           const user = JSON.parse(userJson) as User;
-          patchState(store, {
-            currentUser: user,
-            token,
-            isLoggedIn: true,
-          });
+          patchState(store, { user, token, loggedIn: true });
         } catch {
           localStorage.removeItem(AUTH_TOKEN_KEY);
           localStorage.removeItem(USER_KEY);

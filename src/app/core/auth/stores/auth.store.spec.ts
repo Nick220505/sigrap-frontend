@@ -55,8 +55,8 @@ describe('AuthStore', () => {
 
   describe('initial state', () => {
     it('should have default state values', () => {
-      expect(store.currentUser()).toBeNull();
-      expect(store.isLoggedIn()).toBeFalse();
+      expect(store.user()).toBeNull();
+      expect(store.loggedIn()).toBeFalse();
       expect(store.token()).toBeNull();
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -69,10 +69,7 @@ describe('AuthStore', () => {
       const pendingObservable = new Observable<never>(noop);
       authService.login.and.returnValue(pendingObservable);
 
-      store.login({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+      store.login({ email: 'test@example.com', password: 'password123' });
 
       expect(store.loading()).toBeTrue();
       expect(store.error()).toBeNull();
@@ -87,16 +84,13 @@ describe('AuthStore', () => {
 
       authService.login.and.returnValue(of(mockResponse));
 
-      store.login({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+      store.login({ email: 'test@example.com', password: 'password123' });
 
-      expect(store.currentUser()).toEqual({
+      expect(store.user()).toEqual({
         email: 'test@example.com',
         name: 'Test User',
       });
-      expect(store.isLoggedIn()).toBeTrue();
+      expect(store.loggedIn()).toBeTrue();
       expect(store.token()).toBe('test-token');
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -137,10 +131,7 @@ describe('AuthStore', () => {
 
       authService.login.and.returnValue(throwError(() => errorResponse));
 
-      store.login({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+      store.login({ email: 'test@example.com', password: 'password123' });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBe('Server error occurred');
@@ -160,10 +151,7 @@ describe('AuthStore', () => {
 
       authService.login.and.returnValue(throwError(() => errorResponse));
 
-      store.login({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+      store.login({ email: 'test@example.com', password: 'password123' });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBe('Credenciales inválidas');
@@ -183,10 +171,7 @@ describe('AuthStore', () => {
 
       authService.login.and.returnValue(throwError(() => errorResponse));
 
-      store.login({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+      store.login({ email: 'test@example.com', password: 'password123' });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBe(
@@ -232,11 +217,11 @@ describe('AuthStore', () => {
         password: 'password123',
       });
 
-      expect(store.currentUser()).toEqual({
+      expect(store.user()).toEqual({
         email: 'test@example.com',
         name: 'Test User',
       });
-      expect(store.isLoggedIn()).toBeTrue();
+      expect(store.loggedIn()).toBeTrue();
       expect(store.token()).toBe('test-token');
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -358,18 +343,18 @@ describe('AuthStore', () => {
 
       store.loadAuthStateFromStorage();
 
-      expect(store.isLoggedIn()).toBeTrue();
+      expect(store.loggedIn()).toBeTrue();
       expect(store.token()).toBe('test-token');
-      expect(store.currentUser()).toEqual({
+      expect(store.user()).toEqual({
         email: 'test@example.com',
         name: 'Test User',
       });
 
       store.logout();
 
-      expect(store.isLoggedIn()).toBeFalse();
+      expect(store.loggedIn()).toBeFalse();
       expect(store.token()).toBeNull();
-      expect(store.currentUser()).toBeNull();
+      expect(store.user()).toBeNull();
       expect(localStorage.getItem('auth_token')).toBeNull();
       expect(localStorage.getItem('user_data')).toBeNull();
       expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
@@ -408,9 +393,9 @@ describe('AuthStore', () => {
 
       store.loadAuthStateFromStorage();
 
-      expect(store.isLoggedIn()).toBeTrue();
+      expect(store.loggedIn()).toBeTrue();
       expect(store.token()).toBe('test-token');
-      expect(store.currentUser()).toEqual({
+      expect(store.user()).toEqual({
         email: 'test@example.com',
         name: 'Test User',
       });
@@ -419,9 +404,9 @@ describe('AuthStore', () => {
     it('should not update state if localStorage data is missing', () => {
       store.loadAuthStateFromStorage();
 
-      expect(store.isLoggedIn()).toBeFalse();
+      expect(store.loggedIn()).toBeFalse();
       expect(store.token()).toBeNull();
-      expect(store.currentUser()).toBeNull();
+      expect(store.user()).toBeNull();
     });
 
     it('should handle invalid JSON in localStorage and clear it', () => {
@@ -430,9 +415,9 @@ describe('AuthStore', () => {
 
       store.loadAuthStateFromStorage();
 
-      expect(store.isLoggedIn()).toBeFalse();
+      expect(store.loggedIn()).toBeFalse();
       expect(store.token()).toBeNull();
-      expect(store.currentUser()).toBeNull();
+      expect(store.user()).toBeNull();
       expect(localStorage.getItem('auth_token')).toBeNull();
       expect(localStorage.getItem('user_data')).toBeNull();
     });
