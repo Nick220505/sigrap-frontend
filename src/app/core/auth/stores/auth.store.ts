@@ -58,6 +58,13 @@ export const AuthStore = signalStore(
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
 
                 patchState(store, { user, token, loggedIn: true });
+
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Inicio de sesión exitoso',
+                  detail: `Bienvenido/a, ${name}`,
+                });
+
                 router.navigate(['/']);
               },
               error: ({ status, error }: HttpErrorResponse) => {
@@ -103,6 +110,13 @@ export const AuthStore = signalStore(
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
 
                 patchState(store, { user, token, loggedIn: true });
+
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Registro exitoso',
+                  detail: `Cuenta creada correctamente. Bienvenido/a, ${name}!`,
+                });
+
                 router.navigate(['/']);
               },
               error: ({ status, error }: HttpErrorResponse) => {

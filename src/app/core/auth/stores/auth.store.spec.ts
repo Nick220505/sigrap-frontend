@@ -95,6 +95,11 @@ describe('AuthStore', () => {
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
       expect(router.navigate).toHaveBeenCalledWith(['/']);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Inicio de sesión exitoso',
+        detail: 'Bienvenido/a, Test User',
+      });
 
       expect(localStorage.getItem('auth_token')).toBe('test-token');
       expect(localStorage.getItem('user_data')).toBe(
@@ -226,6 +231,11 @@ describe('AuthStore', () => {
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
       expect(router.navigate).toHaveBeenCalledWith(['/']);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Registro exitoso',
+        detail: 'Cuenta creada correctamente. Bienvenido/a, Test User!',
+      });
 
       expect(localStorage.getItem('auth_token')).toBe('test-token');
       expect(localStorage.getItem('user_data')).toBe(
