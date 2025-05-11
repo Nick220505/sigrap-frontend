@@ -167,8 +167,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categoría Creada',
+        summary: 'Categoría creada',
+        detail: 'La categoría New Category ha sido creada correctamente',
       }),
     );
   }));
@@ -220,8 +220,9 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categoría Actualizada',
+        summary: 'Categoría actualizada',
+        detail:
+          'La categoría Updated Category 1 ha sido actualizada correctamente',
       }),
     );
   }));
@@ -250,8 +251,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categoría Eliminada',
+        summary: 'Categoría eliminada',
+        detail: 'La categoría ha sido eliminada correctamente',
       }),
     );
   }));
@@ -290,8 +291,9 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categorías eliminadas',
+        summary: 'Categorías eliminadas',
+        detail:
+          'Las categorías seleccionadas han sido eliminadas correctamente',
       }),
     );
   }));

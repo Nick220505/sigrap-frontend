@@ -98,8 +98,8 @@ describe('CategoryStore', () => {
       expect(categoryService.create).toHaveBeenCalledWith(categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categoría Creada',
+        summary: 'Categoría creada',
+        detail: 'La categoría New Category ha sido creada correctamente',
       });
     });
 
@@ -137,8 +137,9 @@ describe('CategoryStore', () => {
       expect(categoryService.update).toHaveBeenCalledWith(1, categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categoría Actualizada',
+        summary: 'Categoría actualizada',
+        detail:
+          'La categoría Updated Category ha sido actualizada correctamente',
       });
     });
 
@@ -171,8 +172,8 @@ describe('CategoryStore', () => {
       expect(categoryService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categoría Eliminada',
+        summary: 'Categoría eliminada',
+        detail: 'La categoría ha sido eliminada correctamente',
       });
     });
 
@@ -229,8 +230,9 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Categorías eliminadas',
+        summary: 'Categorías eliminadas',
+        detail:
+          'Las categorías seleccionadas han sido eliminadas correctamente',
       });
     });
 

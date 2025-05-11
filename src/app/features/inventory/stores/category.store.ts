@@ -76,8 +76,8 @@ export const CategoryStore = signalStore(
                 patchState(store, addEntity(createdCategory));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Categoría Creada',
+                  summary: 'Categoría creada',
+                  detail: `La categoría ${createdCategory.name} ha sido creada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -107,8 +107,8 @@ export const CategoryStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Categoría Actualizada',
+                  summary: 'Categoría actualizada',
+                  detail: `La categoría ${updatedCategory.name} ha sido actualizada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -135,8 +135,8 @@ export const CategoryStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Categoría Eliminada',
+                  summary: 'Categoría eliminada',
+                  detail: 'La categoría ha sido eliminada correctamente',
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -176,8 +176,9 @@ export const CategoryStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Categorías eliminadas',
+                  summary: 'Categorías eliminadas',
+                  detail:
+                    'Las categorías seleccionadas han sido eliminadas correctamente',
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {

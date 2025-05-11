@@ -195,8 +195,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Creado',
+        summary: 'Producto creado',
+        detail: 'El producto New Product ha sido creado correctamente',
       }),
     );
   }));
@@ -245,8 +245,9 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Actualizado',
+        summary: 'Producto actualizado',
+        detail:
+          'El producto Updated Product 1 ha sido actualizado correctamente',
       }),
     );
   }));
@@ -275,8 +276,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Eliminado',
+        summary: 'Producto eliminado',
+        detail: 'El producto ha sido eliminado correctamente',
       }),
     );
   }));
@@ -315,8 +316,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Productos eliminados',
+        summary: 'Productos eliminados',
+        detail: 'Los productos seleccionados han sido eliminados correctamente',
       }),
     );
   }));

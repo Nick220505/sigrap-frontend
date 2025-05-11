@@ -132,8 +132,8 @@ describe('ProductStore', () => {
       expect(productService.create).toHaveBeenCalledWith(productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Creado',
+        summary: 'Producto creado',
+        detail: 'El producto New Product ha sido creado correctamente',
       });
     });
 
@@ -176,8 +176,8 @@ describe('ProductStore', () => {
       expect(productService.update).toHaveBeenCalledWith(1, productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Actualizado',
+        summary: 'Producto actualizado',
+        detail: 'El producto Updated Product ha sido actualizado correctamente',
       });
     });
 
@@ -210,8 +210,8 @@ describe('ProductStore', () => {
       expect(productService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Producto Eliminado',
+        summary: 'Producto eliminado',
+        detail: 'El producto ha sido eliminado correctamente',
       });
     });
 
@@ -243,8 +243,8 @@ describe('ProductStore', () => {
       expect(productService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Productos eliminados',
+        summary: 'Productos eliminados',
+        detail: 'Los productos seleccionados han sido eliminados correctamente',
       });
     });
 

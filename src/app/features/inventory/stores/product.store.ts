@@ -75,8 +75,8 @@ export const ProductStore = signalStore(
                 patchState(store, addEntity(createdProduct));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Producto Creado',
+                  summary: 'Producto creado',
+                  detail: `El producto ${createdProduct.name} ha sido creado correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -106,8 +106,8 @@ export const ProductStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Producto Actualizado',
+                  summary: 'Producto actualizado',
+                  detail: `El producto ${updatedProduct.name} ha sido actualizado correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -134,8 +134,8 @@ export const ProductStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Producto Eliminado',
+                  summary: 'Producto eliminado',
+                  detail: 'El producto ha sido eliminado correctamente',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -162,8 +162,9 @@ export const ProductStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Productos eliminados',
+                  summary: 'Productos eliminados',
+                  detail:
+                    'Los productos seleccionados han sido eliminados correctamente',
                 });
               },
               error: ({ message: error }: Error) => {
