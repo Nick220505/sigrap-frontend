@@ -38,17 +38,92 @@ export class MenuComponent {
       ],
     },
     {
-      label: 'INVENTARIO',
+      label: 'CONFIGURACIÓN',
       items: [
         {
-          label: 'Productos',
-          icon: 'pi pi-fw pi-box',
-          routerLink: ['/inventario/productos'],
+          label: 'Usuarios',
+          icon: 'pi pi-fw pi-users',
+          routerLink: ['/configuracion/usuarios'],
         },
+        {
+          label: 'Perfiles',
+          icon: 'pi pi-fw pi-id-card',
+          routerLink: ['/configuracion/perfiles'],
+        },
+        {
+          label: 'Auditoría',
+          icon: 'pi pi-fw pi-shield',
+          routerLink: ['/configuracion/auditoria'],
+        },
+        {
+          label: 'Notificaciones',
+          icon: 'pi pi-fw pi-bell',
+          routerLink: ['/configuracion/notificaciones'],
+        },
+      ],
+    },
+    {
+      label: 'EMPLEADOS',
+      items: [
+        {
+          label: 'Registro',
+          icon: 'pi pi-fw pi-user-plus',
+          routerLink: ['/empleados/registro'],
+        },
+        {
+          label: 'Horarios',
+          icon: 'pi pi-fw pi-calendar',
+          routerLink: ['/empleados/horarios'],
+        },
+        {
+          label: 'Seguimiento',
+          icon: 'pi pi-fw pi-eye',
+          routerLink: ['/empleados/seguimiento'],
+        },
+        {
+          label: 'Rendimiento',
+          icon: 'pi pi-fw pi-chart-line',
+          routerLink: ['/empleados/rendimiento'],
+        },
+      ],
+    },
+    {
+      label: 'PROVEEDORES',
+      items: [
+        {
+          label: 'Catálogo',
+          icon: 'pi pi-fw pi-book',
+          routerLink: ['/proveedores/catalogo'],
+        },
+        {
+          label: 'Pedidos',
+          icon: 'pi pi-fw pi-send',
+          routerLink: ['/proveedores/pedidos'],
+        },
+        {
+          label: 'Seguimiento',
+          icon: 'pi pi-fw pi-map-marker',
+          routerLink: ['/proveedores/seguimiento'],
+        },
+        {
+          label: 'Pagos',
+          icon: 'pi pi-fw pi-wallet',
+          routerLink: ['/proveedores/pagos'],
+        },
+      ],
+    },
+    {
+      label: 'INVENTARIO',
+      items: [
         {
           label: 'Categorías',
           icon: 'pi pi-fw pi-tags',
           routerLink: ['/inventario/categorias'],
+        },
+        {
+          label: 'Productos',
+          icon: 'pi pi-fw pi-box',
+          routerLink: ['/inventario/productos'],
         },
         {
           label: 'Stock',
@@ -59,6 +134,26 @@ export class MenuComponent {
           label: 'Alertas',
           icon: 'pi pi-fw pi-exclamation-triangle',
           routerLink: ['/alertas'],
+        },
+      ],
+    },
+    {
+      label: 'CLIENTES',
+      items: [
+        {
+          label: 'Registro',
+          icon: 'pi pi-fw pi-user-plus',
+          routerLink: ['/clientes/registro'],
+        },
+        {
+          label: 'Historial',
+          icon: 'pi pi-fw pi-history',
+          routerLink: ['/clientes/historial'],
+        },
+        {
+          label: 'Ranking',
+          icon: 'pi pi-fw pi-star',
+          routerLink: ['/clientes/ranking'],
         },
       ],
     },
@@ -88,71 +183,6 @@ export class MenuComponent {
       ],
     },
     {
-      label: 'PROVEEDORES',
-      items: [
-        {
-          label: 'Catálogo',
-          icon: 'pi pi-fw pi-book',
-          routerLink: ['/proveedores/catalogo'],
-        },
-        {
-          label: 'Pedidos',
-          icon: 'pi pi-fw pi-send',
-          routerLink: ['/proveedores/pedidos'],
-        },
-        {
-          label: 'Pagos',
-          icon: 'pi pi-fw pi-wallet',
-          routerLink: ['/proveedores/pagos'],
-        },
-        {
-          label: 'Seguimiento',
-          icon: 'pi pi-fw pi-map-marker',
-          routerLink: ['/proveedores/seguimiento'],
-        },
-      ],
-    },
-    {
-      label: 'CLIENTES',
-      items: [
-        {
-          label: 'Registro',
-          icon: 'pi pi-fw pi-user-plus',
-          routerLink: ['/clientes/registro'],
-        },
-        {
-          label: 'Historial',
-          icon: 'pi pi-fw pi-history',
-          routerLink: ['/clientes/historial'],
-        },
-        {
-          label: 'Ranking',
-          icon: 'pi pi-fw pi-star',
-          routerLink: ['/clientes/ranking'],
-        },
-      ],
-    },
-    {
-      label: 'EMPLEADOS',
-      items: [
-        {
-          label: 'Rendimiento',
-          icon: 'pi pi-fw pi-chart-line',
-          routerLink: ['/empleados/rendimiento'],
-        },
-        {
-          label: 'Horarios',
-          icon: 'pi pi-fw pi-calendar',
-          routerLink: ['/empleados/horarios'],
-        },
-        {
-          label: 'Seguimiento',
-          icon: 'pi pi-fw pi-eye',
-          routerLink: ['/empleados/seguimiento'],
-        },
-      ],
-    },
-    {
       label: 'REPORTES',
       items: [
         {
@@ -166,6 +196,11 @@ export class MenuComponent {
           routerLink: ['/reportes/inventario'],
         },
         {
+          label: 'Clientes',
+          icon: 'pi pi-fw pi-users',
+          routerLink: ['/reportes/clientes'],
+        },
+        {
           label: 'Financieros',
           icon: 'pi pi-fw pi-dollar',
           routerLink: ['/reportes/financieros'],
@@ -174,31 +209,6 @@ export class MenuComponent {
           label: 'Desempeño',
           icon: 'pi pi-fw pi-chart-line',
           routerLink: ['/reportes/desempeno'],
-        },
-      ],
-    },
-    {
-      label: 'CONFIGURACIÓN',
-      items: [
-        {
-          label: 'Usuarios',
-          icon: 'pi pi-fw pi-users',
-          routerLink: ['/configuracion/usuarios'],
-        },
-        {
-          label: 'Perfiles',
-          icon: 'pi pi-fw pi-id-card',
-          routerLink: ['/configuracion/perfiles'],
-        },
-        {
-          label: 'Auditoría',
-          icon: 'pi pi-fw pi-shield',
-          routerLink: ['/configuracion/auditoria'],
-        },
-        {
-          label: 'Notificaciones',
-          icon: 'pi pi-fw pi-bell',
-          routerLink: ['/configuracion/notificaciones'],
         },
       ],
     },
