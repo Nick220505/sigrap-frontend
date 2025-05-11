@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, computed, effect, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export type ThemeMode = 'auto' | 'dark' | 'light';
+export type ThemeMode = 'auto' | 'dark' | 'light' | 'system';
 
 export interface LayoutConfig {
   preset?: string;
@@ -101,6 +101,8 @@ export class LayoutService implements OnDestroy {
 
   private initialized = false;
   private timeCheckInterval: ReturnType<typeof setInterval> | null = null;
+  private systemThemeMediaQuery: MediaQueryList | null = null;
+  private systemThemeHandler: ((e: MediaQueryListEvent) => void) | null = null;
 
   constructor() {
     this.applyInitialTheme();
@@ -127,6 +129,7 @@ export class LayoutService implements OnDestroy {
     });
 
     this.setupTimeBasedTheme();
+    this.setupSystemThemeDetection();
   }
 
   private applyInitialTheme(): void {
@@ -147,6 +150,21 @@ export class LayoutService implements OnDestroy {
             document.documentElement.classList.add('app-dark');
             this._config.darkTheme = true;
             this._config.themeMode = 'auto';
+            this.layoutConfig.set(this._config);
+          }
+        } else if (parsedConfig.themeMode === 'system') {
+          if (window.matchMedia) {
+            const isDarkMode = window.matchMedia(
+              '(prefers-color-scheme: dark)',
+            ).matches;
+            if (isDarkMode) {
+              document.documentElement.classList.add('app-dark');
+              this._config.darkTheme = true;
+            } else {
+              document.documentElement.classList.remove('app-dark');
+              this._config.darkTheme = false;
+            }
+            this._config.themeMode = 'system';
             this.layoutConfig.set(this._config);
           }
         }
@@ -216,6 +234,45 @@ export class LayoutService implements OnDestroy {
     }
   }
 
+  private setupSystemThemeDetection(): void {
+    if (window.matchMedia) {
+      this.systemThemeMediaQuery = window.matchMedia(
+        '(prefers-color-scheme: dark)',
+      );
+
+      this.systemThemeHandler = (e: MediaQueryListEvent): void => {
+        if (this.layoutConfig().themeMode === 'system') {
+          this.layoutConfig.update((state) => ({
+            ...state,
+            darkTheme: e.matches,
+          }));
+        }
+      };
+
+      if (this.layoutConfig().themeMode === 'system') {
+        this.applySystemTheme();
+      }
+
+      if (this.systemThemeMediaQuery.addEventListener) {
+        this.systemThemeMediaQuery.addEventListener(
+          'change',
+          this.systemThemeHandler,
+        );
+      }
+    }
+  }
+
+  private applySystemTheme(): void {
+    if (this.systemThemeMediaQuery) {
+      const isDarkMode = this.systemThemeMediaQuery.matches;
+
+      this.layoutConfig.update((state) => ({
+        ...state,
+        darkTheme: isDarkMode,
+      }));
+    }
+  }
+
   setThemeMode(mode: ThemeMode): void {
     this.layoutConfig.update((state) => {
       const newState = {
@@ -230,6 +287,13 @@ export class LayoutService implements OnDestroy {
       } else if (mode === 'auto') {
         const currentHour = new Date().getHours();
         newState.darkTheme = currentHour >= 18 || currentHour < 6;
+      } else if (mode === 'system') {
+        if (window.matchMedia) {
+          const isDarkMode = window.matchMedia(
+            '(prefers-color-scheme: dark)',
+          ).matches;
+          newState.darkTheme = isDarkMode;
+        }
       }
 
       return newState;
@@ -346,6 +410,15 @@ export class LayoutService implements OnDestroy {
   ngOnDestroy(): void {
     if (this.timeCheckInterval !== null) {
       clearInterval(this.timeCheckInterval);
+    }
+
+    if (this.systemThemeMediaQuery && this.systemThemeHandler) {
+      if (this.systemThemeMediaQuery.removeEventListener) {
+        this.systemThemeMediaQuery.removeEventListener(
+          'change',
+          this.systemThemeHandler,
+        );
+      }
     }
   }
 }

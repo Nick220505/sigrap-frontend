@@ -146,7 +146,7 @@ describe('TopbarComponent', () => {
     expect(layoutService.onMenuToggle).toHaveBeenCalled();
   });
 
-  it('should toggle theme mode on button click (light -> dark -> auto -> light)', () => {
+  it('should toggle theme mode on button click (light -> dark -> auto -> system -> light)', () => {
     const themeButton = fixture.debugElement.queryAll(By.css('button'))[1];
 
     expect(component.themeMode()).toBe('light');
@@ -168,6 +168,14 @@ describe('TopbarComponent', () => {
     expect(component.themeMode()).toBe('auto');
     expect(component.getThemeTooltip()).toBe('Automático (Basado en hora)');
     themeIcon = fixture.debugElement.query(By.css('.pi-sync'));
+    expect(themeIcon).toBeTruthy();
+
+    themeButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    expect(layoutService.setThemeMode).toHaveBeenCalledWith('system');
+    expect(component.themeMode()).toBe('system');
+    expect(component.getThemeTooltip()).toBe('Según preferencia del sistema');
+    themeIcon = fixture.debugElement.query(By.css('.pi-desktop'));
     expect(themeIcon).toBeTruthy();
 
     themeButton.triggerEventHandler('click', null);
@@ -292,5 +300,17 @@ describe('TopbarComponent', () => {
   it('should contain the configurator component placeholder', () => {
     const configurator = fixture.debugElement.query(By.css('app-configurator'));
     expect(configurator).toBeTruthy();
+  });
+
+  it('should correctly set light theme when toggling from system mode', () => {
+    layoutService.layoutConfig.update((config) => ({
+      ...config,
+      themeMode: 'system',
+    }));
+    fixture.detectChanges();
+
+    component.toggleThemeMode();
+
+    expect(layoutService.setThemeMode).toHaveBeenCalledWith('light');
   });
 });

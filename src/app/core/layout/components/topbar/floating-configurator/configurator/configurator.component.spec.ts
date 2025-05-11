@@ -117,7 +117,6 @@ describe('ConfiguratorComponent', () => {
 
   describe('getPresetExt method', () => {
     it('should return noir preset config when color.name is noir', () => {
-      // We'll test the implementation directly
       const noirResult = component['getPresetExt'].call({
         primaryColors: () => [{ name: 'noir', palette: {} }],
         selectedPrimaryColor: () => 'noir',
@@ -126,7 +125,6 @@ describe('ConfiguratorComponent', () => {
         },
       });
 
-      // Verify noir-specific properties
       expect(noirResult.semantic.primary?.[50]).toBe('{surface.50}');
       expect(noirResult.semantic.colorScheme.light.primary.color).toBe(
         '{primary.950}',
@@ -137,7 +135,6 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should return Nora preset config when preset is Nora', () => {
-      // We'll test the implementation directly
       const colorMock = { name: 'blue', palette: { '500': '#3b82f6' } };
 
       const noraResult = component['getPresetExt'].call({
@@ -148,7 +145,6 @@ describe('ConfiguratorComponent', () => {
         },
       });
 
-      // Verify Nora-specific properties
       expect(noraResult.semantic.primary).toBe(colorMock.palette);
       expect(noraResult.semantic.colorScheme.light.primary.color).toBe(
         '{primary.600}',
@@ -159,7 +155,6 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should return default preset config for other cases', () => {
-      // We'll test the implementation directly
       const colorMock = { name: 'green', palette: { '500': '#10b981' } };
 
       const defaultResult = component['getPresetExt'].call({
@@ -170,7 +165,6 @@ describe('ConfiguratorComponent', () => {
         },
       });
 
-      // Verify default config properties
       expect(defaultResult.semantic.primary).toBe(colorMock.palette);
       expect(defaultResult.semantic.colorScheme.light.primary.color).toBe(
         '{primary.500}',
@@ -246,7 +240,6 @@ describe('ConfiguratorComponent', () => {
 
   describe('onPresetChange method', () => {
     it('should update layout config when preset changes', () => {
-      // Create a proper mock for getPresetExt
       const mockPresetExt = {
         semantic: {
           primary: { '500': '#3b82f6' },
@@ -297,7 +290,6 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should handle all available presets', () => {
-      // Create a proper mock for getPresetExt
       const mockPresetExt = {
         semantic: {
           primary: { '500': '#3b82f6' },
@@ -346,7 +338,6 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should not update config when preset value is not valid', () => {
-      // Create a proper mock for getPresetExt
       const mockPresetExt = {
         semantic: {
           primary: { '500': '#3b82f6' },

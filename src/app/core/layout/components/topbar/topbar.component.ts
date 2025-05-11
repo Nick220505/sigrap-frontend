@@ -65,6 +65,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                 'pi-moon': themeMode() === 'dark',
                 'pi-sun': themeMode() === 'light',
                 'pi-sync': themeMode() === 'auto',
+                'pi-desktop': themeMode() === 'system',
               }"
               class="text-[1.25rem]"
             ></i>
@@ -209,6 +210,8 @@ export class TopbarComponent {
         return 'Automático (Basado en hora)';
       case 'dark':
         return 'Modo Oscuro';
+      case 'system':
+        return 'Según preferencia del sistema';
       default:
         return 'Modo Claro';
     }
@@ -217,6 +220,9 @@ export class TopbarComponent {
   toggleThemeMode(): void {
     switch (this.themeMode()) {
       case 'auto':
+        this.layoutService.setThemeMode('system');
+        break;
+      case 'system':
         this.layoutService.setThemeMode('light');
         break;
       case 'light':
