@@ -41,6 +41,7 @@ describe('AuthService', () => {
         token: 'test-token',
         email: 'test@example.com',
         name: 'Test User',
+        lastLogin: new Date().toISOString(),
       };
 
       service.login(credentials).subscribe((response) => {
@@ -65,6 +66,7 @@ describe('AuthService', () => {
         token: 'test-token',
         email: 'test@example.com',
         name: 'Test User',
+        lastLogin: new Date().toISOString(),
       };
 
       service.register(userData).subscribe((response) => {

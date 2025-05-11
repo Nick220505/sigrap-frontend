@@ -22,6 +22,14 @@ export const routes: Routes = [
             (m) => m.inventoryRoutes,
           ),
       },
+      {
+        path: 'configuracion',
+        loadChildren: () =>
+          import('./features/configuration/configuration.routes').then(
+            (m) => m.configurationRoutes,
+          ),
+        canActivate: [authGuard],
+      },
     ],
   },
   {

@@ -1,20 +1,26 @@
+export enum NotificationType {
+  EMAIL = 'EMAIL',
+  SMS = 'SMS',
+  PUSH = 'PUSH',
+}
+
+export enum NotificationChannel {
+  IMMEDIATE = 'IMMEDIATE',
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+}
+
+export interface NotificationPreferenceInfo {
+  id: number;
+  userId: number;
+  notificationType: NotificationType;
+  channel: NotificationChannel;
+  enabled: boolean;
+}
+
 export interface NotificationPreferenceData {
   userId: number;
   notificationType: NotificationType;
+  channel: NotificationChannel;
   enabled: boolean;
-  emailEnabled: boolean;
-  pushEnabled: boolean;
-}
-
-export interface NotificationPreferenceInfo extends NotificationPreferenceData {
-  id: number;
-}
-
-export enum NotificationType {
-  SECURITY = 'SECURITY',
-  PRODUCT_UPDATES = 'PRODUCT_UPDATES',
-  INVENTORY_ALERTS = 'INVENTORY_ALERTS',
-  SYSTEM_NOTIFICATIONS = 'SYSTEM_NOTIFICATIONS',
-  ROLE_CHANGES = 'ROLE_CHANGES',
-  USER_MANAGEMENT = 'USER_MANAGEMENT',
 }

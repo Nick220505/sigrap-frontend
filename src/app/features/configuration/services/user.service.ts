@@ -36,7 +36,7 @@ export class UserService {
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.request<void>('delete', `${this.usersUrl}/delete-many`, {
+    return this.http.delete<void>(`${this.usersUrl}/delete-many`, {
       body: ids,
     });
   }

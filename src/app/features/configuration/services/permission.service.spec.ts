@@ -4,23 +4,20 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { environment } from '@env';
-import { PermissionInfo } from '../models/permission.model';
+import { PermissionData, PermissionInfo } from '../models/permission.model';
 import { PermissionService } from './permission.service';
 
 describe('PermissionService', () => {
   let service: PermissionService;
   let httpMock: HttpTestingController;
-  const apiUrl = `${environment.apiUrl}/permissions`;
 
   const mockPermission: PermissionInfo = {
     id: 1,
-    name: 'Test Permission',
-    description: 'A test permission',
-    resource: 'users',
-    action: 'read',
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-02T00:00:00Z',
+    name: 'READ_USERS',
+    resource: 'USER',
+    action: 'READ',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   beforeEach(() => {
@@ -31,6 +28,7 @@ describe('PermissionService', () => {
         provideHttpClientTesting(),
       ],
     });
+
     service = TestBed.inject(PermissionService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -43,44 +41,77 @@ describe('PermissionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should find all permissions', () => {
-    const mockPermissions: PermissionInfo[] = [mockPermission];
-    service.findAll().subscribe((permissions) => {
-      expect(permissions).toEqual(mockPermissions);
+  describe('findAll', () => {
+    it('should send a GET request to the permissions endpoint', () => {
+      service.findAll().subscribe((permissions) => {
+        expect(permissions).toEqual([mockPermission]);
+      });
+
+      const req = httpMock.expectOne('/api/permissions');
+      expect(req.request.method).toBe('GET');
+      req.flush([mockPermission]);
     });
-    const req = httpMock.expectOne(apiUrl);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockPermissions);
   });
 
-  it('should find permission by id', () => {
-    service.findById(1).subscribe((permission) => {
-      expect(permission).toEqual(mockPermission);
+  describe('findById', () => {
+    it('should send a GET request to the permission endpoint with id', () => {
+      service.findById(1).subscribe((permission) => {
+        expect(permission).toEqual(mockPermission);
+      });
+
+      const req = httpMock.expectOne('/api/permissions/1');
+      expect(req.request.method).toBe('GET');
+      req.flush(mockPermission);
     });
-    const req = httpMock.expectOne(`${apiUrl}/1`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockPermission);
   });
 
-  it('should find permissions by resource', () => {
-    const resource = 'users';
-    const mockPermissions: PermissionInfo[] = [mockPermission];
-    service.findByResource(resource).subscribe((permissions) => {
-      expect(permissions).toEqual(mockPermissions);
+  describe('create', () => {
+    it('should send a POST request to create a permission', () => {
+      const newPermission: PermissionData = {
+        name: 'READ_USERS',
+        resource: 'USER',
+        action: 'READ',
+      };
+
+      service.create(newPermission).subscribe((permission) => {
+        expect(permission).toEqual(mockPermission);
+      });
+
+      const req = httpMock.expectOne('/api/permissions');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(newPermission);
+      req.flush(mockPermission);
     });
-    const req = httpMock.expectOne(`${apiUrl}/resource/${resource}`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockPermissions);
   });
 
-  it('should find permissions by action', () => {
-    const action = 'read';
-    const mockPermissions: PermissionInfo[] = [mockPermission];
-    service.findByAction(action).subscribe((permissions) => {
-      expect(permissions).toEqual(mockPermissions);
+  describe('update', () => {
+    it('should send a PATCH request to update a permission', () => {
+      const updatedPermission: Partial<PermissionData> = {
+        name: 'READ_USERS',
+        resource: 'USER',
+        action: 'READ',
+      };
+
+      service.update(1, updatedPermission).subscribe((permission) => {
+        expect(permission).toEqual(mockPermission);
+      });
+
+      const req = httpMock.expectOne('/api/permissions/1');
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(updatedPermission);
+      req.flush(mockPermission);
     });
-    const req = httpMock.expectOne(`${apiUrl}/action/${action}`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockPermissions);
+  });
+
+  describe('delete', () => {
+    it('should send a DELETE request to delete a permission', () => {
+      service.delete(1).subscribe(() => {
+        expect().nothing();
+      });
+
+      const req = httpMock.expectOne('/api/permissions/1');
+      expect(req.request.method).toBe('DELETE');
+      req.flush({});
+    });
   });
 });

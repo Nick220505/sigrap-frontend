@@ -1,12 +1,10 @@
 export interface AuditLogInfo {
   id: number;
-  userId: number;
-  username: string;
-  action: string;
   entityName: string;
-  entityId: string;
-  oldValue?: string;
-  newValue?: string;
+  entityId: number;
+  action: string;
+  username: string;
   timestamp: string;
-  ipAddress?: string;
+  oldValue: Record<string, unknown>;
+  newValue: Record<string, unknown>;
 }

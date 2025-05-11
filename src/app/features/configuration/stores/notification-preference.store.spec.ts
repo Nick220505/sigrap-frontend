@@ -1,92 +1,43 @@
-import {
-  HttpErrorResponse,
-  HttpStatusCode,
-  provideHttpClient,
-} from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
-import { of, throwError } from 'rxjs';
 import {
   NotificationPreferenceData,
   NotificationPreferenceInfo,
   NotificationType,
 } from '../models/notification-preference.model';
-import { NotificationPreferenceService } from '../services/notification-preference.service';
 import { NotificationPreferenceStore } from './notification-preference.store';
 
 describe('NotificationPreferenceStore', () => {
   let store: InstanceType<typeof NotificationPreferenceStore>;
-  let preferenceService: jasmine.SpyObj<NotificationPreferenceService>;
-  let messageService: jasmine.SpyObj<MessageService>;
   let httpMock: HttpTestingController;
+  let messageService: jasmine.SpyObj<MessageService>;
 
-  const mockPreferences: NotificationPreferenceInfo[] = [
-    {
-      id: 1,
-      userId: 1,
-      notificationType: NotificationType.SECURITY,
-      enabled: true,
-      emailEnabled: true,
-      pushEnabled: false,
-    },
-    {
-      id: 2,
-      userId: 1,
-      notificationType: NotificationType.PRODUCT_UPDATES,
-      enabled: true,
-      emailEnabled: false,
-      pushEnabled: true,
-    },
-  ];
+  const mockNotificationPreference: NotificationPreferenceInfo = {
+    id: 1,
+    userId: 1,
+    type: NotificationType.EMAIL,
+    enabled: true,
+  };
+
+  const mockNotificationPreferenceData: NotificationPreferenceData = {
+    userId: 1,
+    type: NotificationType.EMAIL,
+    enabled: true,
+  };
 
   beforeEach(() => {
-    preferenceService = jasmine.createSpyObj('NotificationPreferenceService', [
-      'findAll',
-      'findByUserId',
-      'create',
-      'update',
-      'delete',
-      'updateUserPreferences',
-    ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
-
-    preferenceService.findAll.and.returnValue(of(mockPreferences));
-    preferenceService.findByUserId.and.returnValue(of(mockPreferences));
-    preferenceService.create.and.returnValue(
-      of({
-        id: 3,
-        userId: 1,
-        notificationType: NotificationType.INVENTORY_ALERTS,
-        enabled: true,
-        emailEnabled: true,
-        pushEnabled: true,
-      }),
-    );
-    preferenceService.update.and.returnValue(
-      of({
-        id: 1,
-        userId: 1,
-        notificationType: NotificationType.SECURITY,
-        enabled: false,
-        emailEnabled: false,
-        pushEnabled: false,
-      }),
-    );
-    preferenceService.delete.and.returnValue(of(undefined));
-    preferenceService.updateUserPreferences.and.returnValue(
-      of(mockPreferences),
-    );
 
     TestBed.configureTestingModule({
       providers: [
         NotificationPreferenceStore,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: NotificationPreferenceService, useValue: preferenceService },
         { provide: MessageService, useValue: messageService },
       ],
     });
@@ -101,44 +52,57 @@ describe('NotificationPreferenceStore', () => {
 
   it('should be created', () => {
     expect(store).toBeTruthy();
+    const req = httpMock.expectOne('/api/notification-preferences');
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
   });
 
   describe('findAll', () => {
-    it('should call the service method and set entities', () => {
-      expect(preferenceService.findAll).toHaveBeenCalled();
-      expect(store.loading()).toBeFalse();
+    it('should update entities signal with notification preferences', () => {
+      store.findAll();
+
+      const req = httpMock.expectOne('/api/notification-preferences');
+      expect(req.request.method).toBe('GET');
+      req.flush([mockNotificationPreference]);
+
+      expect(store.entities()).toEqual([mockNotificationPreference]);
     });
 
-    it('should update error state when findAll fails', () => {
-      preferenceService.findAll.calls.reset();
-      const testError = new Error('Failed to fetch preferences');
-      preferenceService.findAll.and.returnValue(throwError(() => testError));
+    it('should handle error when finding notification preferences fails', () => {
       store.findAll();
-      expect(store.error()).toBe('Failed to fetch preferences');
+
+      const req = httpMock.expectOne('/api/notification-preferences');
+      expect(req.request.method).toBe('GET');
+      req.error(new ProgressEvent('error'));
+
+      expect(store.error()).toBeTruthy();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar preferencias de notificación',
+        detail: 'Error al cargar preferencias',
       });
     });
   });
 
   describe('findByUserId', () => {
-    it('should call the service method and set entities', () => {
+    it('should update entities signal with user notification preferences', () => {
       store.findByUserId(1);
 
-      expect(preferenceService.findByUserId).toHaveBeenCalledWith(1);
-      expect(store.loading()).toBeFalse();
+      const req = httpMock.expectOne('/api/notification-preferences/user/1');
+      expect(req.request.method).toBe('GET');
+      req.flush([mockNotificationPreference]);
+
+      expect(store.entities()).toEqual([mockNotificationPreference]);
     });
 
-    it('should update error state when findByUserId fails', () => {
-      preferenceService.findByUserId.calls.reset();
-      const testError = new Error('Failed to fetch user preferences');
-      preferenceService.findByUserId.and.returnValue(
-        throwError(() => testError),
-      );
+    it('should handle error when finding user notification preferences fails', () => {
       store.findByUserId(1);
-      expect(store.error()).toBe('Failed to fetch user preferences');
+
+      const req = httpMock.expectOne('/api/notification-preferences/user/1');
+      expect(req.request.method).toBe('GET');
+      req.error(new ProgressEvent('error'));
+
+      expect(store.error()).toBeTruthy();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -148,18 +112,14 @@ describe('NotificationPreferenceStore', () => {
   });
 
   describe('create', () => {
-    it('should call the service method and show success message', () => {
-      const preferenceData: NotificationPreferenceData = {
-        userId: 1,
-        notificationType: NotificationType.INVENTORY_ALERTS,
-        enabled: true,
-        emailEnabled: true,
-        pushEnabled: true,
-      };
+    it('should add new notification preference to entities', () => {
+      store.create(mockNotificationPreferenceData);
 
-      store.create(preferenceData);
+      const req = httpMock.expectOne('/api/notification-preferences');
+      expect(req.request.method).toBe('POST');
+      req.flush(mockNotificationPreference);
 
-      expect(preferenceService.create).toHaveBeenCalledWith(preferenceData);
+      expect(store.entities()).toEqual([mockNotificationPreference]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Preferencia creada',
@@ -167,42 +127,30 @@ describe('NotificationPreferenceStore', () => {
       });
     });
 
-    it('should handle error when creating preference fails', () => {
-      preferenceService.create.calls.reset();
-      preferenceService.create.and.returnValue(
-        throwError(() => new Error('Failed to create preference')),
-      );
+    it('should handle error when creating notification preference fails', () => {
+      store.create(mockNotificationPreferenceData);
 
-      const preferenceData: NotificationPreferenceData = {
-        userId: 1,
-        notificationType: NotificationType.INVENTORY_ALERTS,
-        enabled: true,
-        emailEnabled: true,
-        pushEnabled: true,
-      };
+      const req = httpMock.expectOne('/api/notification-preferences');
+      expect(req.request.method).toBe('POST');
+      req.error(new ProgressEvent('error'));
 
-      store.create(preferenceData);
-
-      expect(preferenceService.create).toHaveBeenCalledWith(preferenceData);
+      expect(store.error()).toBeTruthy();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear preferencia de notificación',
+        detail: 'Error al crear preferencia',
       });
     });
   });
 
   describe('update', () => {
-    it('should call the service method and show success message', () => {
-      const preferenceData: Partial<NotificationPreferenceData> = {
-        enabled: false,
-        emailEnabled: false,
-        pushEnabled: false,
-      };
+    it('should update notification preference in entities', () => {
+      store.update({ id: 1, preferenceData: mockNotificationPreferenceData });
 
-      store.update({ id: 1, preferenceData });
+      const req = httpMock.expectOne('/api/notification-preferences/1');
+      expect(req.request.method).toBe('PUT');
+      req.flush(mockNotificationPreference);
 
-      expect(preferenceService.update).toHaveBeenCalledWith(1, preferenceData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Preferencia actualizada',
@@ -211,34 +159,30 @@ describe('NotificationPreferenceStore', () => {
       });
     });
 
-    it('should handle error when updating preference fails', () => {
-      preferenceService.update.calls.reset();
-      preferenceService.update.and.returnValue(
-        throwError(() => new Error('Failed to update preference')),
-      );
+    it('should handle error when updating notification preference fails', () => {
+      store.update({ id: 1, preferenceData: mockNotificationPreferenceData });
 
-      const preferenceData: Partial<NotificationPreferenceData> = {
-        enabled: false,
-        emailEnabled: false,
-        pushEnabled: false,
-      };
+      const req = httpMock.expectOne('/api/notification-preferences/1');
+      expect(req.request.method).toBe('PUT');
+      req.error(new ProgressEvent('error'));
 
-      store.update({ id: 1, preferenceData });
-
-      expect(preferenceService.update).toHaveBeenCalledWith(1, preferenceData);
+      expect(store.error()).toBeTruthy();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar preferencia de notificación',
+        detail: 'Error al actualizar preferencia',
       });
     });
   });
 
   describe('delete', () => {
-    it('should call the service method and show success message', () => {
+    it('should remove notification preference from entities', () => {
       store.delete(1);
 
-      expect(preferenceService.delete).toHaveBeenCalledWith(1);
+      const req = httpMock.expectOne('/api/notification-preferences/1');
+      expect(req.request.method).toBe('DELETE');
+      req.flush({});
+
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Preferencia eliminada',
@@ -247,92 +191,50 @@ describe('NotificationPreferenceStore', () => {
       });
     });
 
-    it('should handle error when deleting preference', () => {
-      preferenceService.delete.calls.reset();
-      const errorResponse = new HttpErrorResponse({
-        error: { message: 'Server error' },
-        status: HttpStatusCode.InternalServerError,
-        statusText: 'Server Error',
-      });
-
-      preferenceService.delete.and.returnValue(throwError(() => errorResponse));
-
+    it('should handle error when deleting notification preference fails', () => {
       store.delete(1);
 
-      expect(preferenceService.delete).toHaveBeenCalledWith(1);
+      const req = httpMock.expectOne('/api/notification-preferences/1');
+      expect(req.request.method).toBe('DELETE');
+      req.error(new ProgressEvent('error'));
+
+      expect(store.error()).toBeTruthy();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar preferencia de notificación',
+        detail: 'Error al eliminar preferencia',
       });
     });
   });
 
-  describe('updateUserPreferences', () => {
-    it('should call the service method and show success message', () => {
-      const preferences: NotificationPreferenceData[] = [
-        {
-          userId: 1,
-          notificationType: NotificationType.SECURITY,
-          enabled: true,
-          emailEnabled: true,
-          pushEnabled: false,
-        },
-        {
-          userId: 1,
-          notificationType: NotificationType.PRODUCT_UPDATES,
-          enabled: true,
-          emailEnabled: false,
-          pushEnabled: true,
-        },
-      ];
+  describe('deleteAllById', () => {
+    it('should delete multiple notification preferences', () => {
+      store.deleteAllById([1, 2]);
 
-      store.updateUserPreferences({ userId: 1, preferences });
+      const req = httpMock.expectOne('/api/notification-preferences/batch');
+      expect(req.request.method).toBe('DELETE');
+      req.flush({});
 
-      expect(preferenceService.updateUserPreferences).toHaveBeenCalledWith(
-        1,
-        preferences,
-      );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Preferencias actualizadas',
+        summary: 'Preferencias eliminadas',
         detail:
-          'Las preferencias de notificación han sido actualizadas correctamente',
+          'Las preferencias seleccionadas han sido eliminadas correctamente',
       });
     });
 
-    it('should handle error when updating user preferences', () => {
-      preferenceService.updateUserPreferences.calls.reset();
-      const errorResponse = new HttpErrorResponse({
-        error: { message: 'Server error' },
-        status: HttpStatusCode.InternalServerError,
-        statusText: 'Server Error',
-      });
+    it('should handle error when deleting multiple notification preferences fails', () => {
+      store.deleteAllById([1, 2]);
 
-      preferenceService.updateUserPreferences.and.returnValue(
-        throwError(() => errorResponse),
-      );
+      const req = httpMock.expectOne('/api/notification-preferences/batch');
+      expect(req.request.method).toBe('DELETE');
+      req.error(new ProgressEvent('error'));
 
-      const preferences: NotificationPreferenceData[] = [
-        {
-          userId: 1,
-          notificationType: NotificationType.SECURITY,
-          enabled: true,
-          emailEnabled: true,
-          pushEnabled: false,
-        },
-      ];
-
-      store.updateUserPreferences({ userId: 1, preferences });
-
-      expect(preferenceService.updateUserPreferences).toHaveBeenCalledWith(
-        1,
-        preferences,
-      );
+      expect(store.error()).toBeTruthy();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar preferencias de notificación',
+        detail: 'Error al eliminar preferencias',
       });
     });
   });
@@ -340,45 +242,24 @@ describe('NotificationPreferenceStore', () => {
   describe('dialog operations', () => {
     it('should open preference dialog without preference', () => {
       store.openPreferenceDialog();
-      expect(store.dialogVisible()).toBeTrue();
-      expect(store.selectedPreference()).toBeFalsy();
+      expect(store.dialogVisible()).toBe(true);
+      expect(store.selectedPreference()).toBeNull();
     });
 
     it('should open preference dialog with preference', () => {
-      const preference: NotificationPreferenceInfo = {
-        id: 1,
-        userId: 1,
-        notificationType: NotificationType.SECURITY,
-        enabled: true,
-        emailEnabled: true,
-        pushEnabled: false,
-      };
-
-      store.openPreferenceDialog(preference);
-      expect(store.dialogVisible()).toBeTrue();
-      expect(store.selectedPreference()).toEqual(preference);
+      store.openPreferenceDialog(mockNotificationPreference);
+      expect(store.dialogVisible()).toBe(true);
+      expect(store.selectedPreference()).toBe(mockNotificationPreference);
     });
 
     it('should close preference dialog', () => {
       store.openPreferenceDialog();
-      expect(store.dialogVisible()).toBeTrue();
-
       store.closePreferenceDialog();
-      expect(store.dialogVisible()).toBeFalse();
+      expect(store.dialogVisible()).toBe(false);
     });
 
     it('should clear selected preference', () => {
-      const preference: NotificationPreferenceInfo = {
-        id: 1,
-        userId: 1,
-        notificationType: NotificationType.SECURITY,
-        enabled: true,
-        emailEnabled: true,
-        pushEnabled: false,
-      };
-      store.openPreferenceDialog(preference);
-      expect(store.selectedPreference()).toEqual(preference);
-
+      store.openPreferenceDialog(mockNotificationPreference);
       store.clearSelectedPreference();
       expect(store.selectedPreference()).toBeNull();
     });

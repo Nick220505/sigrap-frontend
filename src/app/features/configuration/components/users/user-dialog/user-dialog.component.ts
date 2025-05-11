@@ -1,0 +1,229 @@
+import { Component, computed, effect, inject, untracked } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { PasswordFieldComponent } from 'app/shared/components/password-field/password-field.component';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { RoleInfo } from '../../../models/role.model';
+import { UserData } from '../../../models/user.model';
+import { RoleStore } from '../../../stores/role.store';
+import { UserStore } from '../../../stores/user.store';
+
+@Component({
+  selector: 'app-user-dialog',
+  imports: [
+    DialogModule,
+    ButtonModule,
+    InputTextModule,
+    MultiSelectModule,
+    ReactiveFormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    PasswordFieldComponent,
+  ],
+  template: `
+    <p-dialog
+      [visible]="userStore.dialogVisible()"
+      (visibleChange)="
+        $event ? userStore.openUserDialog() : userStore.closeUserDialog()
+      "
+      [style]="{ width: '500px' }"
+      [header]="userStore.selectedUser() ? 'Editar Usuario' : 'Crear Usuario'"
+      modal
+    >
+      <form [formGroup]="userForm" class="flex flex-col gap-4 pt-4">
+        @let nameControlInvalid =
+          userForm.get('name')?.invalid && userForm.get('name')?.touched;
+
+        <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
+          <label for="name" class="font-bold">Nombre</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-user"></i>
+            </p-inputgroup-addon>
+            <input
+              type="text"
+              pInputText
+              id="name"
+              formControlName="name"
+              placeholder="Ingrese el nombre del usuario"
+              [class.ng-dirty]="nameControlInvalid"
+              [class.ng-invalid]="nameControlInvalid"
+              required
+              fluid
+            />
+          </p-inputgroup>
+
+          @if (nameControlInvalid) {
+            <small class="text-red-500">El nombre es obligatorio.</small>
+          }
+        </div>
+
+        @let emailControlInvalid =
+          userForm.get('email')?.invalid && userForm.get('email')?.touched;
+
+        <div
+          class="flex flex-col gap-2"
+          [class.p-invalid]="emailControlInvalid"
+        >
+          <label for="email" class="font-bold">Email</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-envelope"></i>
+            </p-inputgroup-addon>
+            <input
+              type="email"
+              pInputText
+              id="email"
+              formControlName="email"
+              placeholder="Ingrese el email del usuario"
+              [class.ng-dirty]="emailControlInvalid"
+              [class.ng-invalid]="emailControlInvalid"
+              required
+              fluid
+            />
+          </p-inputgroup>
+
+          @if (emailControlInvalid) {
+            <small class="text-red-500">
+              @if (userForm.get('email')?.hasError('required')) {
+                El email es obligatorio.
+              } @else if (userForm.get('email')?.hasError('email')) {
+                El email no es válido.
+              }
+            </small>
+          }
+        </div>
+
+        @if (!userStore.selectedUser()) {
+          <app-password-field
+            id="password"
+            [control]="$any(userForm.get('password'))"
+          />
+        }
+
+        <div class="flex flex-col gap-2">
+          <label for="roles" class="font-bold">Roles</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-shield"></i>
+            </p-inputgroup-addon>
+            <p-multiSelect
+              id="roles"
+              formControlName="roleIds"
+              [options]="translatedRoles()"
+              optionLabel="label"
+              optionValue="id"
+              placeholder="Seleccione los roles"
+              filter
+              filterBy="label"
+              appendTo="body"
+              styleClass="w-full"
+            />
+          </p-inputgroup>
+        </div>
+      </form>
+
+      <ng-template #footer>
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          text
+          (click)="userStore.closeUserDialog()"
+        />
+
+        <p-button
+          label="Guardar"
+          icon="pi pi-check"
+          (click)="userForm.valid ? saveUser() : userForm.markAllAsTouched()"
+          [disabled]="userStore.loading()"
+        />
+      </ng-template>
+    </p-dialog>
+  `,
+})
+export class UserDialogComponent {
+  private readonly fb = inject(FormBuilder);
+  readonly userStore = inject(UserStore);
+  readonly roleStore = inject(RoleStore);
+
+  readonly userForm: FormGroup = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+        ),
+      ],
+    ],
+    roleIds: [[]],
+  });
+
+  readonly translatedRoles = computed(() => {
+    return this.roleStore.entities().map((role) => ({
+      id: role.id,
+      name: role.name,
+      label: this.getRoleLabel(role),
+    }));
+  });
+
+  constructor() {
+    effect(() => {
+      const user = this.userStore.selectedUser();
+      untracked(() => {
+        if (user) {
+          const formValue = {
+            ...user,
+            roleIds: user.roles?.map((role) => role.id) ?? [],
+          };
+          this.userForm.patchValue(formValue);
+          this.userForm.get('password')?.clearValidators();
+        } else {
+          this.userForm.reset();
+          this.userForm
+            .get('password')
+            ?.setValidators([
+              Validators.required,
+              Validators.pattern(
+                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+              ),
+            ]);
+        }
+        this.userForm.get('password')?.updateValueAndValidity();
+      });
+    });
+  }
+
+  getRoleLabel(role: RoleInfo): string {
+    const labels: Record<string, string> = {
+      ADMIN: 'Administrador',
+      USER: 'Usuario',
+      EMPLOYEE: 'Empleado',
+      MANAGER: 'Gerente',
+      SUPERVISOR: 'Supervisor',
+    };
+    return labels[role.name] || role.name;
+  }
+
+  saveUser(): void {
+    const userData: UserData = this.userForm.value;
+    const id = this.userStore.selectedUser()?.id;
+    if (id) {
+      this.userStore.update({ id, userData });
+    } else {
+      this.userStore.create(userData);
+    }
+    this.userStore.closeUserDialog();
+  }
+}

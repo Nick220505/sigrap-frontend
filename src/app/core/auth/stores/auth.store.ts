@@ -51,8 +51,8 @@ export const AuthStore = signalStore(
         concatMap((credentials) =>
           authService.login(credentials).pipe(
             tapResponse({
-              next: ({ token, email, name }: AuthResponse) => {
-                const user = { email, name };
+              next: ({ token, email, name, lastLogin }: AuthResponse) => {
+                const user = { email, name, lastLogin };
 
                 localStorage.setItem(AUTH_TOKEN_KEY, token);
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -103,8 +103,8 @@ export const AuthStore = signalStore(
         concatMap((userData) =>
           authService.register(userData).pipe(
             tapResponse({
-              next: ({ token, email, name }: AuthResponse) => {
-                const user = { email, name };
+              next: ({ token, email, name, lastLogin }: AuthResponse) => {
+                const user = { email, name, lastLogin };
 
                 localStorage.setItem(AUTH_TOKEN_KEY, token);
                 localStorage.setItem(USER_KEY, JSON.stringify(user));

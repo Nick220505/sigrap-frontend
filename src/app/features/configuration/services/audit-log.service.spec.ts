@@ -11,28 +11,22 @@ import { AuditLogService } from './audit-log.service';
 describe('AuditLogService', () => {
   let service: AuditLogService;
   let httpMock: HttpTestingController;
-  const apiUrl = `${environment.apiUrl}/audit-logs`;
+  const baseUrl = `${environment.apiUrl}/audit-logs`;
 
   const mockAuditLog: AuditLogInfo = {
     id: 1,
-    userId: 1,
-    username: 'testuser',
-    action: 'CREATE',
     entityName: 'User',
-    entityId: '1',
-    oldValue: undefined,
-    newValue: '{"id": 1, "name": "Test User"}',
-    timestamp: '2024-01-01T00:00:00Z',
-    ipAddress: '127.0.0.1',
+    entityId: 1,
+    action: 'UPDATE',
+    username: 'admin',
+    timestamp: new Date().toISOString(),
+    oldValue: {},
+    newValue: { id: 1, name: 'Test User' },
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        AuditLogService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(AuditLogService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -46,21 +40,46 @@ describe('AuditLogService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should find all audit logs', () => {
-    const mockAuditLogs: AuditLogInfo[] = [mockAuditLog];
-    service.findAll().subscribe((auditLogs) => {
-      expect(auditLogs).toEqual(mockAuditLogs);
+  describe('findAll', () => {
+    it('should send a GET request to the audit logs endpoint', () => {
+      const mockAuditLogs: AuditLogInfo[] = [
+        {
+          id: 1,
+          entityName: 'User',
+          entityId: 1,
+          action: 'UPDATE',
+          username: 'admin',
+          timestamp: new Date().toISOString(),
+          oldValue: {},
+          newValue: { id: 1, name: 'Test User' },
+        },
+        {
+          id: 2,
+          entityName: 'Product',
+          entityId: 3,
+          action: 'UPDATE',
+          username: 'admin',
+          timestamp: new Date().toISOString(),
+          oldValue: { stock: 10 },
+          newValue: { stock: 5 },
+        },
+      ];
+
+      service.findAll().subscribe((response) => {
+        expect(response).toEqual(mockAuditLogs);
+      });
+
+      const req = httpMock.expectOne(baseUrl);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockAuditLogs);
     });
-    const req = httpMock.expectOne(apiUrl);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockAuditLogs);
   });
 
   it('should find audit log by id', () => {
     service.findById(1).subscribe((auditLog) => {
       expect(auditLog).toEqual(mockAuditLog);
     });
-    const req = httpMock.expectOne(`${apiUrl}/1`);
+    const req = httpMock.expectOne(`${baseUrl}/1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockAuditLog);
   });
@@ -71,7 +90,7 @@ describe('AuditLogService', () => {
     service.findByUserId(userId).subscribe((auditLogs) => {
       expect(auditLogs).toEqual(mockAuditLogs);
     });
-    const req = httpMock.expectOne(`${apiUrl}/user/${userId}`);
+    const req = httpMock.expectOne(`${baseUrl}/user/${userId}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockAuditLogs);
   });
@@ -82,18 +101,18 @@ describe('AuditLogService', () => {
     service.findByEntityName(entityName).subscribe((auditLogs) => {
       expect(auditLogs).toEqual(mockAuditLogs);
     });
-    const req = httpMock.expectOne(`${apiUrl}/entity/${entityName}`);
+    const req = httpMock.expectOne(`${baseUrl}/entity/${entityName}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockAuditLogs);
   });
 
   it('should find audit logs by action', () => {
-    const action = 'CREATE';
+    const action = 'UPDATE';
     const mockAuditLogs: AuditLogInfo[] = [mockAuditLog];
     service.findByAction(action).subscribe((auditLogs) => {
       expect(auditLogs).toEqual(mockAuditLogs);
     });
-    const req = httpMock.expectOne(`${apiUrl}/action/${action}`);
+    const req = httpMock.expectOne(`${baseUrl}/action/${action}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockAuditLogs);
   });
@@ -106,7 +125,7 @@ describe('AuditLogService', () => {
       expect(auditLogs).toEqual(mockAuditLogs);
     });
     const req = httpMock.expectOne(
-      `${apiUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
+      `${baseUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
     );
     expect(req.request.method).toBe('GET');
     req.flush(mockAuditLogs);

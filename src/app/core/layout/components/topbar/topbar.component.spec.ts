@@ -53,7 +53,8 @@ class MockAuthStore {
     id: 1,
     name: 'Test User',
     email: 'test@example.com',
-    roles: ['USER'],
+    roles: ['ADMIN'],
+    lastLogin: new Date().toISOString(),
   });
   logout = jasmine.createSpy('logout');
 }

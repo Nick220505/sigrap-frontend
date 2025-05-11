@@ -20,7 +20,6 @@ describe('PermissionStore', () => {
     {
       id: 1,
       name: 'CREATE_USER',
-      description: 'Permite crear usuarios en el sistema',
       resource: 'USER',
       action: 'CREATE',
       createdAt: new Date().toISOString(),
@@ -29,7 +28,6 @@ describe('PermissionStore', () => {
     {
       id: 2,
       name: 'VIEW_AUDIT_LOGS',
-      description: 'Permite ver los registros de auditoría',
       resource: 'AUDIT',
       action: 'VIEW',
       createdAt: new Date().toISOString(),

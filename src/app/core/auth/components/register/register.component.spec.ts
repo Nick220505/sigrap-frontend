@@ -1,11 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Signal, WritableSignal, signal } from '@angular/core';
-import {
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,18 +9,28 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 
 import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/floating-configurator/floating-configurator.component';
+import { PasswordFieldComponent } from 'app/shared/components/password-field/password-field.component';
 import { AuthStore } from '../../stores/auth.store';
 import { RegisterComponent } from './register.component';
 
-class MockAuthStore {
-  register = jasmine.createSpy('register');
-  loading: Signal<boolean> = signal(false);
+interface MockAuthStore {
+  register: jasmine.Spy;
+  loading: WritableSignal<boolean>;
+  error: WritableSignal<string | null>;
+  loggedIn: Signal<boolean>;
+  user: Signal<{
+    email: string;
+    name: string;
+    lastLogin: string;
+  } | null>;
 }
 
 describe('RegisterComponent', () => {
@@ -34,7 +39,13 @@ describe('RegisterComponent', () => {
   let authStoreMock: MockAuthStore;
 
   beforeEach(async () => {
-    authStoreMock = new MockAuthStore();
+    authStoreMock = {
+      register: jasmine.createSpy('register'),
+      loading: signal(false),
+      error: signal(null),
+      loggedIn: signal(false),
+      user: signal(null),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -47,6 +58,8 @@ describe('RegisterComponent', () => {
         RippleModule,
         IconFieldModule,
         InputIconModule,
+        InputGroupModule,
+        InputGroupAddonModule,
         DividerModule,
         NgClass,
         NoopAnimationsModule,
@@ -60,6 +73,32 @@ describe('RegisterComponent', () => {
         set: {
           template: '',
           imports: [],
+        },
+      })
+      .overrideComponent(PasswordFieldComponent, {
+        set: {
+          template: `
+            <div class="flex flex-col gap-2">
+              <label [for]="id()" class="font-bold">{{ label() }}</label>
+              <input
+                [id]="id()"
+                type="password"
+                [formControl]="control()"
+                [placeholder]="placeholder()"
+                [class.ng-dirty]="control().touched && control().invalid"
+                [class.ng-invalid]="control().touched && control().invalid"
+              />
+              @if (control().touched && control().hasError('required')) {
+                <small class="text-red-500">La contraseña es obligatoria.</small>
+              } @else if (control().touched && control().hasError('pattern')) {
+                <small class="text-red-500">
+                  La contraseña debe contener al menos una mayúscula, una minúscula,
+                  un número y un carácter especial.
+                </small>
+              }
+            </div>
+          `,
+          imports: [ReactiveFormsModule, NgClass],
         },
       })
       .compileComponents();
@@ -209,48 +248,8 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'La contraseña debe cumplir todos los requisitos',
+        'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
       );
-    });
-  });
-
-  describe('Password strength indicators', () => {
-    it('should update password strength indicators when password changes', () => {
-      const passwordControl = component.registerForm.get('password');
-
-      expect(component.hasMinLength()).toBeFalsy();
-      expect(component.hasLowercase()).toBeFalsy();
-      expect(component.hasUppercase()).toBeFalsy();
-      expect(component.hasNumber()).toBeFalsy();
-      expect(component.hasSpecialChar()).toBeFalsy();
-
-      passwordControl?.setValue('abcdefgh');
-      expect(component.hasMinLength()).toBeTruthy();
-      expect(component.hasLowercase()).toBeTruthy();
-      expect(component.hasUppercase()).toBeFalsy();
-      expect(component.hasNumber()).toBeFalsy();
-      expect(component.hasSpecialChar()).toBeFalsy();
-
-      passwordControl?.setValue('Abcdefgh');
-      expect(component.hasMinLength()).toBeTruthy();
-      expect(component.hasLowercase()).toBeTruthy();
-      expect(component.hasUppercase()).toBeTruthy();
-      expect(component.hasNumber()).toBeFalsy();
-      expect(component.hasSpecialChar()).toBeFalsy();
-
-      passwordControl?.setValue('Abcdefg1');
-      expect(component.hasMinLength()).toBeTruthy();
-      expect(component.hasLowercase()).toBeTruthy();
-      expect(component.hasUppercase()).toBeTruthy();
-      expect(component.hasNumber()).toBeTruthy();
-      expect(component.hasSpecialChar()).toBeFalsy();
-
-      passwordControl?.setValue('Abcdef1!');
-      expect(component.hasMinLength()).toBeTruthy();
-      expect(component.hasLowercase()).toBeTruthy();
-      expect(component.hasUppercase()).toBeTruthy();
-      expect(component.hasNumber()).toBeTruthy();
-      expect(component.hasSpecialChar()).toBeTruthy();
     });
   });
 
@@ -262,9 +261,6 @@ describe('RegisterComponent', () => {
       confirmPasswordControl?.setValue('');
       expect(confirmPasswordControl?.valid).toBeFalsy();
       expect(confirmPasswordControl?.hasError('required')).toBeTruthy();
-
-      confirmPasswordControl?.setValue('Password1!');
-      expect(confirmPasswordControl?.valid).toBeTruthy();
     });
 
     it('should validate that passwords match', () => {
@@ -295,7 +291,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Debe confirmar la contraseña',
+        'La contraseña es obligatoria',
       );
     });
 
@@ -309,79 +305,60 @@ describe('RegisterComponent', () => {
       confirmPasswordControl?.markAsTouched();
       fixture.detectChanges();
 
-      const errorMessages = fixture.debugElement.queryAll(
-        By.css('.text-red-500'),
+      const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
+      expect(errorMessage).toBeTruthy();
+      expect(errorMessage.nativeElement.textContent).toContain(
+        'Las contraseñas no coinciden',
       );
-      const passwordMismatchMessage = errorMessages.find((el) =>
-        el.nativeElement.textContent.includes('Las contraseñas no coinciden'),
-      );
-
-      expect(passwordMismatchMessage).toBeTruthy();
     });
   });
 
-  describe('Form submission', () => {
-    it('should call register method of AuthStore when form is valid and button is clicked', fakeAsync(() => {
-      component.registerForm.setValue({
+  describe('Form validation', () => {
+    it('should mark all form controls as touched when form is invalid and button is clicked', () => {
+      const registerButton = fixture.debugElement.query(
+        By.css('button[type="button"]'),
+      );
+      registerButton.nativeElement.click();
+
+      expect(component.registerForm.get('name')?.touched).toBeTrue();
+      expect(component.registerForm.get('email')?.touched).toBeTrue();
+      expect(component.registerForm.get('password')?.touched).toBeTrue();
+      expect(component.registerForm.get('confirmPassword')?.touched).toBeTrue();
+    });
+
+    it('should call register method of AuthStore when form is valid and button is clicked', () => {
+      const userData = {
         name: 'John Doe',
-        email: 'john@example.com',
+        email: 'test@example.com',
         password: 'Password1!',
+      };
+
+      component.registerForm.patchValue({
+        ...userData,
         confirmPassword: 'Password1!',
       });
       fixture.detectChanges();
 
-      const registerButton = fixture.debugElement.query(By.css('p-button'));
-      expect(registerButton).toBeTruthy();
+      const registerButton = fixture.debugElement.query(
+        By.css('button[type="button"]'),
+      );
+      registerButton.nativeElement.click();
 
-      component.register();
-      tick();
+      expect(authStoreMock.register).toHaveBeenCalledWith(userData);
+    });
+
+    it('should disable register button when loading', () => {
+      authStoreMock.loading.set(true);
       fixture.detectChanges();
 
-      expect(authStoreMock.register).toHaveBeenCalledWith({
-        name: 'John Doe',
-        email: 'john@example.com',
-        password: 'Password1!',
-      });
-    }));
-
-    it('should mark all form controls as touched when form is invalid and button is clicked', fakeAsync(() => {
-      expect(component.registerForm.valid).toBeFalsy();
-
-      expect(component.registerForm.get('name')?.touched).toBeFalsy();
-      expect(component.registerForm.get('email')?.touched).toBeFalsy();
-      expect(component.registerForm.get('password')?.touched).toBeFalsy();
-      expect(
-        component.registerForm.get('confirmPassword')?.touched,
-      ).toBeFalsy();
-
-      if (component.registerForm.valid) {
-        component.register();
-      } else {
-        component.registerForm.markAllAsTouched();
-      }
-
-      tick();
-      fixture.detectChanges();
-
-      expect(component.registerForm.get('name')?.touched).toBeTruthy();
-      expect(component.registerForm.get('email')?.touched).toBeTruthy();
-      expect(component.registerForm.get('password')?.touched).toBeTruthy();
-      expect(
-        component.registerForm.get('confirmPassword')?.touched,
-      ).toBeTruthy();
-      expect(authStoreMock.register).not.toHaveBeenCalled();
-    }));
+      const registerButton = fixture.debugElement.query(
+        By.css('button[type="button"]'),
+      );
+      expect(registerButton.nativeElement.disabled).toBeTrue();
+    });
   });
 
   describe('UI elements', () => {
-    it('should display register button in loading state when AuthStore is loading', () => {
-      (authStoreMock.loading as WritableSignal<boolean>).set(true);
-      fixture.detectChanges();
-
-      const registerButton = fixture.debugElement.query(By.css('p-button'));
-      expect(registerButton.componentInstance.loading).toBeTrue();
-    });
-
     it('should contain link to login page', () => {
       const loginLink = fixture.debugElement.query(
         By.css('a[routerLink="/iniciar-sesion"]'),

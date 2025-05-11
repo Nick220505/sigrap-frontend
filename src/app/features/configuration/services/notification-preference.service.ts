@@ -53,6 +53,10 @@ export class NotificationPreferenceService {
     return this.http.delete<void>(`${this.preferencesUrl}/${id}`);
   }
 
+  deleteAllById(ids: number[]): Observable<void> {
+    return this.http.delete<void>(this.preferencesUrl, { body: ids });
+  }
+
   updateUserPreferences(
     userId: number,
     preferences: NotificationPreferenceData[],

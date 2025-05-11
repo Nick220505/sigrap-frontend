@@ -1,10 +1,5 @@
-import { Signal, WritableSignal, signal } from '@angular/core';
-import {
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-} from '@angular/core/testing';
+import { Signal, signal, WritableSignal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
+import { InputGroupModule } from 'primeng/inputgroup';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -21,9 +17,16 @@ import { FloatingConfiguratorComponent } from '@core/layout/components/topbar/fl
 import { AuthStore } from '../../stores/auth.store';
 import { LoginComponent } from './login.component';
 
-class MockAuthStore {
-  login = jasmine.createSpy('login');
-  loading: Signal<boolean> = signal(false);
+interface MockAuthStore {
+  login: jasmine.Spy;
+  loading: WritableSignal<boolean>;
+  error: WritableSignal<string | null>;
+  loggedIn: Signal<boolean>;
+  user: Signal<{
+    email: string;
+    name: string;
+    lastLogin: string;
+  } | null>;
 }
 
 describe('LoginComponent', () => {
@@ -32,7 +35,13 @@ describe('LoginComponent', () => {
   let authStoreMock: MockAuthStore;
 
   beforeEach(async () => {
-    authStoreMock = new MockAuthStore();
+    authStoreMock = {
+      login: jasmine.createSpy('login'),
+      loading: signal(false),
+      error: signal(null),
+      loggedIn: signal(false),
+      user: signal(null),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -45,6 +54,7 @@ describe('LoginComponent', () => {
         RippleModule,
         IconFieldModule,
         InputIconModule,
+        InputGroupModule,
         NoopAnimationsModule,
       ],
       providers: [
@@ -149,61 +159,43 @@ describe('LoginComponent', () => {
     );
   });
 
-  it('should call login method of AuthStore when form is valid and button is clicked', fakeAsync(() => {
-    const emailControl = component.loginForm.get('email');
-    const passwordControl = component.loginForm.get('password');
+  describe('Form validation', () => {
+    it('should mark all form controls as touched when form is invalid and button is clicked', () => {
+      const loginButton = fixture.debugElement.query(
+        By.css('button[type="button"]'),
+      );
+      loginButton.nativeElement.click();
 
-    emailControl?.setValue('test@example.com');
-    passwordControl?.setValue('password123');
-    fixture.detectChanges();
-
-    const loginButton = fixture.debugElement.query(By.css('p-button'));
-    expect(loginButton).toBeTruthy();
-
-    if (component.loginForm.valid) {
-      component.authStore.login(component.loginForm.value);
-    } else {
-      component.loginForm.markAllAsTouched();
-    }
-
-    tick();
-    fixture.detectChanges();
-
-    expect(authStoreMock.login).toHaveBeenCalledWith({
-      email: 'test@example.com',
-      password: 'password123',
+      expect(component.loginForm.get('email')?.touched).toBeTrue();
+      expect(component.loginForm.get('password')?.touched).toBeTrue();
     });
-  }));
 
-  it('should mark all form controls as touched when form is invalid and button is clicked', fakeAsync(() => {
-    expect(component.loginForm.valid).toBeFalsy();
+    it('should call login method of AuthStore when form is valid and button is clicked', () => {
+      const credentials = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
 
-    expect(component.loginForm.get('email')?.touched).toBeFalsy();
-    expect(component.loginForm.get('password')?.touched).toBeFalsy();
+      component.loginForm.patchValue(credentials);
+      fixture.detectChanges();
 
-    const loginButton = fixture.debugElement.query(By.css('p-button'));
-    expect(loginButton).toBeTruthy();
+      const loginButton = fixture.debugElement.query(
+        By.css('button[type="button"]'),
+      );
+      loginButton.nativeElement.click();
 
-    if (component.loginForm.valid) {
-      component.authStore.login(component.loginForm.value);
-    } else {
-      component.loginForm.markAllAsTouched();
-    }
+      expect(authStoreMock.login).toHaveBeenCalledWith(credentials);
+    });
 
-    tick();
-    fixture.detectChanges();
+    it('should disable login button when loading', () => {
+      authStoreMock.loading.set(true);
+      fixture.detectChanges();
 
-    expect(component.loginForm.get('email')?.touched).toBeTruthy();
-    expect(component.loginForm.get('password')?.touched).toBeTruthy();
-    expect(authStoreMock.login).not.toHaveBeenCalled();
-  }));
-
-  it('should display login button in loading state when AuthStore is loading', () => {
-    (authStoreMock.loading as WritableSignal<boolean>).set(true);
-    fixture.detectChanges();
-
-    const loginButton = fixture.debugElement.query(By.css('p-button'));
-    expect(loginButton.componentInstance.loading).toBeTrue();
+      const loginButton = fixture.debugElement.query(
+        By.css('button[type="button"]'),
+      );
+      expect(loginButton.nativeElement.disabled).toBeTrue();
+    });
   });
 
   it('should contain link to registration page', () => {

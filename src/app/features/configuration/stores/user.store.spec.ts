@@ -33,7 +33,6 @@ describe('UserStore', () => {
             {
               id: 1,
               name: 'CREATE_USER',
-              description: 'Permite crear usuarios',
               resource: 'USER',
               action: 'CREATE',
               createdAt: new Date().toISOString(),
@@ -61,7 +60,6 @@ describe('UserStore', () => {
             {
               id: 2,
               name: 'VIEW_PROFILE',
-              description: 'Permite ver el perfil',
               resource: 'PROFILE',
               action: 'VIEW',
               createdAt: new Date().toISOString(),
