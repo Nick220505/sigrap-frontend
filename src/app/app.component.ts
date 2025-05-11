@@ -7,7 +7,7 @@ import { ToastModule } from 'primeng/toast';
   selector: 'app-root',
   imports: [RouterOutlet, ToastModule, ConfirmDialogModule],
   template: `
-    <p-toast />
+    <p-toast life="6000" />
     <router-outlet />
     <p-confirmDialog
       icon="pi pi-exclamation-triangle"
