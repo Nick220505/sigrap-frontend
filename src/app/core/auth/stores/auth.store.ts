@@ -148,11 +148,19 @@ export const AuthStore = signalStore(
     logout: () => {
       localStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+
       patchState(store, {
         user: null,
         loggedIn: false,
         token: null,
       });
+
+      messageService.add({
+        severity: 'success',
+        summary: 'Sesión cerrada',
+        detail: 'Ha cerrado sesión exitosamente',
+      });
+
       router.navigate(['/iniciar-sesion']);
     },
     getToken: (): string | null => {

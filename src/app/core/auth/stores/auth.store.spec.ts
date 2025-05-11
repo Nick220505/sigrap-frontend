@@ -367,6 +367,11 @@ describe('AuthStore', () => {
       expect(store.user()).toBeNull();
       expect(localStorage.getItem('auth_token')).toBeNull();
       expect(localStorage.getItem('user_data')).toBeNull();
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Sesión cerrada',
+        detail: 'Ha cerrado sesión exitosamente',
+      });
       expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
     });
   });
