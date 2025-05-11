@@ -212,7 +212,7 @@ describe('LoginComponent', () => {
     );
     expect(registrationLink).toBeTruthy();
     expect(registrationLink.nativeElement.textContent.trim()).toBe(
-      'Regístrate',
+      'Regístrese',
     );
   });
 
@@ -222,7 +222,7 @@ describe('LoginComponent', () => {
     );
     expect(forgotPasswordLink).toBeTruthy();
     expect(forgotPasswordLink.nativeElement.textContent.trim()).toContain(
-      '¿Olvidaste tu contraseña?',
+      '¿Olvidó su contraseña?',
     );
   });
 });

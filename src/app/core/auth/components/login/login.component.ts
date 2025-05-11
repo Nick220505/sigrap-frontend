@@ -55,7 +55,7 @@ import { AuthStore } from '../../stores/auth.store';
               </div>
 
               <span class="font-medium text-muted-color">
-                Ingresa tus datos para continuar
+                Ingrese sus datos para continuar
               </span>
             </div>
 
@@ -148,7 +148,7 @@ import { AuthStore } from '../../stores/auth.store';
                 <span
                   class="font-medium text-right no-underline cursor-pointer text-primary"
                 >
-                  ¿Olvidaste tu contraseña?
+                  ¿Olvidó su contraseña?
                 </span>
               </div>
 
@@ -166,14 +166,14 @@ import { AuthStore } from '../../stores/auth.store';
 
               <div class="mt-6 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
-                  ¿No tienes una cuenta?
+                  ¿No tiene una cuenta?
                 </span>
 
                 <a
                   routerLink="/registro"
                   class="ml-2 font-medium text-primary cursor-pointer"
                 >
-                  Regístrate
+                  Regístrese
                 </a>
               </div>
             </form>

@@ -235,7 +235,7 @@ export class TopbarComponent {
   confirmLogout(): void {
     this.confirmationService.confirm({
       header: 'Confirmar Cierre de Sesión',
-      message: '¿Estás seguro de que deseas cerrar sesión?',
+      message: '¿Está seguro de que desea cerrar sesión?',
       accept: this.authStore.logout,
     });
   }
