@@ -29,7 +29,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
         { field: 'entityName', header: 'Entidad' },
         { field: 'entityId', header: 'ID Entidad' },
         { field: 'action', header: 'Acción' },
-        { field: 'user.name', header: 'Usuario' },
+        { field: 'username', header: 'Usuario' },
         { field: 'timestamp', header: 'Fecha y Hora' },
       ];
 
@@ -43,7 +43,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-      [globalFilterFields]="['entityName', 'action', 'user.name']"
+      [globalFilterFields]="['entityName', 'action', 'username']"
       [tableStyle]="{ 'min-width': '70rem' }"
       rowHover
       dataKey="id"
@@ -117,9 +117,10 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'timestamp') {
-                {{ auditLog[column.field] | date: 'medium' }}
-              } @else if (column.field === 'user.name') {
-                {{ auditLog.user?.name || 'Sistema' }}
+                {{
+                  auditLog[column.field]
+                    | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
+                }}
               } @else {
                 {{ auditLog[column.field] }}
               }
@@ -169,7 +170,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
     </p-table>
   `,
 })
-export class AuditLogTableComponent {
+export class AuditTableComponent {
   readonly auditLogStore = inject(AuditLogStore);
 
   readonly dt = viewChild.required<Table>('dt');

@@ -44,7 +44,12 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
 
             <div class="flex flex-col gap-2 col-span-2">
               <span class="font-bold">Fecha y Hora</span>
-              <p>{{ auditLog.timestamp | date: 'medium' }}</p>
+              <p>
+                {{
+                  auditLog.timestamp
+                    | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
+                }}
+              </p>
             </div>
           </div>
 

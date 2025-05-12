@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { environment } from '@env';
 import { Observable } from 'rxjs';
 import { PermissionData, PermissionInfo } from '../models/permission.model';
 
@@ -7,30 +8,31 @@ import { PermissionData, PermissionInfo } from '../models/permission.model';
   providedIn: 'root',
 })
 export class PermissionService {
-  private readonly baseUrl = '/api/permissions';
-
-  constructor(private readonly http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly permissionsUrl = `${environment.apiUrl}/permissions`;
 
   findAll(): Observable<PermissionInfo[]> {
-    return this.http.get<PermissionInfo[]>(this.baseUrl);
+    return this.http.get<PermissionInfo[]>(this.permissionsUrl);
   }
 
   findById(id: number): Observable<PermissionInfo> {
-    return this.http.get<PermissionInfo>(`${this.baseUrl}/${id}`);
+    return this.http.get<PermissionInfo>(`${this.permissionsUrl}/${id}`);
   }
 
   findByResource(resource: string): Observable<PermissionInfo[]> {
     return this.http.get<PermissionInfo[]>(
-      `${this.baseUrl}/resource/${resource}`,
+      `${this.permissionsUrl}/resource/${resource}`,
     );
   }
 
   findByAction(action: string): Observable<PermissionInfo[]> {
-    return this.http.get<PermissionInfo[]>(`${this.baseUrl}/action/${action}`);
+    return this.http.get<PermissionInfo[]>(
+      `${this.permissionsUrl}/action/${action}`,
+    );
   }
 
   create(permissionData: PermissionData): Observable<PermissionInfo> {
-    return this.http.post<PermissionInfo>(this.baseUrl, permissionData);
+    return this.http.post<PermissionInfo>(this.permissionsUrl, permissionData);
   }
 
   update(
@@ -38,16 +40,16 @@ export class PermissionService {
     permissionData: Partial<PermissionData>,
   ): Observable<PermissionInfo> {
     return this.http.patch<PermissionInfo>(
-      `${this.baseUrl}/${id}`,
+      `${this.permissionsUrl}/${id}`,
       permissionData,
     );
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.permissionsUrl}/${id}`);
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}`, { body: ids });
+    return this.http.delete<void>(`${this.permissionsUrl}`, { body: ids });
   }
 }

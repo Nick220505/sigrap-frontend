@@ -12,7 +12,7 @@ import {
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
-import { pipe, switchMap, tap } from 'rxjs';
+import { map, pipe, switchMap, tap } from 'rxjs';
 import { AuditLogInfo } from '../models/audit-log.model';
 import { AuditLogService } from '../services/audit-log.service';
 
@@ -45,12 +45,13 @@ export const AuditLogStore = signalStore(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() =>
           auditLogService.findAll().pipe(
+            map((auditLogs) => auditLogs || []),
             tapResponse({
               next: (auditLogs) => {
                 patchState(store, setAllEntities(auditLogs));
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -68,12 +69,13 @@ export const AuditLogStore = signalStore(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap((userId) =>
           auditLogService.findByUserId(userId).pipe(
+            map((auditLogs) => auditLogs || []),
             tapResponse({
               next: (auditLogs) => {
                 patchState(store, setAllEntities(auditLogs));
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -91,12 +93,13 @@ export const AuditLogStore = signalStore(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap((entityName) =>
           auditLogService.findByEntityName(entityName).pipe(
+            map((auditLogs) => auditLogs || []),
             tapResponse({
               next: (auditLogs) => {
                 patchState(store, setAllEntities(auditLogs));
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -115,12 +118,13 @@ export const AuditLogStore = signalStore(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap((action) =>
           auditLogService.findByAction(action).pipe(
+            map((auditLogs) => auditLogs || []),
             tapResponse({
               next: (auditLogs) => {
                 patchState(store, setAllEntities(auditLogs));
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -138,12 +142,13 @@ export const AuditLogStore = signalStore(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(({ startDate, endDate }) =>
           auditLogService.findByDateRange(startDate, endDate).pipe(
+            map((auditLogs) => auditLogs || []),
             tapResponse({
               next: (auditLogs) => {
                 patchState(store, setAllEntities(auditLogs));
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -159,7 +164,7 @@ export const AuditLogStore = signalStore(
     ),
     openAuditLogDialog: (auditLog?: AuditLogInfo) => {
       patchState(store, {
-        selectedAuditLog: auditLog,
+        selectedAuditLog: auditLog || null,
         dialogVisible: true,
       });
     },

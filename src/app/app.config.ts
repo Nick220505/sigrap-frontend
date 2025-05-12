@@ -1,5 +1,11 @@
+import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import localeEs from '@angular/common/locales/es';
+import {
+  ApplicationConfig,
+  LOCALE_ID,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideRouter,
@@ -12,8 +18,11 @@ import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 
+registerLocaleData(localeEs, 'es');
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: LOCALE_ID, useValue: 'es' },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,

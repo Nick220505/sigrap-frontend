@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { AuditLogStore } from '../../../stores/audit-log.store';
-import { AuditLogTableComponent } from '../audit-table/audit-table.component';
+import { AuditTableComponent } from '../audit-table/audit-table.component';
 
 @Component({
   selector: 'app-audit-toolbar',
@@ -39,5 +39,5 @@ import { AuditLogTableComponent } from '../audit-table/audit-table.component';
 })
 export class AuditToolbarComponent {
   readonly auditLogStore = inject(AuditLogStore);
-  readonly auditTable = input.required<AuditLogTableComponent>();
+  readonly auditTable = input.required<AuditTableComponent>();
 }

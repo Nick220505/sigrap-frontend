@@ -1,11 +1,11 @@
 import { Component, inject, viewChild } from '@angular/core';
 import { AuditLogStore } from '../../stores/audit-log.store';
-import { AuditLogTableComponent } from './audit-table/audit-table.component';
+import { AuditTableComponent } from './audit-table/audit-table.component';
 import { AuditToolbarComponent } from './audit-toolbar/audit-toolbar.component';
 
 @Component({
   selector: 'app-audit',
-  imports: [AuditToolbarComponent, AuditLogTableComponent],
+  imports: [AuditToolbarComponent, AuditTableComponent],
   template: `
     <app-audit-toolbar [auditTable]="auditTable" />
 
@@ -14,5 +14,5 @@ import { AuditToolbarComponent } from './audit-toolbar/audit-toolbar.component';
 })
 export class AuditComponent {
   readonly auditLogStore = inject(AuditLogStore);
-  readonly auditTable = viewChild.required(AuditLogTableComponent);
+  readonly auditTable = viewChild.required(AuditTableComponent);
 }

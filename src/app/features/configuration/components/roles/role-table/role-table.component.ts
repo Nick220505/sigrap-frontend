@@ -18,6 +18,33 @@ import { TooltipModule } from 'primeng/tooltip';
 import { RoleInfo } from '../../../models/role.model';
 import { RoleStore } from '../../../stores/role.store';
 
+const PERMISSION_TRANSLATIONS: Record<string, string> = {
+  ROLE_CREATE: 'Crear roles',
+  ROLE_READ: 'Ver roles',
+  ROLE_UPDATE: 'Actualizar roles',
+  ROLE_DELETE: 'Eliminar roles',
+
+  USER_CREATE: 'Crear usuarios',
+  USER_READ: 'Ver usuarios',
+  USER_UPDATE: 'Actualizar usuarios',
+  USER_DELETE: 'Eliminar usuarios',
+
+  PRODUCT_CREATE: 'Crear productos',
+  PRODUCT_READ: 'Ver productos',
+  PRODUCT_UPDATE: 'Actualizar productos',
+  PRODUCT_DELETE: 'Eliminar productos',
+
+  CATEGORY_CREATE: 'Crear categorías',
+  CATEGORY_READ: 'Ver categorías',
+  CATEGORY_UPDATE: 'Actualizar categorías',
+  CATEGORY_DELETE: 'Eliminar categorías',
+
+  PERMISSION_READ: 'Ver permisos',
+  PERMISSION_ASSIGN: 'Asignar permisos',
+
+  AUDIT_READ: 'Ver auditoría',
+};
+
 @Component({
   selector: 'app-role-table',
   imports: [
@@ -139,14 +166,20 @@ import { RoleStore } from '../../../stores/role.store';
                     <span
                       class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
                     >
-                      {{ permission.name }}
+                      {{
+                        PERMISSION_TRANSLATIONS[permission.name] ||
+                          permission.name
+                      }}
                     </span>
                   }
                 </div>
               } @else if (
                 column.field === 'createdAt' || column.field === 'updatedAt'
               ) {
-                {{ role[column.field] | date: 'medium' }}
+                {{
+                  role[column.field]
+                    | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
+                }}
               } @else {
                 {{ role[column.field] }}
               }
@@ -211,6 +244,7 @@ import { RoleStore } from '../../../stores/role.store';
 export class RoleTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly roleStore = inject(RoleStore);
+  readonly PERMISSION_TRANSLATIONS = PERMISSION_TRANSLATIONS;
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');

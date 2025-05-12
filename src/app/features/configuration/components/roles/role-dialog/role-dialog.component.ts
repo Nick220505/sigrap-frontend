@@ -1,4 +1,4 @@
-import { Component, effect, inject, untracked } from '@angular/core';
+import { Component, computed, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -15,6 +15,33 @@ import { TextareaModule } from 'primeng/textarea';
 import { RoleData } from '../../../models/role.model';
 import { PermissionStore } from '../../../stores/permission.store';
 import { RoleStore } from '../../../stores/role.store';
+
+const PERMISSION_TRANSLATIONS: Record<string, string> = {
+  ROLE_CREATE: 'Crear roles',
+  ROLE_READ: 'Ver roles',
+  ROLE_UPDATE: 'Actualizar roles',
+  ROLE_DELETE: 'Eliminar roles',
+
+  USER_CREATE: 'Crear usuarios',
+  USER_READ: 'Ver usuarios',
+  USER_UPDATE: 'Actualizar usuarios',
+  USER_DELETE: 'Eliminar usuarios',
+
+  PRODUCT_CREATE: 'Crear productos',
+  PRODUCT_READ: 'Ver productos',
+  PRODUCT_UPDATE: 'Actualizar productos',
+  PRODUCT_DELETE: 'Eliminar productos',
+
+  CATEGORY_CREATE: 'Crear categorías',
+  CATEGORY_READ: 'Ver categorías',
+  CATEGORY_UPDATE: 'Actualizar categorías',
+  CATEGORY_DELETE: 'Eliminar categorías',
+
+  PERMISSION_READ: 'Ver permisos',
+  PERMISSION_ASSIGN: 'Asignar permisos',
+
+  AUDIT_READ: 'Ver auditoría',
+};
 
 @Component({
   selector: 'app-role-dialog',
@@ -93,12 +120,16 @@ import { RoleStore } from '../../../stores/role.store';
             <p-multiSelect
               id="permissions"
               formControlName="permissionIds"
-              [options]="permissionStore.entities()"
-              optionLabel="name"
+              [options]="permissions()"
+              optionLabel="translatedName"
               optionValue="id"
               placeholder="Seleccione los permisos"
               filter
-              filterBy="name"
+              filterBy="translatedName"
+              [filterPlaceHolder]="'Buscar permisos...'"
+              [emptyFilterMessage]="'No se encontraron permisos'"
+              [emptyMessage]="'No hay permisos disponibles'"
+              [selectedItemsLabel]="'{0} permisos seleccionados'"
               appendTo="body"
               styleClass="w-full"
             />
@@ -128,6 +159,14 @@ export class RoleDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly roleStore = inject(RoleStore);
   readonly permissionStore = inject(PermissionStore);
+
+  readonly permissions = computed(() =>
+    this.permissionStore.entities().map((permission) => ({
+      ...permission,
+      translatedName:
+        PERMISSION_TRANSLATIONS[permission.name] || permission.name,
+    })),
+  );
 
   readonly roleForm: FormGroup = this.fb.group({
     name: ['', Validators.required],

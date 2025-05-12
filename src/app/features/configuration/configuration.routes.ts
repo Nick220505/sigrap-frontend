@@ -11,6 +11,14 @@ export const configurationRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'perfiles',
+    loadComponent: () =>
+      import('./components/roles/roles.component').then(
+        (m) => m.RolesComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'roles',
     loadComponent: () =>
       import('./components/roles/roles.component').then(
