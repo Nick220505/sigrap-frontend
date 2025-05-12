@@ -1,9 +1,11 @@
 export interface ScheduleInfo {
   id: number;
   employeeId: number;
-  dayOfWeek: number;
+  employeeName: string;
+  dayOfWeek: string;
   startTime: string;
   endTime: string;
+  type: string;
   isActive: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -11,8 +13,9 @@ export interface ScheduleInfo {
 
 export interface ScheduleData {
   employeeId: number;
-  dayOfWeek: number;
+  dayOfWeek: string;
   startTime: string;
   endTime: string;
+  type: string;
   isActive: boolean;
 }

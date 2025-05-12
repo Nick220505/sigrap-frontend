@@ -33,4 +33,12 @@ export class EmployeeService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.employeesUrl}/${id}`);
   }
+
+  deleteAllById(ids: number[]): Observable<void> {
+    return this.http.request<void>(
+      'delete',
+      `${this.employeesUrl}/delete-many`,
+      { body: ids },
+    );
+  }
 }

@@ -21,6 +21,15 @@ export const routes: Routes = [
           import('./features/inventory/inventory.routes').then(
             (m) => m.inventoryRoutes,
           ),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'empleados',
+        loadChildren: () =>
+          import('./features/employee/employee.routes').then(
+            (m) => m.employeeRoutes,
+          ),
+        canActivate: [authGuard],
       },
       {
         path: 'configuracion',

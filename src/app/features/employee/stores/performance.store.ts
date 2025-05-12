@@ -11,6 +11,7 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
   removeEntity,
   setAllEntities,
   updateEntity,
@@ -62,7 +63,7 @@ export const PerformanceStore = signalStore(
         switchMap(() =>
           performanceService.findAll().pipe(
             tapResponse({
-              next: (performances) => {
+              next: (performances: PerformanceInfo[]) => {
                 patchState(store, setAllEntities(performances));
               },
               error: ({ message: error }: Error) => {
@@ -98,7 +99,7 @@ export const PerformanceStore = signalStore(
         switchMap((id) =>
           performanceService.findById(id).pipe(
             tapResponse({
-              next: (performance) => {
+              next: (performance: PerformanceInfo) => {
                 patchState(store, { selectedPerformance: performance });
               },
               error: ({ message: error }: Error) => {
@@ -203,14 +204,41 @@ export const PerformanceStore = signalStore(
         ),
       ),
     ),
-
+    deleteAllById: rxMethod<number[]>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((ids) =>
+          performanceService.deleteAllById(ids).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntities(ids));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Evaluaciones eliminadas',
+                  detail:
+                    'Las evaluaciones seleccionadas han sido eliminadas correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar evaluaciones',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
     openPerformanceDialog: (performance?: PerformanceInfo) => {
       patchState(store, {
         selectedPerformance: performance || null,
         dialogVisible: true,
       });
     },
-
     closePerformanceDialog: () => {
       patchState(store, {
         dialogVisible: false,

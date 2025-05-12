@@ -45,4 +45,12 @@ export class PerformanceService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.performanceUrl}/${id}`);
   }
+
+  deleteAllById(ids: number[]): Observable<void> {
+    return this.http.request<void>(
+      'delete',
+      `${this.performanceUrl}/delete-many`,
+      { body: ids },
+    );
+  }
 }

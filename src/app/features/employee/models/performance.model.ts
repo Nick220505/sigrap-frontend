@@ -1,8 +1,12 @@
 export interface PerformanceInfo {
   id: number;
   employeeId: number;
-  evaluationDate: string;
+  employeeName: string;
   evaluatorId: number;
+  evaluatorName: string;
+  period: string;
+  rating: number;
+  evaluationDate: string;
   salesPerformance?: number;
   customerSatisfaction?: number;
   taskCompletion?: number;
@@ -15,8 +19,10 @@ export interface PerformanceInfo {
 
 export interface PerformanceData {
   employeeId: number;
-  evaluationDate: string;
   evaluatorId: number;
+  period: string;
+  rating: number;
+  evaluationDate: string;
   salesPerformance?: number;
   customerSatisfaction?: number;
   taskCompletion?: number;

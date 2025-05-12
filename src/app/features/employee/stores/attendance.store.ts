@@ -11,6 +11,8 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
+  removeEntity,
   setAllEntities,
   updateEntity,
   withEntities,
@@ -19,17 +21,16 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import {
-  AttendanceData,
   AttendanceInfo,
-  AttendanceStatus,
+  ClockInData,
+  ClockOutData,
 } from '../models/attendance.model';
-import { ActivityService } from '../services/activity.service';
+import { AttendanceService } from '../services/attendance.service';
 
 export interface AttendanceState {
   loading: boolean;
   error: string | null;
-  selectedAttendance: AttendanceInfo | null;
-  dialogVisible: boolean;
+  clockInDialogVisible: boolean;
 }
 
 export const AttendanceStore = signalStore(
@@ -38,40 +39,21 @@ export const AttendanceStore = signalStore(
   withState<AttendanceState>({
     loading: false,
     error: null,
-    selectedAttendance: null,
-    dialogVisible: false,
+    clockInDialogVisible: false,
   }),
   withComputed(({ entities }) => ({
     attendancesCount: computed(() => entities().length),
-    attendancesByDate: computed(() => {
-      const result: Record<string, AttendanceInfo[]> = {};
-
-      entities().forEach((attendance) => {
-        const date = attendance.clockInTime.split('T')[0];
-        if (!result[date]) {
-          result[date] = [];
-        }
-        result[date].push(attendance);
-      });
-
-      return result;
-    }),
-    lateAttendances: computed(() =>
-      entities().filter(
-        (attendance) => attendance.status === AttendanceStatus.LATE,
-      ),
-    ),
   })),
   withProps(() => ({
-    activityService: inject(ActivityService),
+    attendanceService: inject(AttendanceService),
     messageService: inject(MessageService),
   })),
-  withMethods(({ activityService, messageService, ...store }) => ({
+  withMethods(({ attendanceService, messageService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() =>
-          activityService.findAllAttendance().pipe(
+          attendanceService.findAll().pipe(
             tapResponse({
               next: (attendances: AttendanceInfo[]) => {
                 patchState(store, setAllEntities(attendances));
@@ -85,14 +67,13 @@ export const AttendanceStore = signalStore(
         ),
       ),
     ),
-
     findByEmployeeId: rxMethod<number>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap((employeeId) =>
-          activityService.findAttendanceByEmployeeId(employeeId).pipe(
+          attendanceService.findByEmployeeId(employeeId).pipe(
             tapResponse({
-              next: (attendances: AttendanceInfo[]) => {
+              next: (attendances) => {
                 patchState(store, setAllEntities(attendances));
               },
               error: ({ message: error }: Error) => {
@@ -104,40 +85,20 @@ export const AttendanceStore = signalStore(
         ),
       ),
     ),
-
-    findById: rxMethod<number>(
+    clockIn: rxMethod<ClockInData>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((id) =>
-          activityService.findAttendanceById(id).pipe(
+        concatMap((clockInData) =>
+          attendanceService.clockIn(clockInData).pipe(
             tapResponse({
               next: (attendance: AttendanceInfo) => {
-                patchState(store, { selectedAttendance: attendance });
-              },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
-          ),
-        ),
-      ),
-    ),
-
-    clockIn: rxMethod<AttendanceData>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        concatMap((attendanceData) =>
-          activityService.clockIn(attendanceData).pipe(
-            tapResponse({
-              next: (createdAttendance: AttendanceInfo) => {
-                patchState(store, addEntity(createdAttendance));
+                patchState(store, addEntity(attendance));
                 messageService.add({
                   severity: 'success',
                   summary: 'Entrada registrada',
                   detail: `La entrada ha sido registrada correctamente`,
                 });
-                patchState(store, { dialogVisible: false });
+                patchState(store, { clockInDialogVisible: false });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
@@ -153,19 +114,18 @@ export const AttendanceStore = signalStore(
         ),
       ),
     ),
-
-    clockOut: rxMethod<{ id: number; attendanceData: AttendanceData }>(
+    clockOut: rxMethod<ClockOutData>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        concatMap(({ id, attendanceData }) =>
-          activityService.clockOut(id, attendanceData).pipe(
+        concatMap((clockOutData) =>
+          attendanceService.clockOut(clockOutData).pipe(
             tapResponse({
-              next: (updatedAttendance: AttendanceInfo) => {
+              next: (attendance: AttendanceInfo) => {
                 patchState(
                   store,
                   updateEntity({
-                    id,
-                    changes: updatedAttendance,
+                    id: clockOutData.attendanceId,
+                    changes: attendance,
                   }),
                 );
                 messageService.add({
@@ -173,7 +133,6 @@ export const AttendanceStore = signalStore(
                   summary: 'Salida registrada',
                   detail: `La salida ha sido registrada correctamente`,
                 });
-                patchState(store, { dialogVisible: false });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
@@ -189,19 +148,68 @@ export const AttendanceStore = signalStore(
         ),
       ),
     ),
-
-    openAttendanceDialog: (attendance?: AttendanceInfo) => {
-      patchState(store, {
-        selectedAttendance: attendance || null,
-        dialogVisible: true,
-      });
+    delete: rxMethod<number>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((id) =>
+          attendanceService.delete(id).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntity(id));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Asistencia eliminada',
+                  detail: 'La asistencia ha sido eliminada correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar asistencia',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+    deleteAllById: rxMethod<number[]>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((ids) =>
+          attendanceService.deleteAllById(ids).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntities(ids));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Asistencias eliminadas',
+                  detail:
+                    'Las asistencias seleccionadas han sido eliminadas correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar asistencias',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+    openClockInDialog: () => {
+      patchState(store, { clockInDialogVisible: true });
     },
-
-    closeAttendanceDialog: () => {
-      patchState(store, {
-        dialogVisible: false,
-        selectedAttendance: null,
-      });
+    closeClockInDialog: () => {
+      patchState(store, { clockInDialogVisible: false });
     },
   })),
   withHooks({

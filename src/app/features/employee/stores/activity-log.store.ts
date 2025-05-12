@@ -11,18 +11,17 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
+  removeEntity,
   setAllEntities,
+  updateEntity,
   withEntities,
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import {
-  ActivityData,
-  ActivityInfo,
-  ActivityType,
-} from '../models/activity.model';
-import { ActivityService } from '../services/activity.service';
+import { ActivityData, ActivityInfo } from '../models/activity-log.model';
+import { ActivityLogService } from '../services/activity-log.service';
 
 export interface ActivityLogState {
   loading: boolean;
@@ -41,53 +40,21 @@ export const ActivityLogStore = signalStore(
     dialogVisible: false,
   }),
   withComputed(({ entities }) => ({
-    activityLogsCount: computed(() => entities().length),
-    activitiesByDate: computed(() => {
-      const result: Record<string, ActivityInfo[]> = {};
-
-      entities().forEach((log) => {
-        const date = log.timestamp.split('T')[0];
-        if (!result[date]) {
-          result[date] = [];
-        }
-        result[date].push(log);
-      });
-
-      return result;
-    }),
-    activitiesByType: computed(() => {
-      const result: Record<string, ActivityInfo[]> = {};
-
-      entities().forEach((log) => {
-        const type = log.activityType;
-        if (!result[type]) {
-          result[type] = [];
-        }
-        result[type].push(log);
-      });
-
-      return result;
-    }),
-    loginActivities: computed(() =>
-      entities().filter((log) => log.activityType === ActivityType.LOGIN),
-    ),
-    saleActivities: computed(() =>
-      entities().filter((log) => log.activityType === ActivityType.SALE),
-    ),
+    activitiesCount: computed(() => entities().length),
   })),
   withProps(() => ({
-    activityService: inject(ActivityService),
+    activityLogService: inject(ActivityLogService),
     messageService: inject(MessageService),
   })),
-  withMethods(({ activityService, messageService, ...store }) => ({
+  withMethods(({ activityLogService, messageService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() =>
-          activityService.findAll().pipe(
+          activityLogService.findAll().pipe(
             tapResponse({
-              next: (logs: ActivityInfo[]) => {
-                patchState(store, setAllEntities(logs));
+              next: (activities: ActivityInfo[]) => {
+                patchState(store, setAllEntities(activities));
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
@@ -103,10 +70,29 @@ export const ActivityLogStore = signalStore(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap((employeeId) =>
-          activityService.findByEmployeeId(employeeId).pipe(
+          activityLogService.findByEmployeeId(employeeId).pipe(
             tapResponse({
-              next: (logs: ActivityInfo[]) => {
-                patchState(store, setAllEntities(logs));
+              next: (activities) => {
+                patchState(store, setAllEntities(activities));
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    findById: rxMethod<number>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap((id) =>
+          activityLogService.findById(id).pipe(
+            tapResponse({
+              next: (activity: ActivityInfo) => {
+                patchState(store, { selectedActivityLog: activity });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
@@ -122,14 +108,14 @@ export const ActivityLogStore = signalStore(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         concatMap((activityData) =>
-          activityService.create(activityData).pipe(
+          activityLogService.create(activityData).pipe(
             tapResponse({
-              next: (createdLog: ActivityInfo) => {
-                patchState(store, addEntity(createdLog));
+              next: (createdActivity: ActivityInfo) => {
+                patchState(store, addEntity(createdActivity));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Actividad registrada',
-                  detail: `La actividad ha sido registrada correctamente`,
+                  summary: 'Actividad creada',
+                  detail: `La actividad ha sido creada correctamente`,
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -138,7 +124,7 @@ export const ActivityLogStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al registrar actividad',
+                  detail: 'Error al crear actividad',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -148,9 +134,104 @@ export const ActivityLogStore = signalStore(
       ),
     ),
 
-    openActivityLogDialog: (log?: ActivityInfo) => {
+    update: rxMethod<{ id: number; activityData: ActivityData }>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap(({ id, activityData }) =>
+          activityLogService.update(id, activityData).pipe(
+            tapResponse({
+              next: (updatedActivity: ActivityInfo) => {
+                patchState(
+                  store,
+                  updateEntity({
+                    id,
+                    changes: updatedActivity,
+                  }),
+                );
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Actividad actualizada',
+                  detail: `La actividad ha sido actualizada correctamente`,
+                });
+                patchState(store, { dialogVisible: false });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al actualizar actividad',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    delete: rxMethod<number>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((id) =>
+          activityLogService.delete(id).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntity(id));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Actividad eliminada',
+                  detail: 'La actividad ha sido eliminada correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar actividad',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    deleteAllById: rxMethod<number[]>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((ids) =>
+          activityLogService.deleteAllById(ids).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntities(ids));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Actividades eliminadas',
+                  detail:
+                    'Las actividades seleccionadas han sido eliminadas correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar actividades',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    openActivityLogDialog: (activity?: ActivityInfo) => {
       patchState(store, {
-        selectedActivityLog: log || null,
+        selectedActivityLog: activity || null,
         dialogVisible: true,
       });
     },

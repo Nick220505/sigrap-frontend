@@ -11,6 +11,7 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
   removeEntity,
   setAllEntities,
   updateEntity,
@@ -202,6 +203,36 @@ export const ScheduleStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail: 'Error al eliminar horario',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    deleteAllById: rxMethod<number[]>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((ids) =>
+          scheduleService.deleteAllById(ids).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntities(ids));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Horarios eliminados',
+                  detail:
+                    'Los horarios seleccionados han sido eliminados correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar horarios',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

@@ -39,4 +39,12 @@ export class ScheduleService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.schedulesUrl}/${id}`);
   }
+
+  deleteAllById(ids: number[]): Observable<void> {
+    return this.http.request<void>(
+      'delete',
+      `${this.schedulesUrl}/delete-many`,
+      { body: ids },
+    );
+  }
 }
