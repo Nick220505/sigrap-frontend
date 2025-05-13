@@ -1,118 +1,346 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { EmployeeStore } from '../../../stores/employee.store';
 
 @Component({
   selector: 'app-employee-dialog',
   imports: [
     ReactiveFormsModule,
+    FormsModule,
     DialogModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
-    CalendarModule,
+    SelectModule,
+    DatePickerModule,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
   template: `
     <p-dialog
-      [header]="
-        employeeStore.selectedEmployee() ? 'Editar Empleado' : 'Nuevo Empleado'
-      "
       [visible]="employeeStore.dialogVisible()"
       (visibleChange)="
         $event
           ? employeeStore.openEmployeeDialog()
           : employeeStore.closeEmployeeDialog()
       "
-      [modal]="true"
-      [style]="{ width: '450px' }"
-      class="p-fluid"
+      [style]="{ width: '90vw', maxWidth: '800px' }"
+      [header]="
+        employeeStore.selectedEmployee() ? 'Editar Empleado' : 'Nuevo Empleado'
+      "
+      modal
     >
-      <form [formGroup]="employeeForm" (ngSubmit)="saveEmployee()">
-        <div class="field">
-          <label for="firstName">Nombre</label>
-          <input
-            pInputText
-            id="firstName"
-            formControlName="firstName"
-            required
-          />
-        </div>
+      <form [formGroup]="employeeForm" class="flex flex-col gap-4 pt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="col-span-1">
+            @let firstNameControlInvalid =
+              employeeForm.get('firstName')?.invalid &&
+              employeeForm.get('firstName')?.touched;
 
-        <div class="field">
-          <label for="lastName">Apellido</label>
-          <input pInputText id="lastName" formControlName="lastName" required />
-        </div>
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="firstNameControlInvalid"
+            >
+              <label for="firstName" class="font-bold">Nombre</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-user"></i>
+                </p-inputgroup-addon>
+                <input
+                  type="text"
+                  pInputText
+                  id="firstName"
+                  formControlName="firstName"
+                  placeholder="Ingrese el nombre"
+                  [class.ng-dirty]="firstNameControlInvalid"
+                  [class.ng-invalid]="firstNameControlInvalid"
+                  required
+                  fluid
+                />
+              </p-inputgroup>
 
-        <div class="field">
-          <label for="documentId">Documento</label>
-          <input
-            pInputText
-            id="documentId"
-            formControlName="documentId"
-            required
-          />
-        </div>
+              @if (firstNameControlInvalid) {
+                <small class="text-red-500">El nombre es obligatorio.</small>
+              }
+            </div>
+          </div>
 
-        <div class="field">
-          <label for="email">Email</label>
-          <input pInputText id="email" formControlName="email" required />
-        </div>
+          <div class="col-span-1">
+            @let lastNameControlInvalid =
+              employeeForm.get('lastName')?.invalid &&
+              employeeForm.get('lastName')?.touched;
 
-        <div class="field">
-          <label for="phoneNumber">Teléfono</label>
-          <input pInputText id="phoneNumber" formControlName="phoneNumber" />
-        </div>
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="lastNameControlInvalid"
+            >
+              <label for="lastName" class="font-bold">Apellido</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-user"></i>
+                </p-inputgroup-addon>
+                <input
+                  type="text"
+                  pInputText
+                  id="lastName"
+                  formControlName="lastName"
+                  placeholder="Ingrese el apellido"
+                  [class.ng-dirty]="lastNameControlInvalid"
+                  [class.ng-invalid]="lastNameControlInvalid"
+                  required
+                  fluid
+                />
+              </p-inputgroup>
 
-        <div class="field">
-          <label for="position">Cargo</label>
-          <input pInputText id="position" formControlName="position" required />
-        </div>
+              @if (lastNameControlInvalid) {
+                <small class="text-red-500">El apellido es obligatorio.</small>
+              }
+            </div>
+          </div>
 
-        <div class="field">
-          <label for="department">Departamento</label>
-          <p-dropdown
-            id="department"
-            formControlName="department"
-            [options]="departments"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccione un departamento"
-            [required]="true"
-          ></p-dropdown>
-        </div>
+          <div class="col-span-1">
+            @let documentIdControlInvalid =
+              employeeForm.get('documentId')?.invalid &&
+              employeeForm.get('documentId')?.touched;
 
-        <div class="field">
-          <label for="hireDate">Fecha de Contratación</label>
-          <p-calendar
-            id="hireDate"
-            formControlName="hireDate"
-            dateFormat="dd/mm/yy"
-            [showIcon]="true"
-            [required]="true"
-          ></p-calendar>
-        </div>
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="documentIdControlInvalid"
+            >
+              <label for="documentId" class="font-bold">Documento</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-id-card"></i>
+                </p-inputgroup-addon>
+                <input
+                  type="text"
+                  pInputText
+                  id="documentId"
+                  formControlName="documentId"
+                  placeholder="Ingrese el número de documento"
+                  [class.ng-dirty]="documentIdControlInvalid"
+                  [class.ng-invalid]="documentIdControlInvalid"
+                  required
+                  fluid
+                />
+              </p-inputgroup>
 
-        <div class="field">
-          <label for="status">Estado</label>
-          <p-dropdown
-            id="status"
-            formControlName="status"
-            [options]="statuses"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccione un estado"
-            [required]="true"
-          ></p-dropdown>
+              @if (documentIdControlInvalid) {
+                <small class="text-red-500">El documento es obligatorio.</small>
+              }
+            </div>
+          </div>
+
+          <div class="col-span-1">
+            <div class="flex flex-col gap-2">
+              <label for="phoneNumber" class="font-bold">Teléfono</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-phone"></i>
+                </p-inputgroup-addon>
+                <input
+                  type="text"
+                  pInputText
+                  id="phoneNumber"
+                  formControlName="phoneNumber"
+                  placeholder="Ingrese el número de teléfono (opcional)"
+                  fluid
+                />
+              </p-inputgroup>
+            </div>
+          </div>
+
+          <div class="col-span-1 md:col-span-2">
+            @let emailControlInvalid =
+              employeeForm.get('email')?.invalid &&
+              employeeForm.get('email')?.touched;
+
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="emailControlInvalid"
+            >
+              <label for="email" class="font-bold">Email</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-envelope"></i>
+                </p-inputgroup-addon>
+                <input
+                  type="email"
+                  pInputText
+                  id="email"
+                  formControlName="email"
+                  placeholder="Ingrese el email"
+                  [class.ng-dirty]="emailControlInvalid"
+                  [class.ng-invalid]="emailControlInvalid"
+                  required
+                  fluid
+                />
+              </p-inputgroup>
+
+              @if (emailControlInvalid) {
+                @if (employeeForm.get('email')?.errors?.['required']) {
+                  <small class="text-red-500">El email es obligatorio.</small>
+                } @else if (employeeForm.get('email')?.errors?.['email']) {
+                  <small class="text-red-500">Ingrese un email válido.</small>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="col-span-1">
+            @let positionControlInvalid =
+              employeeForm.get('position')?.invalid &&
+              employeeForm.get('position')?.touched;
+
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="positionControlInvalid"
+            >
+              <label for="position" class="font-bold">Cargo</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-briefcase"></i>
+                </p-inputgroup-addon>
+                <input
+                  type="text"
+                  pInputText
+                  id="position"
+                  formControlName="position"
+                  placeholder="Ingrese el cargo"
+                  [class.ng-dirty]="positionControlInvalid"
+                  [class.ng-invalid]="positionControlInvalid"
+                  required
+                  fluid
+                />
+              </p-inputgroup>
+
+              @if (positionControlInvalid) {
+                <small class="text-red-500">El cargo es obligatorio.</small>
+              }
+            </div>
+          </div>
+
+          <div class="col-span-1">
+            @let departmentControlInvalid =
+              employeeForm.get('department')?.invalid &&
+              employeeForm.get('department')?.touched;
+
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="departmentControlInvalid"
+            >
+              <label for="department" class="font-bold">Departamento</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-building"></i>
+                </p-inputgroup-addon>
+                <p-select
+                  id="department"
+                  formControlName="department"
+                  [options]="departments"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione un departamento"
+                  [class.ng-dirty]="departmentControlInvalid"
+                  [class.ng-invalid]="departmentControlInvalid"
+                  appendTo="body"
+                  styleClass="w-full"
+                  required
+                />
+              </p-inputgroup>
+
+              @if (departmentControlInvalid) {
+                <small class="text-red-500"
+                  >El departamento es obligatorio.</small
+                >
+              }
+            </div>
+          </div>
+
+          <div class="col-span-1">
+            @let hireDateControlInvalid =
+              employeeForm.get('hireDate')?.invalid &&
+              employeeForm.get('hireDate')?.touched;
+
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="hireDateControlInvalid"
+            >
+              <label for="hireDate" class="font-bold"
+                >Fecha de Contratación</label
+              >
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-calendar"></i>
+                </p-inputgroup-addon>
+                <p-datepicker
+                  id="hireDate"
+                  formControlName="hireDate"
+                  dateFormat="dd/mm/yy"
+                  [showIcon]="true"
+                  [class.ng-dirty]="hireDateControlInvalid"
+                  [class.ng-invalid]="hireDateControlInvalid"
+                  placeholder="Seleccione la fecha"
+                  styleClass="w-full"
+                  required
+                  iconDisplay="input"
+                />
+              </p-inputgroup>
+
+              @if (hireDateControlInvalid) {
+                <small class="text-red-500"
+                  >La fecha de contratación es obligatoria.</small
+                >
+              }
+            </div>
+          </div>
+
+          <div class="col-span-1">
+            @let statusControlInvalid =
+              employeeForm.get('status')?.invalid &&
+              employeeForm.get('status')?.touched;
+
+            <div
+              class="flex flex-col gap-2"
+              [class.p-invalid]="statusControlInvalid"
+            >
+              <label for="status" class="font-bold">Estado</label>
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-check-circle"></i>
+                </p-inputgroup-addon>
+                <p-select
+                  id="status"
+                  formControlName="status"
+                  [options]="statuses"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione un estado"
+                  [class.ng-dirty]="statusControlInvalid"
+                  [class.ng-invalid]="statusControlInvalid"
+                  appendTo="body"
+                  styleClass="w-full"
+                  required
+                />
+              </p-inputgroup>
+
+              @if (statusControlInvalid) {
+                <small class="text-red-500">El estado es obligatorio.</small>
+              }
+            </div>
+          </div>
         </div>
       </form>
 
@@ -120,15 +348,19 @@ import { EmployeeStore } from '../../../stores/employee.store';
         <p-button
           label="Cancelar"
           icon="pi pi-times"
-          styleClass="p-button-text"
-          (onClick)="employeeStore.closeEmployeeDialog()"
+          text
+          (click)="employeeStore.closeEmployeeDialog()"
         />
+
         <p-button
           label="Guardar"
           icon="pi pi-check"
-          styleClass="p-button-text"
-          (onClick)="saveEmployee()"
-          [disabled]="!employeeForm.valid"
+          (click)="
+            employeeForm.valid
+              ? saveEmployee()
+              : employeeForm.markAllAsTouched()
+          "
+          [disabled]="employeeStore.loading()"
         />
       </ng-template>
     </p-dialog>
@@ -162,32 +394,39 @@ export class EmployeeDialogComponent {
     department: ['', [Validators.required]],
     hireDate: [null, [Validators.required]],
     profileImageUrl: [''],
-    status: ['ACTIVE'],
+    status: ['ACTIVE', [Validators.required]],
   });
 
   constructor() {
-    const selectedEmployee = this.employeeStore.selectedEmployee();
-    if (selectedEmployee) {
-      this.employeeForm.patchValue({
-        ...selectedEmployee,
-        hireDate: new Date(selectedEmployee.hireDate),
+    effect(() => {
+      const employee = this.employeeStore.selectedEmployee();
+      untracked(() => {
+        if (employee) {
+          this.employeeForm.patchValue({
+            ...employee,
+            hireDate: new Date(employee.hireDate),
+          });
+        } else {
+          this.employeeForm.reset({
+            status: 'ACTIVE',
+          });
+        }
       });
-    }
+    });
   }
 
   saveEmployee(): void {
-    if (this.employeeForm.valid) {
-      const employeeData = this.employeeForm.value;
-      const selectedEmployee = this.employeeStore.selectedEmployee();
+    const employeeData = this.employeeForm.value;
+    const selectedEmployee = this.employeeStore.selectedEmployee();
 
-      if (selectedEmployee) {
-        this.employeeStore.update({
-          id: selectedEmployee.id,
-          employeeData,
-        });
-      } else {
-        this.employeeStore.create(employeeData);
-      }
+    if (selectedEmployee) {
+      this.employeeStore.update({
+        id: selectedEmployee.id,
+        employeeData,
+      });
+    } else {
+      this.employeeStore.create(employeeData);
     }
+    this.employeeStore.closeEmployeeDialog();
   }
 }
