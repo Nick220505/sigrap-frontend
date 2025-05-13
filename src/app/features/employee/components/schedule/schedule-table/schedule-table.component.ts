@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
@@ -20,7 +21,7 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [TableModule, ButtonModule, InputTextModule, FormsModule],
+  imports: [TableModule, ButtonModule, InputTextModule, FormsModule, DatePipe],
   template: `
     <div class="card">
       <p-table
@@ -80,8 +81,8 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
             </td>
             <td>{{ schedule.employeeName }}</td>
             <td>{{ getDayOfWeekLabel(schedule.dayOfWeek) }}</td>
-            <td>{{ schedule.startTime }}</td>
-            <td>{{ schedule.endTime }}</td>
+            <td>{{ schedule.startTime | date: 'HH:mm' }}</td>
+            <td>{{ schedule.endTime | date: 'HH:mm' }}</td>
             <td>
               <span [class]="getScheduleTypeClass(schedule.type)">
                 {{ getScheduleTypeLabel(schedule.type) }}
