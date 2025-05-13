@@ -45,7 +45,6 @@ import { TextareaModule } from 'primeng/textarea';
           ? 'Editar Proveedor'
           : 'Nuevo Proveedor'
       "
-      [maximizable]="true"
       modal
     >
       <form [formGroup]="supplierForm" class="flex flex-col gap-4 pt-4">
