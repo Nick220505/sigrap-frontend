@@ -70,7 +70,7 @@ import { EmployeeStore } from '../../../stores/employee.store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Gestión de Empleados</h5>
+            <h5 class="m-0 text-left">Administrar Empleados</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
