@@ -6,7 +6,6 @@ import { PasswordModule } from 'primeng/password';
 
 @Component({
   selector: 'app-password-field',
-  standalone: true,
   imports: [PasswordModule, ReactiveFormsModule, DividerModule, NgClass],
   template: `
     <div class="flex flex-col gap-2" [class.p-invalid]="showError()">

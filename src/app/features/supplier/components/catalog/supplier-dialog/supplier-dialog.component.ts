@@ -21,7 +21,6 @@ import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-supplier-dialog',
-  standalone: true,
   imports: [
     CommonModule,
     DialogModule,
