@@ -81,8 +81,12 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
             </td>
             <td>{{ schedule.employeeName }}</td>
             <td>{{ getDayOfWeekLabel(schedule.dayOfWeek) }}</td>
-            <td>{{ schedule.startTime | date: 'HH:mm' }}</td>
-            <td>{{ schedule.endTime | date: 'HH:mm' }}</td>
+            <td>
+              {{ schedule.startTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
+            </td>
+            <td>
+              {{ schedule.endTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
+            </td>
             <td>
               <span [class]="getScheduleTypeClass(schedule.type)">
                 {{ getScheduleTypeLabel(schedule.type) }}
