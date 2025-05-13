@@ -263,6 +263,10 @@ export class AttendanceTableComponent {
         return 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm';
       case 'ABSENT':
         return 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm';
+      case 'EARLY_DEPARTURE':
+        return 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm';
+      case 'ON_LEAVE':
+        return 'bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm';
       default:
         return '';
     }
@@ -276,6 +280,10 @@ export class AttendanceTableComponent {
         return 'Tarde';
       case 'ABSENT':
         return 'Ausente';
+      case 'EARLY_DEPARTURE':
+        return 'Salida temprana';
+      case 'ON_LEAVE':
+        return 'Permiso';
       default:
         return status;
     }
