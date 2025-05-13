@@ -24,6 +24,14 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'proveedores',
+        loadChildren: () =>
+          import('./features/supplier/supplier.routes').then(
+            (m) => m.supplierRoutes,
+          ),
+        canActivate: [authGuard],
+      },
+      {
         path: 'empleados',
         loadChildren: () =>
           import('./features/employee/employee.routes').then(

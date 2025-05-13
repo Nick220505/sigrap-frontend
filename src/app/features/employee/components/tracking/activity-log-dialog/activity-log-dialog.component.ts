@@ -68,7 +68,7 @@ import { EmployeeStore } from '../../../stores/employee.store';
         <div class="field">
           <label for="description">Descripción</label>
           <textarea
-            pInputTextarea
+            pTextarea
             id="description"
             formControlName="description"
             rows="4"
