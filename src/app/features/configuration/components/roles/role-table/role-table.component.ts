@@ -176,10 +176,7 @@ const PERMISSION_TRANSLATIONS: Record<string, string> = {
               } @else if (
                 column.field === 'createdAt' || column.field === 'updatedAt'
               ) {
-                {{
-                  role[column.field]
-                    | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
-                }}
+                {{ role[column.field] | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
               } @else {
                 {{ role[column.field] }}
               }
