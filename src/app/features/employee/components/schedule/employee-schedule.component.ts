@@ -1,24 +1,25 @@
-import { Component, viewChild } from '@angular/core';
-import { CardModule } from 'primeng/card';
+import { Component, inject, viewChild } from '@angular/core';
+import { ScheduleStore } from '../../stores/schedule.store';
+import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
 import { ScheduleTableComponent } from './schedule-table/schedule-table.component';
 import { ScheduleToolbarComponent } from './schedule-toolbar/schedule-toolbar.component';
 
 @Component({
   selector: 'app-employee-schedule',
-  imports: [CardModule, ScheduleTableComponent, ScheduleToolbarComponent],
+  imports: [
+    ScheduleToolbarComponent,
+    ScheduleTableComponent,
+    ScheduleDialogComponent,
+  ],
   template: `
-    <div class="p-4">
-      <div class="mb-4">
-        <app-schedule-toolbar [scheduleTable]="scheduleTable" />
-      </div>
+    <app-schedule-toolbar [scheduleTable]="scheduleTable" />
 
-      <p-card>
-        <app-schedule-table #scheduleTable />
-      </p-card>
-    </div>
+    <app-schedule-table #scheduleTable />
+
+    <app-schedule-dialog />
   `,
 })
 export class EmployeeScheduleComponent {
-  readonly scheduleTable =
-    viewChild.required<ScheduleTableComponent>('scheduleTable');
+  readonly scheduleStore = inject(ScheduleStore);
+  readonly scheduleTable = viewChild.required(ScheduleTableComponent);
 }

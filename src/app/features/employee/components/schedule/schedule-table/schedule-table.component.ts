@@ -1,10 +1,20 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  linkedSignal,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 import { ScheduleInfo } from '../../../models/schedule.model';
 import { ScheduleStore } from '../../../stores/schedule.store';
 
@@ -21,96 +31,196 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [TableModule, ButtonModule, InputTextModule, FormsModule, DatePipe],
+  imports: [
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    FormsModule,
+    DatePipe,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    MessageModule,
+  ],
   template: `
-    <div class="card">
-      <p-table
-        #dt
-        [value]="scheduleStore.entities()"
-        [rows]="10"
-        [paginator]="true"
-        [globalFilterFields]="[
-          'employeeName',
-          'dayOfWeek',
-          'startTime',
-          'endTime',
-        ]"
-        [tableStyle]="{ 'min-width': '75rem' }"
-        [rowHover]="true"
-        dataKey="id"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [selection]="selectedSchedules()"
-        (selectionChange)="selectedSchedules.set($event)"
-        [loading]="scheduleStore.loading()"
-        styleClass="p-datatable-gridlines"
-      >
-        <ng-template pTemplate="caption">
-          <div class="flex items-center justify-between">
-            <h5 class="m-0">Horarios de Empleados</h5>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search"></i>
+    @let columns =
+      [
+        { field: 'employeeName', header: 'Empleado' },
+        { field: 'dayOfWeek', header: 'Día' },
+        { field: 'startTime', header: 'Hora Inicio' },
+        { field: 'endTime', header: 'Hora Fin' },
+        { field: 'type', header: 'Tipo' },
+      ];
+
+    <p-table
+      #dt
+      [value]="scheduleStore.entities()"
+      [loading]="scheduleStore.loading()"
+      [rows]="10"
+      [columns]="columns"
+      paginator
+      [rowsPerPageOptions]="[10, 25, 50]"
+      showCurrentPageReport
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} horarios"
+      [globalFilterFields]="[
+        'employeeName',
+        'dayOfWeek',
+        'startTime',
+        'endTime',
+        'type',
+      ]"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      rowHover
+      dataKey="id"
+      [(selection)]="selectedSchedules"
+    >
+      <ng-template #caption>
+        <div
+          class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
+        >
+          <div class="self-start">
+            <h5 class="m-0 text-left">Horarios de Empleados</h5>
+          </div>
+
+          <div class="flex items-center w-full sm:w-auto">
+            <p-iconfield class="w-full">
+              <p-inputicon>
+                <i class="pi pi-search"></i>
+              </p-inputicon>
               <input
                 pInputText
                 type="text"
-                [ngModel]="searchValue()"
-                (ngModelChange)="onSearchChange($event)"
-                placeholder="Buscar horario..."
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                [(ngModel)]="searchValue"
+                placeholder="Buscar..."
+                class="w-full"
               />
-            </span>
+            </p-iconfield>
           </div>
-        </ng-template>
+        </div>
+      </ng-template>
 
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 4rem">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th>Empleado</th>
-            <th>Día</th>
-            <th>Hora Inicio</th>
-            <th>Hora Fin</th>
-            <th>Tipo</th>
-            <th style="width: 8rem"></th>
-          </tr>
-        </ng-template>
+      <ng-template #header>
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox />
+          </th>
 
-        <ng-template pTemplate="body" let-schedule>
-          <tr>
-            <td>
-              <p-tableCheckbox [value]="schedule"></p-tableCheckbox>
-            </td>
-            <td>{{ schedule.employeeName }}</td>
-            <td>{{ getDayOfWeekLabel(schedule.dayOfWeek) }}</td>
-            <td>
-              {{ schedule.startTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
-            </td>
-            <td>
-              {{ schedule.endTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
-            </td>
-            <td>
-              <span [class]="getScheduleTypeClass(schedule.type)">
-                {{ getScheduleTypeLabel(schedule.type) }}
-              </span>
-            </td>
-            <td>
-              <div class="flex gap-2 justify-center">
-                <p-button
-                  icon="pi pi-pencil"
-                  styleClass="p-button-rounded p-button-text"
-                  (onClick)="scheduleStore.openScheduleDialog(schedule)"
-                />
-                <p-button
-                  icon="pi pi-trash"
-                  severity="danger"
-                  styleClass="p-button-rounded p-button-text"
-                  (onClick)="deleteSchedule(schedule)"
+          @for (column of columns; track column.field) {
+            <th pSortableColumn="{{ column.field }}">
+              <div class="flex items-center gap-2">
+                <span>{{ column.header }}</span>
+                <p-sortIcon field="{{ column.field }}" />
+                <p-columnFilter
+                  type="text"
+                  field="{{ column.field }}"
+                  display="menu"
+                  class="ml-auto"
+                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
+                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  tooltipPosition="top"
                 />
               </div>
+            </th>
+          }
+
+          <th>
+            <div class="flex items-center gap-2">
+              <span>Acciones</span>
+              <button
+                type="button"
+                pButton
+                icon="pi pi-filter-slash"
+                class="p-button-rounded p-button-text p-button-secondary"
+                pTooltip="Limpiar todos los filtros"
+                tooltipPosition="top"
+                (click)="clearAllFilters()"
+                aria-label="Limpiar todos los filtros"
+              ></button>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-schedule let-columns="columns">
+        <tr>
+          <td style="width: 3rem">
+            <p-tableCheckbox [value]="schedule" />
+          </td>
+
+          @for (column of columns; track column.field) {
+            <td>
+              @if (column.field === 'dayOfWeek') {
+                {{ getDayOfWeekLabel(schedule.dayOfWeek) }}
+              } @else if (column.field === 'type') {
+                <span [class]="getScheduleTypeClass(schedule.type)">
+                  {{ getScheduleTypeLabel(schedule.type) }}
+                </span>
+              } @else if (
+                column.field === 'startTime' || column.field === 'endTime'
+              ) {
+                {{
+                  schedule[column.field] | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5'
+                }}
+              } @else {
+                {{ schedule[column.field] }}
+              }
             </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
+          }
+
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              class="mr-2"
+              rounded
+              outlined
+              (click)="scheduleStore.openScheduleDialog(schedule)"
+              pTooltip="Editar horario"
+              tooltipPosition="top"
+              [disabled]="scheduleStore.loading()"
+            />
+
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              rounded
+              outlined
+              (click)="deleteSchedule(schedule)"
+              pTooltip="Eliminar horario"
+              tooltipPosition="top"
+              [disabled]="scheduleStore.loading()"
+            />
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td [attr.colspan]="columns.length + 2" class="text-center py-4">
+            @if (scheduleStore.error(); as error) {
+              <div class="flex justify-center p-6">
+                <p-message severity="error">
+                  <div class="flex flex-col gap-4 text-center p-3">
+                    <strong>Error al cargar horarios:</strong>
+                    <p>{{ error }}</p>
+                    <div class="flex justify-center">
+                      <p-button
+                        label="Reintentar"
+                        (onClick)="scheduleStore.findAll()"
+                        styleClass="p-button-sm"
+                        [loading]="scheduleStore.loading()"
+                      />
+                    </div>
+                  </div>
+                </p-message>
+              </div>
+            } @else {
+              <p>No se encontraron horarios.</p>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   `,
 })
 export class ScheduleTableComponent {
@@ -119,26 +229,25 @@ export class ScheduleTableComponent {
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');
-  readonly selectedSchedules = signal<ScheduleInfo[]>([]);
+  readonly selectedSchedules = linkedSignal<ScheduleInfo[], ScheduleInfo[]>({
+    source: this.scheduleStore.entities,
+    computation: (entities, previous) => {
+      const prevSelected = previous?.value ?? [];
+      const entityIds = new Set(entities.map(({ id }: ScheduleInfo) => id));
+      return prevSelected.filter(({ id }: ScheduleInfo) => entityIds.has(id));
+    },
+  });
 
   clearAllFilters(): void {
     this.searchValue.set('');
     this.dt().clear();
   }
 
-  onSearchChange(value: string): void {
-    this.searchValue.set(value);
-    this.dt().filterGlobal(value, 'contains');
-  }
-
   deleteSchedule(schedule: ScheduleInfo): void {
     this.confirmationService.confirm({
-      message: `¿Está seguro que desea eliminar el horario de ${schedule.employeeName}?`,
-      header: 'Confirmar eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.scheduleStore.delete(schedule.id);
-      },
+      header: 'Eliminar horario',
+      message: `¿Está seguro de que desea eliminar el horario de <b>${schedule.employeeName}</b>?`,
+      accept: () => this.scheduleStore.delete(schedule.id),
     });
   }
 

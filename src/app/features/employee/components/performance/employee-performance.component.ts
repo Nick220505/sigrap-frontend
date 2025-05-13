@@ -1,5 +1,5 @@
-import { Component, viewChild } from '@angular/core';
-import { CardModule } from 'primeng/card';
+import { Component, inject, viewChild } from '@angular/core';
+import { PerformanceStore } from '../../stores/performance.store';
 import { PerformanceDialogComponent } from './performance-dialog/performance-dialog.component';
 import { PerformanceTableComponent } from './performance-table/performance-table.component';
 import { PerformanceToolbarComponent } from './performance-toolbar/performance-toolbar.component';
@@ -7,26 +7,19 @@ import { PerformanceToolbarComponent } from './performance-toolbar/performance-t
 @Component({
   selector: 'app-employee-performance',
   imports: [
-    CardModule,
-    PerformanceTableComponent,
     PerformanceToolbarComponent,
+    PerformanceTableComponent,
     PerformanceDialogComponent,
   ],
   template: `
-    <div class="p-4">
-      <div class="mb-4">
-        <app-performance-toolbar [performanceTable]="performanceTable" />
-      </div>
+    <app-performance-toolbar [performanceTable]="performanceTable" />
 
-      <p-card>
-        <app-performance-table #performanceTable />
-      </p-card>
+    <app-performance-table #performanceTable />
 
-      <app-performance-dialog />
-    </div>
+    <app-performance-dialog />
   `,
 })
 export class EmployeePerformanceComponent {
-  readonly performanceTable =
-    viewChild.required<PerformanceTableComponent>('performanceTable');
+  readonly performanceStore = inject(PerformanceStore);
+  readonly performanceTable = viewChild.required(PerformanceTableComponent);
 }

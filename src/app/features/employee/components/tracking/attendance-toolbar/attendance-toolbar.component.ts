@@ -1,38 +1,53 @@
 import { Component, inject, input } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
+import { AttendanceInfo } from '../../../models/attendance.model';
 import { AttendanceStore } from '../../../stores/attendance.store';
 import { AttendanceTableComponent } from '../attendance-table/attendance-table.component';
 
 @Component({
   selector: 'app-attendance-toolbar',
-  imports: [ButtonModule],
+  imports: [ButtonModule, ToolbarModule, TooltipModule],
   template: `
-    <div class="flex flex-wrap gap-2 justify-between items-center">
-      <div class="flex gap-2">
+    <p-toolbar styleClass="mb-4">
+      <ng-template #start>
         <p-button
-          icon="pi pi-clock"
           label="Registrar Entrada"
-          styleClass="p-button-primary"
+          icon="pi pi-clock"
+          outlined
+          class="mr-2"
+          pTooltip="Registrar entrada de empleado"
+          tooltipPosition="top"
           (onClick)="attendanceStore.openClockInDialog()"
         />
+
         <p-button
+          label="Eliminar"
           icon="pi pi-trash"
-          label="Eliminar Seleccionados"
-          styleClass="p-button-danger"
-          [disabled]="!attendanceTable().selectedAttendances().length"
+          severity="danger"
+          outlined
+          pTooltip="Eliminar registros seleccionados"
+          tooltipPosition="top"
+          [disabled]="attendanceTable().selectedAttendances().length === 0"
           (onClick)="deleteSelectedAttendances()"
+          class="mr-2"
         />
-      </div>
-      <div class="flex gap-2">
+      </ng-template>
+
+      <ng-template #end>
         <p-button
-          icon="pi pi-filter-slash"
-          label="Limpiar Filtros"
-          styleClass="p-button-outlined"
-          (onClick)="attendanceTable().clearAllFilters()"
+          label="Exportar"
+          icon="pi pi-download"
+          severity="secondary"
+          (onClick)="attendanceTable().dt().exportCSV()"
+          [disabled]="attendanceStore.entities().length === 0"
+          pTooltip="Exportar registros a CSV"
+          tooltipPosition="top"
         />
-      </div>
-    </div>
+      </ng-template>
+    </p-toolbar>
   `,
 })
 export class AttendanceToolbarComponent {
@@ -43,21 +58,20 @@ export class AttendanceToolbarComponent {
   deleteSelectedAttendances(): void {
     const attendances = this.attendanceTable().selectedAttendances();
     this.confirmationService.confirm({
+      header: 'Eliminar registros',
       message: `
-          ¿Está seguro que desea eliminar los ${attendances.length} registros de asistencia seleccionados?
-          <ul class='mt-2 mb-0'>
-            ${attendances
-              .map(
-                ({ employeeName, date }) =>
-                  `<li>• <b>${employeeName}</b> - ${date}</li>`,
-              )
-              .join('')}
-          </ul>
-        `,
-      header: 'Confirmar eliminación',
-      icon: 'pi pi-exclamation-triangle',
+        ¿Está seguro de que desea eliminar los ${attendances.length} registros de asistencia seleccionados?
+        <ul class='mt-2 mb-0'>
+          ${attendances
+            .map(
+              ({ employeeName, date }: AttendanceInfo) =>
+                `<li>• <b>${employeeName}</b> - ${date}</li>`,
+            )
+            .join('')}
+        </ul>
+      `,
       accept: () => {
-        const ids = attendances.map(({ id }) => id);
+        const ids = attendances.map(({ id }: AttendanceInfo) => id);
         this.attendanceStore.deleteAllById(ids);
       },
     });

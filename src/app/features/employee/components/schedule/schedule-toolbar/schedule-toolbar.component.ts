@@ -1,38 +1,53 @@
 import { Component, inject, input } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
+import { ScheduleInfo } from '../../../models/schedule.model';
 import { ScheduleStore } from '../../../stores/schedule.store';
 import { ScheduleTableComponent } from '../schedule-table/schedule-table.component';
 
 @Component({
   selector: 'app-schedule-toolbar',
-  imports: [ButtonModule],
+  imports: [ButtonModule, ToolbarModule, TooltipModule],
   template: `
-    <div class="flex flex-wrap gap-2 justify-between items-center">
-      <div class="flex gap-2">
+    <p-toolbar styleClass="mb-4">
+      <ng-template #start>
         <p-button
+          label="Nuevo"
           icon="pi pi-plus"
-          label="Nuevo Horario"
-          styleClass="p-button-primary"
+          outlined
+          class="mr-2"
+          pTooltip="Crear nuevo horario"
+          tooltipPosition="top"
           (onClick)="scheduleStore.openScheduleDialog()"
         />
+
         <p-button
+          label="Eliminar"
           icon="pi pi-trash"
-          label="Eliminar Seleccionados"
-          styleClass="p-button-danger"
-          [disabled]="!scheduleTable().selectedSchedules().length"
+          severity="danger"
+          outlined
+          pTooltip="Eliminar horarios seleccionados"
+          tooltipPosition="top"
+          [disabled]="scheduleTable().selectedSchedules().length === 0"
           (onClick)="deleteSelectedSchedules()"
+          class="mr-2"
         />
-      </div>
-      <div class="flex gap-2">
+      </ng-template>
+
+      <ng-template #end>
         <p-button
-          icon="pi pi-filter-slash"
-          label="Limpiar Filtros"
-          styleClass="p-button-outlined"
-          (onClick)="scheduleTable().clearAllFilters()"
+          label="Exportar"
+          icon="pi pi-download"
+          severity="secondary"
+          (onClick)="scheduleTable().dt().exportCSV()"
+          [disabled]="scheduleStore.entities().length === 0"
+          pTooltip="Exportar horarios a CSV"
+          tooltipPosition="top"
         />
-      </div>
-    </div>
+      </ng-template>
+    </p-toolbar>
   `,
 })
 export class ScheduleToolbarComponent {
@@ -43,21 +58,20 @@ export class ScheduleToolbarComponent {
   deleteSelectedSchedules(): void {
     const schedules = this.scheduleTable().selectedSchedules();
     this.confirmationService.confirm({
+      header: 'Eliminar horarios',
       message: `
-          ¿Está seguro que desea eliminar los ${schedules.length} horarios seleccionados?
-          <ul class='mt-2 mb-0'>
-            ${schedules
-              .map(
-                ({ employeeName, dayOfWeek, startTime, endTime }) =>
-                  `<li>• <b>${employeeName}</b> - ${this.getDayOfWeekLabel(dayOfWeek)} (${startTime} - ${endTime})</li>`,
-              )
-              .join('')}
-          </ul>
-        `,
-      header: 'Confirmar eliminación',
-      icon: 'pi pi-exclamation-triangle',
+        ¿Está seguro de que desea eliminar los ${schedules.length} horarios seleccionados?
+        <ul class='mt-2 mb-0'>
+          ${schedules
+            .map(
+              ({ employeeName, dayOfWeek }: ScheduleInfo) =>
+                `<li>• <b>${employeeName}</b> - ${this.getDayOfWeekLabel(dayOfWeek)}</li>`,
+            )
+            .join('')}
+        </ul>
+      `,
       accept: () => {
-        const ids = schedules.map(({ id }) => id);
+        const ids = schedules.map(({ id }: ScheduleInfo) => id);
         this.scheduleStore.deleteAllById(ids);
       },
     });

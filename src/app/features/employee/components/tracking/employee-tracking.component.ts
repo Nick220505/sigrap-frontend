@@ -1,49 +1,39 @@
 import { Component, inject, viewChild } from '@angular/core';
-import { CardModule } from 'primeng/card';
 import { TabViewModule } from 'primeng/tabview';
 import { ActivityLogStore } from '../../stores/activity-log.store';
 import { AttendanceStore } from '../../stores/attendance.store';
+import { ActivityLogDialogComponent } from './activity-log-dialog/activity-log-dialog.component';
 import { ActivityLogTableComponent } from './activity-log-table/activity-log-table.component';
 import { ActivityLogToolbarComponent } from './activity-log-toolbar/activity-log-toolbar.component';
 import { AttendanceTableComponent } from './attendance-table/attendance-table.component';
 import { AttendanceToolbarComponent } from './attendance-toolbar/attendance-toolbar.component';
+import { ClockInDialogComponent } from './clock-in-dialog/clock-in-dialog.component';
 
 @Component({
   selector: 'app-employee-tracking',
   imports: [
-    CardModule,
     TabViewModule,
     AttendanceTableComponent,
     ActivityLogTableComponent,
     AttendanceToolbarComponent,
     ActivityLogToolbarComponent,
+    ClockInDialogComponent,
+    ActivityLogDialogComponent,
   ],
   template: `
-    <div class="p-4">
-      <p-tabView>
-        <p-tabPanel header="Asistencia">
-          <div class="mb-4">
-            <app-attendance-toolbar [attendanceTable]="attendanceTableRef" />
-          </div>
+    <p-tabView>
+      <p-tabPanel header="Asistencia">
+        <app-attendance-toolbar [attendanceTable]="attendanceTableRef" />
+        <app-attendance-table #attendanceTableRef />
+        <app-clock-in-dialog />
+      </p-tabPanel>
 
-          <p-card>
-            <app-attendance-table #attendanceTableRef />
-          </p-card>
-        </p-tabPanel>
-
-        <p-tabPanel header="Registro de Actividades">
-          <div class="mb-4">
-            <app-activity-log-toolbar
-              [activityLogTable]="activityLogTableRef"
-            />
-          </div>
-
-          <p-card>
-            <app-activity-log-table #activityLogTableRef />
-          </p-card>
-        </p-tabPanel>
-      </p-tabView>
-    </div>
+      <p-tabPanel header="Registro de Actividades">
+        <app-activity-log-toolbar [activityLogTable]="activityLogTableRef" />
+        <app-activity-log-table #activityLogTableRef />
+        <app-activity-log-dialog />
+      </p-tabPanel>
+    </p-tabView>
   `,
 })
 export class EmployeeTrackingComponent {
