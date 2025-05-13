@@ -35,7 +35,7 @@ import { ActivityLogStore } from '../../../stores/activity-log.store';
     @let columns =
       [
         { field: 'employeeName', header: 'Empleado' },
-        { field: 'activityType', header: 'Tipo de Actividad' },
+        { field: 'actionType', header: 'Tipo de Actividad' },
         { field: 'description', header: 'Descripción' },
         { field: 'timestamp', header: 'Fecha y Hora' },
       ];
@@ -52,7 +52,7 @@ import { ActivityLogStore } from '../../../stores/activity-log.store';
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} actividades"
       [globalFilterFields]="[
         'employeeName',
-        'activityType',
+        'actionType',
         'description',
         'timestamp',
       ]"
@@ -137,9 +137,9 @@ import { ActivityLogStore } from '../../../stores/activity-log.store';
 
           @for (column of columns; track column.field) {
             <td>
-              @if (column.field === 'activityType') {
-                <span [class]="getActivityTypeClass(activity.activityType)">
-                  {{ getActivityTypeLabel(activity.activityType) }}
+              @if (column.field === 'actionType') {
+                <span [class]="getActionTypeClass(activity.actionType)">
+                  {{ getActionTypeLabel(activity.actionType) }}
                 </span>
               } @else if (column.field === 'timestamp') {
                 {{ activity.timestamp | date: 'dd/MM/yyyy HH:mm' }}
@@ -232,7 +232,7 @@ export class ActivityLogTableComponent {
     });
   }
 
-  getActivityTypeClass(type: string): string {
+  getActionTypeClass(type: string): string {
     switch (type) {
       case 'TASK':
         return 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm';
@@ -247,7 +247,7 @@ export class ActivityLogTableComponent {
     }
   }
 
-  getActivityTypeLabel(type: string): string {
+  getActionTypeLabel(type: string): string {
     switch (type) {
       case 'TASK':
         return 'Tarea';
