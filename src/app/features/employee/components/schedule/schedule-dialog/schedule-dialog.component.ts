@@ -53,10 +53,10 @@ import { ScheduleStore } from '../../../stores/schedule.store';
         </div>
 
         <div class="field">
-          <label for="dayOfWeek">Día de la Semana</label>
+          <label for="day">Día de la Semana</label>
           <p-dropdown
-            id="dayOfWeek"
-            formControlName="dayOfWeek"
+            id="day"
+            formControlName="day"
             [options]="daysOfWeek"
             optionLabel="label"
             optionValue="value"
@@ -101,7 +101,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
         </div>
       </form>
 
-      <ng-template pTemplate="footer">
+      <ng-template #footer>
         <p-button
           label="Cancelar"
           icon="pi pi-times"
@@ -142,7 +142,7 @@ export class ScheduleDialogComponent {
 
   readonly scheduleForm: FormGroup = this.fb.group({
     employeeId: [null, [Validators.required]],
-    dayOfWeek: ['', [Validators.required]],
+    day: ['', [Validators.required]],
     startTime: ['', [Validators.required]],
     endTime: ['', [Validators.required]],
     type: ['REGULAR', [Validators.required]],

@@ -64,8 +64,8 @@ export class ScheduleToolbarComponent {
         <ul class='mt-2 mb-0'>
           ${schedules
             .map(
-              ({ employeeName, dayOfWeek }: ScheduleInfo) =>
-                `<li>• <b>${employeeName}</b> - ${this.getDayOfWeekLabel(dayOfWeek)}</li>`,
+              ({ employeeName, day }: ScheduleInfo) =>
+                `<li>• <b>${employeeName}</b> - ${this.getDayOfWeekLabel(day)}</li>`,
             )
             .join('')}
         </ul>
@@ -77,7 +77,9 @@ export class ScheduleToolbarComponent {
     });
   }
 
-  private getDayOfWeekLabel(dayOfWeek: string): string {
+  private getDayOfWeekLabel(day: string | undefined): string {
+    if (!day) return 'No especificado';
+
     const days: Record<string, string> = {
       MONDAY: 'Lunes',
       TUESDAY: 'Martes',
@@ -87,6 +89,6 @@ export class ScheduleToolbarComponent {
       SATURDAY: 'Sábado',
       SUNDAY: 'Domingo',
     };
-    return days[dayOfWeek] || dayOfWeek;
+    return days[day] || day;
   }
 }

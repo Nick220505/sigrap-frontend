@@ -45,7 +45,7 @@ export const ScheduleStore = signalStore(
       const result: Record<string, ScheduleInfo[]> = {};
 
       entities().forEach((schedule) => {
-        const day = schedule.dayOfWeek;
+        const day = schedule.day ?? 'UNDEFINED';
         if (!result[day]) {
           result[day] = [];
         }
@@ -67,6 +67,7 @@ export const ScheduleStore = signalStore(
           scheduleService.findAll().pipe(
             tapResponse({
               next: (schedules: ScheduleInfo[]) => {
+                console.log('schedules', schedules);
                 patchState(store, setAllEntities(schedules));
               },
               error: ({ message: error }: Error) => {

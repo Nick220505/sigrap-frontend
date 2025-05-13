@@ -46,7 +46,7 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
     @let columns =
       [
         { field: 'employeeName', header: 'Empleado' },
-        { field: 'dayOfWeek', header: 'Día' },
+        { field: 'day', header: 'Día' },
         { field: 'startTime', header: 'Hora Inicio' },
         { field: 'endTime', header: 'Hora Fin' },
         { field: 'type', header: 'Tipo' },
@@ -64,7 +64,7 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} horarios"
       [globalFilterFields]="[
         'employeeName',
-        'dayOfWeek',
+        'day',
         'startTime',
         'endTime',
         'type',
@@ -142,31 +142,34 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
         </tr>
       </ng-template>
 
-      <ng-template #body let-schedule let-columns="columns">
+      <ng-template #body let-schedule>
         <tr>
           <td style="width: 3rem">
             <p-tableCheckbox [value]="schedule" />
           </td>
 
-          @for (column of columns; track column.field) {
-            <td>
-              @if (column.field === 'dayOfWeek') {
-                {{ getDayOfWeekLabel(schedule.dayOfWeek) }}
-              } @else if (column.field === 'type') {
-                <span [class]="getScheduleTypeClass(schedule.type)">
-                  {{ getScheduleTypeLabel(schedule.type) }}
-                </span>
-              } @else if (
-                column.field === 'startTime' || column.field === 'endTime'
-              ) {
-                {{
-                  schedule[column.field] | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5'
-                }}
-              } @else {
-                {{ schedule[column.field] }}
-              }
-            </td>
-          }
+          <td>{{ schedule.employeeName }}</td>
+
+          <td>{{ getDayOfWeekLabel(schedule.day) }}</td>
+
+          <td>
+            {{ schedule.startTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
+          </td>
+
+          <td>{{ schedule.endTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}</td>
+
+          <td>
+            @if (schedule.type) {
+              <span [class]="getScheduleTypeClass(schedule.type)">
+                {{ getScheduleTypeLabel(schedule.type) }}
+              </span>
+            } @else {
+              <span
+                class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                >Regular</span
+              >
+            }
+          </td>
 
           <td>
             <p-button
@@ -251,7 +254,9 @@ export class ScheduleTableComponent {
     });
   }
 
-  getDayOfWeekLabel(dayOfWeek: DayOfWeek): string {
+  getDayOfWeekLabel(day: string | undefined): string {
+    if (!day) return 'No especificado';
+
     const days: Record<DayOfWeek, string> = {
       MONDAY: 'Lunes',
       TUESDAY: 'Martes',
@@ -261,24 +266,24 @@ export class ScheduleTableComponent {
       SATURDAY: 'Sábado',
       SUNDAY: 'Domingo',
     };
-    return days[dayOfWeek];
+    return days[day as DayOfWeek] || day;
   }
 
-  getScheduleTypeClass(type: ScheduleType): string {
+  getScheduleTypeClass(type: string): string {
     const classes: Record<ScheduleType, string> = {
       REGULAR: 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm',
       OVERTIME: 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm',
       HOLIDAY: 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm',
     };
-    return classes[type];
+    return classes[type as ScheduleType] || classes.REGULAR;
   }
 
-  getScheduleTypeLabel(type: ScheduleType): string {
+  getScheduleTypeLabel(type: string): string {
     const labels: Record<ScheduleType, string> = {
       REGULAR: 'Regular',
       OVERTIME: 'Horas Extra',
       HOLIDAY: 'Festivo',
     };
-    return labels[type];
+    return labels[type as ScheduleType] || 'Regular';
   }
 }
