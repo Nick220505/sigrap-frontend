@@ -116,14 +116,16 @@ import { TooltipModule } from 'primeng/tooltip';
           <th>
             <div class="flex items-center gap-2">
               <span>Acciones</span>
-              <p-button
+              <button
+                type="button"
+                pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
                 pTooltip="Limpiar todos los filtros"
                 tooltipPosition="top"
-                (onClick)="clearAllFilters()"
+                (click)="clearAllFilters()"
                 aria-label="Limpiar todos los filtros"
-              />
+              ></button>
             </div>
           </th>
         </tr>
