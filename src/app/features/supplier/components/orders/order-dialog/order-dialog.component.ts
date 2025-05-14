@@ -1,4 +1,4 @@
-import { Component, effect, inject, untracked } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -16,7 +16,7 @@ import {
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order.store';
 import { SupplierStore } from '@features/supplier/stores/supplier.store';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -37,7 +37,7 @@ import { TooltipModule } from 'primeng/tooltip';
     SelectModule,
     FormsModule,
     ReactiveFormsModule,
-    CalendarModule,
+    DatePickerModule,
     TableModule,
     TooltipModule,
     SelectButtonModule,
@@ -83,10 +83,6 @@ import { TooltipModule } from 'primeng/tooltip';
               filter
               filterBy="name"
               styleClass="w-full"
-              [disabled]="
-                !!purchaseOrderStore.selectedOrder() &&
-                purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-              "
             />
           </p-inputgroup>
 
@@ -105,18 +101,13 @@ import { TooltipModule } from 'primeng/tooltip';
           [class.p-invalid]="orderDateControlInvalid"
         >
           <label for="orderDate" class="font-bold">Fecha del Pedido</label>
-          <p-calendar
+          <p-datePicker
             id="orderDate"
             formControlName="orderDate"
             [showIcon]="true"
             dateFormat="dd/mm/yy"
-            styleClass="w-full"
             [class.ng-dirty]="orderDateControlInvalid"
             [class.ng-invalid]="orderDateControlInvalid"
-            [disabled]="
-              !!purchaseOrderStore.selectedOrder() &&
-              purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-            "
           />
 
           @if (orderDateControlInvalid) {
@@ -131,17 +122,12 @@ import { TooltipModule } from 'primeng/tooltip';
           <label for="expectedDeliveryDate" class="font-bold"
             >Fecha de Entrega Esperada</label
           >
-          <p-calendar
+          <p-datePicker
             id="expectedDeliveryDate"
             formControlName="expectedDeliveryDate"
             [showIcon]="true"
             dateFormat="dd/mm/yy"
-            styleClass="w-full"
             [minDate]="minDeliveryDate"
-            [disabled]="
-              !!purchaseOrderStore.selectedOrder() &&
-              purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-            "
           />
         </div>
 
@@ -155,10 +141,6 @@ import { TooltipModule } from 'primeng/tooltip';
             rows="3"
             class="w-full"
             placeholder="Información adicional sobre el pedido"
-            [disabled]="
-              !!purchaseOrderStore.selectedOrder() &&
-              purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-            "
           ></textarea>
         </div>
 
@@ -171,9 +153,7 @@ import { TooltipModule } from 'primeng/tooltip';
               label="Agregar Producto"
               (onClick)="addItem()"
               [disabled]="
-                !productStore.entities().length ||
-                (!!purchaseOrderStore.selectedOrder() &&
-                  purchaseOrderStore.selectedOrder()?.status !== 'DRAFT')
+                isFormEffectivelyDisabled() || !productStore.entities().length
               "
               severity="secondary"
               size="small"
@@ -191,10 +171,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     icon="pi pi-trash"
                     class="p-button-rounded p-button-danger p-button-text"
                     (click)="removeItem($index)"
-                    [disabled]="
-                      !!purchaseOrderStore.selectedOrder() &&
-                      purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-                    "
+                    [disabled]="isFormEffectivelyDisabled()"
                     pTooltip="Eliminar producto"
                     tooltipPosition="top"
                     aria-label="Eliminar producto"
@@ -215,10 +192,6 @@ import { TooltipModule } from 'primeng/tooltip';
                       filter
                       filterBy="name"
                       [showClear]="true"
-                      [disabled]="
-                        !!purchaseOrderStore.selectedOrder() &&
-                        purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-                      "
                     />
                   </div>
 
@@ -229,10 +202,6 @@ import { TooltipModule } from 'primeng/tooltip';
                       formControlName="quantity"
                       [min]="1"
                       [showButtons]="true"
-                      [disabled]="
-                        !!purchaseOrderStore.selectedOrder() &&
-                        purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-                      "
                     />
                   </div>
 
@@ -245,10 +214,6 @@ import { TooltipModule } from 'primeng/tooltip';
                       currency="COP"
                       locale="es-CO"
                       [min]="0"
-                      [disabled]="
-                        !!purchaseOrderStore.selectedOrder() &&
-                        purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-                      "
                     />
                   </div>
 
@@ -260,10 +225,6 @@ import { TooltipModule } from 'primeng/tooltip';
                       pInputText
                       formControlName="notes"
                       placeholder="Observaciones específicas"
-                      [disabled]="
-                        !!purchaseOrderStore.selectedOrder() &&
-                        purchaseOrderStore.selectedOrder()?.status !== 'DRAFT'
-                      "
                     />
                   </div>
                 </div>
@@ -295,9 +256,7 @@ import { TooltipModule } from 'primeng/tooltip';
           icon="pi pi-check"
           (click)="orderForm.valid ? saveOrder() : orderForm.markAllAsTouched()"
           [disabled]="
-            purchaseOrderStore.loading() ||
-            (!!purchaseOrderStore.selectedOrder() &&
-              purchaseOrderStore.selectedOrder()?.status !== 'DRAFT')
+            purchaseOrderStore.loading() || isFormEffectivelyDisabled()
           "
         />
       </ng-template>
@@ -310,6 +269,8 @@ export class OrderDialogComponent {
   readonly supplierStore = inject(SupplierStore);
   readonly productStore = inject(ProductStore);
   readonly categoryStore = inject(CategoryStore);
+
+  readonly isFormEffectivelyDisabled = signal(false);
 
   readonly orderForm: FormGroup = this.fb.group({
     supplierId: [null, Validators.required],
@@ -333,6 +294,9 @@ export class OrderDialogComponent {
   constructor() {
     effect(() => {
       const order = this.purchaseOrderStore.selectedOrder();
+      const disableForm = !!order && order.status !== 'DRAFT';
+      this.isFormEffectivelyDisabled.set(disableForm);
+
       untracked(() => {
         if (order) {
           // Clear items array first
@@ -381,25 +345,53 @@ export class OrderDialogComponent {
             expectedDeliveryDate: null,
             notes: '',
           });
-
           // Clear items
           while (this.itemsArray.length) {
             this.itemsArray.removeAt(0);
           }
+        }
+
+        // Programmatically enable/disable form controls
+        if (disableForm) {
+          this.orderForm.get('supplierId')?.disable();
+          this.orderForm.get('orderDate')?.disable();
+          this.orderForm.get('expectedDeliveryDate')?.disable();
+          this.orderForm.get('notes')?.disable();
+          this.itemsArray.controls.forEach((controlGroup) => {
+            (controlGroup as FormGroup).controls['productId']?.disable();
+            (controlGroup as FormGroup).controls['quantity']?.disable();
+            (controlGroup as FormGroup).controls['unitPrice']?.disable();
+            (controlGroup as FormGroup).controls['notes']?.disable();
+          });
+        } else {
+          this.orderForm.get('supplierId')?.enable();
+          this.orderForm.get('orderDate')?.enable();
+          this.orderForm.get('expectedDeliveryDate')?.enable();
+          this.orderForm.get('notes')?.enable();
+          this.itemsArray.controls.forEach((controlGroup) => {
+            (controlGroup as FormGroup).controls['productId']?.enable();
+            (controlGroup as FormGroup).controls['quantity']?.enable();
+            (controlGroup as FormGroup).controls['unitPrice']?.enable();
+            (controlGroup as FormGroup).controls['notes']?.enable();
+          });
         }
       });
     });
   }
 
   addItem(): void {
-    this.itemsArray.push(
-      this.fb.group({
-        productId: [null, Validators.required],
-        quantity: [1, [Validators.required, Validators.min(1)]],
-        unitPrice: [0, [Validators.required, Validators.min(0)]],
-        notes: [''],
-      }),
-    );
+    const newItem = this.fb.group({
+      productId: [null, Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      unitPrice: [0, [Validators.required, Validators.min(0)]],
+      notes: [''],
+    });
+
+    if (this.isFormEffectivelyDisabled()) {
+      newItem.disable();
+    }
+
+    this.itemsArray.push(newItem);
   }
 
   removeItem(index: number): void {
@@ -426,7 +418,7 @@ export class OrderDialogComponent {
   }
 
   saveOrder(): void {
-    const formValue = this.orderForm.value;
+    const formValue = this.orderForm.getRawValue(); // Use getRawValue to include disabled controls
 
     // Format dates to ISO string format (YYYY-MM-DD)
     const orderData: PurchaseOrderData = {
