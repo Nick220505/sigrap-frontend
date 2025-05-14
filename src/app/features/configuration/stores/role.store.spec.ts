@@ -1,8 +1,4 @@
-import {
-  HttpErrorResponse,
-  HttpStatusCode,
-  provideHttpClient,
-} from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -39,6 +35,24 @@ describe('RoleStore', () => {
     },
   ];
 
+  const newMockRole: RoleInfo = {
+    id: 3,
+    name: 'New Role',
+    description: 'New Description',
+    permissions: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  const updatedMockRole: RoleInfo = {
+    id: 1,
+    name: 'Updated Role',
+    description: 'Updated Description',
+    permissions: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
   beforeEach(() => {
     roleService = jasmine.createSpyObj('RoleService', [
       'findAll',
@@ -51,39 +65,13 @@ describe('RoleStore', () => {
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
+    // Configure default spy return values
     roleService.findAll.and.returnValue(of(mockRoles));
-    roleService.create.and.returnValue(
-      of({
-        id: 3,
-        name: 'New Role',
-        description: 'New Description',
-        permissions: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }),
-    );
-    roleService.update.and.returnValue(
-      of({
-        id: 1,
-        name: 'Updated Role',
-        description: 'Updated Description',
-        permissions: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }),
-    );
+    roleService.create.and.returnValue(of(newMockRole));
+    roleService.update.and.returnValue(of(updatedMockRole));
     roleService.delete.and.returnValue(of(undefined));
     roleService.deleteAllById.and.returnValue(of(undefined));
-    roleService.assignToUser.and.returnValue(
-      of({
-        id: 1,
-        name: 'Role 1',
-        description: 'Description 1',
-        permissions: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }),
-    );
+    roleService.assignToUser.and.returnValue(of(mockRoles[0])); // Example return
     roleService.removeFromUser.and.returnValue(of(undefined));
 
     TestBed.configureTestingModule({
@@ -98,41 +86,60 @@ describe('RoleStore', () => {
 
     store = TestBed.inject(RoleStore);
     httpMock = TestBed.inject(HttpTestingController);
+
+    // DO NOT expect/flush an HTTP call for onInit here if the service spy handles it.
+    // The spy roleService.findAll.and.returnValue(of(mockRoles)) should prevent a real HTTP call.
   });
 
   afterEach(() => {
-    httpMock.verify();
+    httpMock.verify(); // Verifies that no requests are outstanding.
   });
 
-  it('should be created', () => {
+  it('should be created and roles loaded via onInit by service spy', () => {
     expect(store).toBeTruthy();
+    expect(store.entities()).toEqual(mockRoles);
+    expect(store.loading()).toBeFalse();
+    expect(roleService.findAll).toHaveBeenCalledTimes(1);
   });
 
   describe('findAll', () => {
-    it('should call the service method and set entities', () => {
-      expect(roleService.findAll).toHaveBeenCalled();
+    it('should call the service method again and update entities if store.findAll is explicitly called', () => {
+      roleService.findAll.calls.reset();
+      const specificMockRoles = [
+        { ...mockRoles[0], name: 'Specific FindAll Role' },
+      ];
+      roleService.findAll.and.returnValue(of(specificMockRoles));
+
+      store.findAll();
+
+      expect(roleService.findAll).toHaveBeenCalledTimes(1);
+      expect(store.entities()).toEqual(specificMockRoles);
       expect(store.loading()).toBeFalse();
     });
 
-    it('should update error state when findAll fails', () => {
+    it('should update error state when explicit store.findAll fails', () => {
       roleService.findAll.calls.reset();
-      const testError = new Error('Failed to fetch roles');
-      roleService.findAll.and.returnValue(throwError(() => testError));
+      roleService.findAll.and.returnValue(
+        throwError(() => new Error('Failed to fetch roles explicitly')),
+      );
       store.findAll();
-      expect(store.error()).toBe('Failed to fetch roles');
+      expect(store.error()).toBe('Failed to fetch roles explicitly');
+      expect(store.loading()).toBeFalse();
     });
   });
 
   describe('create', () => {
-    it('should call the service method and show success message', () => {
+    it('should call the service method, update entities, and show success message', () => {
       const roleData: RoleData = {
         name: 'New Role',
         description: 'New Description',
       };
+      // service.create is already configured to return newMockRole
 
       store.create(roleData);
 
       expect(roleService.create).toHaveBeenCalledWith(roleData);
+      expect(store.entities()).toContain(newMockRole);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Rol creado',
@@ -141,19 +148,14 @@ describe('RoleStore', () => {
     });
 
     it('should handle error when creating role fails', () => {
-      roleService.create.calls.reset();
       roleService.create.and.returnValue(
         throwError(() => new Error('Failed to create role')),
       );
-
       const roleData: RoleData = {
         name: 'New Role',
         description: 'New Description',
       };
-
       store.create(roleData);
-
-      expect(roleService.create).toHaveBeenCalledWith(roleData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -163,15 +165,15 @@ describe('RoleStore', () => {
   });
 
   describe('update', () => {
-    it('should call the service method and show success message', () => {
-      const roleData: Partial<RoleData> = {
-        name: 'Updated Role',
-        description: 'Updated Description',
-      };
+    it('should call the service method, update entities, and show success message', () => {
+      const roleData: Partial<RoleData> = { name: 'Updated Role' };
+      // service.update is configured to return updatedMockRole
 
       store.update({ id: 1, roleData });
 
       expect(roleService.update).toHaveBeenCalledWith(1, roleData);
+      const updatedEntity = store.entities().find((e) => e.id === 1);
+      expect(updatedEntity?.name).toBe('Updated Role');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Rol actualizado',
@@ -180,19 +182,11 @@ describe('RoleStore', () => {
     });
 
     it('should handle error when updating role fails', () => {
-      roleService.update.calls.reset();
       roleService.update.and.returnValue(
         throwError(() => new Error('Failed to update role')),
       );
-
-      const roleData: Partial<RoleData> = {
-        name: 'Updated Role',
-        description: 'Updated Description',
-      };
-
+      const roleData: Partial<RoleData> = { name: 'Updated Role' };
       store.update({ id: 1, roleData });
-
-      expect(roleService.update).toHaveBeenCalledWith(1, roleData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -202,10 +196,10 @@ describe('RoleStore', () => {
   });
 
   describe('delete', () => {
-    it('should call the service method and show success message', () => {
+    it('should call the service method, remove from entities, and show success message', () => {
       store.delete(1);
-
       expect(roleService.delete).toHaveBeenCalledWith(1);
+      expect(store.entities().find((e) => e.id === 1)).toBeUndefined();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Rol eliminado',
@@ -214,18 +208,12 @@ describe('RoleStore', () => {
     });
 
     it('should handle error when deleting role', () => {
-      roleService.delete.calls.reset();
       const errorResponse = new HttpErrorResponse({
-        error: { message: 'Server error' },
-        status: HttpStatusCode.InternalServerError,
-        statusText: 'Server Error',
+        error: 'Delete failed',
+        status: 500,
       });
-
       roleService.delete.and.returnValue(throwError(() => errorResponse));
-
       store.delete(1);
-
-      expect(roleService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -235,10 +223,11 @@ describe('RoleStore', () => {
   });
 
   describe('deleteAllById', () => {
-    it('should call the service method and show success message', () => {
-      store.deleteAllById([1, 2]);
-
-      expect(roleService.deleteAllById).toHaveBeenCalledWith([1, 2]);
+    it('should call the service method, remove from entities, and show success message', () => {
+      const idsToRemove = [1, 2];
+      store.deleteAllById(idsToRemove);
+      expect(roleService.deleteAllById).toHaveBeenCalledWith(idsToRemove);
+      expect(store.entities().length).toBe(0); // Assuming mockRoles had 2 items initially
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Roles eliminados',
@@ -247,20 +236,14 @@ describe('RoleStore', () => {
     });
 
     it('should handle error when deleting multiple roles', () => {
-      roleService.deleteAllById.calls.reset();
       const errorResponse = new HttpErrorResponse({
-        error: { message: 'Server error' },
-        status: HttpStatusCode.InternalServerError,
-        statusText: 'Server Error',
+        error: 'Delete failed',
+        status: 500,
       });
-
       roleService.deleteAllById.and.returnValue(
         throwError(() => errorResponse),
       );
-
       store.deleteAllById([1, 2]);
-
-      expect(roleService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -271,7 +254,7 @@ describe('RoleStore', () => {
 
   describe('assignToUser', () => {
     it('should call the service method and show success message', () => {
-      store.assignToUser({ roleId: 1, userId: 1 });
+      store.assignToUser({ userId: 1, roleId: 1 });
 
       expect(roleService.assignToUser).toHaveBeenCalledWith(1, 1);
       expect(messageService.add).toHaveBeenCalledWith({
@@ -282,18 +265,10 @@ describe('RoleStore', () => {
     });
 
     it('should handle error when assigning role to user', () => {
-      roleService.assignToUser.calls.reset();
-      const errorResponse = new HttpErrorResponse({
-        error: { message: 'Server error' },
-        status: HttpStatusCode.InternalServerError,
-        statusText: 'Server Error',
-      });
-
-      roleService.assignToUser.and.returnValue(throwError(() => errorResponse));
-
-      store.assignToUser({ roleId: 1, userId: 1 });
-
-      expect(roleService.assignToUser).toHaveBeenCalledWith(1, 1);
+      roleService.assignToUser.and.returnValue(
+        throwError(() => new Error('Assign failed')),
+      );
+      store.assignToUser({ userId: 1, roleId: 1 });
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -304,7 +279,7 @@ describe('RoleStore', () => {
 
   describe('removeFromUser', () => {
     it('should call the service method and show success message', () => {
-      store.removeFromUser({ roleId: 1, userId: 1 });
+      store.removeFromUser({ userId: 1, roleId: 1 });
 
       expect(roleService.removeFromUser).toHaveBeenCalledWith(1, 1);
       expect(messageService.add).toHaveBeenCalledWith({
@@ -315,20 +290,10 @@ describe('RoleStore', () => {
     });
 
     it('should handle error when removing role from user', () => {
-      roleService.removeFromUser.calls.reset();
-      const errorResponse = new HttpErrorResponse({
-        error: { message: 'Server error' },
-        status: HttpStatusCode.InternalServerError,
-        statusText: 'Server Error',
-      });
-
       roleService.removeFromUser.and.returnValue(
-        throwError(() => errorResponse),
+        throwError(() => new Error('Remove failed')),
       );
-
-      store.removeFromUser({ roleId: 1, userId: 1 });
-
-      expect(roleService.removeFromUser).toHaveBeenCalledWith(1, 1);
+      store.removeFromUser({ userId: 1, roleId: 1 });
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -345,15 +310,7 @@ describe('RoleStore', () => {
     });
 
     it('should open role dialog with role', () => {
-      const role: RoleInfo = {
-        id: 1,
-        name: 'Test Role',
-        description: 'Test Description',
-        permissions: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
+      const role: RoleInfo = mockRoles[0];
       store.openRoleDialog(role);
       expect(store.dialogVisible()).toBeTrue();
       expect(store.selectedRole()).toEqual(role);
@@ -361,24 +318,13 @@ describe('RoleStore', () => {
 
     it('should close role dialog', () => {
       store.openRoleDialog();
-      expect(store.dialogVisible()).toBeTrue();
-
       store.closeRoleDialog();
       expect(store.dialogVisible()).toBeFalse();
     });
 
     it('should clear selected role', () => {
-      const role: RoleInfo = {
-        id: 1,
-        name: 'Test Role',
-        description: 'Test Description',
-        permissions: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      const role: RoleInfo = mockRoles[0];
       store.openRoleDialog(role);
-      expect(store.selectedRole()).toEqual(role);
-
       store.clearSelectedRole();
       expect(store.selectedRole()).toBeNull();
     });

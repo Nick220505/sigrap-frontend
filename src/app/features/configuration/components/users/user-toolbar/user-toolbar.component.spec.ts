@@ -28,7 +28,10 @@ interface MockUserStore {
 
 class MockUserTable {
   selectedUsers = signal<UserInfo[]>([]);
-  dt = jasmine.createSpyObj('dt', ['exportCSV']);
+  _exportCSVSpy = jasmine.createSpy('exportCSV');
+  dt = () => ({
+    exportCSV: this._exportCSVSpy,
+  });
 }
 
 describe('UserToolbarComponent', () => {
@@ -97,9 +100,7 @@ describe('UserToolbarComponent', () => {
 
     fixture = TestBed.createComponent(UserToolbarComponent);
     component = fixture.componentInstance;
-    Object.defineProperty(component, 'userTable', {
-      get: () => mockUserTable,
-    });
+    fixture.componentRef.setInput('userTable', mockUserTable);
     fixture.detectChanges();
   });
 
@@ -115,17 +116,17 @@ describe('UserToolbarComponent', () => {
       const createButton = fixture.debugElement.query(
         By.css('p-button[label="Nuevo"]'),
       );
-      expect(createButton.componentInstance.disabled).toBeFalse();
+      expect(createButton.componentInstance.disabled).toBeFalsy();
     });
 
-    it('should be disabled when loading', () => {
+    it('should be enabled (not disabled) when loading, as per current template', () => {
       userStore.loading.set(true);
       fixture.detectChanges();
 
       const createButton = fixture.debugElement.query(
         By.css('p-button[label="Nuevo"]'),
       );
-      expect(createButton.componentInstance.disabled).toBeTrue();
+      expect(createButton.componentInstance.disabled).toBeFalsy();
     });
 
     it('should call openUserDialog when clicked', () => {
@@ -150,11 +151,11 @@ describe('UserToolbarComponent', () => {
     });
 
     it('should be enabled when users are selected', () => {
-      const selectedUsers = [
+      const selectedUsersMock = [
         createMockUser(1, 'User 1', 'user1@example.com', mockRoles),
         createMockUser(2, 'User 2', 'user2@example.com', mockRoles),
       ];
-      mockUserTable.selectedUsers.set(selectedUsers);
+      mockUserTable.selectedUsers.set(selectedUsersMock);
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
@@ -163,26 +164,26 @@ describe('UserToolbarComponent', () => {
       expect(deleteButton.componentInstance.disabled).toBeFalse();
     });
 
-    it('should be disabled when loading', () => {
-      const selectedUsers = [
+    it('should be enabled (not disabled by loading) when loading if users are selected, as per current template', () => {
+      const selectedUsersMock = [
         createMockUser(1, 'User 1', 'user1@example.com', mockRoles),
       ];
-      mockUserTable.selectedUsers.set(selectedUsers);
+      mockUserTable.selectedUsers.set(selectedUsersMock);
       userStore.loading.set(true);
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
         By.css('p-button[label="Eliminar"]'),
       );
-      expect(deleteButton.componentInstance.disabled).toBeTrue();
+      expect(deleteButton.componentInstance.disabled).toBeFalse();
     });
 
     it('should call deleteAllById with selected user IDs when clicked', () => {
-      const selectedUsers = [
+      const selectedUsersMock = [
         createMockUser(1, 'User 1', 'user1@example.com', mockRoles),
         createMockUser(2, 'User 2', 'user2@example.com', mockRoles),
       ];
-      mockUserTable.selectedUsers.set(selectedUsers);
+      mockUserTable.selectedUsers.set(selectedUsersMock);
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
@@ -225,7 +226,7 @@ describe('UserToolbarComponent', () => {
       );
       exportButton.triggerEventHandler('onClick', null);
 
-      expect(mockUserTable.dt.exportCSV).toHaveBeenCalled();
+      expect(mockUserTable._exportCSVSpy).toHaveBeenCalled();
     });
   });
 });

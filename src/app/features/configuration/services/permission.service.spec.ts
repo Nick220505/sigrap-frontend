@@ -4,12 +4,14 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { environment } from '@env';
 import { PermissionData, PermissionInfo } from '../models/permission.model';
 import { PermissionService } from './permission.service';
 
 describe('PermissionService', () => {
   let service: PermissionService;
   let httpMock: HttpTestingController;
+  const apiUrl = environment.apiUrl;
 
   const mockPermission: PermissionInfo = {
     id: 1,
@@ -47,7 +49,7 @@ describe('PermissionService', () => {
         expect(permissions).toEqual([mockPermission]);
       });
 
-      const req = httpMock.expectOne('/api/permissions');
+      const req = httpMock.expectOne(`${apiUrl}/permissions`);
       expect(req.request.method).toBe('GET');
       req.flush([mockPermission]);
     });
@@ -59,7 +61,7 @@ describe('PermissionService', () => {
         expect(permission).toEqual(mockPermission);
       });
 
-      const req = httpMock.expectOne('/api/permissions/1');
+      const req = httpMock.expectOne(`${apiUrl}/permissions/1`);
       expect(req.request.method).toBe('GET');
       req.flush(mockPermission);
     });
@@ -77,7 +79,7 @@ describe('PermissionService', () => {
         expect(permission).toEqual(mockPermission);
       });
 
-      const req = httpMock.expectOne('/api/permissions');
+      const req = httpMock.expectOne(`${apiUrl}/permissions`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(newPermission);
       req.flush(mockPermission);
@@ -96,7 +98,7 @@ describe('PermissionService', () => {
         expect(permission).toEqual(mockPermission);
       });
 
-      const req = httpMock.expectOne('/api/permissions/1');
+      const req = httpMock.expectOne(`${apiUrl}/permissions/1`);
       expect(req.request.method).toBe('PATCH');
       expect(req.request.body).toEqual(updatedPermission);
       req.flush(mockPermission);
@@ -109,7 +111,7 @@ describe('PermissionService', () => {
         expect().nothing();
       });
 
-      const req = httpMock.expectOne('/api/permissions/1');
+      const req = httpMock.expectOne(`${apiUrl}/permissions/1`);
       expect(req.request.method).toBe('DELETE');
       req.flush({});
     });

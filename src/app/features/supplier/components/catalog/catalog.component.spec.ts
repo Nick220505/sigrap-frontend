@@ -1,5 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { CatalogComponent } from './catalog.component';
 
 describe('CatalogComponent', () => {
@@ -9,7 +11,12 @@ describe('CatalogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CatalogComponent],
-      providers: [provideHttpClient()],
+      providers: [
+        provideHttpClient(),
+        provideAnimations(),
+        MessageService,
+        ConfirmationService,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CatalogComponent);
