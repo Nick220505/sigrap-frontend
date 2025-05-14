@@ -31,228 +31,184 @@ import { TooltipModule } from 'primeng/tooltip';
     TagModule,
   ],
   template: `
-    <div class="p-4">
-      <h1 class="text-2xl font-bold mb-4">Pedidos a Proveedores</h1>
+    @let columns =
+      [
+        { field: 'orderNumber', header: 'ID Pedido' },
+        { field: 'orderDate', header: 'Fecha' },
+        { field: 'supplier.name', header: 'Proveedor' },
+        { field: 'totalAmount', header: 'Total' },
+        { field: 'status', header: 'Estado' },
+      ];
 
-      <div class="flex flex-wrap gap-4 mb-6">
-        <p-card class="w-full md:w-80">
-          <div class="flex flex-col gap-2">
-            <h5 class="m-0 text-lg font-semibold">Pedidos en Proceso</h5>
-            <div class="flex items-center justify-between">
-              <span class="text-4xl font-bold">8</span>
-              <i
-                class="pi pi-shopping-cart text-2xl bg-blue-100 p-3 rounded-full text-blue-600"
-              ></i>
-            </div>
+    <p-table
+      #dt
+      [value]="purchaseOrderStore.entities()"
+      [loading]="purchaseOrderStore.loading()"
+      [rows]="10"
+      [columns]="columns"
+      paginator
+      [rowsPerPageOptions]="[10, 25, 50]"
+      showCurrentPageReport
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pedidos"
+      [globalFilterFields]="['orderNumber', 'supplier.name', 'status']"
+      [tableStyle]="{ 'min-width': '70rem' }"
+      rowHover
+      dataKey="id"
+      [(selection)]="selectedOrders"
+      styleClass="p-datatable-gridlines"
+    >
+      <ng-template pTemplate="caption">
+        <div
+          class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
+        >
+          <div class="self-start">
+            <h5 class="m-0 text-left">Pedidos a Proveedores</h5>
           </div>
-        </p-card>
 
-        <p-card class="w-full md:w-80">
-          <div class="flex flex-col gap-2">
-            <h5 class="m-0 text-lg font-semibold">Pedidos Completados</h5>
-            <div class="flex items-center justify-between">
-              <span class="text-4xl font-bold">24</span>
-              <i
-                class="pi pi-check-circle text-2xl bg-green-100 p-3 rounded-full text-green-600"
-              ></i>
-            </div>
+          <div class="flex items-center w-full sm:w-auto">
+            <p-iconfield class="w-full">
+              <p-inputicon>
+                <i class="pi pi-search"></i>
+              </p-inputicon>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                [(ngModel)]="searchValue"
+                placeholder="Buscar..."
+                class="w-full"
+              />
+            </p-iconfield>
           </div>
-        </p-card>
+        </div>
+      </ng-template>
 
-        <p-card class="w-full md:w-80">
-          <div class="flex flex-col gap-2">
-            <h5 class="m-0 text-lg font-semibold">Pedidos Pendientes</h5>
-            <div class="flex items-center justify-between">
-              <span class="text-4xl font-bold">3</span>
-              <i
-                class="pi pi-clock text-2xl bg-yellow-100 p-3 rounded-full text-yellow-600"
-              ></i>
-            </div>
-          </div>
-        </p-card>
-      </div>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox />
+          </th>
 
-      @let columns =
-        [
-          { field: 'orderNumber', header: 'ID Pedido' },
-          { field: 'orderDate', header: 'Fecha' },
-          { field: 'supplier.name', header: 'Proveedor' },
-          { field: 'totalAmount', header: 'Total' },
-          { field: 'status', header: 'Estado' },
-        ];
-
-      <p-table
-        #dt
-        [value]="purchaseOrderStore.entities()"
-        [loading]="purchaseOrderStore.loading()"
-        [rows]="10"
-        [columns]="columns"
-        paginator
-        [rowsPerPageOptions]="[10, 25, 50]"
-        showCurrentPageReport
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pedidos"
-        [globalFilterFields]="['orderNumber', 'supplier.name', 'status']"
-        [tableStyle]="{ 'min-width': '70rem' }"
-        rowHover
-        dataKey="id"
-        [(selection)]="selectedOrders"
-        styleClass="p-datatable-gridlines"
-      >
-        <ng-template pTemplate="caption">
-          <div
-            class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
-          >
-            <div class="self-start">
-              <h5 class="m-0 text-left">Lista de Pedidos</h5>
-            </div>
-
-            <div class="flex items-center w-full sm:w-auto">
-              <p-iconfield class="w-full">
-                <p-inputicon>
-                  <i class="pi pi-search"></i>
-                </p-inputicon>
-                <input
-                  pInputText
-                  type="text"
-                  (input)="
-                    dt.filterGlobal($any($event.target).value, 'contains')
-                  "
-                  [(ngModel)]="searchValue"
-                  placeholder="Buscar..."
-                  class="w-full"
-                />
-              </p-iconfield>
-            </div>
-          </div>
-        </ng-template>
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 3rem">
-              <p-tableHeaderCheckbox />
-            </th>
-
-            @for (column of columns; track column.field) {
-              <th pSortableColumn="{{ column.field }}">
-                <div class="flex items-center gap-2">
-                  <span>{{ column.header }}</span>
-                  <p-sortIcon field="{{ column.field }}" />
-                  <p-columnFilter
-                    type="text"
-                    field="{{ column.field }}"
-                    display="menu"
-                    class="ml-auto"
-                    placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                    pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
-                    tooltipPosition="top"
-                  />
-                </div>
-              </th>
-            }
-
-            <th>
+          @for (column of columns; track column.field) {
+            <th pSortableColumn="{{ column.field }}">
               <div class="flex items-center gap-2">
-                <span>Acciones</span>
-                <button
-                  type="button"
-                  pButton
-                  icon="pi pi-filter-slash"
-                  class="p-button-rounded p-button-text p-button-secondary"
-                  pTooltip="Limpiar todos los filtros"
+                <span>{{ column.header }}</span>
+                <p-sortIcon field="{{ column.field }}" />
+                <p-columnFilter
+                  type="text"
+                  field="{{ column.field }}"
+                  display="menu"
+                  class="ml-auto"
+                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
+                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
-                  (click)="clearAllFilters()"
-                  aria-label="Limpiar todos los filtros"
-                ></button>
+                />
               </div>
             </th>
-          </tr>
-        </ng-template>
+          }
 
-        <ng-template pTemplate="body" let-order let-columns="columns">
-          <tr>
-            <td style="width: 3rem">
-              <p-tableCheckbox [value]="order" />
-            </td>
+          <th>
+            <div class="flex items-center gap-2">
+              <span>Acciones</span>
+              <button
+                type="button"
+                pButton
+                icon="pi pi-filter-slash"
+                class="p-button-rounded p-button-text p-button-secondary"
+                pTooltip="Limpiar todos los filtros"
+                tooltipPosition="top"
+                (click)="clearAllFilters()"
+                aria-label="Limpiar todos los filtros"
+              ></button>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
 
-            @for (column of columns; track column.field) {
-              <td>
-                @if (column.field === 'totalAmount') {
-                  {{ order[column.field] | currency: 'COP' : '$' : '1.0-0' }}
-                } @else if (column.field === 'supplier.name') {
-                  {{ order.supplier?.name || 'Sin proveedor' }}
-                } @else if (column.field === 'orderDate') {
-                  {{ order[column.field] | date: 'dd/MM/yyyy' }}
-                } @else if (column.field === 'status') {
-                  <p-tag
-                    [severity]="getStatusSeverity(order[column.field])"
-                    [value]="formatStatus(order[column.field])"
-                  />
-                } @else {
-                  {{ order[column.field] }}
-                }
-              </td>
-            }
+      <ng-template pTemplate="body" let-order let-columns="columns">
+        <tr>
+          <td style="width: 3rem">
+            <p-tableCheckbox [value]="order" />
+          </td>
 
+          @for (column of columns; track column.field) {
             <td>
-              <div class="flex gap-1 justify-center">
-                <p-button
-                  icon="pi pi-eye"
-                  styleClass="p-button-rounded p-button-text"
-                  pTooltip="Ver detalles"
-                  tooltipPosition="top"
-                  [disabled]="purchaseOrderStore.loading()"
+              @if (column.field === 'totalAmount') {
+                {{ order[column.field] | currency: 'COP' : '$' : '1.0-0' }}
+              } @else if (column.field === 'supplier.name') {
+                {{ order.supplier?.name || 'Sin proveedor' }}
+              } @else if (column.field === 'orderDate') {
+                {{ order[column.field] | date: 'dd/MM/yyyy' }}
+              } @else if (column.field === 'status') {
+                <p-tag
+                  [severity]="getStatusSeverity(order[column.field])"
+                  [value]="formatStatus(order[column.field])"
                 />
-                <p-button
-                  icon="pi pi-pencil"
-                  styleClass="p-button-rounded p-button-text"
-                  pTooltip="Editar pedido"
-                  tooltipPosition="top"
-                  (click)="purchaseOrderStore.openOrderDialog(order)"
-                  [disabled]="purchaseOrderStore.loading()"
-                />
-                <p-button
-                  icon="pi pi-trash"
-                  styleClass="p-button-rounded p-button-text p-button-danger"
-                  pTooltip="Eliminar pedido"
-                  tooltipPosition="top"
-                  (click)="deleteOrder(order)"
-                  [disabled]="
-                    purchaseOrderStore.loading() || order.status !== 'DRAFT'
-                  "
-                />
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td [attr.colspan]="columns.length + 2" class="text-center py-4">
-              @if (purchaseOrderStore.error(); as error) {
-                <div class="flex justify-center p-6">
-                  <p-message severity="error">
-                    <div class="flex flex-col gap-4 text-center p-3">
-                      <strong>Error al cargar pedidos:</strong>
-                      <p>{{ error }}</p>
-                      <div class="flex justify-center">
-                        <p-button
-                          label="Reintentar"
-                          (onClick)="purchaseOrderStore.findAll()"
-                          styleClass="p-button-sm"
-                          [loading]="purchaseOrderStore.loading()"
-                        />
-                      </div>
-                    </div>
-                  </p-message>
-                </div>
               } @else {
-                <p>No se encontraron pedidos.</p>
+                {{ order[column.field] }}
               }
             </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
+          }
+
+          <td>
+            <div class="flex gap-1 justify-center">
+              <p-button
+                icon="pi pi-eye"
+                styleClass="p-button-rounded p-button-text"
+                pTooltip="Ver detalles"
+                tooltipPosition="top"
+                [disabled]="purchaseOrderStore.loading()"
+              />
+              <p-button
+                icon="pi pi-pencil"
+                styleClass="p-button-rounded p-button-text"
+                pTooltip="Editar pedido"
+                tooltipPosition="top"
+                (click)="purchaseOrderStore.openOrderDialog(order)"
+                [disabled]="purchaseOrderStore.loading()"
+              />
+              <p-button
+                icon="pi pi-trash"
+                styleClass="p-button-rounded p-button-text p-button-danger"
+                pTooltip="Eliminar pedido"
+                tooltipPosition="top"
+                (click)="deleteOrder(order)"
+                [disabled]="
+                  purchaseOrderStore.loading() || order.status !== 'DRAFT'
+                "
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="columns.length + 2" class="text-center py-4">
+            @if (purchaseOrderStore.error(); as error) {
+              <div class="flex justify-center p-6">
+                <p-message severity="error">
+                  <div class="flex flex-col gap-4 text-center p-3">
+                    <strong>Error al cargar pedidos:</strong>
+                    <p>{{ error }}</p>
+                    <div class="flex justify-center">
+                      <p-button
+                        label="Reintentar"
+                        (onClick)="purchaseOrderStore.findAll()"
+                        styleClass="p-button-sm"
+                        [loading]="purchaseOrderStore.loading()"
+                      />
+                    </div>
+                  </div>
+                </p-message>
+              </div>
+            } @else {
+              <p>No se encontraron pedidos.</p>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   `,
 })
 export class OrderTableComponent {
