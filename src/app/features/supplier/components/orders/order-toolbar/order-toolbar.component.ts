@@ -57,7 +57,6 @@ export class OrderToolbarComponent {
   deleteSelectedOrders(): void {
     const orders = this.orderTable().selectedOrders();
 
-    // Check if any of the selected orders are not in DRAFT status
     const nonDraftOrders = orders.filter((order) => order.status !== 'DRAFT');
     if (nonDraftOrders.length > 0) {
       this.confirmationService.confirm({
