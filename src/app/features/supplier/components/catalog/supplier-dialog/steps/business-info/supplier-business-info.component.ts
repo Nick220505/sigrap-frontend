@@ -11,7 +11,6 @@ import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-supplier-business-info',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

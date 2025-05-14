@@ -10,7 +10,6 @@ import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-supplier-configuration',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

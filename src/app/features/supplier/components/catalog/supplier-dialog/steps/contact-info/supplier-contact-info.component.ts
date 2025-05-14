@@ -8,7 +8,6 @@ import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-supplier-contact-info',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

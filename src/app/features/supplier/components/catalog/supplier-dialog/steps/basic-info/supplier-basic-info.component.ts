@@ -10,7 +10,6 @@ import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-supplier-basic-info',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -24,7 +23,6 @@ import { TextareaModule } from 'primeng/textarea';
   template: `
     <form [formGroup]="formGroup()" class="flex flex-col gap-4 py-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Basic Information -->
         <div class="col-span-1">
           @let nameControlInvalid =
             formGroup().get('name')?.invalid &&

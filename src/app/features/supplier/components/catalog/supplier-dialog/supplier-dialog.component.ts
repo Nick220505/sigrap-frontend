@@ -18,7 +18,6 @@ import { SupplierContactInfoComponent } from './steps/contact-info/supplier-cont
 
 @Component({
   selector: 'app-supplier-dialog',
-  standalone: true,
   imports: [
     CommonModule,
     DialogModule,
