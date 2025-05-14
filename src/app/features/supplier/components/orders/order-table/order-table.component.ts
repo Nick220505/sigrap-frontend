@@ -151,33 +151,38 @@ import { TooltipModule } from 'primeng/tooltip';
           }
 
           <td>
-            <div class="flex gap-1 justify-center">
-              <p-button
-                icon="pi pi-eye"
-                styleClass="p-button-rounded p-button-text"
-                pTooltip="Ver detalles"
-                tooltipPosition="top"
-                [disabled]="purchaseOrderStore.loading()"
-              />
-              <p-button
-                icon="pi pi-pencil"
-                styleClass="p-button-rounded p-button-text"
-                pTooltip="Editar pedido"
-                tooltipPosition="top"
-                (click)="purchaseOrderStore.openOrderDialog(order)"
-                [disabled]="purchaseOrderStore.loading()"
-              />
-              <p-button
-                icon="pi pi-trash"
-                styleClass="p-button-rounded p-button-text p-button-danger"
-                pTooltip="Eliminar pedido"
-                tooltipPosition="top"
-                (click)="deleteOrder(order)"
-                [disabled]="
-                  purchaseOrderStore.loading() || order.status !== 'DRAFT'
-                "
-              />
-            </div>
+            <p-button
+              icon="pi pi-eye"
+              severity="success"
+              rounded
+              outlined
+              class="mr-2"
+              pTooltip="Ver detalles"
+              tooltipPosition="top"
+              [disabled]="purchaseOrderStore.loading()"
+            />
+            <p-button
+              icon="pi pi-pencil"
+              rounded
+              outlined
+              class="mr-2"
+              pTooltip="Editar pedido"
+              tooltipPosition="top"
+              (click)="purchaseOrderStore.openOrderDialog(order)"
+              [disabled]="purchaseOrderStore.loading()"
+            />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              rounded
+              outlined
+              pTooltip="Eliminar pedido"
+              tooltipPosition="top"
+              (click)="deleteOrder(order)"
+              [disabled]="
+                purchaseOrderStore.loading() || order.status !== 'DRAFT'
+              "
+            />
           </td>
         </tr>
       </ng-template>
