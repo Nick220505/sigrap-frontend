@@ -8,9 +8,22 @@ export type PurchaseOrderStatus =
   | 'DRAFT'
   | 'SUBMITTED'
   | 'CONFIRMED'
+  | 'IN_PROCESS'
   | 'SHIPPED'
   | 'DELIVERED'
   | 'CANCELLED';
+
+/**
+ * Represents a single tracking event for a purchase order.
+ */
+export interface PurchaseOrderTrackingEventInfo {
+  id: number;
+  eventTimestamp: string;
+  status: string;
+  description?: string;
+  location?: string;
+  notes?: string;
+}
 
 /**
  * Represents a purchase order item info returned from the API
@@ -38,11 +51,13 @@ export interface PurchaseOrderInfo {
   supplier: SupplierInfo;
   orderDate: string;
   expectedDeliveryDate?: string;
+  shipDate?: string;
   actualDeliveryDate?: string;
   status: string;
   totalAmount: number;
   notes?: string;
   items: PurchaseOrderItemInfo[];
+  trackingEvents?: PurchaseOrderTrackingEventInfo[];
   createdAt?: string;
   updatedAt?: string;
 }

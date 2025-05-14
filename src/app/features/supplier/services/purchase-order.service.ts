@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import {
   PurchaseOrderData,
   PurchaseOrderInfo,
+  PurchaseOrderTrackingEventInfo,
 } from '../models/purchase-order.model';
 
 @Injectable({
@@ -121,6 +122,20 @@ export class PurchaseOrderService {
     return this.http.patch<PurchaseOrderInfo>(
       `${this.baseUrl}/${id}/cancel`,
       {},
+    );
+  }
+
+  /**
+   * Retrieves the tracking history for a specific purchase order.
+   *
+   * @param orderId The ID of the purchase order.
+   * @return An observable list of tracking event information.
+   */
+  getTrackingHistory(
+    orderId: number,
+  ): Observable<PurchaseOrderTrackingEventInfo[]> {
+    return this.http.get<PurchaseOrderTrackingEventInfo[]>(
+      `${this.baseUrl}/${orderId}/tracking`,
     );
   }
 }
