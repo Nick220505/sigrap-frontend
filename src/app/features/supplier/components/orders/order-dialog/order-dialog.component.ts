@@ -25,6 +25,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
+import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
@@ -43,6 +44,7 @@ import { TooltipModule } from 'primeng/tooltip';
     SelectButtonModule,
     InputGroupModule,
     InputGroupAddonModule,
+    TextareaModule,
   ],
   template: `
     <p-dialog
@@ -142,14 +144,20 @@ import { TooltipModule } from 'primeng/tooltip';
         <!-- Notes -->
         <div class="flex flex-col gap-2">
           <label for="notes" class="font-bold">Notas</label>
-          <textarea
-            pInputTextarea
-            id="notes"
-            formControlName="notes"
-            rows="3"
-            class="w-full"
-            placeholder="Información adicional sobre el pedido"
-          ></textarea>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-align-left"></i>
+            </p-inputgroup-addon>
+            <textarea
+              rows="3"
+              pTextarea
+              id="notes"
+              formControlName="notes"
+              placeholder="Información adicional sobre el pedido"
+              class="w-full"
+              fluid
+            ></textarea>
+          </p-inputgroup>
         </div>
 
         <!-- Order Items -->
@@ -323,7 +331,7 @@ export class OrderDialogComponent {
             supplierId: order.supplier?.id,
             orderDate,
             expectedDeliveryDate,
-            notes: order.notes || '',
+            notes: order.notes ?? '',
           });
 
           // Add each item to the form array
@@ -341,7 +349,7 @@ export class OrderDialogComponent {
                     item.unitPrice,
                     [Validators.required, Validators.min(0)],
                   ],
-                  notes: [item.notes || ''],
+                  notes: [item.notes ?? ''],
                 }),
               );
             });
