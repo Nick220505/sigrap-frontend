@@ -31,17 +31,21 @@ export interface PurchaseOrderState {
   error: string | null;
   selectedOrder: PurchaseOrderInfo | null;
   dialogVisible: boolean;
+  viewOnly: boolean;
 }
+
+export const initialPurchaseOrderState: PurchaseOrderState = {
+  loading: false,
+  error: null,
+  selectedOrder: null,
+  dialogVisible: false,
+  viewOnly: false,
+};
 
 export const PurchaseOrderStore = signalStore(
   { providedIn: 'root' },
   withEntities<PurchaseOrderInfo>(),
-  withState<PurchaseOrderState>({
-    loading: false,
-    error: null,
-    selectedOrder: null,
-    dialogVisible: false,
-  }),
+  withState(initialPurchaseOrderState),
   withComputed(({ entities }) => ({
     ordersCount: computed(() => entities().length),
   })),
@@ -379,15 +383,20 @@ export const PurchaseOrderStore = signalStore(
       ),
     ),
 
-    openOrderDialog: (order?: PurchaseOrderInfo) => {
+    openOrderDialog: (order?: PurchaseOrderInfo, viewMode = false): void => {
       patchState(store, {
-        selectedOrder: order || null,
+        selectedOrder: order ?? null,
         dialogVisible: true,
+        viewOnly: viewMode,
       });
     },
 
-    closeOrderDialog: () => {
-      patchState(store, { dialogVisible: false });
+    closeOrderDialog: (): void => {
+      patchState(store, {
+        selectedOrder: null,
+        dialogVisible: false,
+        viewOnly: false,
+      });
     },
 
     clearSelectedOrder: () => {

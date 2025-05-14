@@ -159,6 +159,7 @@ import { TooltipModule } from 'primeng/tooltip';
               class="mr-2"
               pTooltip="Ver detalles"
               tooltipPosition="top"
+              (click)="purchaseOrderStore.openOrderDialog(order, true)"
               [disabled]="purchaseOrderStore.loading()"
             />
             <p-button
@@ -168,7 +169,7 @@ import { TooltipModule } from 'primeng/tooltip';
               class="mr-2"
               pTooltip="Editar pedido"
               tooltipPosition="top"
-              (click)="purchaseOrderStore.openOrderDialog(order)"
+              (click)="purchaseOrderStore.openOrderDialog(order, false)"
               [disabled]="purchaseOrderStore.loading()"
             />
             <p-button

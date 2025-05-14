@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, untracked } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -56,7 +56,11 @@ import { TooltipModule } from 'primeng/tooltip';
       "
       [style]="{ width: '750px' }"
       [header]="
-        purchaseOrderStore.selectedOrder() ? 'Editar Pedido' : 'Crear Pedido'
+        purchaseOrderStore.viewOnly()
+          ? 'Ver Pedido'
+          : purchaseOrderStore.selectedOrder()
+            ? 'Editar Pedido'
+            : 'Crear Pedido'
       "
       modal
     >
@@ -164,16 +168,16 @@ import { TooltipModule } from 'primeng/tooltip';
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
             <span class="font-bold">Productos</span>
-            <p-button
-              icon="pi pi-plus"
-              label="Agregar Producto"
-              (onClick)="addItem()"
-              [disabled]="
-                isFormEffectivelyDisabled() || !productStore.entities().length
-              "
-              severity="secondary"
-              size="small"
-            />
+            @if (!purchaseOrderStore.viewOnly()) {
+              <p-button
+                icon="pi pi-plus"
+                label="Agregar Producto"
+                (onClick)="addItem()"
+                [disabled]="isFormDisabled() || !productStore.entities().length"
+                severity="secondary"
+                size="small"
+              />
+            }
           </div>
 
           <div formArrayName="items">
@@ -181,17 +185,19 @@ import { TooltipModule } from 'primeng/tooltip';
               <div [formGroupName]="$index" class="p-4 border rounded-lg mb-3">
                 <div class="flex justify-between items-center mb-3">
                   <h5 class="m-0">Producto {{ $index + 1 }}</h5>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-trash"
-                    class="p-button-rounded p-button-danger p-button-text"
-                    (click)="removeItem($index)"
-                    [disabled]="isFormEffectivelyDisabled()"
-                    pTooltip="Eliminar producto"
-                    tooltipPosition="top"
-                    aria-label="Eliminar producto"
-                  ></button>
+                  @if (!purchaseOrderStore.viewOnly()) {
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-trash"
+                      class="p-button-rounded p-button-danger p-button-text"
+                      (click)="removeItem($index)"
+                      [disabled]="isFormDisabled()"
+                      pTooltip="Eliminar producto"
+                      tooltipPosition="top"
+                      aria-label="Eliminar producto"
+                    ></button>
+                  }
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -251,8 +257,10 @@ import { TooltipModule } from 'primeng/tooltip';
               <div
                 class="p-4 border rounded-lg text-center text-gray-500 italic"
               >
-                No hay productos en este pedido. Haga clic en "Agregar Producto"
-                para añadir.
+                No hay productos en este pedido.
+                @if (!purchaseOrderStore.viewOnly()) {
+                  Haga clic en "Agregar Producto" para añadir.
+                }
               </div>
             }
           </div>
@@ -261,20 +269,22 @@ import { TooltipModule } from 'primeng/tooltip';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancelar"
+          [label]="purchaseOrderStore.viewOnly() ? 'Cerrar' : 'Cancelar'"
           icon="pi pi-times"
           text
           (click)="purchaseOrderStore.closeOrderDialog()"
         />
 
-        <p-button
-          label="Guardar"
-          icon="pi pi-check"
-          (click)="orderForm.valid ? saveOrder() : orderForm.markAllAsTouched()"
-          [disabled]="
-            purchaseOrderStore.loading() || isFormEffectivelyDisabled()
-          "
-        />
+        @if (!purchaseOrderStore.viewOnly()) {
+          <p-button
+            label="Guardar"
+            icon="pi pi-check"
+            (click)="
+              orderForm.valid ? saveOrder() : orderForm.markAllAsTouched()
+            "
+            [disabled]="purchaseOrderStore.loading() || isFormDisabled()"
+          />
+        }
       </ng-template>
     </p-dialog>
   `,
@@ -286,7 +296,13 @@ export class OrderDialogComponent {
   readonly productStore = inject(ProductStore);
   readonly categoryStore = inject(CategoryStore);
 
-  readonly isFormEffectivelyDisabled = signal(false);
+  readonly isFormDisabled = computed(() => {
+    const order = this.purchaseOrderStore.selectedOrder();
+    return (
+      this.purchaseOrderStore.viewOnly() ||
+      (!!order && order.status !== 'DRAFT')
+    );
+  });
 
   readonly orderForm: FormGroup = this.fb.group({
     supplierId: [null, Validators.required],
@@ -310,8 +326,7 @@ export class OrderDialogComponent {
   constructor() {
     effect(() => {
       const order = this.purchaseOrderStore.selectedOrder();
-      const disableForm = !!order && order.status !== 'DRAFT';
-      this.isFormEffectivelyDisabled.set(disableForm);
+      const disableForm = this.isFormDisabled();
 
       untracked(() => {
         if (order) {
@@ -403,7 +418,7 @@ export class OrderDialogComponent {
       notes: [''],
     });
 
-    if (this.isFormEffectivelyDisabled()) {
+    if (this.isFormDisabled()) {
       newItem.disable();
     }
 
