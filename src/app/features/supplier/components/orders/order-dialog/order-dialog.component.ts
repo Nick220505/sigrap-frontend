@@ -65,9 +65,7 @@ import { TooltipModule } from 'primeng/tooltip';
       modal
     >
       <form [formGroup]="orderForm" class="flex flex-col gap-4 pt-4">
-        <!-- Supplier and Dates Row -->
         <div class="flex flex-col md:flex-row md:items-start">
-          <!-- Supplier Selection -->
           @let supplierControlInvalid =
             orderForm.get('supplierId')?.invalid &&
             orderForm.get('supplierId')?.touched;
@@ -99,9 +97,7 @@ import { TooltipModule } from 'primeng/tooltip';
             }
           </div>
 
-          <!-- Dates Wrapper -->
           <div class="flex flex-col md:flex-row md:w-2/3 gap-4">
-            <!-- Order Date -->
             @let orderDateControlInvalid =
               orderForm.get('orderDate')?.invalid &&
               orderForm.get('orderDate')?.touched;
@@ -128,7 +124,6 @@ import { TooltipModule } from 'primeng/tooltip';
               }
             </div>
 
-            <!-- Expected Delivery Date -->
             <div class="flex flex-col gap-2 md:w-1/2">
               <label for="expectedDeliveryDate" class="font-bold"
                 >Fecha de Entrega Esperada</label
@@ -145,7 +140,6 @@ import { TooltipModule } from 'primeng/tooltip';
           </div>
         </div>
 
-        <!-- Notes -->
         <div class="flex flex-col gap-2">
           <label for="notes" class="font-bold">Notas</label>
           <p-inputgroup>
@@ -164,7 +158,6 @@ import { TooltipModule } from 'primeng/tooltip';
           </p-inputgroup>
         </div>
 
-        <!-- Order Items -->
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
             <span class="font-bold">Productos</span>
@@ -201,7 +194,6 @@ import { TooltipModule } from 'primeng/tooltip';
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <!-- Product -->
                   <div class="flex flex-col gap-2">
                     <span class="font-semibold">Producto</span>
                     <p-select
@@ -217,7 +209,6 @@ import { TooltipModule } from 'primeng/tooltip';
                     />
                   </div>
 
-                  <!-- Quantity -->
                   <div class="flex flex-col gap-2">
                     <span class="font-semibold">Cantidad</span>
                     <p-inputNumber
@@ -227,7 +218,6 @@ import { TooltipModule } from 'primeng/tooltip';
                     />
                   </div>
 
-                  <!-- Unit Price -->
                   <div class="flex flex-col gap-2">
                     <span class="font-semibold">Precio Unitario</span>
                     <p-inputNumber
@@ -239,7 +229,6 @@ import { TooltipModule } from 'primeng/tooltip';
                     />
                   </div>
 
-                  <!-- Notes -->
                   <div class="flex flex-col gap-2">
                     <span class="font-semibold">Notas</span>
                     <input
@@ -330,18 +319,15 @@ export class OrderDialogComponent {
 
       untracked(() => {
         if (order) {
-          // Clear items array first
           while (this.itemsArray.length) {
             this.itemsArray.removeAt(0);
           }
 
-          // Convert dates from string to Date objects
           const orderDate = order.orderDate ? new Date(order.orderDate) : null;
           const expectedDeliveryDate = order.expectedDeliveryDate
             ? new Date(order.expectedDeliveryDate)
             : null;
 
-          // Patch the main form values
           this.orderForm.patchValue({
             supplierId: order.supplier?.id,
             orderDate,
@@ -349,7 +335,6 @@ export class OrderDialogComponent {
             notes: order.notes ?? '',
           });
 
-          // Add each item to the form array
           if (order.items && order.items.length > 0) {
             order.items.forEach((item) => {
               this.itemsArray.push(
@@ -376,13 +361,11 @@ export class OrderDialogComponent {
             expectedDeliveryDate: null,
             notes: '',
           });
-          // Clear items
           while (this.itemsArray.length) {
             this.itemsArray.removeAt(0);
           }
         }
 
-        // Programmatically enable/disable form controls
         if (disableForm) {
           this.orderForm.get('supplierId')?.disable();
           this.orderForm.get('orderDate')?.disable();
@@ -436,7 +419,6 @@ export class OrderDialogComponent {
       .entities()
       .find((p) => p.id === productId);
     if (product) {
-      // Set default unit price to product cost price
       this.itemsArray.at(index).patchValue({
         unitPrice: product.costPrice,
       });
@@ -445,13 +427,12 @@ export class OrderDialogComponent {
 
   formatDateToISO(date: Date | null): string | null {
     if (!date) return null;
-    return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    return date.toISOString().split('T')[0];
   }
 
   saveOrder(): void {
-    const formValue = this.orderForm.getRawValue(); // Use getRawValue to include disabled controls
+    const formValue = this.orderForm.getRawValue();
 
-    // Format dates to ISO string format (YYYY-MM-DD)
     const orderData: PurchaseOrderData = {
       supplierId: formValue.supplierId,
       orderDate: this.formatDateToISO(formValue.orderDate) as string,
@@ -467,7 +448,6 @@ export class OrderDialogComponent {
             notes: item.notes,
           };
 
-          // Include ID if it exists (for updates)
           if (item.id) {
             itemData.id = item.id;
           }

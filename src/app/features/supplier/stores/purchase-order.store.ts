@@ -206,12 +206,10 @@ export const PurchaseOrderStore = signalStore(
             return of(null);
           }
 
-          // Create an array of delete requests
           const deleteRequests = ids.map((id) =>
             purchaseOrderService.delete(id),
           );
 
-          // Execute all delete requests and combine the results
           return forkJoin(deleteRequests).pipe(
             tapResponse({
               next: () => {

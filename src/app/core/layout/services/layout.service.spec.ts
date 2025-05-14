@@ -285,7 +285,6 @@ describe('LayoutService', () => {
     });
 
     it('should apply system theme based on OS preference', () => {
-      // Set up the service with a mock systemThemeMediaQuery
       service['systemThemeMediaQuery'] = {
         matches: true,
         addEventListener: jasmine.createSpy('addEventListener'),
@@ -323,12 +322,10 @@ describe('LayoutService', () => {
 
       expect(mediaQueryListeners.length).toBeGreaterThan(0);
 
-      // Simulate OS switching to dark mode
       if (mediaQueryListeners[0]) {
         mediaQueryListeners[0]({ matches: true } as MediaQueryListEvent);
         expect(service.layoutConfig().darkTheme).toBeTrue();
 
-        // Simulate OS switching to light mode
         mediaQueryListeners[0]({ matches: false } as MediaQueryListEvent);
         expect(service.layoutConfig().darkTheme).toBeFalse();
       }
@@ -371,7 +368,6 @@ describe('LayoutService', () => {
       const initialLength = mediaQueryListeners.length;
       service.ngOnDestroy();
 
-      // The mediaQueryListeners array should be empty after ngOnDestroy
       expect(mediaQueryListeners.length).toBeLessThan(initialLength);
     });
   });
@@ -591,7 +587,6 @@ describe('LayoutService', () => {
         typeof setInterval
       >;
 
-      // Mock clearInterval to simulate setting timeCheckInterval to null
       spyOn(window, 'clearInterval').and.callFake(() => {
         service['timeCheckInterval'] = null;
       });
@@ -603,16 +598,13 @@ describe('LayoutService', () => {
     });
 
     it('should clean up all resources on destroy', () => {
-      // Setup a fake interval
       const fakeInterval = 123;
       service['timeCheckInterval'] = fakeInterval as unknown as ReturnType<
         typeof setInterval
       >;
 
-      // Setup system theme detection
       systemThemeDarkMode = true;
 
-      // Create a mock MediaQueryList with proper spies
       const mockMediaQueryList = {
         matches: false,
         addEventListener: jasmine.createSpy('addEventListener'),
@@ -629,48 +621,38 @@ describe('LayoutService', () => {
         removeListener: jasmine.createSpy('removeListener'),
       } as unknown as MediaQueryList;
 
-      // Create a mock handler
       const mockHandler = jasmine.createSpy('systemThemeHandler');
 
-      // Set the mocks directly on the service
       service['systemThemeMediaQuery'] = mockMediaQueryList;
       service['systemThemeHandler'] = mockHandler;
 
-      // Mock clearInterval to simulate setting timeCheckInterval to null
       spyOn(window, 'clearInterval').and.callFake(() => {
         service['timeCheckInterval'] = null;
       });
 
-      // Call ngOnDestroy which should clean up resources
       service.ngOnDestroy();
 
-      // Verify clearInterval was called
       expect(window.clearInterval).toHaveBeenCalled();
       expect(service['timeCheckInterval']).toBeNull();
 
-      // Verify system theme resources were cleaned up
       expect(mockMediaQueryList.removeEventListener).toHaveBeenCalled();
       expect(service['systemThemeHandler']).toBeNull();
       expect(service['systemThemeMediaQuery']).toBeNull();
     });
   });
 
-  // Replace the skipped tests with simpler, reliable tests
   it('should support system theme mode', () => {
-    // Just check that the service correctly sets the mode
     service.setThemeMode('system');
     expect(service.layoutConfig().themeMode).toBe('system');
   });
 
   it('should properly switch between dark and light themes', () => {
-    // Start with light theme
     service.layoutConfig.update((config) => ({
       ...config,
       darkTheme: false,
     }));
     expect(service.isDarkTheme()).toBeFalse();
 
-    // Switch to dark theme
     service.layoutConfig.update((config) => ({
       ...config,
       darkTheme: true,

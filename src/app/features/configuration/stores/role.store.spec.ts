@@ -65,13 +65,12 @@ describe('RoleStore', () => {
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
-    // Configure default spy return values
     roleService.findAll.and.returnValue(of(mockRoles));
     roleService.create.and.returnValue(of(newMockRole));
     roleService.update.and.returnValue(of(updatedMockRole));
     roleService.delete.and.returnValue(of(undefined));
     roleService.deleteAllById.and.returnValue(of(undefined));
-    roleService.assignToUser.and.returnValue(of(mockRoles[0])); // Example return
+    roleService.assignToUser.and.returnValue(of(mockRoles[0]));
     roleService.removeFromUser.and.returnValue(of(undefined));
 
     TestBed.configureTestingModule({
@@ -86,13 +85,10 @@ describe('RoleStore', () => {
 
     store = TestBed.inject(RoleStore);
     httpMock = TestBed.inject(HttpTestingController);
-
-    // DO NOT expect/flush an HTTP call for onInit here if the service spy handles it.
-    // The spy roleService.findAll.and.returnValue(of(mockRoles)) should prevent a real HTTP call.
   });
 
   afterEach(() => {
-    httpMock.verify(); // Verifies that no requests are outstanding.
+    httpMock.verify();
   });
 
   it('should be created and roles loaded via onInit by service spy', () => {
@@ -134,7 +130,6 @@ describe('RoleStore', () => {
         name: 'New Role',
         description: 'New Description',
       };
-      // service.create is already configured to return newMockRole
 
       store.create(roleData);
 
@@ -167,7 +162,6 @@ describe('RoleStore', () => {
   describe('update', () => {
     it('should call the service method, update entities, and show success message', () => {
       const roleData: Partial<RoleData> = { name: 'Updated Role' };
-      // service.update is configured to return updatedMockRole
 
       store.update({ id: 1, roleData });
 
@@ -227,7 +221,7 @@ describe('RoleStore', () => {
       const idsToRemove = [1, 2];
       store.deleteAllById(idsToRemove);
       expect(roleService.deleteAllById).toHaveBeenCalledWith(idsToRemove);
-      expect(store.entities().length).toBe(0); // Assuming mockRoles had 2 items initially
+      expect(store.entities().length).toBe(0);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Roles eliminados',

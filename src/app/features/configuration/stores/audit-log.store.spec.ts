@@ -32,7 +32,6 @@ describe('AuditLogStore', () => {
     },
   ];
 
-  // Function to create a fresh store instance with specified findAll behavior
   function createStore(findAllReturnValue = of(mockAuditLogs)) {
     TestBed.resetTestingModule();
 
@@ -46,10 +45,8 @@ describe('AuditLogStore', () => {
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
-    // Set the findAll behavior with the provided value
     auditLogService.findAll.and.returnValue(findAllReturnValue);
 
-    // Default behavior for other methods
     auditLogService.findByUserId.and.returnValue(of(mockAuditLogs));
     auditLogService.findByEntityName.and.returnValue(of(mockAuditLogs));
     auditLogService.findByAction.and.returnValue(of(mockAuditLogs));
@@ -85,12 +82,11 @@ describe('AuditLogStore', () => {
       const errorMessage = 'Failed to fetch audit logs';
       const errorStore = createStore(throwError(() => new Error(errorMessage)));
 
-      // Call findAll on the fresh error store
       errorStore.findAll();
 
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
-      expect(errorStore.entities()).toEqual([]); // Should start with empty array
+      expect(errorStore.entities()).toEqual([]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
@@ -114,7 +110,6 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by user fails', () => {
       const errorMessage = 'Failed to fetch user audit logs';
 
-      // Create a new store to ensure empty state
       const errorStore = createStore(of([]));
       auditLogService.findByUserId.and.returnValue(
         throwError(() => new Error(errorMessage)),
@@ -148,7 +143,6 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by entity fails', () => {
       const errorMessage = 'Failed to fetch entity audit logs';
 
-      // Create a new store with empty initial entities
       const errorStore = createStore(of([]));
       auditLogService.findByEntityName.and.returnValue(
         throwError(() => new Error(errorMessage)),
@@ -182,7 +176,6 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by action fails', () => {
       const errorMessage = 'Failed to fetch action audit logs';
 
-      // Create a new store with empty initial entities
       const errorStore = createStore(of([]));
       auditLogService.findByAction.and.returnValue(
         throwError(() => new Error(errorMessage)),
@@ -218,7 +211,6 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by date range fails', () => {
       const errorMessage = 'Failed to fetch date range audit logs';
 
-      // Create a new store with empty initial entities
       const errorStore = createStore(of([]));
       auditLogService.findByDateRange.and.returnValue(
         throwError(() => new Error(errorMessage)),
