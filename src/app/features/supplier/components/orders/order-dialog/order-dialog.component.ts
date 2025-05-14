@@ -59,76 +59,84 @@ import { TooltipModule } from 'primeng/tooltip';
       modal
     >
       <form [formGroup]="orderForm" class="flex flex-col gap-4 pt-4">
-        <!-- Supplier Selection -->
-        @let supplierControlInvalid =
-          orderForm.get('supplierId')?.invalid &&
-          orderForm.get('supplierId')?.touched;
+        <!-- Supplier and Dates Row -->
+        <div class="flex flex-col md:flex-row md:items-start">
+          <!-- Supplier Selection -->
+          @let supplierControlInvalid =
+            orderForm.get('supplierId')?.invalid &&
+            orderForm.get('supplierId')?.touched;
 
-        <div
-          class="flex flex-col gap-2"
-          [class.p-invalid]="supplierControlInvalid"
-        >
-          <label for="supplierId" class="font-bold">Proveedor</label>
-          <p-inputgroup>
-            <p-inputgroup-addon>
-              <i class="pi pi-building"></i>
-            </p-inputgroup-addon>
-            <p-select
-              id="supplierId"
-              formControlName="supplierId"
-              [options]="supplierStore.entities()"
-              optionLabel="name"
-              optionValue="id"
-              placeholder="Seleccione un proveedor"
-              filter
-              filterBy="name"
-              styleClass="w-full"
-            />
-          </p-inputgroup>
-
-          @if (supplierControlInvalid) {
-            <small class="text-red-500">El proveedor es obligatorio.</small>
-          }
-        </div>
-
-        <!-- Order Date -->
-        @let orderDateControlInvalid =
-          orderForm.get('orderDate')?.invalid &&
-          orderForm.get('orderDate')?.touched;
-
-        <div
-          class="flex flex-col gap-2"
-          [class.p-invalid]="orderDateControlInvalid"
-        >
-          <label for="orderDate" class="font-bold">Fecha del Pedido</label>
-          <p-datePicker
-            id="orderDate"
-            formControlName="orderDate"
-            [showIcon]="true"
-            dateFormat="dd/mm/yy"
-            [class.ng-dirty]="orderDateControlInvalid"
-            [class.ng-invalid]="orderDateControlInvalid"
-          />
-
-          @if (orderDateControlInvalid) {
-            <small class="text-red-500"
-              >La fecha del pedido es obligatoria.</small
-            >
-          }
-        </div>
-
-        <!-- Expected Delivery Date -->
-        <div class="flex flex-col gap-2">
-          <label for="expectedDeliveryDate" class="font-bold"
-            >Fecha de Entrega Esperada</label
+          <div
+            class="flex flex-col gap-2 md:w-1/3 md:mr-8"
+            [class.p-invalid]="supplierControlInvalid"
           >
-          <p-datePicker
-            id="expectedDeliveryDate"
-            formControlName="expectedDeliveryDate"
-            [showIcon]="true"
-            dateFormat="dd/mm/yy"
-            [minDate]="minDeliveryDate"
-          />
+            <label for="supplierId" class="font-bold">Proveedor</label>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-building"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="supplierId"
+                formControlName="supplierId"
+                [options]="supplierStore.entities()"
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Seleccione un proveedor"
+                filter
+                filterBy="name"
+                styleClass="w-full"
+              />
+            </p-inputgroup>
+
+            @if (supplierControlInvalid) {
+              <small class="text-red-500">El proveedor es obligatorio.</small>
+            }
+          </div>
+
+          <!-- Dates Wrapper -->
+          <div class="flex flex-col md:flex-row md:w-2/3 gap-4">
+            <!-- Order Date -->
+            @let orderDateControlInvalid =
+              orderForm.get('orderDate')?.invalid &&
+              orderForm.get('orderDate')?.touched;
+
+            <div
+              class="flex flex-col gap-2 md:w-1/2"
+              [class.p-invalid]="orderDateControlInvalid"
+            >
+              <label for="orderDate" class="font-bold">Fecha del Pedido</label>
+              <p-datePicker
+                id="orderDate"
+                formControlName="orderDate"
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                [class.ng-dirty]="orderDateControlInvalid"
+                [class.ng-invalid]="orderDateControlInvalid"
+                styleClass="w-full"
+              />
+
+              @if (orderDateControlInvalid) {
+                <small class="text-red-500"
+                  >La fecha del pedido es obligatoria.</small
+                >
+              }
+            </div>
+
+            <!-- Expected Delivery Date -->
+            <div class="flex flex-col gap-2 md:w-1/2">
+              <label for="expectedDeliveryDate" class="font-bold"
+                >Fecha de Entrega Esperada</label
+              >
+              <p-datePicker
+                id="expectedDeliveryDate"
+                formControlName="expectedDeliveryDate"
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                [minDate]="minDeliveryDate"
+                styleClass="w-full"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Notes -->
