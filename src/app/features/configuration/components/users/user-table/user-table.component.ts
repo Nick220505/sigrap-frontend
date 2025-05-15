@@ -133,24 +133,40 @@ import { UserStore } from '../../../stores/user.store';
 
           @for (column of columns; track column.field) {
             <td>
-              @if (column.field === 'status') {
-                <span [class]="getStatusClass(user.status)">
-                  {{ getStatusLabel(user.status) }}
-                </span>
-              } @else if (column.field === 'lastLogin') {
-                {{ user.lastLogin | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
-              } @else if (column.field === 'roles') {
-                <div class="flex flex-wrap gap-1">
-                  @for (role of user.roles; track role.id) {
-                    <span
-                      class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
-                    >
-                      {{ role.name }}
-                    </span>
+              @switch (column.field) {
+                @case ('status') {
+                  @switch (user.status) {
+                    @case (UserStatus.ACTIVE) {
+                      <span class="text-green-500">Activo</span>
+                    }
+                    @case (UserStatus.INACTIVE) {
+                      <span class="text-gray-500">Inactivo</span>
+                    }
+                    @case (UserStatus.LOCKED) {
+                      <span class="text-red-500">Bloqueado</span>
+                    }
+                    @default {
+                      <span>{{ user.status }}</span>
+                    }
                   }
-                </div>
-              } @else {
-                {{ user[column.field] }}
+                }
+                @case ('lastLogin') {
+                  {{ user.lastLogin | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
+                }
+                @case ('roles') {
+                  <div class="flex flex-wrap gap-1">
+                    @for (role of user.roles; track role.id) {
+                      <span
+                        class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
+                      >
+                        {{ role.name }}
+                      </span>
+                    }
+                  </div>
+                }
+                @default {
+                  {{ user[column.field] }}
+                }
               }
             </td>
           }
@@ -213,6 +229,7 @@ import { UserStore } from '../../../stores/user.store';
 export class UserTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly userStore = inject(UserStore);
+  readonly UserStatus = UserStatus;
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');
@@ -236,23 +253,5 @@ export class UserTableComponent {
       message: `¿Está seguro de que desea eliminar el usuario <b>${name}</b>?`,
       accept: () => this.userStore.delete(id),
     });
-  }
-
-  getStatusClass(status: UserStatus): string {
-    const classes = {
-      [UserStatus.ACTIVE]: 'text-green-500',
-      [UserStatus.INACTIVE]: 'text-gray-500',
-      [UserStatus.LOCKED]: 'text-red-500',
-    };
-    return classes[status] || '';
-  }
-
-  getStatusLabel(status: UserStatus): string {
-    const labels = {
-      [UserStatus.ACTIVE]: 'Activo',
-      [UserStatus.INACTIVE]: 'Inactivo',
-      [UserStatus.LOCKED]: 'Bloqueado',
-    };
-    return labels[status] || status;
   }
 }
