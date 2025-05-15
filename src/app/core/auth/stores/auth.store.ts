@@ -59,13 +59,13 @@ export const AuthStore = signalStore(
 
                 patchState(store, { user, token, loggedIn: true });
 
+                router.navigate(['/']);
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Inicio de sesión exitoso',
                   detail: `Bienvenido/a, ${name}`,
                 });
-
-                router.navigate(['/']);
               },
               error: ({ status, error }: HttpErrorResponse) => {
                 let errorMessage =
@@ -85,6 +85,7 @@ export const AuthStore = signalStore(
                 }
 
                 patchState(store, { error: errorMessage });
+
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -111,13 +112,13 @@ export const AuthStore = signalStore(
 
                 patchState(store, { user, token, loggedIn: true });
 
+                router.navigate(['/']);
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Registro exitoso',
                   detail: `Cuenta creada correctamente. Bienvenido/a, ${name}!`,
                 });
-
-                router.navigate(['/']);
               },
               error: ({ status, error }: HttpErrorResponse) => {
                 let errorMessage =
@@ -133,6 +134,7 @@ export const AuthStore = signalStore(
                 }
 
                 patchState(store, { error: errorMessage });
+
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -155,13 +157,13 @@ export const AuthStore = signalStore(
         token: null,
       });
 
+      router.navigate(['/iniciar-sesion']);
+
       messageService.add({
         severity: 'success',
         summary: 'Sesión cerrada',
         detail: 'Ha cerrado sesión exitosamente',
       });
-
-      router.navigate(['/iniciar-sesion']);
     },
     getToken: (): string | null => {
       return store.token() ?? localStorage.getItem(AUTH_TOKEN_KEY);

@@ -46,7 +46,6 @@ export class TrackingSummaryComponent {
   inTransitCount = computed(
     () => this.orders().filter((o) => o.status === 'SHIPPED').length,
   );
-  // Example: Combining statuses for a summary view
   inPreparationOrConfirmedCount = computed(
     () =>
       this.orders().filter(
@@ -56,8 +55,6 @@ export class TrackingSummaryComponent {
           o.status === 'SUBMITTED',
       ).length,
   );
-  // Delayed count would require more complex logic, e.g., comparing expectedDeliveryDate with today
-  // For now, this is a placeholder.
   delayedCount = computed(() => {
     const today = new Date().toISOString().split('T')[0];
     return this.orders().filter(
