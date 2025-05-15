@@ -20,8 +20,6 @@ import { TrackingTableComponent } from './tracking-table/tracking-table.componen
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
           <app-tracking-table
-            [orders]="store.trackableOrders()"
-            [isLoading]="store.isLoadingOrders()"
             (viewOrderDetails)="store.selectOrderAndLoadHistory($event)"
           />
         </div>
