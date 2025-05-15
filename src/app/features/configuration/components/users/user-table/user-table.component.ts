@@ -145,7 +145,7 @@ import { UserStore } from '../../../stores/user.store';
                     <span
                       class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
                     >
-                      {{ getRoleLabel(role.name) }}
+                      {{ role.name }}
                     </span>
                   }
                 </div>
@@ -254,16 +254,5 @@ export class UserTableComponent {
       [UserStatus.LOCKED]: 'Bloqueado',
     };
     return labels[status] || status;
-  }
-
-  getRoleLabel(roleName: string): string {
-    const labels: Record<string, string> = {
-      ADMIN: 'Administrador',
-      USER: 'Usuario',
-      EMPLOYEE: 'Empleado',
-      MANAGER: 'Gerente',
-      SUPERVISOR: 'Supervisor',
-    };
-    return labels[roleName] || roleName;
   }
 }
