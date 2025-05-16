@@ -77,37 +77,76 @@ import { ScheduleStore } from '../../../stores/schedule.store';
           }
         </div>
 
-        @let dayControlInvalid =
-          scheduleForm.get('day')?.invalid && scheduleForm.get('day')?.touched;
-        <div class="flex flex-col gap-2" [class.p-invalid]="dayControlInvalid">
-          <label for="day" class="font-bold">Día de la Semana</label>
-          <p-inputgroup>
-            <p-inputgroup-addon>
-              <i class="pi pi-calendar"></i>
-            </p-inputgroup-addon>
-            <p-select
-              id="day"
-              formControlName="day"
-              [options]="daysOfWeek"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Seleccione un día"
-              [required]="true"
-              [class.ng-dirty]="dayControlInvalid"
-              [class.ng-invalid]="dayControlInvalid"
-              appendTo="body"
-              styleClass="w-full"
-              scrollHeight="300px"
-            />
-          </p-inputgroup>
-          @if (dayControlInvalid) {
-            <small class="text-red-500">
-              El día de la semana es obligatorio.
-            </small>
-          }
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          @let dayControlInvalid =
+            scheduleForm.get('day')?.invalid &&
+            scheduleForm.get('day')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="dayControlInvalid"
+          >
+            <label for="day" class="font-bold">Día de la Semana</label>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-calendar"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="day"
+                formControlName="day"
+                [options]="daysOfWeek"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione un día"
+                [required]="true"
+                [class.ng-dirty]="dayControlInvalid"
+                [class.ng-invalid]="dayControlInvalid"
+                appendTo="body"
+                styleClass="w-full"
+                scrollHeight="300px"
+              />
+            </p-inputgroup>
+            @if (dayControlInvalid) {
+              <small class="text-red-500">
+                El día de la semana es obligatorio.
+              </small>
+            }
+          </div>
+
+          @let typeControlInvalid =
+            scheduleForm.get('type')?.invalid &&
+            scheduleForm.get('type')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="typeControlInvalid"
+          >
+            <label for="type" class="font-bold">Tipo de Horario</label>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-briefcase"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="type"
+                formControlName="type"
+                [options]="scheduleTypes"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione un tipo"
+                [required]="true"
+                [class.ng-dirty]="typeControlInvalid"
+                [class.ng-invalid]="typeControlInvalid"
+                appendTo="body"
+                styleClass="w-full"
+              />
+            </p-inputgroup>
+            @if (typeControlInvalid) {
+              <small class="text-red-500">
+                El tipo de horario es obligatorio.
+              </small>
+            }
+          </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           @let startTimeControlInvalid =
             scheduleForm.get('startTime')?.invalid &&
             scheduleForm.get('startTime')?.touched;
@@ -165,36 +204,6 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               <small class="text-red-500">La hora de fin es obligatoria.</small>
             }
           </div>
-        </div>
-
-        @let typeControlInvalid =
-          scheduleForm.get('type')?.invalid &&
-          scheduleForm.get('type')?.touched;
-        <div class="flex flex-col gap-2" [class.p-invalid]="typeControlInvalid">
-          <label for="type" class="font-bold">Tipo de Horario</label>
-          <p-inputgroup>
-            <p-inputgroup-addon>
-              <i class="pi pi-briefcase"></i>
-            </p-inputgroup-addon>
-            <p-select
-              id="type"
-              formControlName="type"
-              [options]="scheduleTypes"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Seleccione un tipo"
-              [required]="true"
-              [class.ng-dirty]="typeControlInvalid"
-              [class.ng-invalid]="typeControlInvalid"
-              appendTo="body"
-              styleClass="w-full"
-            />
-          </p-inputgroup>
-          @if (typeControlInvalid) {
-            <small class="text-red-500">
-              El tipo de horario es obligatorio.
-            </small>
-          }
         </div>
       </form>
 
