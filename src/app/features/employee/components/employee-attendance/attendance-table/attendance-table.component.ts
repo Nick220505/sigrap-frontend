@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AttendanceInfo } from '@features/employee/models/attendance.model';
+import { AttendanceStore } from '@features/employee/stores/attendance.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -16,7 +17,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { AttendanceStore } from '../../../stores/attendance.store';
 
 @Component({
   selector: 'app-attendance-table',
@@ -140,13 +140,52 @@ import { AttendanceStore } from '../../../stores/attendance.store';
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'status') {
-                <span [class]="getStatusClass(attendance.status)">
-                  {{ getStatusLabel(attendance.status) }}
-                </span>
+                @switch (attendance.status) {
+                  @case ('PRESENT') {
+                    <span
+                      class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+                      >Presente</span
+                    >
+                  }
+                  @case ('LATE') {
+                    <span
+                      class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+                      >Tarde</span
+                    >
+                  }
+                  @case ('ABSENT') {
+                    <span
+                      class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
+                      >Ausente</span
+                    >
+                  }
+                  @case ('EARLY_DEPARTURE') {
+                    <span
+                      class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
+                      >Salida temprana</span
+                    >
+                  }
+                  @case ('ON_LEAVE') {
+                    <span
+                      class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+                      >Permiso</span
+                    >
+                  }
+                  @default {
+                    <span>{{ attendance.status }}</span>
+                  }
+                }
               } @else if (column.field === 'date') {
                 {{ attendance.date | date: 'dd/MM/yyyy' }}
+              } @else if (column.field === 'clockInTime') {
+                {{
+                  attendance.clockInTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5'
+                }}
               } @else if (column.field === 'clockOutTime') {
-                {{ attendance.clockOutTime || '-' }}
+                {{
+                  (attendance.clockOutTime
+                    | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5') || '-'
+                }}
               } @else {
                 {{ attendance[column.field] }}
               }
@@ -253,39 +292,5 @@ export class AttendanceTableComponent {
       message: `¿Está seguro de que desea eliminar el registro de asistencia de <b>${employeeName}</b>?`,
       accept: () => this.attendanceStore.deleteAllById([id]),
     });
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'PRESENT':
-        return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm';
-      case 'LATE':
-        return 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm';
-      case 'ABSENT':
-        return 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm';
-      case 'EARLY_DEPARTURE':
-        return 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm';
-      case 'ON_LEAVE':
-        return 'bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm';
-      default:
-        return '';
-    }
-  }
-
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'PRESENT':
-        return 'Presente';
-      case 'LATE':
-        return 'Tarde';
-      case 'ABSENT':
-        return 'Ausente';
-      case 'EARLY_DEPARTURE':
-        return 'Salida temprana';
-      case 'ON_LEAVE':
-        return 'Permiso';
-      default:
-        return status;
-    }
   }
 }

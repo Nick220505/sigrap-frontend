@@ -4,29 +4,29 @@ export const employeeRoutes: Routes = [
   {
     path: 'registro',
     loadComponent: () =>
-      import('./components/register/employee-register.component').then(
+      import('./components/employee-register/employee-register.component').then(
         (m) => m.EmployeeRegisterComponent,
-      ),
-  },
-  {
-    path: 'rendimiento',
-    loadComponent: () =>
-      import('./components/performance/employee-performance.component').then(
-        (m) => m.EmployeePerformanceComponent,
       ),
   },
   {
     path: 'horarios',
     loadComponent: () =>
-      import('./components/schedule/employee-schedule.component').then(
+      import('./components/employee-schedule/employee-schedule.component').then(
         (m) => m.EmployeeScheduleComponent,
       ),
   },
   {
-    path: 'seguimiento',
+    path: 'asistencia',
     loadComponent: () =>
-      import('./components/tracking/employee-tracking.component').then(
-        (m) => m.EmployeeTrackingComponent,
-      ),
+      import(
+        './components/employee-attendance/employee-attendance.component'
+      ).then((m) => m.EmployeeAttendanceComponent),
+  },
+  {
+    path: 'rendimiento',
+    loadComponent: () =>
+      import(
+        './components/employee-performance/employee-performance.component'
+      ).then((m) => m.EmployeePerformanceComponent),
   },
 ];

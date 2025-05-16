@@ -66,9 +66,9 @@ export class MenuComponent {
           routerLink: ['/empleados/horarios'],
         },
         {
-          label: 'Seguimiento',
+          label: 'Asistencia',
           icon: 'pi pi-fw pi-eye',
-          routerLink: ['/empleados/seguimiento'],
+          routerLink: ['/empleados/asistencia'],
         },
         {
           label: 'Rendimiento',

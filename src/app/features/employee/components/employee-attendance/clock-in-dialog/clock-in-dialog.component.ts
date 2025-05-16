@@ -10,8 +10,8 @@ import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { Select } from 'primeng/select';
-import { AttendanceStore } from '../../../stores/attendance.store';
-import { EmployeeStore } from '../../../stores/employee.store';
+import { AttendanceStore } from '@features/employee/stores/attendance.store';
+import { EmployeeStore } from '@features/employee/stores/employee.store';
 
 @Component({
   selector: 'app-clock-in-dialog',
