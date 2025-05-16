@@ -1,13 +1,11 @@
 export interface EmployeeInfo {
   id: number;
-  userId?: number;
+  userId: number;
   firstName: string;
   lastName: string;
   documentId?: string;
   phoneNumber?: string;
   email: string;
-  position: string;
-  department: string;
   hireDate: string;
   terminationDate?: string;
   status: EmployeeStatus;
@@ -17,14 +15,12 @@ export interface EmployeeInfo {
 }
 
 export interface EmployeeData {
-  userId?: number;
+  userId: number;
   firstName: string;
   lastName: string;
   documentId?: string;
   phoneNumber?: string;
   email: string;
-  position: string;
-  department: string;
   hireDate: string;
   terminationDate?: string;
   status: EmployeeStatus;

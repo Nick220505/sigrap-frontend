@@ -37,8 +37,6 @@ import { EmployeeStore } from '../../../stores/employee.store';
         { field: 'documentId', header: 'Documento' },
         { field: 'email', header: 'Email' },
         { field: 'phoneNumber', header: 'Teléfono' },
-        { field: 'position', header: 'Cargo' },
-        { field: 'department', header: 'Departamento' },
         { field: 'status', header: 'Estado' },
       ];
 
@@ -52,14 +50,7 @@ import { EmployeeStore } from '../../../stores/employee.store';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} empleados"
-      [globalFilterFields]="[
-        'firstName',
-        'lastName',
-        'documentId',
-        'email',
-        'position',
-        'department',
-      ]"
+      [globalFilterFields]="['firstName', 'lastName', 'documentId', 'email']"
       [tableStyle]="{ 'min-width': '75rem' }"
       rowHover
       dataKey="id"

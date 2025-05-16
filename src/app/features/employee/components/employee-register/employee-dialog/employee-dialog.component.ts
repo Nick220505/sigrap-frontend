@@ -200,76 +200,6 @@ import { EmployeeStore } from '../../../stores/employee.store';
           </div>
 
           <div class="col-span-1">
-            @let positionControlInvalid =
-              employeeForm.get('position')?.invalid &&
-              employeeForm.get('position')?.touched;
-
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="positionControlInvalid"
-            >
-              <label for="position" class="font-bold">Cargo</label>
-              <p-inputgroup>
-                <p-inputgroup-addon>
-                  <i class="pi pi-briefcase"></i>
-                </p-inputgroup-addon>
-                <input
-                  type="text"
-                  pInputText
-                  id="position"
-                  formControlName="position"
-                  placeholder="Ingrese el cargo"
-                  [class.ng-dirty]="positionControlInvalid"
-                  [class.ng-invalid]="positionControlInvalid"
-                  required
-                  fluid
-                />
-              </p-inputgroup>
-
-              @if (positionControlInvalid) {
-                <small class="text-red-500">El cargo es obligatorio.</small>
-              }
-            </div>
-          </div>
-
-          <div class="col-span-1">
-            @let departmentControlInvalid =
-              employeeForm.get('department')?.invalid &&
-              employeeForm.get('department')?.touched;
-
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="departmentControlInvalid"
-            >
-              <label for="department" class="font-bold">Departamento</label>
-              <p-inputgroup>
-                <p-inputgroup-addon>
-                  <i class="pi pi-building"></i>
-                </p-inputgroup-addon>
-                <p-select
-                  id="department"
-                  formControlName="department"
-                  [options]="departments"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Seleccione un departamento"
-                  [class.ng-dirty]="departmentControlInvalid"
-                  [class.ng-invalid]="departmentControlInvalid"
-                  appendTo="body"
-                  styleClass="w-full"
-                  required
-                />
-              </p-inputgroup>
-
-              @if (departmentControlInvalid) {
-                <small class="text-red-500"
-                  >El departamento es obligatorio.</small
-                >
-              }
-            </div>
-          </div>
-
-          <div class="col-span-1">
             @let hireDateControlInvalid =
               employeeForm.get('hireDate')?.invalid &&
               employeeForm.get('hireDate')?.touched;
@@ -370,13 +300,6 @@ export class EmployeeDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly employeeStore = inject(EmployeeStore);
 
-  readonly departments = [
-    { label: 'Ventas', value: 'SALES' },
-    { label: 'Almacén', value: 'WAREHOUSE' },
-    { label: 'Administración', value: 'ADMIN' },
-    { label: 'Soporte', value: 'SUPPORT' },
-  ];
-
   readonly statuses = [
     { label: 'Activo', value: 'ACTIVE' },
     { label: 'Inactivo', value: 'INACTIVE' },
@@ -390,11 +313,10 @@ export class EmployeeDialogComponent {
     documentId: ['', [Validators.required]],
     phoneNumber: [''],
     email: ['', [Validators.required, Validators.email]],
-    position: ['', [Validators.required]],
-    department: ['', [Validators.required]],
     hireDate: [null, [Validators.required]],
     profileImageUrl: [''],
     status: ['ACTIVE', [Validators.required]],
+    userId: [null, [Validators.required]],
   });
 
   constructor() {
@@ -404,11 +326,12 @@ export class EmployeeDialogComponent {
         if (employee) {
           this.employeeForm.patchValue({
             ...employee,
-            hireDate: new Date(employee.hireDate),
+            hireDate: employee.hireDate ? new Date(employee.hireDate) : null,
           });
         } else {
           this.employeeForm.reset({
             status: 'ACTIVE',
+            userId: null,
           });
         }
       });
@@ -420,13 +343,9 @@ export class EmployeeDialogComponent {
     const selectedEmployee = this.employeeStore.selectedEmployee();
 
     if (selectedEmployee) {
-      this.employeeStore.update({
-        id: selectedEmployee.id,
-        employeeData,
-      });
+      this.employeeStore.update({ id: selectedEmployee.id, employeeData });
     } else {
       this.employeeStore.create(employeeData);
     }
-    this.employeeStore.closeEmployeeDialog();
   }
 }
