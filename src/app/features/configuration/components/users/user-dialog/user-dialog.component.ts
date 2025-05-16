@@ -8,10 +8,10 @@ import {
 import { PasswordFieldComponent } from 'app/shared/components/password-field/password-field.component';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { UserData, UserRole } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user.store';
 
@@ -21,7 +21,7 @@ import { UserStore } from '../../../stores/user.store';
     DialogModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
+    Select,
     ReactiveFormsModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -114,13 +114,14 @@ import { UserStore } from '../../../stores/user.store';
             <p-inputgroup-addon>
               <i class="pi pi-shield"></i>
             </p-inputgroup-addon>
-            <p-dropdown
+            <p-select
               id="role"
               formControlName="role"
               [options]="roleOptions"
               optionLabel="label"
               optionValue="value"
               placeholder="Seleccione un rol"
+              appendTo="body"
               styleClass="w-full"
             />
           </p-inputgroup>
