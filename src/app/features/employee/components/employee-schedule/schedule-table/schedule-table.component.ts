@@ -45,7 +45,7 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
   template: `
     @let columns =
       [
-        { field: 'employeeName', header: 'Empleado' },
+        { field: 'userName', header: 'Empleado' },
         { field: 'day', header: 'Día' },
         { field: 'startTime', header: 'Hora Inicio' },
         { field: 'endTime', header: 'Hora Fin' },
@@ -62,13 +62,7 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} horarios"
-      [globalFilterFields]="[
-        'employeeName',
-        'day',
-        'startTime',
-        'endTime',
-        'type',
-      ]"
+      [globalFilterFields]="['userName', 'day', 'startTime', 'endTime', 'type']"
       [tableStyle]="{ 'min-width': '75rem' }"
       rowHover
       dataKey="id"
@@ -148,7 +142,7 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
             <p-tableCheckbox [value]="schedule" />
           </td>
 
-          <td>{{ schedule.employeeName }}</td>
+          <td>{{ schedule.userName }}</td>
 
           <td>{{ getDayOfWeekLabel(schedule.day) }}</td>
 
@@ -259,7 +253,7 @@ export class ScheduleTableComponent {
   deleteSchedule(schedule: ScheduleInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar horario',
-      message: `¿Está seguro de que desea eliminar el horario de <b>${schedule.employeeName}</b>?`,
+      message: `¿Está seguro de que desea eliminar el horario de <b>${schedule.userName}</b>?`,
       accept: () => this.scheduleStore.delete(schedule.id),
     });
   }

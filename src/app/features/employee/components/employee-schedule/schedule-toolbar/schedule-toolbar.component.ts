@@ -64,8 +64,8 @@ export class ScheduleToolbarComponent {
         <ul class='mt-2 mb-0'>
           ${schedules
             .map(
-              ({ employeeName, day }: ScheduleInfo) =>
-                `<li>• <b>${employeeName}</b> - ${this.getDayOfWeekLabel(day)}</li>`,
+              ({ userName, day }: ScheduleInfo) =>
+                `<li>• <b>${userName}</b> - ${this.getDayOfWeekLabel(day)}</li>`,
             )
             .join('')}
         </ul>

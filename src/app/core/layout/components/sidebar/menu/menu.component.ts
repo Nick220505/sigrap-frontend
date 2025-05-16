@@ -56,11 +56,6 @@ export class MenuComponent {
       label: 'EMPLEADOS',
       items: [
         {
-          label: 'Registro',
-          icon: 'pi pi-fw pi-user-plus',
-          routerLink: ['/empleados/registro'],
-        },
-        {
           label: 'Horarios',
           icon: 'pi pi-fw pi-calendar',
           routerLink: ['/empleados/horarios'],

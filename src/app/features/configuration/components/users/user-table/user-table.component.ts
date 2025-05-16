@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserInfo, UserRole, UserStatus } from '../../../models/user.model';
+import { UserInfo, UserRole } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user.store';
 
 @Component({
@@ -36,7 +36,8 @@ import { UserStore } from '../../../stores/user.store';
       [
         { field: 'name', header: 'Nombre' },
         { field: 'email', header: 'Email' },
-        { field: 'status', header: 'Estado' },
+        { field: 'phone', header: 'Teléfono' },
+        { field: 'documentId', header: 'Número de Identificación' },
         { field: 'lastLogin', header: 'Último Acceso' },
         { field: 'role', header: 'Rol' },
       ];
@@ -51,8 +52,8 @@ import { UserStore } from '../../../stores/user.store';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
-      [globalFilterFields]="['name', 'email', 'role']"
-      [tableStyle]="{ 'min-width': '70rem' }"
+      [globalFilterFields]="['name', 'email', 'role', 'phone', 'documentId']"
+      [tableStyle]="{ 'min-width': '85rem' }"
       rowHover
       dataKey="id"
       [(selection)]="selectedUsers"
@@ -134,22 +135,6 @@ import { UserStore } from '../../../stores/user.store';
           @for (column of columns; track column.field) {
             <td>
               @switch (column.field) {
-                @case ('status') {
-                  @switch (user.status) {
-                    @case (UserStatus.ACTIVE) {
-                      <span class="text-green-500">Activo</span>
-                    }
-                    @case (UserStatus.INACTIVE) {
-                      <span class="text-gray-500">Inactivo</span>
-                    }
-                    @case (UserStatus.LOCKED) {
-                      <span class="text-red-500">Bloqueado</span>
-                    }
-                    @default {
-                      <span>{{ user.status }}</span>
-                    }
-                  }
-                }
                 @case ('lastLogin') {
                   {{ user.lastLogin | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
                 }
@@ -225,7 +210,6 @@ import { UserStore } from '../../../stores/user.store';
 export class UserTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly userStore = inject(UserStore);
-  readonly UserStatus = UserStatus;
   readonly UserRole = UserRole;
 
   readonly dt = viewChild.required<Table>('dt');

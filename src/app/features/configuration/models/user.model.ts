@@ -3,8 +3,8 @@ export interface UserData {
   email: string;
   password?: string;
   phone?: string;
-  status?: UserStatus;
   role?: UserRole;
+  documentId?: string;
 }
 
 export interface UserInfo {
@@ -12,15 +12,11 @@ export interface UserInfo {
   name: string;
   email: string;
   phone?: string;
-  status: UserStatus;
   lastLogin?: string;
   role: UserRole;
-}
-
-export enum UserStatus {
-  ACTIVE = 'ACTIVE',
-  LOCKED = 'LOCKED',
-  INACTIVE = 'INACTIVE',
+  documentId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export enum UserRole {

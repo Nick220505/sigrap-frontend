@@ -5,6 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { UserStore } from '@features/configuration/stores/user.store';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
@@ -12,7 +13,6 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { EmployeeStore } from '../../../stores/employee.store';
 import { ScheduleStore } from '../../../stores/schedule.store';
 
 @Component({
@@ -43,36 +43,36 @@ import { ScheduleStore } from '../../../stores/schedule.store';
       modal
     >
       <form [formGroup]="scheduleForm" class="flex flex-col gap-4 pt-4">
-        @let employeeIdControlInvalid =
-          scheduleForm.get('employeeId')?.invalid &&
-          scheduleForm.get('employeeId')?.touched;
+        @let userIdControlInvalid =
+          scheduleForm.get('userId')?.invalid &&
+          scheduleForm.get('userId')?.touched;
 
         <div
           class="flex flex-col gap-2"
-          [class.p-invalid]="employeeIdControlInvalid"
+          [class.p-invalid]="userIdControlInvalid"
         >
-          <label for="employeeId" class="font-bold">Empleado</label>
+          <label for="userId" class="font-bold">Empleado</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
             </p-inputgroup-addon>
             <p-select
-              id="employeeId"
-              formControlName="employeeId"
-              [options]="employeeStore.entities()"
-              optionLabel="firstName"
+              id="userId"
+              formControlName="userId"
+              [options]="userStore.entities()"
+              optionLabel="name"
               optionValue="id"
               placeholder="Seleccione un empleado"
               [required]="true"
-              [class.ng-dirty]="employeeIdControlInvalid"
-              [class.ng-invalid]="employeeIdControlInvalid"
+              [class.ng-dirty]="userIdControlInvalid"
+              [class.ng-invalid]="userIdControlInvalid"
               appendTo="body"
               styleClass="w-full"
               filter
-              filterBy="firstName"
+              filterBy="name"
             />
           </p-inputgroup>
-          @if (employeeIdControlInvalid) {
+          @if (userIdControlInvalid) {
             <small class="text-red-500">El empleado es obligatorio.</small>
           }
         </div>
@@ -231,7 +231,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
 export class ScheduleDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly scheduleStore = inject(ScheduleStore);
-  readonly employeeStore = inject(EmployeeStore);
+  readonly userStore = inject(UserStore);
 
   readonly daysOfWeek = [
     { label: 'Lunes', value: 'MONDAY' },
@@ -250,7 +250,7 @@ export class ScheduleDialogComponent {
   ];
 
   readonly scheduleForm: FormGroup = this.fb.group({
-    employeeId: [null, [Validators.required]],
+    userId: [null, [Validators.required]],
     day: ['', [Validators.required]],
     startTime: ['', [Validators.required]],
     endTime: ['', [Validators.required]],
@@ -292,7 +292,7 @@ export class ScheduleDialogComponent {
         } else {
           this.scheduleForm.reset({
             type: 'REGULAR',
-            employeeId: null,
+            userId: null,
             day: '',
             startTime: '',
             endTime: '',

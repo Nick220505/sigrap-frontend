@@ -1,11 +1,11 @@
 import { Component, inject, input } from '@angular/core';
+import { AttendanceTableComponent } from '@features/employee/components/employee-attendance/attendance-table/attendance-table.component';
+import { AttendanceInfo } from '@features/employee/models/attendance.model';
+import { AttendanceStore } from '@features/employee/stores/attendance.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { AttendanceInfo } from '@features/employee/models/attendance.model';
-import { AttendanceStore } from '@features/employee/stores/attendance.store';
-import { AttendanceTableComponent } from '@features/employee/components/employee-attendance/attendance-table/attendance-table.component';
 
 @Component({
   selector: 'app-attendance-toolbar',
@@ -64,8 +64,8 @@ export class AttendanceToolbarComponent {
         <ul class='mt-2 mb-0'>
           ${attendances
             .map(
-              ({ employeeName, date }: AttendanceInfo) =>
-                `<li>• <b>${employeeName}</b> - ${date}</li>`,
+              ({ userName, date }: AttendanceInfo) =>
+                `<li>• <b>${userName}</b> - ${date}</li>`,
             )
             .join('')}
         </ul>

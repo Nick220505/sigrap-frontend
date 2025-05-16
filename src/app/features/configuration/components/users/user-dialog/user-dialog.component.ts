@@ -101,6 +101,42 @@ import { UserStore } from '../../../stores/user.store';
           }
         </div>
 
+        <div class="flex flex-col gap-2">
+          <label for="documentId" class="font-bold"
+            >Número de Identificación (Opcional)</label
+          >
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-id-card"></i>
+            </p-inputgroup-addon>
+            <input
+              type="text"
+              pInputText
+              id="documentId"
+              formControlName="documentId"
+              placeholder="Ingrese el número de identificación"
+              fluid
+            />
+          </p-inputgroup>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="phone" class="font-bold">Teléfono (Opcional)</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-phone"></i>
+            </p-inputgroup-addon>
+            <input
+              type="text"
+              pInputText
+              id="phone"
+              formControlName="phone"
+              placeholder="Ingrese el número de teléfono"
+              fluid
+            />
+          </p-inputgroup>
+        </div>
+
         @if (!userStore.selectedUser()) {
           <app-password-field
             id="password"
@@ -158,6 +194,8 @@ export class UserDialogComponent {
   readonly userForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
+    documentId: [''],
+    phone: [''],
     password: [
       '',
       [
@@ -178,7 +216,7 @@ export class UserDialogComponent {
           this.userForm.patchValue(user);
           this.userForm.get('password')?.clearValidators();
         } else {
-          this.userForm.reset({ role: UserRole.EMPLOYEE });
+          this.userForm.reset();
           this.userForm
             .get('password')
             ?.setValidators([

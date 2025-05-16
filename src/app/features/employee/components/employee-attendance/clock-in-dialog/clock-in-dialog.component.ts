@@ -5,13 +5,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { UserStore } from '@features/configuration/stores/user.store';
+import { AttendanceStore } from '@features/employee/stores/attendance.store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { Select } from 'primeng/select';
-import { AttendanceStore } from '@features/employee/stores/attendance.store';
-import { EmployeeStore } from '@features/employee/stores/employee.store';
 
 @Component({
   selector: 'app-clock-in-dialog',
@@ -36,36 +36,36 @@ import { EmployeeStore } from '@features/employee/stores/employee.store';
       [style]="{ width: '500px' }"
     >
       <form [formGroup]="clockInForm" class="flex flex-col gap-4 pt-4">
-        @let employeeIdControlInvalid =
-          clockInForm.get('employeeId')?.invalid &&
-          clockInForm.get('employeeId')?.touched;
+        @let userIdControlInvalid =
+          clockInForm.get('userId')?.invalid &&
+          clockInForm.get('userId')?.touched;
         <div
           class="flex flex-col gap-2"
-          [class.p-invalid]="employeeIdControlInvalid"
+          [class.p-invalid]="userIdControlInvalid"
         >
-          <label for="employeeId" class="font-bold">Empleado</label>
+          <label for="userId" class="font-bold">Empleado</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
             </p-inputgroup-addon>
             <p-select
-              id="employeeId"
-              formControlName="employeeId"
-              [options]="employeeStore.entities()"
-              optionLabel="firstName"
+              id="userId"
+              formControlName="userId"
+              [options]="userStore.entities()"
+              optionLabel="name"
               optionValue="id"
               placeholder="Seleccione un empleado"
               [required]="true"
-              [class.ng-dirty]="employeeIdControlInvalid"
-              [class.ng-invalid]="employeeIdControlInvalid"
+              [class.ng-dirty]="userIdControlInvalid"
+              [class.ng-invalid]="userIdControlInvalid"
               appendTo="body"
               styleClass="w-full"
               filter
-              filterBy="firstName"
+              filterBy="name"
               showClear
             />
           </p-inputgroup>
-          @if (employeeIdControlInvalid) {
+          @if (userIdControlInvalid) {
             <small class="text-red-500">El empleado es obligatorio.</small>
           }
         </div>
@@ -94,9 +94,9 @@ import { EmployeeStore } from '@features/employee/stores/employee.store';
 export class ClockInDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly attendanceStore = inject(AttendanceStore);
-  readonly employeeStore = inject(EmployeeStore);
+  readonly userStore = inject(UserStore);
 
   readonly clockInForm: FormGroup = this.fb.group({
-    employeeId: [null, [Validators.required]],
+    userId: [null, [Validators.required]],
   });
 }

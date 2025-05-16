@@ -7,8 +7,8 @@ export type AttendanceStatus =
 
 export interface AttendanceInfo {
   id: number;
-  employeeId: number;
-  employeeName: string;
+  userId: number;
+  userName: string;
   date: string;
   clockInTime: string;
   clockOutTime?: string;
@@ -20,22 +20,22 @@ export interface AttendanceInfo {
 }
 
 export interface AttendanceData {
-  employeeId: number;
+  userId: number;
   date: string;
-  clockInTime?: string;
+  clockInTime: string;
   clockOutTime?: string;
   status: AttendanceStatus;
   notes?: string;
 }
 
 export interface ClockInData {
-  employeeId: number;
-  timestamp: string;
+  userId: number;
+  timestamp?: string;
   notes?: string;
 }
 
 export interface ClockOutData {
   attendanceId: number;
-  timestamp: string;
+  timestamp?: string;
   notes?: string;
 }

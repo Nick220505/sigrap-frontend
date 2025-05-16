@@ -1,7 +1,7 @@
 export interface ScheduleInfo {
   id: number;
-  employeeId: number;
-  employeeName: string;
+  userId: number;
+  userName: string;
   day?: string;
   startTime: string;
   endTime: string;
@@ -12,7 +12,7 @@ export interface ScheduleInfo {
 }
 
 export interface ScheduleData {
-  employeeId: number;
+  userId: number;
   day: string;
   startTime: string;
   endTime: string;

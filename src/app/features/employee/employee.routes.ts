@@ -2,13 +2,6 @@ import { Routes } from '@angular/router';
 
 export const employeeRoutes: Routes = [
   {
-    path: 'registro',
-    loadComponent: () =>
-      import('./components/employee-register/employee-register.component').then(
-        (m) => m.EmployeeRegisterComponent,
-      ),
-  },
-  {
     path: 'horarios',
     loadComponent: () =>
       import('./components/employee-schedule/employee-schedule.component').then(

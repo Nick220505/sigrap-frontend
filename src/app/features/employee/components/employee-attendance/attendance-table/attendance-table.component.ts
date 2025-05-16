@@ -34,7 +34,7 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'employeeName', header: 'Empleado' },
+        { field: 'userName', header: 'Empleado' },
         { field: 'date', header: 'Fecha' },
         { field: 'clockInTime', header: 'Hora Entrada' },
         { field: 'clockOutTime', header: 'Hora Salida' },
@@ -52,7 +52,7 @@ import { TooltipModule } from 'primeng/tooltip';
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
       [globalFilterFields]="[
-        'employeeName',
+        'userName',
         'date',
         'clockInTime',
         'clockOutTime',
@@ -68,7 +68,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Registro de Asistencia</h5>
+            <h5 class="m-0 text-left">Registro de Asistencia de Empleados</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -273,10 +273,10 @@ export class AttendanceTableComponent {
     this.dt().clear();
   }
 
-  clockOut({ id, employeeName }: AttendanceInfo): void {
+  clockOut({ id, userName }: AttendanceInfo): void {
     this.confirmationService.confirm({
       header: 'Registrar salida',
-      message: `¿Está seguro de que desea registrar la salida de <b>${employeeName}</b>?`,
+      message: `¿Está seguro de que desea registrar la salida de <b>${userName}</b>?`,
       accept: () => {
         this.attendanceStore.clockOut({
           attendanceId: id,
@@ -286,10 +286,10 @@ export class AttendanceTableComponent {
     });
   }
 
-  deleteAttendance({ id, employeeName }: AttendanceInfo): void {
+  deleteAttendance({ id, userName }: AttendanceInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar registro',
-      message: `¿Está seguro de que desea eliminar el registro de asistencia de <b>${employeeName}</b>?`,
+      message: `¿Está seguro de que desea eliminar el registro de asistencia de <b>${userName}</b>?`,
       accept: () => this.attendanceStore.deleteAllById([id]),
     });
   }
