@@ -1,25 +1,16 @@
-import { Component, inject, viewChild } from '@angular/core';
-import { PerformanceStore } from '../../stores/performance.store';
-import { PerformanceDialogComponent } from './performance-dialog/performance-dialog.component';
-import { PerformanceTableComponent } from './performance-table/performance-table.component';
-import { PerformanceToolbarComponent } from './performance-toolbar/performance-toolbar.component';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-employee-performance',
-  imports: [
-    PerformanceToolbarComponent,
-    PerformanceTableComponent,
-    PerformanceDialogComponent,
-  ],
+  imports: [],
   template: `
-    <app-performance-toolbar [performanceTable]="performanceTable" />
-
-    <app-performance-table #performanceTable />
-
-    <app-performance-dialog />
+    <div class="p-4">
+      <h2 class="text-2xl font-bold mb-4">Rendimiento de Empleados</h2>
+      <p class="text-gray-600">
+        Esta funcionalidad estará disponible próximamente y se enfocará en el
+        rendimiento basado en ventas.
+      </p>
+    </div>
   `,
 })
-export class EmployeePerformanceComponent {
-  readonly performanceStore = inject(PerformanceStore);
-  readonly performanceTable = viewChild.required(PerformanceTableComponent);
-}
+export class EmployeePerformanceComponent {}
