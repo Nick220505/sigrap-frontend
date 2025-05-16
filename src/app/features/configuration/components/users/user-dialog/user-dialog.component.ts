@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, untracked } from '@angular/core';
+import { Component, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,13 +8,11 @@ import {
 import { PasswordFieldComponent } from 'app/shared/components/password-field/password-field.component';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { RoleInfo } from '../../../models/role.model';
-import { UserData } from '../../../models/user.model';
-import { RoleStore } from '../../../stores/role.store';
+import { UserData, UserRole } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user.store';
 
 @Component({
@@ -23,7 +21,7 @@ import { UserStore } from '../../../stores/user.store';
     DialogModule,
     ButtonModule,
     InputTextModule,
-    MultiSelectModule,
+    DropdownModule,
     ReactiveFormsModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -111,21 +109,18 @@ import { UserStore } from '../../../stores/user.store';
         }
 
         <div class="flex flex-col gap-2">
-          <label for="roles" class="font-bold">Roles</label>
+          <label for="role" class="font-bold">Rol</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-shield"></i>
             </p-inputgroup-addon>
-            <p-multiSelect
-              id="roles"
-              formControlName="roleIds"
-              [options]="translatedRoles()"
+            <p-dropdown
+              id="role"
+              formControlName="role"
+              [options]="roleOptions"
               optionLabel="label"
-              optionValue="id"
-              placeholder="Seleccione los roles"
-              filter
-              filterBy="label"
-              appendTo="body"
+              optionValue="value"
+              placeholder="Seleccione un rol"
               styleClass="w-full"
             />
           </p-inputgroup>
@@ -153,7 +148,11 @@ import { UserStore } from '../../../stores/user.store';
 export class UserDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly userStore = inject(UserStore);
-  readonly roleStore = inject(RoleStore);
+
+  readonly roleOptions = [
+    { label: 'Administrador', value: UserRole.ADMINISTRATOR },
+    { label: 'Empleado', value: UserRole.EMPLOYEE },
+  ];
 
   readonly userForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -167,15 +166,7 @@ export class UserDialogComponent {
         ),
       ],
     ],
-    roleIds: [[]],
-  });
-
-  readonly translatedRoles = computed(() => {
-    return this.roleStore.entities().map((role) => ({
-      id: role.id,
-      name: role.name,
-      label: this.getRoleLabel(role),
-    }));
+    role: [UserRole.EMPLOYEE, Validators.required],
   });
 
   constructor() {
@@ -183,14 +174,10 @@ export class UserDialogComponent {
       const user = this.userStore.selectedUser();
       untracked(() => {
         if (user) {
-          const formValue = {
-            ...user,
-            roleIds: user.roles?.map((role) => role.id) ?? [],
-          };
-          this.userForm.patchValue(formValue);
+          this.userForm.patchValue(user);
           this.userForm.get('password')?.clearValidators();
         } else {
-          this.userForm.reset();
+          this.userForm.reset({ role: UserRole.EMPLOYEE });
           this.userForm
             .get('password')
             ?.setValidators([
@@ -203,17 +190,6 @@ export class UserDialogComponent {
         this.userForm.get('password')?.updateValueAndValidity();
       });
     });
-  }
-
-  getRoleLabel(role: RoleInfo): string {
-    const labels: Record<string, string> = {
-      ADMIN: 'Administrador',
-      USER: 'Usuario',
-      EMPLOYEE: 'Empleado',
-      MANAGER: 'Gerente',
-      SUPERVISOR: 'Supervisor',
-    };
-    return labels[role.name] || role.name;
   }
 
   saveUser(): void {

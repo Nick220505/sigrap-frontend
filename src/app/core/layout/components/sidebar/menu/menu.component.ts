@@ -46,19 +46,9 @@ export class MenuComponent {
           routerLink: ['/configuracion/usuarios'],
         },
         {
-          label: 'Perfiles',
-          icon: 'pi pi-fw pi-id-card',
-          routerLink: ['/configuracion/perfiles'],
-        },
-        {
           label: 'Auditoría',
           icon: 'pi pi-fw pi-shield',
           routerLink: ['/configuracion/auditoria'],
-        },
-        {
-          label: 'Notificaciones',
-          icon: 'pi pi-fw pi-bell',
-          routerLink: ['/configuracion/notificaciones'],
         },
       ],
     },

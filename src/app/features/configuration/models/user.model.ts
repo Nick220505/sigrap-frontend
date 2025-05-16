@@ -1,12 +1,10 @@
-import { RoleInfo } from './role.model';
-
 export interface UserData {
   name: string;
   email: string;
   password?: string;
   phone?: string;
   status?: UserStatus;
-  roleIds?: number[];
+  role?: UserRole;
 }
 
 export interface UserInfo {
@@ -16,11 +14,16 @@ export interface UserInfo {
   phone?: string;
   status: UserStatus;
   lastLogin?: string;
-  roles: RoleInfo[];
+  role: UserRole;
 }
 
 export enum UserStatus {
   ACTIVE = 'ACTIVE',
   LOCKED = 'LOCKED',
   INACTIVE = 'INACTIVE',
+}
+
+export enum UserRole {
+  ADMINISTRATOR = 'ADMINISTRATOR',
+  EMPLOYEE = 'EMPLOYEE',
 }

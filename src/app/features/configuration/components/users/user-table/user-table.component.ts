@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserInfo, UserStatus } from '../../../models/user.model';
+import { UserInfo, UserRole, UserStatus } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user.store';
 
 @Component({
@@ -38,7 +38,7 @@ import { UserStore } from '../../../stores/user.store';
         { field: 'email', header: 'Email' },
         { field: 'status', header: 'Estado' },
         { field: 'lastLogin', header: 'Último Acceso' },
-        { field: 'roles', header: 'Roles' },
+        { field: 'role', header: 'Rol' },
       ];
 
     <p-table
@@ -51,7 +51,7 @@ import { UserStore } from '../../../stores/user.store';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
-      [globalFilterFields]="['name', 'email', 'roles']"
+      [globalFilterFields]="['name', 'email', 'role']"
       [tableStyle]="{ 'min-width': '70rem' }"
       rowHover
       dataKey="id"
@@ -153,16 +153,12 @@ import { UserStore } from '../../../stores/user.store';
                 @case ('lastLogin') {
                   {{ user.lastLogin | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
                 }
-                @case ('roles') {
-                  <div class="flex flex-wrap gap-1">
-                    @for (role of user.roles; track role.id) {
-                      <span
-                        class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
-                      >
-                        {{ role.name }}
-                      </span>
-                    }
-                  </div>
+                @case ('role') {
+                  <span
+                    class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
+                  >
+                    {{ getRoleLabel(user.role) }}
+                  </span>
                 }
                 @default {
                   {{ user[column.field] }}
@@ -230,6 +226,7 @@ export class UserTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly userStore = inject(UserStore);
   readonly UserStatus = UserStatus;
+  readonly UserRole = UserRole;
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');
@@ -253,5 +250,13 @@ export class UserTableComponent {
       message: `¿Está seguro de que desea eliminar el usuario <b>${name}</b>?`,
       accept: () => this.userStore.delete(id),
     });
+  }
+
+  getRoleLabel(role: UserRole): string {
+    const labels: Record<UserRole, string> = {
+      [UserRole.ADMINISTRATOR]: 'Administrador',
+      [UserRole.EMPLOYEE]: 'Empleado',
+    };
+    return labels[role] || role;
   }
 }
