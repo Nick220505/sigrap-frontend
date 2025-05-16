@@ -8,10 +8,10 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { EmployeeStore } from '../../../stores/employee.store';
 import { ScheduleStore } from '../../../stores/schedule.store';
 
@@ -22,7 +22,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
     DialogModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
+    Select,
     CalendarModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -56,7 +56,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
             </p-inputgroup-addon>
-            <p-dropdown
+            <p-select
               id="employeeId"
               formControlName="employeeId"
               [options]="employeeStore.entities()"
@@ -70,8 +70,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               styleClass="w-full"
               filter
               filterBy="firstName"
-              showClear
-            ></p-dropdown>
+            />
           </p-inputgroup>
           @if (employeeIdControlInvalid) {
             <small class="text-red-500">El empleado es obligatorio.</small>
@@ -86,7 +85,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             <p-inputgroup-addon>
               <i class="pi pi-calendar"></i>
             </p-inputgroup-addon>
-            <p-dropdown
+            <p-select
               id="day"
               formControlName="day"
               [options]="daysOfWeek"
@@ -98,8 +97,8 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               [class.ng-invalid]="dayControlInvalid"
               appendTo="body"
               styleClass="w-full"
-              showClear
-            ></p-dropdown>
+              scrollHeight="300px"
+            />
           </p-inputgroup>
           @if (dayControlInvalid) {
             <small class="text-red-500">
@@ -177,7 +176,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             <p-inputgroup-addon>
               <i class="pi pi-briefcase"></i>
             </p-inputgroup-addon>
-            <p-dropdown
+            <p-select
               id="type"
               formControlName="type"
               [options]="scheduleTypes"
@@ -189,7 +188,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               [class.ng-invalid]="typeControlInvalid"
               appendTo="body"
               styleClass="w-full"
-            ></p-dropdown>
+            />
           </p-inputgroup>
           @if (typeControlInvalid) {
             <small class="text-red-500">

@@ -177,7 +177,6 @@ import { TextareaModule } from 'primeng/textarea';
               placeholder="Seleccione una categoría"
               filter
               filterBy="name"
-              showClear
               appendTo="body"
               styleClass="w-full"
             />
