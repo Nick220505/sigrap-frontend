@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,8 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { EmployeeStore } from '../../../stores/employee.store';
 import { ScheduleStore } from '../../../stores/schedule.store';
@@ -22,6 +24,8 @@ import { ScheduleStore } from '../../../stores/schedule.store';
     InputTextModule,
     DropdownModule,
     CalendarModule,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
   template: `
     <p-dialog
@@ -35,69 +39,163 @@ import { ScheduleStore } from '../../../stores/schedule.store';
           : scheduleStore.closeScheduleDialog()
       "
       [modal]="true"
-      [style]="{ width: '450px' }"
-      class="p-fluid"
+      [style]="{ width: '500px' }"
+      modal
     >
-      <form [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()">
-        <div class="field">
-          <label for="employeeId">Empleado</label>
-          <p-dropdown
-            id="employeeId"
-            formControlName="employeeId"
-            [options]="employeeStore.entities()"
-            optionLabel="firstName"
-            optionValue="id"
-            placeholder="Seleccione un empleado"
-            [required]="true"
-          ></p-dropdown>
+      <form [formGroup]="scheduleForm" class="flex flex-col gap-4 pt-4">
+        @let employeeIdControlInvalid =
+          scheduleForm.get('employeeId')?.invalid &&
+          scheduleForm.get('employeeId')?.touched;
+
+        <div
+          class="flex flex-col gap-2"
+          [class.p-invalid]="employeeIdControlInvalid"
+        >
+          <label for="employeeId" class="font-bold">Empleado</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-user"></i>
+            </p-inputgroup-addon>
+            <p-dropdown
+              id="employeeId"
+              formControlName="employeeId"
+              [options]="employeeStore.entities()"
+              optionLabel="firstName"
+              optionValue="id"
+              placeholder="Seleccione un empleado"
+              [required]="true"
+              [class.ng-dirty]="employeeIdControlInvalid"
+              [class.ng-invalid]="employeeIdControlInvalid"
+              appendTo="body"
+              styleClass="w-full"
+              filter
+              filterBy="firstName"
+              showClear
+            ></p-dropdown>
+          </p-inputgroup>
+          @if (employeeIdControlInvalid) {
+            <small class="text-red-500">El empleado es obligatorio.</small>
+          }
         </div>
 
-        <div class="field">
-          <label for="day">Día de la Semana</label>
-          <p-dropdown
-            id="day"
-            formControlName="day"
-            [options]="daysOfWeek"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccione un día"
-            [required]="true"
-          ></p-dropdown>
+        @let dayControlInvalid =
+          scheduleForm.get('day')?.invalid && scheduleForm.get('day')?.touched;
+        <div class="flex flex-col gap-2" [class.p-invalid]="dayControlInvalid">
+          <label for="day" class="font-bold">Día de la Semana</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-calendar"></i>
+            </p-inputgroup-addon>
+            <p-dropdown
+              id="day"
+              formControlName="day"
+              [options]="daysOfWeek"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Seleccione un día"
+              [required]="true"
+              [class.ng-dirty]="dayControlInvalid"
+              [class.ng-invalid]="dayControlInvalid"
+              appendTo="body"
+              styleClass="w-full"
+              showClear
+            ></p-dropdown>
+          </p-inputgroup>
+          @if (dayControlInvalid) {
+            <small class="text-red-500">
+              El día de la semana es obligatorio.
+            </small>
+          }
         </div>
 
-        <div class="field">
-          <label for="startTime">Hora de Inicio</label>
-          <input
-            pInputText
-            id="startTime"
-            formControlName="startTime"
-            type="time"
-            required
-          />
+        <div class="grid grid-cols-2 gap-4">
+          @let startTimeControlInvalid =
+            scheduleForm.get('startTime')?.invalid &&
+            scheduleForm.get('startTime')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="startTimeControlInvalid"
+          >
+            <label for="startTime" class="font-bold">Hora de Inicio</label>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-clock"></i>
+              </p-inputgroup-addon>
+              <input
+                pInputText
+                id="startTime"
+                formControlName="startTime"
+                type="time"
+                [required]="true"
+                [class.ng-dirty]="startTimeControlInvalid"
+                [class.ng-invalid]="startTimeControlInvalid"
+                class="w-full"
+              />
+            </p-inputgroup>
+            @if (startTimeControlInvalid) {
+              <small class="text-red-500"
+                >La hora de inicio es obligatoria.</small
+              >
+            }
+          </div>
+
+          @let endTimeControlInvalid =
+            scheduleForm.get('endTime')?.invalid &&
+            scheduleForm.get('endTime')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="endTimeControlInvalid"
+          >
+            <label for="endTime" class="font-bold">Hora de Fin</label>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-clock"></i>
+              </p-inputgroup-addon>
+              <input
+                pInputText
+                id="endTime"
+                formControlName="endTime"
+                type="time"
+                [required]="true"
+                [class.ng-dirty]="endTimeControlInvalid"
+                [class.ng-invalid]="endTimeControlInvalid"
+                class="w-full"
+              />
+            </p-inputgroup>
+            @if (endTimeControlInvalid) {
+              <small class="text-red-500">La hora de fin es obligatoria.</small>
+            }
+          </div>
         </div>
 
-        <div class="field">
-          <label for="endTime">Hora de Fin</label>
-          <input
-            pInputText
-            id="endTime"
-            formControlName="endTime"
-            type="time"
-            required
-          />
-        </div>
-
-        <div class="field">
-          <label for="type">Tipo de Horario</label>
-          <p-dropdown
-            id="type"
-            formControlName="type"
-            [options]="scheduleTypes"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccione un tipo"
-            [required]="true"
-          ></p-dropdown>
+        @let typeControlInvalid =
+          scheduleForm.get('type')?.invalid &&
+          scheduleForm.get('type')?.touched;
+        <div class="flex flex-col gap-2" [class.p-invalid]="typeControlInvalid">
+          <label for="type" class="font-bold">Tipo de Horario</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-briefcase"></i>
+            </p-inputgroup-addon>
+            <p-dropdown
+              id="type"
+              formControlName="type"
+              [options]="scheduleTypes"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Seleccione un tipo"
+              [required]="true"
+              [class.ng-dirty]="typeControlInvalid"
+              [class.ng-invalid]="typeControlInvalid"
+              appendTo="body"
+              styleClass="w-full"
+            ></p-dropdown>
+          </p-inputgroup>
+          @if (typeControlInvalid) {
+            <small class="text-red-500">
+              El tipo de horario es obligatorio.
+            </small>
+          }
         </div>
       </form>
 
@@ -105,15 +203,18 @@ import { ScheduleStore } from '../../../stores/schedule.store';
         <p-button
           label="Cancelar"
           icon="pi pi-times"
-          styleClass="p-button-text"
-          (onClick)="scheduleStore.closeScheduleDialog()"
+          text
+          (click)="scheduleStore.closeScheduleDialog()"
         />
         <p-button
           label="Guardar"
           icon="pi pi-check"
-          styleClass="p-button-text"
-          (onClick)="saveSchedule()"
-          [disabled]="!scheduleForm.valid"
+          (click)="
+            scheduleForm.valid
+              ? saveSchedule()
+              : scheduleForm.markAllAsTouched()
+          "
+          [disabled]="scheduleStore.loading()"
         />
       </ng-template>
     </p-dialog>
@@ -149,25 +250,62 @@ export class ScheduleDialogComponent {
   });
 
   constructor() {
-    const selectedSchedule = this.scheduleStore.selectedSchedule();
-    if (selectedSchedule) {
-      this.scheduleForm.patchValue(selectedSchedule);
-    }
+    effect(() => {
+      const selectedSchedule = this.scheduleStore.selectedSchedule();
+      untracked(() => {
+        if (selectedSchedule) {
+          const formatToTime = (dateTimeString: string | undefined): string => {
+            if (!dateTimeString) return '';
+            if (/^\d{2}:\d{2}(:\d{2})?$/.test(dateTimeString)) {
+              return dateTimeString.substring(0, 5);
+            }
+            try {
+              const date = new Date(dateTimeString);
+              if (isNaN(date.getTime())) return '';
+              const hours = date.getHours().toString().padStart(2, '0');
+              const minutes = date.getMinutes().toString().padStart(2, '0');
+              return `${hours}:${minutes}`;
+            } catch (error) {
+              console.warn('Error formatting time:', error);
+              return '';
+            }
+          };
+
+          const patchData = {
+            ...selectedSchedule,
+            startTime: formatToTime(
+              selectedSchedule.startTime as string | undefined,
+            ),
+            endTime: formatToTime(
+              selectedSchedule.endTime as string | undefined,
+            ),
+          };
+          this.scheduleForm.patchValue(patchData);
+        } else {
+          this.scheduleForm.reset({
+            type: 'REGULAR',
+            employeeId: null,
+            day: '',
+            startTime: '',
+            endTime: '',
+          });
+        }
+      });
+    });
   }
 
   saveSchedule(): void {
-    if (this.scheduleForm.valid) {
-      const scheduleData = this.scheduleForm.value;
-      const selectedSchedule = this.scheduleStore.selectedSchedule();
+    const scheduleData = this.scheduleForm.value;
+    const id = this.scheduleStore.selectedSchedule()?.id;
 
-      if (selectedSchedule) {
-        this.scheduleStore.update({
-          id: selectedSchedule.id,
-          scheduleData,
-        });
-      } else {
-        this.scheduleStore.create(scheduleData);
-      }
+    if (id) {
+      this.scheduleStore.update({
+        id,
+        scheduleData,
+      });
+    } else {
+      this.scheduleStore.create(scheduleData);
     }
+    this.scheduleStore.closeScheduleDialog();
   }
 }

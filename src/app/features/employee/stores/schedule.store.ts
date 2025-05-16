@@ -67,7 +67,6 @@ export const ScheduleStore = signalStore(
           scheduleService.findAll().pipe(
             tapResponse({
               next: (schedules: ScheduleInfo[]) => {
-                console.log('schedules', schedules);
                 patchState(store, setAllEntities(schedules));
               },
               error: ({ message: error }: Error) => {

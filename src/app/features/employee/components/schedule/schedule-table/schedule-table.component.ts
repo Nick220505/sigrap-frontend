@@ -153,10 +153,20 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
           <td>{{ getDayOfWeekLabel(schedule.day) }}</td>
 
           <td>
-            {{ schedule.startTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}
+            {{
+              schedule.startTime
+                ? ('1970-01-01T' + schedule.startTime | date: 'hh:mm a')
+                : ''
+            }}
           </td>
 
-          <td>{{ schedule.endTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5' }}</td>
+          <td>
+            {{
+              schedule.endTime
+                ? ('1970-01-01T' + schedule.endTime | date: 'hh:mm a')
+                : ''
+            }}
+          </td>
 
           <td>
             @if (schedule.type) {
