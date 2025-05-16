@@ -1,7 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
+import { AuthStore } from '@core/auth/stores/auth.store';
 import { MenuItem } from 'primeng/api';
+import {
+  UserInfo,
+  UserRole,
+} from '../../../../../features/configuration/models/user.model';
 import { MenuItemComponent } from './menu-item/menu-item.component';
 
 @Component({
@@ -9,7 +14,7 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
   imports: [MenuItemComponent, RouterModule],
   template: `
     <ul class="layout-menu">
-      @for (menuItem of menuItems(); track menuItem; let i = $index) {
+      @for (menuItem of filteredMenuItems(); track menuItem; let i = $index) {
         @if (menuItem.separator) {
           <li class="menu-separator"></li>
         } @else {
@@ -26,7 +31,9 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
   `,
 })
 export class MenuComponent {
-  readonly menuItems = signal<MenuItem[]>([
+  private readonly authStore = inject(AuthStore);
+
+  readonly allMenuItems = signal<MenuItem[]>([
     {
       label: 'PRINCIPAL',
       items: [
@@ -110,16 +117,6 @@ export class MenuComponent {
           icon: 'pi pi-fw pi-box',
           routerLink: ['/inventario/productos'],
         },
-        {
-          label: 'Stock',
-          icon: 'pi pi-fw pi-database',
-          routerLink: ['/inventario'],
-        },
-        {
-          label: 'Alertas',
-          icon: 'pi pi-fw pi-exclamation-triangle',
-          routerLink: ['/alertas'],
-        },
       ],
     },
     {
@@ -198,4 +195,15 @@ export class MenuComponent {
       ],
     },
   ]);
+
+  readonly filteredMenuItems = computed(() => {
+    const user = this.authStore.user() as UserInfo | null;
+    if (user && user.role === UserRole.EMPLOYEE) {
+      const disallowedLabels = ['CONFIGURACIÓN', 'PROVEEDORES'];
+      return this.allMenuItems().filter(
+        (menuGroup) => !disallowedLabels.includes(menuGroup.label!),
+      );
+    }
+    return this.allMenuItems();
+  });
 }
