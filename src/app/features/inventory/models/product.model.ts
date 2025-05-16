@@ -6,6 +6,8 @@ export interface ProductInfo {
   description?: string;
   costPrice: number;
   salePrice: number;
+  stock: number;
+  minimumStockThreshold: number;
   category?: CategoryInfo;
   createdAt?: string;
   updatedAt?: string;
@@ -16,5 +18,7 @@ export interface ProductData {
   description?: string;
   costPrice: number;
   salePrice: number;
+  stock: number;
+  minimumStockThreshold: number;
   categoryId?: number;
 }

@@ -38,6 +38,8 @@ import { TooltipModule } from 'primeng/tooltip';
         { field: 'description', header: 'Descripción' },
         { field: 'costPrice', header: 'Precio Costo' },
         { field: 'salePrice', header: 'Precio Venta' },
+        { field: 'stock', header: 'Stock' },
+        { field: 'minimumStockThreshold', header: 'Stock Mínimo' },
         { field: 'category.name', header: 'Categoría' },
       ];
 
@@ -51,8 +53,8 @@ import { TooltipModule } from 'primeng/tooltip';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
-      [globalFilterFields]="['name', 'description', 'category.name']"
-      [tableStyle]="{ 'min-width': '70rem' }"
+      [globalFilterFields]="['name', 'description', 'category.name', 'stock']"
+      [tableStyle]="{ 'min-width': '85rem' }"
       rowHover
       dataKey="id"
       [(selection)]="selectedProducts"
@@ -137,6 +139,11 @@ import { TooltipModule } from 'primeng/tooltip';
                 column.field === 'costPrice' || column.field === 'salePrice'
               ) {
                 {{ product[column.field] | currency: 'COP' : '$' : '1.0-0' }}
+              } @else if (
+                column.field === 'stock' ||
+                column.field === 'minimumStockThreshold'
+              ) {
+                {{ product[column.field] }}
               } @else if (column.field === 'category.name') {
                 {{ product.category?.name || 'Sin categoría' }}
               } @else if (column.field === 'description') {

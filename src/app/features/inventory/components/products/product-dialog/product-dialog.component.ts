@@ -162,6 +162,66 @@ import { TextareaModule } from 'primeng/textarea';
           </div>
         </div>
 
+        <div class="grid grid-cols-2 gap-4">
+          @let stockControlInvalid =
+            productForm.get('stock')?.invalid &&
+            productForm.get('stock')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="stockControlInvalid"
+          >
+            <label for="stock" class="font-bold">Stock</label>
+            <p-inputNumber
+              id="stock"
+              formControlName="stock"
+              placeholder="0"
+              min="0"
+              step="1"
+              showButtons
+              buttonLayout="horizontal"
+              [class.ng-dirty]="stockControlInvalid"
+              [class.ng-invalid]="stockControlInvalid"
+              required
+              fluid
+            />
+            @if (stockControlInvalid) {
+              <small class="text-red-500">
+                El stock es obligatorio y debe ser un número positivo.
+              </small>
+            }
+          </div>
+
+          @let minimumStockThresholdControlInvalid =
+            productForm.get('minimumStockThreshold')?.invalid &&
+            productForm.get('minimumStockThreshold')?.touched;
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="minimumStockThresholdControlInvalid"
+          >
+            <label for="minimumStockThreshold" class="font-bold"
+              >Stock Mínimo</label
+            >
+            <p-inputNumber
+              id="minimumStockThreshold"
+              formControlName="minimumStockThreshold"
+              placeholder="0"
+              min="0"
+              step="1"
+              showButtons
+              buttonLayout="horizontal"
+              [class.ng-dirty]="minimumStockThresholdControlInvalid"
+              [class.ng-invalid]="minimumStockThresholdControlInvalid"
+              required
+              fluid
+            />
+            @if (minimumStockThresholdControlInvalid) {
+              <small class="text-red-500">
+                El stock mínimo es obligatorio y debe ser un número positivo.
+              </small>
+            }
+          </div>
+        </div>
+
         <div class="flex flex-col gap-2">
           <label for="category" class="font-bold">Categoría</label>
           <p-inputgroup>
@@ -214,6 +274,8 @@ export class ProductDialogComponent {
     description: [''],
     costPrice: [0, [Validators.required, Validators.min(0)]],
     salePrice: [0, [Validators.required, Validators.min(0)]],
+    stock: [0, [Validators.required, Validators.min(0)]],
+    minimumStockThreshold: [0, [Validators.required, Validators.min(0)]],
     categoryId: [null],
   });
 
