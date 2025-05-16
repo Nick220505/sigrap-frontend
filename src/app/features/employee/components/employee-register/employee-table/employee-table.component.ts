@@ -37,7 +37,6 @@ import { EmployeeStore } from '../../../stores/employee.store';
         { field: 'documentId', header: 'Documento' },
         { field: 'email', header: 'Email' },
         { field: 'phoneNumber', header: 'Teléfono' },
-        { field: 'status', header: 'Estado' },
       ];
 
     <p-table
@@ -132,11 +131,7 @@ import { EmployeeStore } from '../../../stores/employee.store';
 
           @for (column of columns; track column.field) {
             <td>
-              @if (column.field === 'status') {
-                <span [class]="getStatusClass(employee.status)">
-                  {{ getStatusLabel(employee.status) }}
-                </span>
-              } @else if (column.field === 'phoneNumber') {
+              @if (column.field === 'phoneNumber') {
                 {{ employee[column.field] || 'No especificado' }}
               } @else {
                 {{ employee[column.field] }}
@@ -225,35 +220,5 @@ export class EmployeeTableComponent {
       message: `¿Está seguro de que desea eliminar al empleado <b>${firstName} ${lastName}</b>?`,
       accept: () => this.employeeStore.delete(id),
     });
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm';
-      case 'INACTIVE':
-        return 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm';
-      case 'TERMINATED':
-        return 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm';
-      case 'PROBATION':
-        return 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm';
-      default:
-        return '';
-    }
-  }
-
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'Activo';
-      case 'INACTIVE':
-        return 'Inactivo';
-      case 'TERMINATED':
-        return 'Terminado';
-      case 'PROBATION':
-        return 'Prueba';
-      default:
-        return status;
-    }
   }
 }

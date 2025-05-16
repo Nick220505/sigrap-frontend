@@ -20,11 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import {
-  EmployeeData,
-  EmployeeInfo,
-  EmployeeStatus,
-} from '../models/employee.model';
+import { EmployeeData, EmployeeInfo } from '../models/employee.model';
 import { EmployeeService } from '../services/employee.service';
 
 export interface EmployeeState {
@@ -45,12 +41,6 @@ export const EmployeeStore = signalStore(
   }),
   withComputed(({ entities }) => ({
     employeesCount: computed(() => entities().length),
-    activeEmployees: computed(() =>
-      entities().filter((emp) => emp.status === EmployeeStatus.ACTIVE),
-    ),
-    inactiveEmployees: computed(() =>
-      entities().filter((emp) => emp.status === EmployeeStatus.INACTIVE),
-    ),
   })),
   withProps(() => ({
     employeeService: inject(EmployeeService),
