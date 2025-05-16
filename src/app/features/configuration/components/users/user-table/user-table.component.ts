@@ -142,7 +142,14 @@ import { UserStore } from '../../../stores/user.store';
                   <span
                     class="px-2 py-1 bg-primary-100 text-primary-900 rounded-full text-sm"
                   >
-                    {{ getRoleLabel(user.role) }}
+                    @switch (user.role) {
+                      @case (UserRole.ADMINISTRATOR) {
+                        Administrador
+                      }
+                      @case (UserRole.EMPLOYEE) {
+                        Empleado
+                      }
+                    }
                   </span>
                 }
                 @default {
@@ -234,13 +241,5 @@ export class UserTableComponent {
       message: `¿Está seguro de que desea eliminar el usuario <b>${name}</b>?`,
       accept: () => this.userStore.delete(id),
     });
-  }
-
-  getRoleLabel(role: UserRole): string {
-    const labels: Record<UserRole, string> = {
-      [UserRole.ADMINISTRATOR]: 'Administrador',
-      [UserRole.EMPLOYEE]: 'Empleado',
-    };
-    return labels[role] || role;
   }
 }

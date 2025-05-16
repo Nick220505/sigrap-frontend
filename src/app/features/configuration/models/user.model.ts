@@ -20,6 +20,6 @@ export interface UserInfo {
 }
 
 export enum UserRole {
-  ADMINISTRATOR = 'Administrador',
-  EMPLOYEE = 'Empleado',
+  ADMINISTRATOR = 'ADMINISTRATOR',
+  EMPLOYEE = 'EMPLOYEE',
 }
