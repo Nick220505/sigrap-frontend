@@ -7,13 +7,22 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { Select } from 'primeng/select';
 import { AttendanceStore } from '../../../stores/attendance.store';
 import { EmployeeStore } from '../../../stores/employee.store';
 
 @Component({
   selector: 'app-clock-in-dialog',
-  imports: [ReactiveFormsModule, DialogModule, ButtonModule, DropdownModule],
+  imports: [
+    ReactiveFormsModule,
+    DialogModule,
+    ButtonModule,
+    Select,
+    InputGroupModule,
+    InputGroupAddonModule,
+  ],
   template: `
     <p-dialog
       header="Registrar Entrada"
@@ -24,21 +33,41 @@ import { EmployeeStore } from '../../../stores/employee.store';
           : attendanceStore.closeClockInDialog()
       "
       [modal]="true"
-      [style]="{ width: '450px' }"
-      class="p-fluid"
+      [style]="{ width: '500px' }"
     >
-      <form [formGroup]="clockInForm" (ngSubmit)="clockIn()">
-        <div class="field">
-          <label for="employeeId">Empleado</label>
-          <p-dropdown
-            id="employeeId"
-            formControlName="employeeId"
-            [options]="employeeStore.entities()"
-            optionLabel="firstName"
-            optionValue="id"
-            placeholder="Seleccione un empleado"
-            [required]="true"
-          ></p-dropdown>
+      <form [formGroup]="clockInForm" class="flex flex-col gap-4 pt-4">
+        @let employeeIdControlInvalid =
+          clockInForm.get('employeeId')?.invalid &&
+          clockInForm.get('employeeId')?.touched;
+        <div
+          class="flex flex-col gap-2"
+          [class.p-invalid]="employeeIdControlInvalid"
+        >
+          <label for="employeeId" class="font-bold">Empleado</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-user"></i>
+            </p-inputgroup-addon>
+            <p-select
+              id="employeeId"
+              formControlName="employeeId"
+              [options]="employeeStore.entities()"
+              optionLabel="firstName"
+              optionValue="id"
+              placeholder="Seleccione un empleado"
+              [required]="true"
+              [class.ng-dirty]="employeeIdControlInvalid"
+              [class.ng-invalid]="employeeIdControlInvalid"
+              appendTo="body"
+              styleClass="w-full"
+              filter
+              filterBy="firstName"
+              showClear
+            />
+          </p-inputgroup>
+          @if (employeeIdControlInvalid) {
+            <small class="text-red-500">El empleado es obligatorio.</small>
+          }
         </div>
       </form>
 
@@ -46,15 +75,17 @@ import { EmployeeStore } from '../../../stores/employee.store';
         <p-button
           label="Cancelar"
           icon="pi pi-times"
-          styleClass="p-button-text"
+          text
           (onClick)="attendanceStore.closeClockInDialog()"
         />
         <p-button
           label="Registrar"
           icon="pi pi-check"
-          styleClass="p-button-text"
-          (onClick)="clockIn()"
-          [disabled]="!clockInForm.valid"
+          (onClick)="
+            clockInForm.valid
+              ? attendanceStore.clockIn(this.clockInForm.value)
+              : clockInForm.markAllAsTouched()
+          "
         />
       </ng-template>
     </p-dialog>
@@ -68,10 +99,4 @@ export class ClockInDialogComponent {
   readonly clockInForm: FormGroup = this.fb.group({
     employeeId: [null, [Validators.required]],
   });
-
-  clockIn(): void {
-    if (this.clockInForm.valid) {
-      this.attendanceStore.clockIn(this.clockInForm.value);
-    }
-  }
 }

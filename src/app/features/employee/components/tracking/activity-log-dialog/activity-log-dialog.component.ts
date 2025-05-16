@@ -8,8 +8,10 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { ActivityLogStore } from '../../../stores/activity-log.store';
 import { EmployeeStore } from '../../../stores/employee.store';
@@ -22,8 +24,10 @@ import { EmployeeStore } from '../../../stores/employee.store';
     DialogModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
+    Select,
     TextareaModule,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
   template: `
     <p-dialog
@@ -35,45 +39,104 @@ import { EmployeeStore } from '../../../stores/employee.store';
       [visible]="activityLogStore.dialogVisible()"
       (visibleChange)="activityLogStore.closeActivityLogDialog()"
       [modal]="true"
-      [style]="{ width: '450px' }"
-      class="p-fluid"
+      [style]="{ width: '500px' }"
     >
-      <form [formGroup]="activityForm" (ngSubmit)="saveActivity()">
-        <div class="field">
-          <label for="employeeId">Empleado</label>
-          <p-dropdown
-            id="employeeId"
-            formControlName="employeeId"
-            [options]="employeeStore.entities()"
-            optionLabel="firstName"
-            optionValue="id"
-            placeholder="Seleccione un empleado"
-            [required]="true"
-          ></p-dropdown>
+      <form [formGroup]="activityForm" class="flex flex-col gap-4 pt-4">
+        @let employeeIdControlInvalid =
+          activityForm.get('employeeId')?.invalid &&
+          activityForm.get('employeeId')?.touched;
+        <div
+          class="flex flex-col gap-2"
+          [class.p-invalid]="employeeIdControlInvalid"
+        >
+          <label for="employeeId" class="font-bold">Empleado</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-user"></i>
+            </p-inputgroup-addon>
+            <p-select
+              id="employeeId"
+              formControlName="employeeId"
+              [options]="employeeStore.entities()"
+              optionLabel="firstName"
+              optionValue="id"
+              placeholder="Seleccione un empleado"
+              [required]="true"
+              [class.ng-dirty]="employeeIdControlInvalid"
+              [class.ng-invalid]="employeeIdControlInvalid"
+              appendTo="body"
+              styleClass="w-full"
+              filter
+              filterBy="firstName"
+              showClear
+            />
+          </p-inputgroup>
+          @if (employeeIdControlInvalid) {
+            <small class="text-red-500">El empleado es obligatorio.</small>
+          }
         </div>
 
-        <div class="field">
-          <label for="activityType">Tipo de Actividad</label>
-          <p-dropdown
-            id="activityType"
-            formControlName="activityType"
-            [options]="activityTypes"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccione un tipo"
-            [required]="true"
-          ></p-dropdown>
+        @let activityTypeControlInvalid =
+          activityForm.get('activityType')?.invalid &&
+          activityForm.get('activityType')?.touched;
+        <div
+          class="flex flex-col gap-2"
+          [class.p-invalid]="activityTypeControlInvalid"
+        >
+          <label for="activityType" class="font-bold">Tipo de Actividad</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-briefcase"></i>
+            </p-inputgroup-addon>
+            <p-select
+              id="activityType"
+              formControlName="activityType"
+              [options]="activityTypes"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Seleccione un tipo"
+              [required]="true"
+              [class.ng-dirty]="activityTypeControlInvalid"
+              [class.ng-invalid]="activityTypeControlInvalid"
+              appendTo="body"
+              styleClass="w-full"
+              showClear
+            />
+          </p-inputgroup>
+          @if (activityTypeControlInvalid) {
+            <small class="text-red-500">
+              El tipo de actividad es obligatorio.
+            </small>
+          }
         </div>
 
-        <div class="field">
-          <label for="description">Descripción</label>
-          <textarea
-            pTextarea
-            id="description"
-            formControlName="description"
-            rows="4"
-            required
-          ></textarea>
+        @let descriptionControlInvalid =
+          activityForm.get('description')?.invalid &&
+          activityForm.get('description')?.touched;
+        <div
+          class="flex flex-col gap-2"
+          [class.p-invalid]="descriptionControlInvalid"
+        >
+          <label for="description" class="font-bold">Descripción</label>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-align-left"></i>
+            </p-inputgroup-addon>
+            <textarea
+              pInputTextarea
+              id="description"
+              formControlName="description"
+              rows="3"
+              placeholder="Ingrese una descripción"
+              [required]="true"
+              [class.ng-dirty]="descriptionControlInvalid"
+              [class.ng-invalid]="descriptionControlInvalid"
+              class="w-full"
+            ></textarea>
+          </p-inputgroup>
+          @if (descriptionControlInvalid) {
+            <small class="text-red-500">La descripción es obligatoria.</small>
+          }
         </div>
       </form>
 
@@ -81,16 +144,18 @@ import { EmployeeStore } from '../../../stores/employee.store';
         <p-button
           label="Cancelar"
           icon="pi pi-times"
-          styleClass="p-button-text"
+          text
           (onClick)="activityLogStore.closeActivityLogDialog()"
-        ></p-button>
+        />
         <p-button
           label="Guardar"
           icon="pi pi-check"
-          styleClass="p-button-text"
-          (onClick)="saveActivity()"
-          [disabled]="!activityForm.valid"
-        ></p-button>
+          (onClick)="
+            activityForm.valid
+              ? saveActivity()
+              : activityForm.markAllAsTouched()
+          "
+        />
       </ng-template>
     </p-dialog>
   `,
@@ -121,18 +186,16 @@ export class ActivityLogDialogComponent {
   }
 
   saveActivity(): void {
-    if (this.activityForm.valid) {
-      const activityData = this.activityForm.value;
-      const selectedActivity = this.activityLogStore.selectedActivityLog();
+    const activityData = this.activityForm.value;
+    const selectedActivity = this.activityLogStore.selectedActivityLog();
 
-      if (selectedActivity) {
-        this.activityLogStore.update({
-          id: selectedActivity.id,
-          activityData,
-        });
-      } else {
-        this.activityLogStore.create(activityData);
-      }
+    if (selectedActivity) {
+      this.activityLogStore.update({
+        id: selectedActivity.id,
+        activityData,
+      });
+    } else {
+      this.activityLogStore.create(activityData);
     }
   }
 }
