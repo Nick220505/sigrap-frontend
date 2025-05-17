@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -115,19 +116,47 @@ export const SaleStore = signalStore(
             tapResponse({
               next: (createdSale: SaleInfo) => {
                 patchState(store, addEntity(createdSale));
+
+                saleService.findById(createdSale.id).subscribe({
+                  next: (fullSale) => {
+                    patchState(
+                      store,
+                      updateEntity({ id: fullSale.id, changes: fullSale }),
+                    );
+                  },
+                });
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Venta registrada',
                   detail: `La venta #${createdSale.id} ha sido registrada correctamente`,
                 });
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al registrar venta',
+              error: (error: HttpErrorResponse) => {
+                patchState(store, {
+                  error: error.message ?? 'Error al registrar venta',
                 });
+
+                if (
+                  (error.error &&
+                    typeof error.error === 'string' &&
+                    error.error.includes('stock')) ??
+                  error.message?.includes('stock') ??
+                  false
+                ) {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error de inventario',
+                    detail:
+                      'No hay suficiente stock disponible para completar la venta',
+                  });
+                } else {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al registrar venta',
+                  });
+                }
               },
               finalize: () => patchState(store, { loading: false }),
             }),
@@ -144,19 +173,47 @@ export const SaleStore = signalStore(
             tapResponse({
               next: (updatedSale: SaleInfo) => {
                 patchState(store, updateEntity({ id, changes: updatedSale }));
+
+                saleService.findById(id).subscribe({
+                  next: (fullSale) => {
+                    patchState(
+                      store,
+                      updateEntity({ id: fullSale.id, changes: fullSale }),
+                    );
+                  },
+                });
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Venta actualizada',
                   detail: `La venta #${updatedSale.id} ha sido actualizada correctamente`,
                 });
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al actualizar venta',
+              error: (error: HttpErrorResponse) => {
+                patchState(store, {
+                  error: error.message ?? 'Error al actualizar venta',
                 });
+
+                if (
+                  (error.error &&
+                    typeof error.error === 'string' &&
+                    error.error.includes('stock')) ??
+                  error.message?.includes('stock') ??
+                  false
+                ) {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error de inventario',
+                    detail:
+                      'No hay suficiente stock disponible para actualizar la venta',
+                  });
+                } else {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al actualizar venta',
+                  });
+                }
               },
               finalize: () => patchState(store, { loading: false }),
             }),
@@ -267,10 +324,30 @@ export const SaleStore = signalStore(
     ),
 
     openSaleDialog: (sale?: SaleInfo) => {
-      patchState(store, {
-        selectedSale: sale || null,
-        dialogVisible: true,
-      });
+      if (sale) {
+        patchState(store, { loading: true });
+        saleService.findById(sale.id).subscribe({
+          next: (freshSale) => {
+            patchState(store, {
+              selectedSale: freshSale,
+              dialogVisible: true,
+              loading: false,
+            });
+          },
+          error: () => {
+            patchState(store, {
+              selectedSale: sale,
+              dialogVisible: true,
+              loading: false,
+            });
+          },
+        });
+      } else {
+        patchState(store, {
+          selectedSale: null,
+          dialogVisible: true,
+        });
+      }
     },
 
     closeSaleDialog: () => {

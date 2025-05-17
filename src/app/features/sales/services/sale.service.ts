@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '@env';
-import { Observable } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { SaleData, SaleInfo } from '../models/sale.model';
 
 @Injectable({
@@ -60,6 +60,47 @@ export class SaleService {
       params = params.append('exportPath', exportPath);
     }
 
-    return this.http.get<string>(`${this.salesUrl}/export/daily`, { params });
+    if (exportPath === 'AUTO') {
+      return this.http
+        .get(`${this.salesUrl}/export/daily`, {
+          params,
+          responseType: 'blob',
+          observe: 'response',
+        })
+        .pipe(
+          tap((response: HttpResponse<Blob>) => {
+            const blob = response.body;
+            if (!blob) {
+              console.error('No content received from the server');
+              return;
+            }
+
+            const contentDisposition = response.headers.get(
+              'Content-Disposition',
+            );
+            let filename = 'sales-report.txt';
+
+            if (contentDisposition) {
+              const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(
+                contentDisposition,
+              );
+              if (matches?.[1]) {
+                filename = matches[1].replace(/['"]/g, '');
+              }
+            }
+
+            const downloadUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = filename;
+            link.click();
+
+            URL.revokeObjectURL(downloadUrl);
+          }),
+          map(() => `Downloaded file successfully`),
+        );
+    } else {
+      return this.http.get<string>(`${this.salesUrl}/export/daily`, { params });
+    }
   }
 }

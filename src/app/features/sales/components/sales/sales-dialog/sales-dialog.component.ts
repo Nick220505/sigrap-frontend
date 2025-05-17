@@ -330,7 +330,7 @@ export class SalesDialogComponent {
   private readonly customerStore = inject(CustomerStore);
   private readonly userStore = inject(UserStore);
 
-  private itemsCountSignal = signal(0);
+  private readonly itemsCountSignal = signal(0);
 
   readonly products = computed(() => this.productStore.entities());
   readonly customers = computed(() => {
@@ -416,7 +416,7 @@ export class SalesDialogComponent {
       const loggedInUser = this.authStore.user();
 
       if (currentEmployees.length > 0 && !formEmployeeIdControl?.value) {
-        if (loggedInUser && loggedInUser.id) {
+        if (loggedInUser?.id) {
           const employeeInList = currentEmployees.find(
             (emp) => emp.id === loggedInUser.id,
           );
@@ -433,6 +433,7 @@ export class SalesDialogComponent {
 
     effect(() => {
       const selectedSale = this.saleStore.selectedSale();
+      console.log('selectedSale', selectedSale);
 
       untracked(() => {
         if (selectedSale) {
@@ -492,15 +493,20 @@ export class SalesDialogComponent {
           }
         } else {
           this.saleForm.enable();
+
+          let defaultEmployeeId = null;
+          if (
+            this.employees().length > 0 &&
+            this.saleForm.get('employeeId')?.value
+          ) {
+            defaultEmployeeId = this.saleForm.get('employeeId')?.value;
+          } else if (this.employees().length > 0) {
+            defaultEmployeeId = this.employees()[0].id;
+          }
+
           this.saleForm.reset({
             customerId: null,
-            employeeId:
-              this.employees().length > 0 &&
-              this.saleForm.get('employeeId')?.value
-                ? this.saleForm.get('employeeId')?.value
-                : this.employees().length > 0
-                  ? this.employees()[0].id
-                  : null,
+            employeeId: defaultEmployeeId,
             totalAmount: 0,
             taxAmount: 0,
             discountAmount: 0,
@@ -621,10 +627,6 @@ export class SalesDialogComponent {
   }
 
   saveSale(): void {
-    if (this.saleForm.invalid) {
-      return;
-    }
-
     const formValue = this.saleForm.getRawValue();
     const saleData: SaleData = {
       totalAmount: formValue.totalAmount,

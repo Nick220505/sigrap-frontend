@@ -2,14 +2,14 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
-import { DialogModule } from 'primeng/dialog';
+import { DatePickerModule } from 'primeng/datepicker';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { SaleInfo } from '../../../models/sale.model';
+import { SaleService } from '../../../services/sale.service';
 import { SaleStore } from '../../../stores/sale.store';
 import { SalesTableComponent } from '../sales-table/sales-table.component';
 
@@ -19,8 +19,7 @@ import { SalesTableComponent } from '../sales-table/sales-table.component';
     ToolbarModule,
     ButtonModule,
     TooltipModule,
-    DialogModule,
-    CalendarModule,
+    DatePickerModule,
     InputGroupModule,
     InputGroupAddonModule,
     InputTextModule,
@@ -52,143 +51,50 @@ import { SalesTableComponent } from '../sales-table/sales-table.component';
       </ng-template>
 
       <ng-template #end>
-        <p-button
-          label="Exportar Ventas Diarias"
-          icon="pi pi-file-export"
-          severity="secondary"
-          pTooltip="Exportar ventas diarias a archivo plano"
-          tooltipPosition="top"
-          (onClick)="openExportDialog()"
-        />
+        <div class="flex items-center gap-3">
+          <div
+            class="calendar-wrapper"
+            pTooltip="Seleccione la fecha del reporte"
+            tooltipPosition="top"
+          >
+            <p-datePicker
+              [(ngModel)]="exportDate"
+              [showIcon]="true"
+              [maxDate]="today()"
+              dateFormat="dd/mm/yy"
+              placeholder="Seleccionar fecha"
+            ></p-datePicker>
+          </div>
+
+          <p-button
+            label="Exportar Ventas"
+            icon="pi pi-file-export"
+            severity="secondary"
+            pTooltip="Exportar ventas diarias (abrirá un diálogo para guardar)"
+            tooltipPosition="top"
+            [loading]="exporting()"
+            (onClick)="exportDailySales()"
+          />
+        </div>
       </ng-template>
     </p-toolbar>
-
-    <p-dialog
-      header="Exportar Ventas Diarias"
-      [visible]="exportDialogVisible()"
-      (visibleChange)="exportDialogVisible.set($event)"
-      [modal]="true"
-      [style]="{ width: '450px' }"
-      [resizable]="false"
-    >
-      <div class="flex flex-col gap-4 pt-2">
-        <div class="flex flex-col gap-2">
-          <label for="exportDate" class="font-bold">Fecha</label>
-          <p-calendar
-            id="exportDate"
-            [ngModel]="exportDateModel()"
-            (ngModelChange)="exportDateModel.set($event)"
-            [showIcon]="true"
-            [maxDate]="today()"
-            dateFormat="dd/mm/yy"
-            [style]="{ width: '100%' }"
-            (onSelect)="updateExportDate($event)"
-          ></p-calendar>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="exportPath" class="font-bold">Ruta de Exportación</label>
-          <p-inputgroup>
-            <p-inputgroup-addon>
-              <i class="pi pi-folder"></i>
-            </p-inputgroup-addon>
-            <input
-              pInputText
-              id="exportPath"
-              [ngModel]="exportPathModel()"
-              (ngModelChange)="exportPathModel.set($event)"
-              placeholder="Seleccione la ruta donde guardar el archivo"
-              class="w-full"
-              (input)="handlePathInput($event)"
-            />
-          </p-inputgroup>
-          <small class="text-gray-600">
-            Ejemplo: C:\\Papeleria\\Exportaciones
-          </small>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          @if (exportResult()) {
-            @if (exportSuccess()) {
-              <p class="text-green-600">
-                <i class="pi pi-check-circle mr-2"></i>
-                Archivo generado correctamente en:
-                <br />
-                <span class="font-semibold">{{ exportResult() }}</span>
-              </p>
-            } @else {
-              <p class="text-red-600">
-                <i class="pi pi-times-circle mr-2"></i>
-                {{ exportResult() }}
-              </p>
-            }
-          }
-        </div>
-      </div>
-
-      <ng-template pTemplate="footer">
-        <p-button
-          label="Cancelar"
-          icon="pi pi-times"
-          styleClass="p-button-text"
-          (onClick)="closeExportDialog()"
-        ></p-button>
-        <p-button
-          label="Exportar"
-          icon="pi pi-file-export"
-          [loading]="exporting()"
-          (onClick)="exportDailySales()"
-        ></p-button>
-      </ng-template>
-    </p-dialog>
   `,
 })
 export class SalesToolbarComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly saleStore = inject(SaleStore);
+  private readonly saleService = inject(SaleService);
   readonly salesTable = input.required<SalesTableComponent>();
   private readonly messageService = inject(MessageService);
 
-  exportDialogVisible = signal<boolean>(false);
-  exportDate = signal<Date>(new Date());
-  exportPath = signal<string>('');
+  exportDate: Date = new Date();
   today = signal<Date>(new Date());
   exporting = signal<boolean>(false);
-  exportResult = signal<string | null>(null);
-  exportSuccess = signal<boolean>(false);
-
-  exportDateModel = signal<Date>(new Date());
-  exportPathModel = signal<string>('');
 
   constructor() {
     effect(() => {
       this.exporting.set(this.saleStore.loading());
-
-      if (this.saleStore.loading() === false && this.exportResult() === null) {
-        if (this.saleStore.exportFilePath()) {
-          this.exportSuccess.set(true);
-          this.exportResult.set(this.saleStore.exportFilePath());
-        } else if (this.saleStore.error()) {
-          this.exportSuccess.set(false);
-          this.exportResult.set(
-            `Error al generar el reporte: ${this.saleStore.error()}`,
-          );
-        }
-      }
     });
-  }
-
-  handlePathInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.updateExportPath(target.value);
-  }
-
-  updateExportDate(date: Date): void {
-    this.exportDate.set(date);
-  }
-
-  updateExportPath(path: string): void {
-    this.exportPath.set(path);
   }
 
   deleteSelectedSales(): void {
@@ -214,39 +120,39 @@ export class SalesToolbarComponent {
     this.saleStore.openSaleDialog();
   }
 
-  openExportDialog(): void {
-    this.exportDialogVisible.set(true);
-    this.exportResult.set(null);
-    this.exportSuccess.set(false);
-    this.exportPath.set('');
-    this.exportDate.set(new Date());
-
-    this.exportDateModel.set(new Date());
-    this.exportPathModel.set('');
-  }
-
-  closeExportDialog(): void {
-    this.exportDialogVisible.set(false);
-  }
-
   exportDailySales(): void {
-    if (!this.exportPath()) {
+    if (!this.exportDate) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Por favor, ingrese una ruta de exportación',
+        detail: 'Por favor, seleccione una fecha para exportar',
       });
       return;
     }
 
-    this.exportResult.set(null);
-    this.exportSuccess.set(false);
-
-    const exportParams = {
-      date: this.exportDate(),
-      exportPath: this.exportPath(),
-    };
-
-    this.saleStore.generateDailySalesReport(exportParams);
+    this.exporting.set(true);
+    this.saleService
+      .generateDailySalesReport(this.exportDate, 'AUTO')
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Reporte generado',
+            detail: 'El archivo se ha descargado correctamente',
+          });
+          this.exporting.set(false);
+        },
+        error: (err) => {
+          console.error('Error downloading file', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Error al generar el reporte: ' +
+              (err.message ?? 'Error desconocido'),
+          });
+          this.exporting.set(false);
+        },
+      });
   }
 }
