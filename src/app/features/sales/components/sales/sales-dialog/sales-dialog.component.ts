@@ -1,4 +1,3 @@
-import { CurrencyPipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -12,6 +11,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -37,7 +37,7 @@ import { SaleStore } from '../../../stores/sale.store';
     DialogModule,
     ButtonModule,
     ReactiveFormsModule,
-    CurrencyPipe,
+    FormsModule,
     InputTextModule,
     InputNumberModule,
     SelectModule,
@@ -134,7 +134,7 @@ import { SaleStore } from '../../../stores/sale.store';
               </ng-template>
               <ng-template pTemplate="body" let-row let-i="rowIndex">
                 @if (!row.isSummary) {
-                  <tr [formGroupName]="row.formGroupIndex" class="bg-white">
+                  <tr [formGroupName]="row.formGroupIndex">
                     <td class="p-2">
                       <p-select
                         formControlName="productId"
@@ -163,24 +163,36 @@ import { SaleStore } from '../../../stores/sale.store';
                       ></p-inputNumber>
                     </td>
                     <td class="p-2">
-                      <div
-                        class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-                      >
-                        {{
+                      <p-inputNumber
+                        [ngModel]="
                           itemsArray.at(row.formGroupIndex).get('unitPrice')
-                            ?.value | currency: 'COP' : '$' : '1.0-0'
-                        }}
-                      </div>
+                            ?.value
+                        "
+                        [ngModelOptions]="{ standalone: true }"
+                        mode="currency"
+                        currency="COP"
+                        locale="es-CO"
+                        [readonly]="true"
+                        [disabled]="true"
+                        maxFractionDigits="0"
+                        [style]="{ width: '100%' }"
+                      ></p-inputNumber>
                     </td>
                     <td class="p-2">
-                      <div
-                        class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-                      >
-                        {{
+                      <p-inputNumber
+                        [ngModel]="
                           itemsArray.at(row.formGroupIndex).get('subtotal')
-                            ?.value | currency: 'COP' : '$' : '1.0-0'
-                        }}
-                      </div>
+                            ?.value
+                        "
+                        [ngModelOptions]="{ standalone: true }"
+                        mode="currency"
+                        currency="COP"
+                        locale="es-CO"
+                        [readonly]="true"
+                        [disabled]="true"
+                        maxFractionDigits="0"
+                        [style]="{ width: '100%' }"
+                      ></p-inputNumber>
                     </td>
                     @if (!viewMode()) {
                       <td class="p-2 text-center">
@@ -195,19 +207,22 @@ import { SaleStore } from '../../../stores/sale.store';
                   </tr>
                 } @else {
                   @if (row.type === 'total') {
-                    <tr class="border-t border-gray-300 bg-gray-50">
+                    <tr>
                       <td colspan="3" class="p-2 text-right font-bold">
                         Total:
                       </td>
                       <td class="p-2">
-                        <div
-                          class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-                        >
-                          {{
-                            saleForm.get('totalAmount')?.value
-                              | currency: 'COP' : '$' : '1.0-0'
-                          }}
-                        </div>
+                        <p-inputNumber
+                          [ngModel]="saleForm.get('totalAmount')?.value"
+                          [ngModelOptions]="{ standalone: true }"
+                          mode="currency"
+                          currency="COP"
+                          locale="es-CO"
+                          [readonly]="true"
+                          [disabled]="true"
+                          maxFractionDigits="0"
+                          [style]="{ width: '100%' }"
+                        ></p-inputNumber>
                       </td>
                       @if (!viewMode()) {
                         <td></td>
@@ -215,19 +230,22 @@ import { SaleStore } from '../../../stores/sale.store';
                     </tr>
                   }
                   @if (row.type === 'tax') {
-                    <tr class="bg-gray-50">
+                    <tr>
                       <td colspan="3" class="p-2 text-right font-bold">
                         Impuesto (19% IVA):
                       </td>
                       <td class="p-2">
-                        <div
-                          class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-                        >
-                          {{
-                            saleForm.get('taxAmount')?.value
-                              | currency: 'COP' : '$' : '1.0-0'
-                          }}
-                        </div>
+                        <p-inputNumber
+                          [ngModel]="saleForm.get('taxAmount')?.value"
+                          [ngModelOptions]="{ standalone: true }"
+                          mode="currency"
+                          currency="COP"
+                          locale="es-CO"
+                          [readonly]="true"
+                          [disabled]="true"
+                          maxFractionDigits="0"
+                          [style]="{ width: '100%' }"
+                        ></p-inputNumber>
                       </td>
                       @if (!viewMode()) {
                         <td></td>
@@ -235,39 +253,60 @@ import { SaleStore } from '../../../stores/sale.store';
                     </tr>
                   }
                   @if (row.type === 'combinedDiscount') {
-                    <tr class="bg-gray-50">
+                    <tr>
                       <td colspan="3" class="p-2 text-right font-bold">
                         Descuento:
                       </td>
                       <td class="p-2">
-                        <div class="flex items-center gap-4">
-                          @if (!viewMode()) {
-                            <div class="w-1/2">
+                        <div class="grid grid-cols-2 gap-4">
+                          <div class="flex flex-col">
+                            <label for="discountPercent" class="text-xs mb-1"
+                              >Porcentaje</label
+                            >
+                            @if (!viewMode()) {
                               <p-inputNumber
+                                id="discountPercent"
                                 [formControl]="discountPercentControl"
                                 suffix="%"
                                 [min]="0"
                                 [max]="100"
-                                [showButtons]="true"
+                                showButtons
                                 buttonLayout="horizontal"
+                                step="1"
                                 (onInput)="updateDiscountFromPercentage()"
-                                inputStyleClass="w-full"
+                                styleClass="w-full"
+                                fluid
                               ></p-inputNumber>
-                            </div>
-                          } @else {
-                            <div
-                              class="w-1/2 p-inputtext p-component text-right border border-gray-300 rounded-md p-2 bg-gray-100"
+                            } @else {
+                              <p-inputNumber
+                                id="discountPercent"
+                                [ngModel]="discountPercentControl.value"
+                                [ngModelOptions]="{ standalone: true }"
+                                suffix="%"
+                                [readonly]="true"
+                                [disabled]="true"
+                                styleClass="w-full"
+                                fluid
+                              ></p-inputNumber>
+                            }
+                          </div>
+                          <div class="flex flex-col">
+                            <label for="discountAmount" class="text-xs mb-1"
+                              >Monto</label
                             >
-                              {{ discountPercentControl.value }}%
-                            </div>
-                          }
-                          <div
-                            class="w-1/2 p-inputtext p-component text-right border border-gray-300 rounded-md p-2 bg-gray-100"
-                          >
-                            {{
-                              saleForm.get('discountAmount')?.value
-                                | currency: 'COP' : '$' : '1.0-0'
-                            }}
+                            <p-inputNumber
+                              id="discountAmount"
+                              [ngModel]="saleForm.get('discountAmount')?.value"
+                              [ngModelOptions]="{ standalone: true }"
+                              mode="currency"
+                              currency="COP"
+                              locale="es-CO"
+                              [readonly]="true"
+                              [disabled]="true"
+                              maxFractionDigits="0"
+                              styleClass="w-full"
+                              fluid
+                            ></p-inputNumber>
                           </div>
                         </div>
                       </td>
@@ -277,19 +316,23 @@ import { SaleStore } from '../../../stores/sale.store';
                     </tr>
                   }
                   @if (row.type === 'finalTotal') {
-                    <tr class="border-t border-gray-300 bg-gray-50">
+                    <tr>
                       <td colspan="3" class="p-2 text-right font-bold text-lg">
                         Total Final:
                       </td>
                       <td class="p-2">
-                        <div
-                          class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100 font-bold text-lg"
-                        >
-                          {{
-                            saleForm.get('finalAmount')?.value
-                              | currency: 'COP' : '$' : '1.0-0'
-                          }}
-                        </div>
+                        <p-inputNumber
+                          [ngModel]="saleForm.get('finalAmount')?.value"
+                          [ngModelOptions]="{ standalone: true }"
+                          mode="currency"
+                          currency="COP"
+                          locale="es-CO"
+                          [readonly]="true"
+                          [disabled]="true"
+                          maxFractionDigits="0"
+                          [style]="{ width: '100%' }"
+                          styleClass="w-full font-bold"
+                        ></p-inputNumber>
                       </td>
                       @if (!viewMode()) {
                         <td></td>
