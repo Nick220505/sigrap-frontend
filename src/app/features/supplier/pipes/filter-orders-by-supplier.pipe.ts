@@ -3,7 +3,6 @@ import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.mode
 
 @Pipe({
   name: 'filterOrdersBySupplier',
-  standalone: true,
 })
 export class FilterOrdersBySupplierPipe implements PipeTransform {
   transform(
