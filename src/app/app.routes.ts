@@ -61,6 +61,14 @@ export const routes: Routes = [
           import('./features/sales/sales.routes').then((m) => m.salesRoutes),
         canActivate: [authGuard],
       },
+      {
+        path: 'reportes',
+        loadChildren: () =>
+          import('./features/reports/reports.routes').then(
+            (m) => m.reportsRoutes,
+          ),
+        canActivate: [authGuard],
+      },
     ],
   },
   {

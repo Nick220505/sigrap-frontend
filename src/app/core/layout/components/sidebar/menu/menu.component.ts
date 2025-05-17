@@ -183,9 +183,9 @@ export class MenuComponent {
           routerLink: ['/reportes/financieros'],
         },
         {
-          label: 'Desempeño',
+          label: 'Rendimiento',
           icon: 'pi pi-fw pi-chart-line',
-          routerLink: ['/reportes/desempeno'],
+          routerLink: ['/reportes/rendimiento'],
         },
       ],
     },
