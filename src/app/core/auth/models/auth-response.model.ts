@@ -3,4 +3,5 @@ export interface AuthResponse {
   email: string;
   name: string;
   lastLogin: string;
+  role: string;
 }
