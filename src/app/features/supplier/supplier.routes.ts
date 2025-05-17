@@ -29,4 +29,13 @@ export const supplierRoutes: Routes = [
         (m) => m.PaymentsComponent,
       ),
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'catalogo',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

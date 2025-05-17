@@ -22,4 +22,13 @@ export const customerRoutes: Routes = [
         (m) => m.CustomerRankingComponent,
       ),
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'registro',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

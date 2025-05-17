@@ -18,4 +18,13 @@ export const configurationRoutes: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'usuarios',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

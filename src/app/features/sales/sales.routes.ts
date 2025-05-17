@@ -26,4 +26,13 @@ export const salesRoutes: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'registrar',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

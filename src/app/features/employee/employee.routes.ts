@@ -22,4 +22,13 @@ export const employeeRoutes: Routes = [
         './components/employee-performance/employee-performance.component'
       ).then((m) => m.EmployeePerformanceComponent),
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'horarios',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

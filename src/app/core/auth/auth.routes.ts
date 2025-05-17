@@ -18,4 +18,13 @@ export const authRoutes: Routes = [
       ),
     canActivate: [publicGuard],
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'iniciar-sesion',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

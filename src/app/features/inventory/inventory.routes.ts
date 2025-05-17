@@ -15,4 +15,13 @@ export const inventoryRoutes: Routes = [
         (m) => m.CategoriesComponent,
       ),
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'productos',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];

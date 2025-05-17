@@ -42,4 +42,13 @@ export const reportsRoutes: Routes = [
       ).then((m) => m.PerformanceReportComponent),
     canActivate: [authGuard],
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'ventas',
+  },
+  {
+    path: '**',
+    redirectTo: '/no-encontrado',
+  },
 ];
