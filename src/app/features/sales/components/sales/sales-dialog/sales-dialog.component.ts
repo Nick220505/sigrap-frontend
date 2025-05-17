@@ -433,7 +433,6 @@ export class SalesDialogComponent {
 
     effect(() => {
       const selectedSale = this.saleStore.selectedSale();
-      console.log('selectedSale', selectedSale);
 
       untracked(() => {
         if (selectedSale) {
