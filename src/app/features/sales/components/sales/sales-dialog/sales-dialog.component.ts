@@ -1,5 +1,12 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, effect, inject, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -102,7 +109,7 @@ import { SaleStore } from '../../../stores/sale.store';
               <p-button
                 label="Agregar Producto"
                 icon="pi pi-plus"
-                (onClick)="addItem()"
+                (click)="addItem()"
                 [disabled]="viewMode()"
               ></p-button>
             }
@@ -180,7 +187,7 @@ import { SaleStore } from '../../../stores/sale.store';
                         <p-button
                           icon="pi pi-trash"
                           severity="danger"
-                          (onClick)="removeItem(row.formGroupIndex)"
+                          (click)="removeItem(row.formGroupIndex)"
                           size="small"
                         ></p-button>
                       </td>
@@ -301,14 +308,14 @@ import { SaleStore } from '../../../stores/sale.store';
           label="Cancelar"
           icon="pi pi-times"
           styleClass="p-button-text"
-          (onClick)="saleStore.closeSaleDialog()"
+          (click)="saleStore.closeSaleDialog()"
         ></p-button>
         @if (!viewMode()) {
           <p-button
             label="Guardar"
             icon="pi pi-check"
             [disabled]="saleForm.invalid || saleForm.pristine"
-            (onClick)="saveSale()"
+            (click)="saveSale()"
           ></p-button>
         }
       </ng-template>
@@ -322,6 +329,8 @@ export class SalesDialogComponent {
   private readonly productStore = inject(ProductStore);
   private readonly customerStore = inject(CustomerStore);
   private readonly userStore = inject(UserStore);
+
+  private itemsCountSignal = signal(0);
 
   readonly products = computed(() => this.productStore.entities());
   readonly customers = computed(() => {
@@ -346,6 +355,8 @@ export class SalesDialogComponent {
   });
 
   readonly tableRows = computed(() => {
+    this.itemsCountSignal();
+
     const itemRows = this.itemsArray.controls.map((_, i) => ({
       isSummary: false,
       formGroupIndex: i,
@@ -429,6 +440,8 @@ export class SalesDialogComponent {
             this.itemsArray.removeAt(0);
           }
 
+          this.itemsCountSignal.set(0);
+
           const discountPercent =
             selectedSale.totalAmount > 0
               ? Math.round(
@@ -470,6 +483,8 @@ export class SalesDialogComponent {
             this.itemsArray.push(itemGroup);
           });
 
+          this.itemsCountSignal.set(this.itemsArray.length);
+
           this.saleForm.markAsPristine();
 
           if (this.viewMode()) {
@@ -500,6 +515,8 @@ export class SalesDialogComponent {
             this.itemsArray.removeAt(0);
           }
 
+          this.itemsCountSignal.set(0);
+
           this.addItem();
         }
       });
@@ -527,14 +544,18 @@ export class SalesDialogComponent {
         subtotal: [0, [Validators.required, Validators.min(0)]],
       }),
     );
+    this.itemsCountSignal.set(this.itemsArray.length);
     this.updateTotals();
     this.saleForm.markAsDirty();
   }
 
   removeItem(index: number): void {
-    this.itemsArray.removeAt(index);
-    this.updateTotals();
-    this.saleForm.markAsDirty();
+    if (this.itemsArray.length > 1) {
+      this.itemsArray.removeAt(index);
+      this.itemsCountSignal.set(this.itemsArray.length);
+      this.updateTotals();
+      this.saleForm.markAsDirty();
+    }
   }
 
   onProductChange(index: number, productId: number): void {
