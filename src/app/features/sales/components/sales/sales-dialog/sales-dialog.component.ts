@@ -1,26 +1,17 @@
 import { CurrencyPipe } from '@angular/common';
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, untracked } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { AuthStore } from '@core/auth/stores/auth.store';
-import { UserInfo } from '@features/configuration/models/user.model';
-import { UserService } from '@features/configuration/services/user.service';
-import { CustomerInfo } from '@features/customer/models/customer.model';
-import { CustomerService } from '@features/customer/services/customer.service';
-import { ProductInfo } from '@features/inventory/models/product.model';
-import { ProductService } from '@features/inventory/services/product.service';
+import { UserStore } from '@features/configuration/stores/user.store';
+import { CustomerStore } from '@features/customer/stores/customer.store';
+import { ProductStore } from '@features/inventory/stores/product.store';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
@@ -30,12 +21,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
-import { TextareaModule } from 'primeng/textarea';
-import {
-  PaymentMethod,
-  SaleData,
-  SaleStatus,
-} from '../../../models/sale.model';
+import { SaleData } from '../../../models/sale.model';
 import { SaleStore } from '../../../stores/sale.store';
 
 @Component({
@@ -47,7 +33,6 @@ import { SaleStore } from '../../../stores/sale.store';
     CurrencyPipe,
     InputTextModule,
     InputNumberModule,
-    TextareaModule,
     SelectModule,
     CalendarModule,
     TableModule,
@@ -108,195 +93,6 @@ import { SaleStore } from '../../../stores/sale.store';
               ></p-select>
             </p-inputgroup>
           </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="paymentMethod" class="font-bold">Método de Pago</label>
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-credit-card"></i>
-              </p-inputgroup-addon>
-              <p-select
-                id="paymentMethod"
-                formControlName="paymentMethod"
-                [options]="paymentMethodValues"
-                placeholder="Seleccionar Método de Pago"
-                styleClass="w-full"
-              >
-                <ng-template pTemplate="selectedItem" let-selectedPaymentMethod>
-                  @if (selectedPaymentMethod) {
-                    @switch (selectedPaymentMethod) {
-                      @case (PaymentMethod.CASH) {
-                        <span>Efectivo</span>
-                      }
-                      @case (PaymentMethod.CREDIT_CARD) {
-                        <span>Tarjeta de Crédito</span>
-                      }
-                      @case (PaymentMethod.DEBIT_CARD) {
-                        <span>Tarjeta de Débito</span>
-                      }
-                      @case (PaymentMethod.BANK_TRANSFER) {
-                        <span>Transferencia Bancaria</span>
-                      }
-                      @case (PaymentMethod.MOBILE_PAYMENT) {
-                        <span>Pago Móvil</span>
-                      }
-                      @case (PaymentMethod.OTHER) {
-                        <span>Otro</span>
-                      }
-                      @default {
-                        <span>{{ selectedPaymentMethod }}</span>
-                      }
-                    }
-                  } @else {
-                    <span>Seleccionar Método de Pago</span>
-                  }
-                </ng-template>
-                <ng-template pTemplate="item" let-pm>
-                  @switch (pm) {
-                    @case (PaymentMethod.CASH) {
-                      <span>Efectivo</span>
-                    }
-                    @case (PaymentMethod.CREDIT_CARD) {
-                      <span>Tarjeta de Crédito</span>
-                    }
-                    @case (PaymentMethod.DEBIT_CARD) {
-                      <span>Tarjeta de Débito</span>
-                    }
-                    @case (PaymentMethod.BANK_TRANSFER) {
-                      <span>Transferencia Bancaria</span>
-                    }
-                    @case (PaymentMethod.MOBILE_PAYMENT) {
-                      <span>Pago Móvil</span>
-                    }
-                    @case (PaymentMethod.OTHER) {
-                      <span>Otro</span>
-                    }
-                    @default {
-                      <span>{{ pm }}</span>
-                    }
-                  }
-                </ng-template>
-              </p-select>
-            </p-inputgroup>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="status" class="font-bold">Estado</label>
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-flag"></i>
-              </p-inputgroup-addon>
-              <p-select
-                id="status"
-                formControlName="status"
-                [options]="saleStatusValues"
-                placeholder="Seleccionar Estado"
-                styleClass="w-full"
-              >
-                <ng-template pTemplate="selectedItem" let-selectedStatus>
-                  @if (selectedStatus) {
-                    @switch (selectedStatus) {
-                      @case (SaleStatus.COMPLETED) {
-                        <span>Completada</span>
-                      }
-                      @case (SaleStatus.IN_PROGRESS) {
-                        <span>En Progreso</span>
-                      }
-                      @case (SaleStatus.CANCELLED) {
-                        <span>Cancelada</span>
-                      }
-                      @case (SaleStatus.RETURNED) {
-                        <span>Devuelta</span>
-                      }
-                      @case (SaleStatus.PARTIALLY_RETURNED) {
-                        <span>Devuelta Parcialmente</span>
-                      }
-                      @default {
-                        <span>{{ selectedStatus }}</span>
-                      }
-                    }
-                  } @else {
-                    <span>Seleccionar Estado</span>
-                  }
-                </ng-template>
-                <ng-template pTemplate="item" let-st>
-                  @switch (st) {
-                    @case (SaleStatus.COMPLETED) {
-                      <span>Completada</span>
-                    }
-                    @case (SaleStatus.IN_PROGRESS) {
-                      <span>En Progreso</span>
-                    }
-                    @case (SaleStatus.CANCELLED) {
-                      <span>Cancelada</span>
-                    }
-                    @case (SaleStatus.RETURNED) {
-                      <span>Devuelta</span>
-                    }
-                    @case (SaleStatus.PARTIALLY_RETURNED) {
-                      <span>Devuelta Parcialmente</span>
-                    }
-                    @default {
-                      <span>{{ st }}</span>
-                    }
-                  }
-                </ng-template>
-              </p-select>
-            </p-inputgroup>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="taxAmount" class="font-bold">Impuesto</label>
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-percentage"></i>
-              </p-inputgroup-addon>
-              <p-inputNumber
-                id="taxAmount"
-                formControlName="taxAmount"
-                mode="currency"
-                currency="COP"
-                locale="es-CO"
-                [minFractionDigits]="0"
-                fluid
-              ></p-inputNumber>
-            </p-inputgroup>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="discountAmount" class="font-bold">Descuento</label>
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-tag"></i>
-              </p-inputgroup-addon>
-              <p-inputNumber
-                id="discountAmount"
-                formControlName="discountAmount"
-                mode="currency"
-                currency="COP"
-                locale="es-CO"
-                [minFractionDigits]="0"
-                fluid
-              ></p-inputNumber>
-            </p-inputgroup>
-          </div>
-
-          <div class="flex flex-col gap-2 col-span-1 md:col-span-2">
-            <label for="notes" class="font-bold">Notas</label>
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="pi pi-align-left"></i>
-              </p-inputgroup-addon>
-              <textarea
-                pTextarea
-                id="notes"
-                formControlName="notes"
-                placeholder="Agregar notas sobre la venta"
-                [rows]="3"
-                class="w-full"
-              ></textarea>
-            </p-inputgroup>
-          </div>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -314,7 +110,7 @@ import { SaleStore } from '../../../stores/sale.store';
 
           <div formArrayName="items">
             <p-table
-              [value]="itemsArray.controls"
+              [value]="tableRows()"
               [tableStyle]="{ width: '100%' }"
               styleClass="p-datatable-sm"
             >
@@ -322,120 +118,178 @@ import { SaleStore } from '../../../stores/sale.store';
                 <tr>
                   <th class="w-1/3">Producto</th>
                   <th class="w-1/8">Cantidad</th>
-                  <th class="w-1/6">Precio Unitario</th>
-                  <th class="w-1/6">Descuento</th>
-                  <th class="w-1/6">Subtotal</th>
+                  <th class="w-1/8">Precio Unitario</th>
+                  <th class="w-1/4">Subtotal</th>
                   @if (!viewMode()) {
                     <th class="w-16">Acciones</th>
                   }
                 </tr>
               </ng-template>
-              <ng-template pTemplate="body" let-item let-i="rowIndex">
-                <tr [formGroupName]="i">
-                  <td class="p-2">
-                    <p-select
-                      formControlName="productId"
-                      [options]="products()"
-                      optionLabel="name"
-                      optionValue="id"
-                      placeholder="Seleccionar Producto"
-                      [filter]="true"
-                      filterBy="name"
-                      (onChange)="onProductChange(i, $event.value)"
-                      [style]="{ width: '100%' }"
-                      appendTo="body"
-                    ></p-select>
-                  </td>
-                  <td class="p-2">
-                    <p-inputNumber
-                      formControlName="quantity"
-                      [min]="1"
-                      [showButtons]="true"
-                      buttonLayout="horizontal"
-                      step="1"
-                      (onInput)="updateItemSubtotal(i)"
-                      fluid
-                    ></p-inputNumber>
-                  </td>
-                  <td class="p-2">
-                    <p-inputNumber
-                      formControlName="unitPrice"
-                      mode="currency"
-                      currency="COP"
-                      locale="es-CO"
-                      [minFractionDigits]="0"
-                      [readonly]="true"
-                      [style]="{ width: '100%' }"
-                    ></p-inputNumber>
-                  </td>
-                  <td class="p-2">
-                    <p-inputNumber
-                      formControlName="discount"
-                      mode="currency"
-                      currency="COP"
-                      locale="es-CO"
-                      [minFractionDigits]="0"
-                      (onInput)="updateItemSubtotal(i)"
-                      [style]="{ width: '100%' }"
-                    ></p-inputNumber>
-                  </td>
-                  <td class="p-2">
-                    <p-inputNumber
-                      formControlName="subtotal"
-                      mode="currency"
-                      currency="COP"
-                      locale="es-CO"
-                      [minFractionDigits]="0"
-                      [style]="{ width: '100%' }"
-                    ></p-inputNumber>
-                  </td>
-                  @if (!viewMode()) {
-                    <td class="p-2 text-center">
-                      <p-button
-                        icon="pi pi-trash"
-                        severity="danger"
-                        (onClick)="removeItem(i)"
-                        size="small"
-                      ></p-button>
+              <ng-template pTemplate="body" let-row let-i="rowIndex">
+                @if (!row.isSummary) {
+                  <tr [formGroupName]="row.formGroupIndex" class="bg-white">
+                    <td class="p-2">
+                      <p-select
+                        formControlName="productId"
+                        [options]="products()"
+                        optionLabel="name"
+                        optionValue="id"
+                        placeholder="Seleccionar Producto"
+                        [filter]="true"
+                        filterBy="name"
+                        (onChange)="
+                          onProductChange(row.formGroupIndex, $event.value)
+                        "
+                        [style]="{ width: '100%' }"
+                        appendTo="body"
+                      ></p-select>
                     </td>
+                    <td class="p-2">
+                      <p-inputNumber
+                        formControlName="quantity"
+                        [min]="1"
+                        [showButtons]="true"
+                        buttonLayout="horizontal"
+                        step="1"
+                        (onInput)="updateItemSubtotal(row.formGroupIndex)"
+                        fluid
+                      ></p-inputNumber>
+                    </td>
+                    <td class="p-2">
+                      <div
+                        class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                      >
+                        {{
+                          itemsArray.at(row.formGroupIndex).get('unitPrice')
+                            ?.value | currency: 'COP' : '$' : '1.0-0'
+                        }}
+                      </div>
+                    </td>
+                    <td class="p-2">
+                      <div
+                        class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                      >
+                        {{
+                          itemsArray.at(row.formGroupIndex).get('subtotal')
+                            ?.value | currency: 'COP' : '$' : '1.0-0'
+                        }}
+                      </div>
+                    </td>
+                    @if (!viewMode()) {
+                      <td class="p-2 text-center">
+                        <p-button
+                          icon="pi pi-trash"
+                          severity="danger"
+                          (onClick)="removeItem(row.formGroupIndex)"
+                          size="small"
+                        ></p-button>
+                      </td>
+                    }
+                  </tr>
+                } @else {
+                  @if (row.type === 'total') {
+                    <tr class="border-t border-gray-300 bg-gray-50">
+                      <td colspan="3" class="p-2 text-right font-bold">
+                        Total:
+                      </td>
+                      <td class="p-2">
+                        <div
+                          class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                        >
+                          {{
+                            saleForm.get('totalAmount')?.value
+                              | currency: 'COP' : '$' : '1.0-0'
+                          }}
+                        </div>
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
                   }
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="footer">
-                <tr>
-                  <td colspan="4" class="text-right font-bold p-2">Total:</td>
-                  <td class="p-2">
-                    <div
-                      class="border border-gray-300 rounded-md p-2 text-right bg-gray-50"
-                    >
-                      {{
-                        saleForm.get('totalAmount')?.value
-                          | currency: 'COP' : '$' : '1.0-0'
-                      }}
-                    </div>
-                  </td>
-                  @if (!viewMode()) {
-                    <td></td>
+                  @if (row.type === 'tax') {
+                    <tr class="bg-gray-50">
+                      <td colspan="3" class="p-2 text-right font-bold">
+                        Impuesto (19% IVA):
+                      </td>
+                      <td class="p-2">
+                        <div
+                          class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                        >
+                          {{
+                            saleForm.get('taxAmount')?.value
+                              | currency: 'COP' : '$' : '1.0-0'
+                          }}
+                        </div>
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
                   }
-                </tr>
-                <tr>
-                  <td colspan="4" class="text-right font-bold p-2">
-                    Total Final:
-                  </td>
-                  <td class="p-2">
-                    <div
-                      class="border border-gray-300 rounded-md p-2 text-right bg-gray-50"
-                    >
-                      {{
-                        saleForm.get('finalAmount')?.value
-                          | currency: 'COP' : '$' : '1.0-0'
-                      }}
-                    </div>
-                  </td>
-                  @if (!viewMode()) {
-                    <td></td>
+                  @if (row.type === 'combinedDiscount') {
+                    <tr class="bg-gray-50">
+                      <td colspan="3" class="p-2 text-right font-bold">
+                        Descuento:
+                      </td>
+                      <td class="p-2">
+                        <div class="flex items-center gap-4">
+                          @if (!viewMode()) {
+                            <div class="w-1/2">
+                              <p-inputNumber
+                                [formControl]="discountPercentControl"
+                                suffix="%"
+                                [min]="0"
+                                [max]="100"
+                                [showButtons]="true"
+                                buttonLayout="horizontal"
+                                (onInput)="updateDiscountFromPercentage()"
+                                inputStyleClass="w-full"
+                              ></p-inputNumber>
+                            </div>
+                          } @else {
+                            <div
+                              class="w-1/2 p-inputtext p-component text-right border border-gray-300 rounded-md p-2 bg-gray-100"
+                            >
+                              {{ discountPercentControl.value }}%
+                            </div>
+                          }
+                          <div
+                            class="w-1/2 p-inputtext p-component text-right border border-gray-300 rounded-md p-2 bg-gray-100"
+                          >
+                            {{
+                              saleForm.get('discountAmount')?.value
+                                | currency: 'COP' : '$' : '1.0-0'
+                            }}
+                          </div>
+                        </div>
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
                   }
-                </tr>
+                  @if (row.type === 'finalTotal') {
+                    <tr class="border-t border-gray-300 bg-gray-50">
+                      <td colspan="3" class="p-2 text-right font-bold text-lg">
+                        Total Final:
+                      </td>
+                      <td class="p-2">
+                        <div
+                          class="p-inputtext p-component text-right w-full border border-gray-300 rounded-md p-2 bg-gray-100 font-bold text-lg"
+                        >
+                          {{
+                            saleForm.get('finalAmount')?.value
+                              | currency: 'COP' : '$' : '1.0-0'
+                          }}
+                        </div>
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
+                  }
+                }
               </ng-template>
             </p-table>
           </div>
@@ -465,24 +319,22 @@ export class SalesDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly saleStore = inject(SaleStore);
   readonly authStore = inject(AuthStore);
-  private readonly productService = inject(ProductService);
-  private readonly customerService = inject(CustomerService);
-  private readonly userService = inject(UserService);
+  private readonly productStore = inject(ProductStore);
+  private readonly customerStore = inject(CustomerStore);
+  private readonly userStore = inject(UserStore);
 
-  readonly PaymentMethod = PaymentMethod;
-  readonly SaleStatus = SaleStatus;
-  readonly paymentMethodValues = Object.values(PaymentMethod);
-  readonly saleStatusValues = Object.values(SaleStatus);
-
-  readonly products = signal<ProductInfo[]>([]);
-  readonly customers = signal<(CustomerInfo & { fullName: string })[]>([]);
-  readonly employees = signal<UserInfo[]>([]);
+  readonly products = computed(() => this.productStore.entities());
+  readonly customers = computed(() => {
+    return this.customerStore.entities().map((customer) => ({
+      ...customer,
+      fullName: `${customer.firstName} ${customer.lastName}`,
+    }));
+  });
+  readonly employees = computed(() => this.userStore.entities());
 
   readonly viewMode = computed(() => {
     const selectedSale = this.saleStore.selectedSale();
-    return (
-      selectedSale !== null && selectedSale.status !== SaleStatus.IN_PROGRESS
-    );
+    return selectedSale !== null;
   });
 
   readonly dialogHeader = computed(() => {
@@ -493,44 +345,83 @@ export class SalesDialogComponent {
     return 'Registrar Nueva Venta';
   });
 
+  readonly tableRows = computed(() => {
+    const itemRows = this.itemsArray.controls.map((_, i) => ({
+      isSummary: false,
+      formGroupIndex: i,
+    }));
+
+    const summaryRows = [
+      { isSummary: true, type: 'total' },
+      { isSummary: true, type: 'tax' },
+      { isSummary: true, type: 'combinedDiscount' },
+      { isSummary: true, type: 'finalTotal' },
+    ];
+
+    return [...itemRows, ...summaryRows];
+  });
+
   readonly saleForm: FormGroup = this.fb.group({
-    customerId: [null],
+    customerId: [null, Validators.required],
     employeeId: [null, Validators.required],
-    paymentMethod: [PaymentMethod.CASH, Validators.required],
-    status: [SaleStatus.IN_PROGRESS, Validators.required],
     totalAmount: [
       { value: 0, disabled: true },
       [Validators.required, Validators.min(0)],
     ],
-    taxAmount: [0, [Validators.required, Validators.min(0)]],
+    taxAmount: [
+      { value: 0, disabled: true },
+      [Validators.required, Validators.min(0)],
+    ],
     discountAmount: [0, [Validators.required, Validators.min(0)]],
+    discountPercent: [
+      0,
+      [Validators.required, Validators.min(0), Validators.max(100)],
+    ],
     finalAmount: [
       { value: 0, disabled: true },
       [Validators.required, Validators.min(0)],
     ],
-    notes: [''],
     items: this.fb.array([]),
   });
+
+  get discountAmountControl() {
+    return this.saleForm.get('discountAmount') as FormControl;
+  }
+
+  get discountPercentControl() {
+    return this.saleForm.get('discountPercent') as FormControl;
+  }
 
   get itemsArray(): FormArray {
     return this.saleForm.get('items') as FormArray;
   }
 
-  constructor() {
-    this.loadProducts();
-    this.loadCustomers();
-    this.loadEmployees();
+  private readonly IVA_RATE = 0.19;
 
-    this.userService.findAll().subscribe((employees) => {
-      if (employees.length > 0) {
-        this.saleForm.get('employeeId')?.setValue(employees[0].id);
+  constructor() {
+    effect(() => {
+      const currentEmployees = this.employees();
+      const formEmployeeIdControl = this.saleForm.get('employeeId');
+      const loggedInUser = this.authStore.user();
+
+      if (currentEmployees.length > 0 && !formEmployeeIdControl?.value) {
+        if (loggedInUser && loggedInUser.id) {
+          const employeeInList = currentEmployees.find(
+            (emp) => emp.id === loggedInUser.id,
+          );
+          if (employeeInList) {
+            formEmployeeIdControl?.setValue(employeeInList.id);
+          } else {
+            formEmployeeIdControl?.setValue(currentEmployees[0].id);
+          }
+        } else if (currentEmployees.length > 0) {
+          formEmployeeIdControl?.setValue(currentEmployees[0].id);
+        }
       }
     });
 
     effect(() => {
       const selectedSale = this.saleStore.selectedSale();
-      const isViewMode =
-        selectedSale !== null && selectedSale.status !== SaleStatus.IN_PROGRESS;
 
       untracked(() => {
         if (selectedSale) {
@@ -538,47 +429,40 @@ export class SalesDialogComponent {
             this.itemsArray.removeAt(0);
           }
 
+          const discountPercent =
+            selectedSale.totalAmount > 0
+              ? Math.round(
+                  (selectedSale.discountAmount / selectedSale.totalAmount) *
+                    100,
+                )
+              : 0;
+
           this.saleForm.patchValue({
-            customerId: selectedSale.customer?.id ?? null,
+            customerId: selectedSale.customer.id,
             employeeId: selectedSale.employee.id,
-            paymentMethod: selectedSale.paymentMethod,
-            status: selectedSale.status,
             totalAmount: selectedSale.totalAmount,
             taxAmount: selectedSale.taxAmount,
             discountAmount: selectedSale.discountAmount,
+            discountPercent: discountPercent,
             finalAmount: selectedSale.finalAmount,
-            notes: selectedSale.notes ?? '',
           });
 
           selectedSale.items.forEach((item) => {
             const itemGroup = this.fb.group({
               productId: [
-                { value: item.product.id, disabled: isViewMode },
+                { value: item.product.id, disabled: this.viewMode() },
                 Validators.required,
               ],
               quantity: [
-                {
-                  value: item.quantity,
-                  disabled: isViewMode,
-                },
+                { value: item.quantity, disabled: this.viewMode() },
                 [Validators.required, Validators.min(1)],
               ],
               unitPrice: [
-                {
-                  value: item.unitPrice,
-                  disabled: true,
-                },
-                [Validators.required, Validators.min(0)],
-              ],
-              discount: [
-                {
-                  value: item.discount,
-                  disabled: isViewMode,
-                },
+                item.unitPrice,
                 [Validators.required, Validators.min(0)],
               ],
               subtotal: [
-                { value: item.subtotal, disabled: true },
+                item.subtotal,
                 [Validators.required, Validators.min(0)],
               ],
             });
@@ -588,28 +472,27 @@ export class SalesDialogComponent {
 
           this.saleForm.markAsPristine();
 
-          if (isViewMode) {
+          if (this.viewMode()) {
             this.saleForm.disable();
-            // Keep total and final amount controls disabled regardless
-            this.saleForm.get('totalAmount')?.disable();
-            this.saleForm.get('finalAmount')?.disable();
           }
         } else {
           this.saleForm.enable();
           this.saleForm.reset({
             customerId: null,
             employeeId:
-              this.employees().length > 0 ? this.employees()[0].id : null,
-            paymentMethod: PaymentMethod.CASH,
-            status: SaleStatus.IN_PROGRESS,
+              this.employees().length > 0 &&
+              this.saleForm.get('employeeId')?.value
+                ? this.saleForm.get('employeeId')?.value
+                : this.employees().length > 0
+                  ? this.employees()[0].id
+                  : null,
             totalAmount: 0,
             taxAmount: 0,
             discountAmount: 0,
+            discountPercent: 0,
             finalAmount: 0,
-            notes: '',
           });
 
-          // Always disable totalAmount and finalAmount
           this.saleForm.get('totalAmount')?.disable();
           this.saleForm.get('finalAmount')?.disable();
 
@@ -635,49 +518,16 @@ export class SalesDialogComponent {
     });
   }
 
-  private loadProducts(): void {
-    this.productService.findAll().subscribe({
-      next: (products) => this.products.set(products),
-      error: (error) => console.error('Error loading products', error),
-    });
-  }
-
-  private loadCustomers(): void {
-    this.customerService.findAll().subscribe({
-      next: (customers) => {
-        const customersWithFullName = customers.map((customer) => ({
-          ...customer,
-          fullName: `${customer.firstName} ${customer.lastName}`,
-        }));
-        this.customers.set(customersWithFullName);
-      },
-      error: (error) => console.error('Error loading customers', error),
-    });
-  }
-
-  private loadEmployees(): void {
-    this.userService.findAll().subscribe({
-      next: (users) => this.employees.set(users),
-      error: (error) => console.error('Error loading employees', error),
-    });
-  }
-
   addItem(): void {
     this.itemsArray.push(
       this.fb.group({
         productId: [null, Validators.required],
         quantity: [1, [Validators.required, Validators.min(1)]],
-        unitPrice: [
-          { value: 0, disabled: true },
-          [Validators.required, Validators.min(0)],
-        ],
-        discount: [0, [Validators.required, Validators.min(0)]],
-        subtotal: [
-          { value: 0, disabled: true },
-          [Validators.required, Validators.min(0)],
-        ],
+        unitPrice: [0, [Validators.required, Validators.min(0)]],
+        subtotal: [0, [Validators.required, Validators.min(0)]],
       }),
     );
+    this.updateTotals();
     this.saleForm.markAsDirty();
   }
 
@@ -703,9 +553,8 @@ export class SalesDialogComponent {
     const itemGroup = this.itemsArray.at(index);
     const quantity = itemGroup.get('quantity')?.value ?? 0;
     const unitPrice = itemGroup.get('unitPrice')?.value ?? 0;
-    const discount = itemGroup.get('discount')?.value ?? 0;
 
-    const subtotal = quantity * unitPrice - discount;
+    const subtotal = quantity * unitPrice;
     itemGroup.get('subtotal')?.setValue(subtotal);
 
     this.updateTotals();
@@ -720,7 +569,25 @@ export class SalesDialogComponent {
     }
 
     this.saleForm.get('totalAmount')?.setValue(total);
+
+    const taxAmount = Math.round(total * this.IVA_RATE);
+    this.saleForm.get('taxAmount')?.setValue(taxAmount);
+
+    this.updateDiscountFromPercentage();
+  }
+
+  updateDiscountFromPercentage(): void {
+    const totalAmount = this.saleForm.get('totalAmount')?.value ?? 0;
+    const discountPercent = this.discountPercentControl.value ?? 0;
+
+    const discountAmount = Math.round((totalAmount * discountPercent) / 100);
+
+    this.saleForm
+      .get('discountAmount')
+      ?.setValue(discountAmount, { emitEvent: false });
+
     this.updateFinalAmount();
+    this.saleForm.markAsDirty();
   }
 
   updateFinalAmount(): void {
@@ -737,18 +604,27 @@ export class SalesDialogComponent {
       return;
     }
 
-    const formValue = this.saleForm.value;
+    const formValue = this.saleForm.getRawValue();
     const saleData: SaleData = {
       totalAmount: formValue.totalAmount,
       taxAmount: formValue.taxAmount,
       discountAmount: formValue.discountAmount,
       finalAmount: formValue.finalAmount,
-      notes: formValue.notes,
-      paymentMethod: formValue.paymentMethod,
-      status: formValue.status,
       customerId: formValue.customerId,
       employeeId: formValue.employeeId,
-      items: formValue.items,
+      items: formValue.items.map(
+        (item: {
+          productId: number;
+          quantity: number;
+          unitPrice: number;
+          subtotal: number;
+        }) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          subtotal: item.subtotal,
+        }),
+      ),
     };
 
     const selectedSale = this.saleStore.selectedSale();

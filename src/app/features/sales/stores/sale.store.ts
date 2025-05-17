@@ -27,6 +27,7 @@ export interface SaleState {
   error: string | null;
   selectedSale: SaleInfo | null;
   dialogVisible: boolean;
+  exportFilePath: string | null;
 }
 
 export const SaleStore = signalStore(
@@ -37,6 +38,7 @@ export const SaleStore = signalStore(
     error: null,
     selectedSale: null,
     dialogVisible: false,
+    exportFilePath: null,
   }),
   withComputed(({ entities }) => ({
     salesCount: computed(() => entities().length),
@@ -46,6 +48,41 @@ export const SaleStore = signalStore(
     messageService: inject(MessageService),
   })),
   withMethods(({ saleService, messageService, ...store }) => ({
+    generateDailySalesReport: rxMethod<{ date?: Date; exportPath: string }>(
+      pipe(
+        tap(() =>
+          patchState(store, {
+            loading: true,
+            error: null,
+            exportFilePath: null,
+          }),
+        ),
+        concatMap(({ date, exportPath }) =>
+          saleService.generateDailySalesReport(date, exportPath).pipe(
+            tapResponse({
+              next: (filePath: string) => {
+                patchState(store, { exportFilePath: filePath });
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Éxito',
+                  detail: 'Reporte de ventas diarias generado correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error, exportFilePath: null });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al generar el reporte de ventas diarias',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -157,64 +194,6 @@ export const SaleStore = signalStore(
       ),
     ),
 
-    cancelSale: rxMethod<number>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        concatMap((id) =>
-          saleService.cancelSale(id).pipe(
-            tapResponse({
-              next: (updatedSale: SaleInfo) => {
-                patchState(store, updateEntity({ id, changes: updatedSale }));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Venta cancelada',
-                  detail: `La venta #${updatedSale.id} ha sido cancelada correctamente`,
-                });
-              },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al cancelar venta',
-                });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
-          ),
-        ),
-      ),
-    ),
-
-    returnSale: rxMethod<{ id: number; fullReturn: boolean }>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        concatMap(({ id, fullReturn }) =>
-          saleService.returnSale(id, fullReturn).pipe(
-            tapResponse({
-              next: (updatedSale: SaleInfo) => {
-                patchState(store, updateEntity({ id, changes: updatedSale }));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Devolución registrada',
-                  detail: `La devolución de la venta #${updatedSale.id} ha sido registrada correctamente`,
-                });
-              },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al registrar devolución',
-                });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
-          ),
-        ),
-      ),
-    ),
-
     findByCustomerId: rxMethod<number>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -278,30 +257,6 @@ export const SaleStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail: 'Error al cargar ventas por rango de fechas',
-                });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
-          ),
-        ),
-      ),
-    ),
-
-    findByStatus: rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((status) =>
-          saleService.findByStatus(status).pipe(
-            tapResponse({
-              next: (sales) => {
-                patchState(store, setAllEntities(sales));
-              },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al cargar ventas por estado',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

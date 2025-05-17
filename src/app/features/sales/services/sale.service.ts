@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '@env';
 import { Observable } from 'rxjs';
@@ -33,10 +33,6 @@ export class SaleService {
     });
   }
 
-  findByStatus(status: string): Observable<SaleInfo[]> {
-    return this.http.get<SaleInfo[]>(`${this.salesUrl}/status/${status}`);
-  }
-
   create(saleData: SaleData): Observable<SaleInfo> {
     return this.http.post<SaleInfo>(this.salesUrl, saleData);
   }
@@ -49,13 +45,21 @@ export class SaleService {
     return this.http.delete<void>(`${this.salesUrl}/${id}`);
   }
 
-  cancelSale(id: number): Observable<SaleInfo> {
-    return this.http.put<SaleInfo>(`${this.salesUrl}/${id}/cancel`, {});
-  }
+  generateDailySalesReport(
+    date?: Date,
+    exportPath?: string,
+  ): Observable<string> {
+    let params = new HttpParams();
 
-  returnSale(id: number, fullReturn = true): Observable<SaleInfo> {
-    return this.http.put<SaleInfo>(`${this.salesUrl}/${id}/return`, {
-      fullReturn,
-    });
+    if (date) {
+      const formattedDate = date.toISOString().split('T')[0];
+      params = params.append('date', formattedDate);
+    }
+
+    if (exportPath) {
+      params = params.append('exportPath', exportPath);
+    }
+
+    return this.http.get<string>(`${this.salesUrl}/export/daily`, { params });
   }
 }
