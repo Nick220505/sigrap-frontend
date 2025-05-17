@@ -157,11 +157,6 @@ export class MenuComponent {
           icon: 'pi pi-fw pi-refresh',
           routerLink: ['/ventas/devoluciones'],
         },
-        {
-          label: 'Descuentos',
-          icon: 'pi pi-fw pi-percentage',
-          routerLink: ['/ventas/descuentos'],
-        },
       ],
     },
     {

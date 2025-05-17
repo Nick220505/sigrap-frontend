@@ -26,12 +26,4 @@ export const salesRoutes: Routes = [
       ),
     canActivate: [authGuard],
   },
-  {
-    path: 'descuentos',
-    loadComponent: () =>
-      import('./components/discounts/sales-discounts.component').then(
-        (m) => m.SalesDiscountsComponent,
-      ),
-    canActivate: [authGuard],
-  },
 ];
