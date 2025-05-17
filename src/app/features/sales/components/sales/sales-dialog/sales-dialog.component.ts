@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -23,11 +24,11 @@ import { ProductService } from '@features/inventory/services/product.service';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import {
@@ -43,10 +44,11 @@ import { SaleStore } from '../../../stores/sale.store';
     DialogModule,
     ButtonModule,
     ReactiveFormsModule,
+    CurrencyPipe,
     InputTextModule,
     InputNumberModule,
     TextareaModule,
-    DropdownModule,
+    SelectModule,
     CalendarModule,
     TableModule,
     InputGroupModule,
@@ -58,7 +60,7 @@ import { SaleStore } from '../../../stores/sale.store';
       (visibleChange)="
         $event ? saleStore.openSaleDialog() : saleStore.closeSaleDialog()
       "
-      [style]="{ width: '80vw', maxWidth: '1000px' }"
+      [style]="{ width: '95vw', maxWidth: '1200px' }"
       [header]="dialogHeader()"
       [modal]="true"
       [resizable]="false"
@@ -67,50 +69,90 @@ import { SaleStore } from '../../../stores/sale.store';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="customerId" class="font-bold">Cliente</label>
-            <p-dropdown
-              id="customerId"
-              formControlName="customerId"
-              [options]="customers()"
-              optionLabel="fullName"
-              optionValue="id"
-              placeholder="Seleccionar Cliente"
-              [filter]="true"
-              filterBy="fullName"
-              [showClear]="true"
-              [disabled]="viewMode()"
-              [style]="{ width: '100%' }"
-            ></p-dropdown>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-users"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="customerId"
+                formControlName="customerId"
+                [options]="customers()"
+                optionLabel="fullName"
+                optionValue="id"
+                placeholder="Seleccionar Cliente"
+                [filter]="true"
+                filterBy="fullName"
+                styleClass="w-full"
+                appendTo="body"
+              ></p-select>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2">
             <label for="employeeId" class="font-bold">Empleado</label>
-            <p-dropdown
-              id="employeeId"
-              formControlName="employeeId"
-              [options]="employees()"
-              optionLabel="name"
-              optionValue="id"
-              placeholder="Seleccionar Empleado"
-              [filter]="true"
-              filterBy="name"
-              [disabled]="viewMode()"
-              [style]="{ width: '100%' }"
-            ></p-dropdown>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-user"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="employeeId"
+                formControlName="employeeId"
+                [options]="employees()"
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Seleccionar Empleado"
+                [filter]="true"
+                filterBy="name"
+                styleClass="w-full"
+                appendTo="body"
+              ></p-select>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2">
             <label for="paymentMethod" class="font-bold">Método de Pago</label>
-            <p-dropdown
-              id="paymentMethod"
-              formControlName="paymentMethod"
-              [options]="paymentMethodValues"
-              placeholder="Seleccionar Método de Pago"
-              [disabled]="viewMode()"
-              [style]="{ width: '100%' }"
-            >
-              <ng-template pTemplate="selectedItem" let-selectedPaymentMethod>
-                @if (selectedPaymentMethod) {
-                  @switch (selectedPaymentMethod) {
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-credit-card"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="paymentMethod"
+                formControlName="paymentMethod"
+                [options]="paymentMethodValues"
+                placeholder="Seleccionar Método de Pago"
+                styleClass="w-full"
+              >
+                <ng-template pTemplate="selectedItem" let-selectedPaymentMethod>
+                  @if (selectedPaymentMethod) {
+                    @switch (selectedPaymentMethod) {
+                      @case (PaymentMethod.CASH) {
+                        <span>Efectivo</span>
+                      }
+                      @case (PaymentMethod.CREDIT_CARD) {
+                        <span>Tarjeta de Crédito</span>
+                      }
+                      @case (PaymentMethod.DEBIT_CARD) {
+                        <span>Tarjeta de Débito</span>
+                      }
+                      @case (PaymentMethod.BANK_TRANSFER) {
+                        <span>Transferencia Bancaria</span>
+                      }
+                      @case (PaymentMethod.MOBILE_PAYMENT) {
+                        <span>Pago Móvil</span>
+                      }
+                      @case (PaymentMethod.OTHER) {
+                        <span>Otro</span>
+                      }
+                      @default {
+                        <span>{{ selectedPaymentMethod }}</span>
+                      }
+                    }
+                  } @else {
+                    <span>Seleccionar Método de Pago</span>
+                  }
+                </ng-template>
+                <ng-template pTemplate="item" let-pm>
+                  @switch (pm) {
                     @case (PaymentMethod.CASH) {
                       <span>Efectivo</span>
                     }
@@ -130,54 +172,55 @@ import { SaleStore } from '../../../stores/sale.store';
                       <span>Otro</span>
                     }
                     @default {
-                      <span>{{ selectedPaymentMethod }}</span>
+                      <span>{{ pm }}</span>
                     }
                   }
-                } @else {
-                  <span>Seleccionar Método de Pago</span>
-                }
-              </ng-template>
-              <ng-template pTemplate="item" let-pm>
-                @switch (pm) {
-                  @case (PaymentMethod.CASH) {
-                    <span>Efectivo</span>
-                  }
-                  @case (PaymentMethod.CREDIT_CARD) {
-                    <span>Tarjeta de Crédito</span>
-                  }
-                  @case (PaymentMethod.DEBIT_CARD) {
-                    <span>Tarjeta de Débito</span>
-                  }
-                  @case (PaymentMethod.BANK_TRANSFER) {
-                    <span>Transferencia Bancaria</span>
-                  }
-                  @case (PaymentMethod.MOBILE_PAYMENT) {
-                    <span>Pago Móvil</span>
-                  }
-                  @case (PaymentMethod.OTHER) {
-                    <span>Otro</span>
-                  }
-                  @default {
-                    <span>{{ pm }}</span>
-                  }
-                }
-              </ng-template>
-            </p-dropdown>
+                </ng-template>
+              </p-select>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2">
             <label for="status" class="font-bold">Estado</label>
-            <p-dropdown
-              id="status"
-              formControlName="status"
-              [options]="saleStatusValues"
-              placeholder="Seleccionar Estado"
-              [disabled]="viewMode()"
-              [style]="{ width: '100%' }"
-            >
-              <ng-template pTemplate="selectedItem" let-selectedStatus>
-                @if (selectedStatus) {
-                  @switch (selectedStatus) {
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-flag"></i>
+              </p-inputgroup-addon>
+              <p-select
+                id="status"
+                formControlName="status"
+                [options]="saleStatusValues"
+                placeholder="Seleccionar Estado"
+                styleClass="w-full"
+              >
+                <ng-template pTemplate="selectedItem" let-selectedStatus>
+                  @if (selectedStatus) {
+                    @switch (selectedStatus) {
+                      @case (SaleStatus.COMPLETED) {
+                        <span>Completada</span>
+                      }
+                      @case (SaleStatus.IN_PROGRESS) {
+                        <span>En Progreso</span>
+                      }
+                      @case (SaleStatus.CANCELLED) {
+                        <span>Cancelada</span>
+                      }
+                      @case (SaleStatus.RETURNED) {
+                        <span>Devuelta</span>
+                      }
+                      @case (SaleStatus.PARTIALLY_RETURNED) {
+                        <span>Devuelta Parcialmente</span>
+                      }
+                      @default {
+                        <span>{{ selectedStatus }}</span>
+                      }
+                    }
+                  } @else {
+                    <span>Seleccionar Estado</span>
+                  }
+                </ng-template>
+                <ng-template pTemplate="item" let-st>
+                  @switch (st) {
                     @case (SaleStatus.COMPLETED) {
                       <span>Completada</span>
                     }
@@ -194,74 +237,65 @@ import { SaleStore } from '../../../stores/sale.store';
                       <span>Devuelta Parcialmente</span>
                     }
                     @default {
-                      <span>{{ selectedStatus }}</span>
+                      <span>{{ st }}</span>
                     }
                   }
-                } @else {
-                  <span>Seleccionar Estado</span>
-                }
-              </ng-template>
-              <ng-template pTemplate="item" let-st>
-                @switch (st) {
-                  @case (SaleStatus.COMPLETED) {
-                    <span>Completada</span>
-                  }
-                  @case (SaleStatus.IN_PROGRESS) {
-                    <span>En Progreso</span>
-                  }
-                  @case (SaleStatus.CANCELLED) {
-                    <span>Cancelada</span>
-                  }
-                  @case (SaleStatus.RETURNED) {
-                    <span>Devuelta</span>
-                  }
-                  @case (SaleStatus.PARTIALLY_RETURNED) {
-                    <span>Devuelta Parcialmente</span>
-                  }
-                  @default {
-                    <span>{{ st }}</span>
-                  }
-                }
-              </ng-template>
-            </p-dropdown>
+                </ng-template>
+              </p-select>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2">
             <label for="taxAmount" class="font-bold">Impuesto</label>
-            <p-inputNumber
-              id="taxAmount"
-              formControlName="taxAmount"
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-              [minFractionDigits]="2"
-              [disabled]="viewMode()"
-            ></p-inputNumber>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-percentage"></i>
+              </p-inputgroup-addon>
+              <p-inputNumber
+                id="taxAmount"
+                formControlName="taxAmount"
+                mode="currency"
+                currency="COP"
+                locale="es-CO"
+                [minFractionDigits]="0"
+                fluid
+              ></p-inputNumber>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2">
             <label for="discountAmount" class="font-bold">Descuento</label>
-            <p-inputNumber
-              id="discountAmount"
-              formControlName="discountAmount"
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-              [minFractionDigits]="2"
-              [disabled]="viewMode()"
-            ></p-inputNumber>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-tag"></i>
+              </p-inputgroup-addon>
+              <p-inputNumber
+                id="discountAmount"
+                formControlName="discountAmount"
+                mode="currency"
+                currency="COP"
+                locale="es-CO"
+                [minFractionDigits]="0"
+                fluid
+              ></p-inputNumber>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2 col-span-1 md:col-span-2">
             <label for="notes" class="font-bold">Notas</label>
-            <textarea
-              pTextarea
-              id="notes"
-              formControlName="notes"
-              placeholder="Agregar notas sobre la venta"
-              [rows]="3"
-              [disabled]="viewMode()"
-            ></textarea>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-align-left"></i>
+              </p-inputgroup-addon>
+              <textarea
+                pTextarea
+                id="notes"
+                formControlName="notes"
+                placeholder="Agregar notas sobre la venta"
+                [rows]="3"
+                class="w-full"
+              ></textarea>
+            </p-inputgroup>
           </div>
         </div>
 
@@ -281,24 +315,25 @@ import { SaleStore } from '../../../stores/sale.store';
           <div formArrayName="items">
             <p-table
               [value]="itemsArray.controls"
-              [tableStyle]="{ 'min-width': '100%' }"
+              [tableStyle]="{ width: '100%' }"
+              styleClass="p-datatable-sm"
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Precio Unitario</th>
-                  <th>Descuento</th>
-                  <th>Subtotal</th>
+                  <th class="w-1/3">Producto</th>
+                  <th class="w-1/8">Cantidad</th>
+                  <th class="w-1/6">Precio Unitario</th>
+                  <th class="w-1/6">Descuento</th>
+                  <th class="w-1/6">Subtotal</th>
                   @if (!viewMode()) {
-                    <th>Acciones</th>
+                    <th class="w-16">Acciones</th>
                   }
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item let-i="rowIndex">
                 <tr [formGroupName]="i">
-                  <td>
-                    <p-dropdown
+                  <td class="p-2">
+                    <p-select
                       formControlName="productId"
                       [options]="products()"
                       optionLabel="name"
@@ -306,63 +341,61 @@ import { SaleStore } from '../../../stores/sale.store';
                       placeholder="Seleccionar Producto"
                       [filter]="true"
                       filterBy="name"
-                      [disabled]="viewMode()"
                       (onChange)="onProductChange(i, $event.value)"
-                      [style]="{ width: '100%', 'min-width': '200px' }"
-                    ></p-dropdown>
+                      [style]="{ width: '100%' }"
+                      appendTo="body"
+                    ></p-select>
                   </td>
-                  <td>
+                  <td class="p-2">
                     <p-inputNumber
                       formControlName="quantity"
                       [min]="1"
                       [showButtons]="true"
-                      [disabled]="viewMode()"
+                      buttonLayout="horizontal"
+                      step="1"
                       (onInput)="updateItemSubtotal(i)"
-                      [style]="{ width: '100px' }"
+                      fluid
                     ></p-inputNumber>
                   </td>
-                  <td>
+                  <td class="p-2">
                     <p-inputNumber
                       formControlName="unitPrice"
                       mode="currency"
-                      currency="USD"
-                      locale="en-US"
-                      [minFractionDigits]="2"
-                      [disabled]="viewMode()"
-                      (onInput)="updateItemSubtotal(i)"
-                      [style]="{ width: '150px' }"
+                      currency="COP"
+                      locale="es-CO"
+                      [minFractionDigits]="0"
+                      [readonly]="true"
+                      [style]="{ width: '100%' }"
                     ></p-inputNumber>
                   </td>
-                  <td>
+                  <td class="p-2">
                     <p-inputNumber
                       formControlName="discount"
                       mode="currency"
-                      currency="USD"
-                      locale="en-US"
-                      [minFractionDigits]="2"
-                      [disabled]="viewMode()"
+                      currency="COP"
+                      locale="es-CO"
+                      [minFractionDigits]="0"
                       (onInput)="updateItemSubtotal(i)"
-                      [style]="{ width: '150px' }"
+                      [style]="{ width: '100%' }"
                     ></p-inputNumber>
                   </td>
-                  <td>
+                  <td class="p-2">
                     <p-inputNumber
                       formControlName="subtotal"
                       mode="currency"
-                      currency="USD"
-                      locale="en-US"
-                      [minFractionDigits]="2"
-                      [disabled]="true"
-                      [style]="{ width: '150px' }"
+                      currency="COP"
+                      locale="es-CO"
+                      [minFractionDigits]="0"
+                      [style]="{ width: '100%' }"
                     ></p-inputNumber>
                   </td>
                   @if (!viewMode()) {
-                    <td>
+                    <td class="p-2 text-center">
                       <p-button
                         icon="pi pi-trash"
                         severity="danger"
                         (onClick)="removeItem(i)"
-                        [disabled]="viewMode()"
+                        size="small"
                       ></p-button>
                     </td>
                   }
@@ -370,32 +403,34 @@ import { SaleStore } from '../../../stores/sale.store';
               </ng-template>
               <ng-template pTemplate="footer">
                 <tr>
-                  <td colspan="4" class="text-right font-bold">Total:</td>
-                  <td>
-                    <p-inputNumber
-                      formControlName="totalAmount"
-                      mode="currency"
-                      currency="USD"
-                      locale="en-US"
-                      [minFractionDigits]="2"
-                      [disabled]="true"
-                    ></p-inputNumber>
+                  <td colspan="4" class="text-right font-bold p-2">Total:</td>
+                  <td class="p-2">
+                    <div
+                      class="border border-gray-300 rounded-md p-2 text-right bg-gray-50"
+                    >
+                      {{
+                        saleForm.get('totalAmount')?.value
+                          | currency: 'COP' : '$' : '1.0-0'
+                      }}
+                    </div>
                   </td>
                   @if (!viewMode()) {
                     <td></td>
                   }
                 </tr>
                 <tr>
-                  <td colspan="4" class="text-right font-bold">Total Final:</td>
-                  <td>
-                    <p-inputNumber
-                      formControlName="finalAmount"
-                      mode="currency"
-                      currency="USD"
-                      locale="en-US"
-                      [minFractionDigits]="2"
-                      [disabled]="true"
-                    ></p-inputNumber>
+                  <td colspan="4" class="text-right font-bold p-2">
+                    Total Final:
+                  </td>
+                  <td class="p-2">
+                    <div
+                      class="border border-gray-300 rounded-md p-2 text-right bg-gray-50"
+                    >
+                      {{
+                        saleForm.get('finalAmount')?.value
+                          | currency: 'COP' : '$' : '1.0-0'
+                      }}
+                    </div>
                   </td>
                   @if (!viewMode()) {
                     <td></td>
@@ -463,10 +498,16 @@ export class SalesDialogComponent {
     employeeId: [null, Validators.required],
     paymentMethod: [PaymentMethod.CASH, Validators.required],
     status: [SaleStatus.IN_PROGRESS, Validators.required],
-    totalAmount: [0, [Validators.required, Validators.min(0)]],
+    totalAmount: [
+      { value: 0, disabled: true },
+      [Validators.required, Validators.min(0)],
+    ],
     taxAmount: [0, [Validators.required, Validators.min(0)]],
     discountAmount: [0, [Validators.required, Validators.min(0)]],
-    finalAmount: [0, [Validators.required, Validators.min(0)]],
+    finalAmount: [
+      { value: 0, disabled: true },
+      [Validators.required, Validators.min(0)],
+    ],
     notes: [''],
     items: this.fb.array([]),
   });
@@ -488,6 +529,8 @@ export class SalesDialogComponent {
 
     effect(() => {
       const selectedSale = this.saleStore.selectedSale();
+      const isViewMode =
+        selectedSale !== null && selectedSale.status !== SaleStatus.IN_PROGRESS;
 
       untracked(() => {
         if (selectedSale) {
@@ -508,31 +551,51 @@ export class SalesDialogComponent {
           });
 
           selectedSale.items.forEach((item) => {
-            this.itemsArray.push(
-              this.fb.group({
-                productId: [item.product.id, Validators.required],
-                quantity: [
-                  item.quantity,
-                  [Validators.required, Validators.min(1)],
-                ],
-                unitPrice: [
-                  item.unitPrice,
-                  [Validators.required, Validators.min(0)],
-                ],
-                discount: [
-                  item.discount,
-                  [Validators.required, Validators.min(0)],
-                ],
-                subtotal: [
-                  item.subtotal,
-                  [Validators.required, Validators.min(0)],
-                ],
-              }),
-            );
+            const itemGroup = this.fb.group({
+              productId: [
+                { value: item.product.id, disabled: isViewMode },
+                Validators.required,
+              ],
+              quantity: [
+                {
+                  value: item.quantity,
+                  disabled: isViewMode,
+                },
+                [Validators.required, Validators.min(1)],
+              ],
+              unitPrice: [
+                {
+                  value: item.unitPrice,
+                  disabled: true,
+                },
+                [Validators.required, Validators.min(0)],
+              ],
+              discount: [
+                {
+                  value: item.discount,
+                  disabled: isViewMode,
+                },
+                [Validators.required, Validators.min(0)],
+              ],
+              subtotal: [
+                { value: item.subtotal, disabled: true },
+                [Validators.required, Validators.min(0)],
+              ],
+            });
+
+            this.itemsArray.push(itemGroup);
           });
 
           this.saleForm.markAsPristine();
+
+          if (isViewMode) {
+            this.saleForm.disable();
+            // Keep total and final amount controls disabled regardless
+            this.saleForm.get('totalAmount')?.disable();
+            this.saleForm.get('finalAmount')?.disable();
+          }
         } else {
+          this.saleForm.enable();
           this.saleForm.reset({
             customerId: null,
             employeeId:
@@ -545,6 +608,10 @@ export class SalesDialogComponent {
             finalAmount: 0,
             notes: '',
           });
+
+          // Always disable totalAmount and finalAmount
+          this.saleForm.get('totalAmount')?.disable();
+          this.saleForm.get('finalAmount')?.disable();
 
           while (this.itemsArray.length > 0) {
             this.itemsArray.removeAt(0);
@@ -600,9 +667,15 @@ export class SalesDialogComponent {
       this.fb.group({
         productId: [null, Validators.required],
         quantity: [1, [Validators.required, Validators.min(1)]],
-        unitPrice: [0, [Validators.required, Validators.min(0)]],
+        unitPrice: [
+          { value: 0, disabled: true },
+          [Validators.required, Validators.min(0)],
+        ],
         discount: [0, [Validators.required, Validators.min(0)]],
-        subtotal: [0, [Validators.required, Validators.min(0)]],
+        subtotal: [
+          { value: 0, disabled: true },
+          [Validators.required, Validators.min(0)],
+        ],
       }),
     );
     this.saleForm.markAsDirty();
@@ -618,7 +691,10 @@ export class SalesDialogComponent {
     const product = this.products().find((p) => p.id === productId);
     if (product) {
       const itemGroup = this.itemsArray.at(index);
-      itemGroup.get('unitPrice')?.setValue(product.salePrice);
+      const unitPriceControl = itemGroup.get('unitPrice');
+      if (unitPriceControl) {
+        unitPriceControl.setValue(product.salePrice);
+      }
       this.updateItemSubtotal(index);
     }
   }
