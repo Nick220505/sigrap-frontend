@@ -20,6 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
+import { ProductStore } from '../../inventory/stores/product.store';
 import { SaleData, SaleInfo } from '../models/sale.model';
 import { SaleService } from '../services/sale.service';
 
@@ -47,8 +48,9 @@ export const SaleStore = signalStore(
   withProps(() => ({
     saleService: inject(SaleService),
     messageService: inject(MessageService),
+    productStore: inject(ProductStore),
   })),
-  withMethods(({ saleService, messageService, ...store }) => ({
+  withMethods(({ saleService, messageService, productStore, ...store }) => ({
     generateDailySalesReport: rxMethod<{ date?: Date; exportPath: string }>(
       pipe(
         tap(() =>
@@ -126,6 +128,8 @@ export const SaleStore = signalStore(
                   },
                 });
 
+                productStore.findAll();
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Venta registrada',
@@ -183,6 +187,8 @@ export const SaleStore = signalStore(
                   },
                 });
 
+                productStore.findAll();
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Venta actualizada',
@@ -230,6 +236,9 @@ export const SaleStore = signalStore(
             tapResponse({
               next: () => {
                 patchState(store, removeEntity(id));
+
+                productStore.findAll();
+
                 messageService.add({
                   severity: 'success',
                   summary: 'Venta eliminada',
