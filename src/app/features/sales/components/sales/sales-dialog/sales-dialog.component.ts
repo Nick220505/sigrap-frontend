@@ -708,7 +708,5 @@ export class SalesDialogComponent {
     } else {
       this.saleStore.create(saleData);
     }
-
-    this.saleStore.closeSaleDialog();
   }
 }

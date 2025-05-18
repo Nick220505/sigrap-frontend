@@ -118,7 +118,9 @@ export const SaleStore = signalStore(
           saleService.create(saleData).pipe(
             tapResponse({
               next: (createdSale: SaleInfo) => {
-                patchState(store, addEntity(createdSale));
+                patchState(store, addEntity(createdSale), {
+                  dialogVisible: false,
+                });
 
                 saleService.findById(createdSale.id).subscribe({
                   next: (fullSale) => {
@@ -138,32 +140,52 @@ export const SaleStore = signalStore(
                 });
               },
               error: (error: HttpErrorResponse) => {
+                let errorMessage = '';
+
+                if (error.error?.message) {
+                  errorMessage = error.error.message.replace(
+                    /Insufficient stock for product: (.*)/,
+                    'Stock insuficiente para el producto: $1',
+                  );
+                } else if (error.message) {
+                  errorMessage = error.message.replace(
+                    /Insufficient stock for product: (.*)/,
+                    'Stock insuficiente para el producto: $1',
+                  );
+                } else {
+                  errorMessage = 'Error al registrar venta';
+                }
+
                 patchState(store, {
-                  error: error.message ?? 'Error al registrar venta',
+                  error: errorMessage,
+                  loading: false,
                 });
 
                 if (
                   (error.error &&
                     typeof error.error === 'string' &&
-                    error.error.includes('stock')) ??
-                  error.message?.includes('stock') ??
-                  false
+                    error.error.includes('stock')) ||
+                  error.message?.includes('stock') ||
+                  error.error?.message?.includes('stock')
                 ) {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error de inventario',
-                    detail:
-                      'No hay suficiente stock disponible para completar la venta',
+                    detail: errorMessage,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al registrar venta',
+                    detail: errorMessage,
                   });
                 }
               },
-              finalize: () => patchState(store, { loading: false }),
+              finalize: () => {
+                if (!store.error()) {
+                  patchState(store, { loading: false });
+                }
+              },
             }),
           ),
         ),
@@ -177,7 +199,9 @@ export const SaleStore = signalStore(
           saleService.update(id, saleData).pipe(
             tapResponse({
               next: (updatedSale: SaleInfo) => {
-                patchState(store, updateEntity({ id, changes: updatedSale }));
+                patchState(store, updateEntity({ id, changes: updatedSale }), {
+                  dialogVisible: false,
+                });
 
                 saleService.findById(id).subscribe({
                   next: (fullSale) => {
@@ -197,32 +221,52 @@ export const SaleStore = signalStore(
                 });
               },
               error: (error: HttpErrorResponse) => {
+                let errorMessage = '';
+
+                if (error.error?.message) {
+                  errorMessage = error.error.message.replace(
+                    /Insufficient stock for product: (.*)/,
+                    'Stock insuficiente para el producto: $1',
+                  );
+                } else if (error.message) {
+                  errorMessage = error.message.replace(
+                    /Insufficient stock for product: (.*)/,
+                    'Stock insuficiente para el producto: $1',
+                  );
+                } else {
+                  errorMessage = 'Error al actualizar venta';
+                }
+
                 patchState(store, {
-                  error: error.message ?? 'Error al actualizar venta',
+                  error: errorMessage,
+                  loading: false,
                 });
 
                 if (
                   (error.error &&
                     typeof error.error === 'string' &&
-                    error.error.includes('stock')) ??
-                  error.message?.includes('stock') ??
-                  false
+                    error.error.includes('stock')) ||
+                  error.message?.includes('stock') ||
+                  error.error?.message?.includes('stock')
                 ) {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error de inventario',
-                    detail:
-                      'No hay suficiente stock disponible para actualizar la venta',
+                    detail: errorMessage,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al actualizar venta',
+                    detail: errorMessage,
                   });
                 }
               },
-              finalize: () => patchState(store, { loading: false }),
+              finalize: () => {
+                if (!store.error()) {
+                  patchState(store, { loading: false });
+                }
+              },
             }),
           ),
         ),
