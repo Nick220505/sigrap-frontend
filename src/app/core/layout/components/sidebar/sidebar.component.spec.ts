@@ -12,6 +12,21 @@ describe('SidebarComponent', () => {
   let fixture: ComponentFixture<SidebarComponent>;
 
   beforeEach(async () => {
+    // Mock matchMedia
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jasmine.createSpy('matchMedia').and.returnValue({
+        matches: false,
+        media: '',
+        onchange: null,
+        addListener: jasmine.createSpy('addListener'),
+        removeListener: jasmine.createSpy('removeListener'),
+        addEventListener: jasmine.createSpy('addEventListener'),
+        removeEventListener: jasmine.createSpy('removeEventListener'),
+        dispatchEvent: jasmine.createSpy('dispatchEvent'),
+      }),
+    });
+
     await TestBed.configureTestingModule({
       imports: [SidebarComponent, NoopAnimationsModule, MenuComponent],
       providers: [provideRouter([]), provideHttpClient(), MessageService],
