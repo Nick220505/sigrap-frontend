@@ -296,16 +296,6 @@ export class SalesReturnsDialogComponent {
     });
 
     effect(() => {
-      if (this.viewMode()) {
-        this.returnForm.get('originalSaleId')?.disable();
-        this.returnForm.get('reason')?.disable();
-      } else {
-        this.returnForm.get('originalSaleId')?.enable();
-        this.returnForm.get('reason')?.enable();
-      }
-    });
-
-    effect(() => {
       const currentSaleReturn = this.saleReturnStore.selectedSaleReturn();
       untracked(() => {
         if (currentSaleReturn && this.viewMode()) {
@@ -374,11 +364,10 @@ export class SalesReturnsDialogComponent {
     });
     this.returnItemsArray.clear();
     this.returnForm.get('totalReturnAmount')?.setValue(0);
-    if (!this.viewMode()) {
-      this.returnForm.enable();
-      this.returnForm.get('customerId')?.disable();
-      this.returnForm.get('totalReturnAmount')?.disable();
-    }
+
+    this.returnForm.enable();
+    this.returnForm.get('customerId')?.disable();
+    this.returnForm.get('totalReturnAmount')?.disable();
   }
 
   onOriginalSaleChange(saleId: number | null): void {
@@ -396,7 +385,9 @@ export class SalesReturnsDialogComponent {
       this.returnForm.get('customerId')?.setValue(originalSale.customer.id);
       this.returnItemsArray.clear();
       originalSale.items.forEach((item) => {
-        this.returnItemsArray.push(this.createReturnItemFormGroup(item, false));
+        this.returnItemsArray.push(
+          this.createReturnItemFormGroup(item, this.viewMode()),
+        );
       });
       this.updateTotalReturnAmount();
     } else {
@@ -514,16 +505,7 @@ export class SalesReturnsDialogComponent {
       totalReturnAmount: formValue.totalReturnAmount,
       reason: formValue.reason,
       items: this.returnItemsArray.controls
-        .map(
-          (control) =>
-            control.value as {
-              productId: number;
-              quantity: number;
-              unitPrice: number;
-              subtotal: number;
-              originalQuantity: number;
-            },
-        )
+        .map((control) => control.getRawValue())
         .filter((item) => item.quantity > 0)
         .map((item) => ({
           productId: item.productId,
