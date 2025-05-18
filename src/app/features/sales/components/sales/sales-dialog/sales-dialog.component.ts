@@ -160,6 +160,7 @@ import { SaleStore } from '../../../stores/sale.store';
                         step="1"
                         (onInput)="updateItemSubtotal(row.formGroupIndex)"
                         fluid
+                        [style]="{ minWidth: '130px' }"
                       ></p-inputNumber>
                     </td>
                     <td class="p-2">
@@ -276,6 +277,7 @@ import { SaleStore } from '../../../stores/sale.store';
                                 (onInput)="updateDiscountFromPercentage()"
                                 styleClass="w-full"
                                 fluid
+                                [style]="{ minWidth: '130px' }"
                               ></p-inputNumber>
                             } @else {
                               <p-inputNumber
@@ -287,6 +289,7 @@ import { SaleStore } from '../../../stores/sale.store';
                                 [disabled]="true"
                                 styleClass="w-full"
                                 fluid
+                                [style]="{ minWidth: '130px' }"
                               ></p-inputNumber>
                             }
                           </div>
