@@ -16,13 +16,6 @@ export const supplierRoutes: Routes = [
       ),
   },
   {
-    path: 'seguimiento',
-    loadComponent: () =>
-      import('./components/tracking/tracking.component').then(
-        (m) => m.TrackingComponent,
-      ),
-  },
-  {
     path: 'pagos',
     loadComponent: () =>
       import('./components/payments/payments.component').then(

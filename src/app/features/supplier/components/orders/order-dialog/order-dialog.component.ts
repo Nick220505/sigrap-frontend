@@ -25,7 +25,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
-import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
@@ -44,7 +43,6 @@ import { TooltipModule } from 'primeng/tooltip';
     SelectButtonModule,
     InputGroupModule,
     InputGroupAddonModule,
-    TextareaModule,
   ],
   template: `
     <p-dialog
@@ -138,24 +136,6 @@ import { TooltipModule } from 'primeng/tooltip';
               />
             </div>
           </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="notes" class="font-bold">Notas</label>
-          <p-inputgroup>
-            <p-inputgroup-addon>
-              <i class="pi pi-align-left"></i>
-            </p-inputgroup-addon>
-            <textarea
-              rows="3"
-              pTextarea
-              id="notes"
-              formControlName="notes"
-              placeholder="Información adicional sobre el pedido"
-              class="w-full"
-              fluid
-            ></textarea>
-          </p-inputgroup>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -297,7 +277,6 @@ export class OrderDialogComponent {
     supplierId: [null, Validators.required],
     orderDate: [new Date(), Validators.required],
     expectedDeliveryDate: [null],
-    notes: [''],
     items: this.fb.array([]),
   });
 
@@ -332,7 +311,6 @@ export class OrderDialogComponent {
             supplierId: order.supplier?.id,
             orderDate,
             expectedDeliveryDate,
-            notes: order.notes ?? '',
           });
 
           if (order.items && order.items.length > 0) {
@@ -359,7 +337,6 @@ export class OrderDialogComponent {
             supplierId: null,
             orderDate: new Date(),
             expectedDeliveryDate: null,
-            notes: '',
           });
           while (this.itemsArray.length) {
             this.itemsArray.removeAt(0);
@@ -370,7 +347,6 @@ export class OrderDialogComponent {
           this.orderForm.get('supplierId')?.disable();
           this.orderForm.get('orderDate')?.disable();
           this.orderForm.get('expectedDeliveryDate')?.disable();
-          this.orderForm.get('notes')?.disable();
           this.itemsArray.controls.forEach((controlGroup) => {
             (controlGroup as FormGroup).controls['productId']?.disable();
             (controlGroup as FormGroup).controls['quantity']?.disable();
@@ -381,7 +357,6 @@ export class OrderDialogComponent {
           this.orderForm.get('supplierId')?.enable();
           this.orderForm.get('orderDate')?.enable();
           this.orderForm.get('expectedDeliveryDate')?.enable();
-          this.orderForm.get('notes')?.enable();
           this.itemsArray.controls.forEach((controlGroup) => {
             (controlGroup as FormGroup).controls['productId']?.enable();
             (controlGroup as FormGroup).controls['quantity']?.enable();
@@ -438,7 +413,6 @@ export class OrderDialogComponent {
       orderDate: this.formatDateToISO(formValue.orderDate) as string,
       expectedDeliveryDate:
         this.formatDateToISO(formValue.expectedDeliveryDate) ?? undefined,
-      notes: formValue.notes,
       items: formValue.items.map(
         (item: PurchaseOrderItemData & { id?: number }) => {
           const itemData: PurchaseOrderItemData = {
