@@ -128,11 +128,6 @@ export class MenuComponent {
           routerLink: ['/clientes/registro'],
         },
         {
-          label: 'Historial',
-          icon: 'pi pi-fw pi-history',
-          routerLink: ['/clientes/historial'],
-        },
-        {
           label: 'Ranking',
           icon: 'pi pi-fw pi-star',
           routerLink: ['/clientes/ranking'],

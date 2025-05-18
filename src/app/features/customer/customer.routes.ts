@@ -9,13 +9,6 @@ export const customerRoutes: Routes = [
       ),
   },
   {
-    path: 'historial',
-    loadComponent: () =>
-      import('./components/history/customer-history.component').then(
-        (m) => m.CustomerHistoryComponent,
-      ),
-  },
-  {
     path: 'ranking',
     loadComponent: () =>
       import('./components/ranking/customer-ranking.component').then(
