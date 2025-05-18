@@ -96,58 +96,34 @@ import { TooltipModule } from 'primeng/tooltip';
             }
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="
-                orderForm.get('orderDate')?.invalid &&
-                orderForm.get('orderDate')?.touched
-              "
-            >
-              <label for="orderDate" class="font-bold">Fecha del Pedido</label>
-              <p-datePicker
-                id="orderDate"
-                formControlName="orderDate"
-                [showIcon]="true"
-                dateFormat="dd/mm/yy"
-                [class.ng-dirty]="
-                  orderForm.get('orderDate')?.invalid &&
-                  orderForm.get('orderDate')?.touched
-                "
-                [class.ng-invalid]="
-                  orderForm.get('orderDate')?.invalid &&
-                  orderForm.get('orderDate')?.touched
-                "
-                styleClass="w-full"
-                appendTo="body"
-              />
-              @if (
-                orderForm.get('orderDate')?.invalid &&
-                orderForm.get('orderDate')?.touched
-              ) {
-                <small class="text-red-500"
-                  >La fecha del pedido es obligatoria.</small
-                >
-              }
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label for="expectedDeliveryDate" class="font-bold"
-                >Fecha de Entrega Esperada</label
+          <div
+            class="flex flex-col gap-2"
+            [class.p-invalid]="
+              orderForm.get('deliveryDate')?.invalid &&
+              orderForm.get('deliveryDate')?.touched
+            "
+          >
+            <label for="deliveryDate" class="font-bold">Fecha de Entrega</label>
+            <p-datePicker
+              id="deliveryDate"
+              formControlName="deliveryDate"
+              [showIcon]="true"
+              dateFormat="dd/mm/yy"
+              [minDate]="minDeliveryDate"
+              styleClass="w-full"
+              appendTo="body"
+              [showOnFocus]="true"
+              [showClear]="true"
+              (onSelect)="onDeliveryDateSelected($event)"
+            />
+            @if (
+              orderForm.get('deliveryDate')?.invalid &&
+              orderForm.get('deliveryDate')?.touched
+            ) {
+              <small class="text-red-500"
+                >La fecha de entrega es obligatoria.</small
               >
-              <p-datePicker
-                id="expectedDeliveryDate"
-                formControlName="expectedDeliveryDate"
-                [showIcon]="true"
-                dateFormat="dd/mm/yy"
-                [minDate]="minDeliveryDate"
-                styleClass="w-full"
-                appendTo="body"
-                [showOnFocus]="true"
-                [showClear]="true"
-                (onSelect)="onExpectedDeliveryDateSelected($event)"
-              />
-            </div>
+            }
           </div>
         </div>
 
@@ -343,8 +319,7 @@ export class OrderDialogComponent {
 
   readonly orderForm: FormGroup = this.fb.group({
     supplierId: [null, Validators.required],
-    orderDate: [new Date(), Validators.required],
-    expectedDeliveryDate: [null],
+    deliveryDate: [new Date(), Validators.required],
     totalAmount: [0, Validators.min(0)],
     items: this.fb.array([]),
   });
@@ -373,15 +348,13 @@ export class OrderDialogComponent {
 
           this.itemsCountSignal.set(0);
 
-          const orderDate = order.orderDate ? new Date(order.orderDate) : null;
-          const expectedDeliveryDate = order.expectedDeliveryDate
-            ? new Date(order.expectedDeliveryDate)
+          const deliveryDate = order.deliveryDate
+            ? new Date(order.deliveryDate)
             : null;
 
           this.orderForm.patchValue({
             supplierId: order.supplier?.id,
-            orderDate,
-            expectedDeliveryDate,
+            deliveryDate,
             totalAmount: order.totalAmount,
           });
 
@@ -423,8 +396,7 @@ export class OrderDialogComponent {
 
           this.orderForm.reset({
             supplierId: null,
-            orderDate: new Date(),
-            expectedDeliveryDate: null,
+            deliveryDate: new Date(),
             totalAmount: 0,
           });
 
@@ -443,8 +415,8 @@ export class OrderDialogComponent {
       ?.valueChanges.subscribe(() => this.updateTotals());
   }
 
-  onExpectedDeliveryDateSelected(event: Date): void {
-    this.orderForm.get('expectedDeliveryDate')?.setValue(event);
+  onDeliveryDateSelected(event: Date): void {
+    this.orderForm.get('deliveryDate')?.setValue(event);
     this.orderForm.markAsDirty();
   }
 
@@ -528,9 +500,7 @@ export class OrderDialogComponent {
 
     const orderData: PurchaseOrderData = {
       supplierId: formValue.supplierId,
-      orderDate: this.formatDateToISO(formValue.orderDate) as string,
-      expectedDeliveryDate:
-        this.formatDateToISO(formValue.expectedDeliveryDate) ?? undefined,
+      deliveryDate: this.formatDateToISO(formValue.deliveryDate) ?? undefined,
       items: formValue.items.map(
         (item: PurchaseOrderItemData & { id?: number; subtotal?: number }) => {
           const itemData: PurchaseOrderItemData = {

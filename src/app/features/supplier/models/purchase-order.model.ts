@@ -1,9 +1,6 @@
 import { ProductInfo } from '@features/inventory/models/product.model';
 import { SupplierInfo } from './supplier.model';
 
-/**
- * Represents a purchase order status in the system
- */
 export type PurchaseOrderStatus =
   | 'DRAFT'
   | 'SUBMITTED'
@@ -14,9 +11,6 @@ export type PurchaseOrderStatus =
   | 'CANCELLED'
   | 'PAID';
 
-/**
- * Represents a purchase order item info returned from the API
- */
 export interface PurchaseOrderItemInfo {
   id: number;
   purchaseOrderId: number;
@@ -29,28 +23,18 @@ export interface PurchaseOrderItemInfo {
   updatedAt?: string;
 }
 
-/**
- * Represents a purchase order info returned from the API
- */
 export interface PurchaseOrderInfo {
   id: number;
   orderNumber: string;
   supplier: SupplierInfo;
-  orderDate: string;
-  expectedDeliveryDate?: string;
-  shipDate?: string;
-  actualDeliveryDate?: string;
+  deliveryDate?: string;
   status: string;
   totalAmount: number;
-  paymentDate?: string;
   items: PurchaseOrderItemInfo[];
   createdAt?: string;
   updatedAt?: string;
 }
 
-/**
- * Data used to create or update a purchase order item
- */
 export interface PurchaseOrderItemData {
   id?: number;
   productId: number;
@@ -58,12 +42,8 @@ export interface PurchaseOrderItemData {
   unitPrice: number;
 }
 
-/**
- * Data used to create or update a purchase order
- */
 export interface PurchaseOrderData {
   supplierId: number;
-  orderDate: string;
-  expectedDeliveryDate?: string;
+  deliveryDate?: string;
   items: PurchaseOrderItemData[];
 }

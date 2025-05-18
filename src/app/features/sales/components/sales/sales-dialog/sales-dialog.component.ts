@@ -104,7 +104,7 @@ import { SaleStore } from '../../../stores/sale.store';
 
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <h3 class="font-bold text-lg m-0">Artículos</h3>
+            <h3 class="font-bold text-lg m-0">Productos</h3>
             @if (!viewMode()) {
               <p-button
                 label="Agregar Producto"

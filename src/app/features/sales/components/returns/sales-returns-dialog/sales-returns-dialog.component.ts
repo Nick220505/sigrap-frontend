@@ -159,7 +159,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
           </div>
 
           <div class="flex flex-col gap-2">
-            <h3 class="font-bold text-lg m-0">Artículos a Devolver</h3>
+            <h3 class="font-bold text-lg m-0">Productos a Devolver</h3>
             <div formArrayName="items">
               <p-table
                 [value]="returnItemsArray.controls"
