@@ -16,13 +16,6 @@ export const supplierRoutes: Routes = [
       ),
   },
   {
-    path: 'pagos',
-    loadComponent: () =>
-      import('./components/payments/payments.component').then(
-        (m) => m.PaymentsComponent,
-      ),
-  },
-  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'catalogo',

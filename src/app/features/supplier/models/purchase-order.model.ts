@@ -11,7 +11,8 @@ export type PurchaseOrderStatus =
   | 'IN_PROCESS'
   | 'SHIPPED'
   | 'DELIVERED'
-  | 'CANCELLED';
+  | 'CANCELLED'
+  | 'PAID';
 
 /**
  * Represents a purchase order item info returned from the API
@@ -24,7 +25,6 @@ export interface PurchaseOrderItemInfo {
   unitPrice: number;
   totalPrice: number;
   receivedQuantity: number;
-  status: string;
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -43,6 +43,7 @@ export interface PurchaseOrderInfo {
   actualDeliveryDate?: string;
   status: string;
   totalAmount: number;
+  paymentDate?: string;
   items: PurchaseOrderItemInfo[];
   createdAt?: string;
   updatedAt?: string;

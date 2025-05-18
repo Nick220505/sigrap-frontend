@@ -110,7 +110,11 @@ export class PurchaseOrderService {
     return this.http.patch<PurchaseOrderInfo>(
       `${this.baseUrl}/${id}/deliver`,
       {},
-      { params: { actualDeliveryDate } },
+      {
+        params: {
+          actualDeliveryDate,
+        },
+      },
     );
   }
 
@@ -122,5 +126,12 @@ export class PurchaseOrderService {
       `${this.baseUrl}/${id}/cancel`,
       {},
     );
+  }
+
+  /**
+   * Marks a purchase order as paid
+   */
+  markAsPaid(id: number): Observable<PurchaseOrderInfo> {
+    return this.http.patch<PurchaseOrderInfo>(`${this.baseUrl}/${id}/pay`, {});
   }
 }

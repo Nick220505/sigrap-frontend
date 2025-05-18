@@ -87,11 +87,6 @@ export class MenuComponent {
           icon: 'pi pi-fw pi-send',
           routerLink: ['/proveedores/pedidos'],
         },
-        {
-          label: 'Pagos',
-          icon: 'pi pi-fw pi-wallet',
-          routerLink: ['/proveedores/pagos'],
-        },
       ],
     },
     {
