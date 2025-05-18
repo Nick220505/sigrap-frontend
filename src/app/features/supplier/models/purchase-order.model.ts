@@ -25,7 +25,6 @@ export interface PurchaseOrderItemInfo {
   unitPrice: number;
   totalPrice: number;
   receivedQuantity: number;
-  notes?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -57,7 +56,6 @@ export interface PurchaseOrderItemData {
   productId: number;
   quantity: number;
   unitPrice: number;
-  notes?: string;
 }
 
 /**

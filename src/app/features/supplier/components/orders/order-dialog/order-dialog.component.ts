@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -23,7 +30,6 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -40,7 +46,6 @@ import { TooltipModule } from 'primeng/tooltip';
     DatePickerModule,
     TableModule,
     TooltipModule,
-    SelectButtonModule,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -52,25 +57,18 @@ import { TooltipModule } from 'primeng/tooltip';
           ? purchaseOrderStore.openOrderDialog()
           : purchaseOrderStore.closeOrderDialog()
       "
-      [style]="{ width: '750px' }"
-      [header]="
-        purchaseOrderStore.viewOnly()
-          ? 'Ver Pedido'
-          : purchaseOrderStore.selectedOrder()
-            ? 'Editar Pedido'
-            : 'Crear Pedido'
-      "
+      [style]="{ width: '95vw', maxWidth: '1200px' }"
+      [header]="dialogHeader()"
       modal
     >
       <form [formGroup]="orderForm" class="flex flex-col gap-4 pt-4">
-        <div class="flex flex-col md:flex-row md:items-start">
-          @let supplierControlInvalid =
-            orderForm.get('supplierId')?.invalid &&
-            orderForm.get('supplierId')?.touched;
-
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
-            class="flex flex-col gap-2 md:w-1/3 md:mr-8"
-            [class.p-invalid]="supplierControlInvalid"
+            class="flex flex-col gap-2"
+            [class.p-invalid]="
+              orderForm.get('supplierId')?.invalid &&
+              orderForm.get('supplierId')?.touched
+            "
           >
             <label for="supplierId" class="font-bold">Proveedor</label>
             <p-inputgroup>
@@ -87,22 +85,24 @@ import { TooltipModule } from 'primeng/tooltip';
                 filter
                 filterBy="name"
                 styleClass="w-full"
+                appendTo="body"
               />
             </p-inputgroup>
-
-            @if (supplierControlInvalid) {
+            @if (
+              orderForm.get('supplierId')?.invalid &&
+              orderForm.get('supplierId')?.touched
+            ) {
               <small class="text-red-500">El proveedor es obligatorio.</small>
             }
           </div>
 
-          <div class="flex flex-col md:flex-row md:w-2/3 gap-4">
-            @let orderDateControlInvalid =
-              orderForm.get('orderDate')?.invalid &&
-              orderForm.get('orderDate')?.touched;
-
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div
-              class="flex flex-col gap-2 md:w-1/2"
-              [class.p-invalid]="orderDateControlInvalid"
+              class="flex flex-col gap-2"
+              [class.p-invalid]="
+                orderForm.get('orderDate')?.invalid &&
+                orderForm.get('orderDate')?.touched
+              "
             >
               <label for="orderDate" class="font-bold">Fecha del Pedido</label>
               <p-datePicker
@@ -110,19 +110,28 @@ import { TooltipModule } from 'primeng/tooltip';
                 formControlName="orderDate"
                 [showIcon]="true"
                 dateFormat="dd/mm/yy"
-                [class.ng-dirty]="orderDateControlInvalid"
-                [class.ng-invalid]="orderDateControlInvalid"
+                [class.ng-dirty]="
+                  orderForm.get('orderDate')?.invalid &&
+                  orderForm.get('orderDate')?.touched
+                "
+                [class.ng-invalid]="
+                  orderForm.get('orderDate')?.invalid &&
+                  orderForm.get('orderDate')?.touched
+                "
                 styleClass="w-full"
+                appendTo="body"
               />
-
-              @if (orderDateControlInvalid) {
+              @if (
+                orderForm.get('orderDate')?.invalid &&
+                orderForm.get('orderDate')?.touched
+              ) {
                 <small class="text-red-500"
                   >La fecha del pedido es obligatoria.</small
                 >
               }
             </div>
 
-            <div class="flex flex-col gap-2 md:w-1/2">
+            <div class="flex flex-col gap-2">
               <label for="expectedDeliveryDate" class="font-bold"
                 >Fecha de Entrega Esperada</label
               >
@@ -133,6 +142,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 dateFormat="dd/mm/yy"
                 [minDate]="minDeliveryDate"
                 styleClass="w-full"
+                appendTo="body"
               />
             </div>
           </div>
@@ -140,118 +150,152 @@ import { TooltipModule } from 'primeng/tooltip';
 
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <span class="font-bold">Productos</span>
-            @if (!purchaseOrderStore.viewOnly()) {
+            <h3 class="font-bold text-lg m-0">Productos</h3>
+            @if (!viewMode()) {
               <p-button
-                icon="pi pi-plus"
                 label="Agregar Producto"
+                icon="pi pi-plus"
                 (onClick)="addItem()"
-                [disabled]="isFormDisabled() || !productStore.entities().length"
-                severity="secondary"
-                size="small"
-              />
+                [disabled]="viewMode() || !productStore.entities().length"
+              ></p-button>
             }
           </div>
 
           <div formArrayName="items">
-            @for (item of itemsArray.controls; track $index) {
-              <div [formGroupName]="$index" class="p-4 border rounded-lg mb-3">
-                <div class="flex justify-between items-center mb-3">
-                  <h5 class="m-0">Producto {{ $index + 1 }}</h5>
-                  @if (!purchaseOrderStore.viewOnly()) {
-                    <button
-                      pButton
-                      type="button"
-                      icon="pi pi-trash"
-                      class="p-button-rounded p-button-danger p-button-text"
-                      (click)="removeItem($index)"
-                      [disabled]="isFormDisabled()"
-                      pTooltip="Eliminar producto"
-                      tooltipPosition="top"
-                      aria-label="Eliminar producto"
-                    ></button>
+            <p-table
+              [value]="tableRows()"
+              [tableStyle]="{ width: '100%' }"
+              styleClass="p-datatable-sm"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="w-1/3">Producto</th>
+                  <th class="w-1/8">Cantidad</th>
+                  <th class="w-1/8">Precio Unitario</th>
+                  <th class="w-1/8">Subtotal</th>
+                  @if (!viewMode()) {
+                    <th class="w-12 text-center">Acciones</th>
                   }
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div class="flex flex-col gap-2">
-                    <span class="font-semibold">Producto</span>
-                    <p-select
-                      formControlName="productId"
-                      [options]="productStore.entities()"
-                      optionLabel="name"
-                      optionValue="id"
-                      placeholder="Seleccione un producto"
-                      (onChange)="onProductChange($index, $event.value)"
-                      filter
-                      filterBy="name"
-                      [showClear]="true"
-                    />
-                  </div>
-
-                  <div class="flex flex-col gap-2">
-                    <span class="font-semibold">Cantidad</span>
-                    <p-inputNumber
-                      formControlName="quantity"
-                      [min]="1"
-                      [showButtons]="true"
-                    />
-                  </div>
-
-                  <div class="flex flex-col gap-2">
-                    <span class="font-semibold">Precio Unitario</span>
-                    <p-inputNumber
-                      formControlName="unitPrice"
-                      mode="currency"
-                      currency="COP"
-                      locale="es-CO"
-                      [min]="0"
-                    />
-                  </div>
-
-                  <div class="flex flex-col gap-2">
-                    <span class="font-semibold">Notas</span>
-                    <input
-                      type="text"
-                      pInputText
-                      formControlName="notes"
-                      placeholder="Observaciones específicas"
-                    />
-                  </div>
-                </div>
-              </div>
-            }
-
-            @if (!itemsArray.controls.length) {
-              <div
-                class="p-4 border rounded-lg text-center text-gray-500 italic"
-              >
-                No hay productos en este pedido.
-                @if (!purchaseOrderStore.viewOnly()) {
-                  Haga clic en "Agregar Producto" para añadir.
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-row let-i="rowIndex">
+                @if (!row.isSummary) {
+                  <tr [formGroupName]="row.formGroupIndex">
+                    <td class="p-2">
+                      <p-select
+                        formControlName="productId"
+                        [options]="productStore.entities()"
+                        optionLabel="name"
+                        optionValue="id"
+                        placeholder="Seleccionar Producto"
+                        [filter]="true"
+                        filterBy="name"
+                        (onChange)="
+                          onProductChange(row.formGroupIndex, $event.value)
+                        "
+                        [style]="{ width: '100%' }"
+                        appendTo="body"
+                      />
+                    </td>
+                    <td class="p-2">
+                      <p-inputNumber
+                        formControlName="quantity"
+                        [min]="1"
+                        [showButtons]="true"
+                        buttonLayout="horizontal"
+                        step="1"
+                        (onInput)="updateItemSubtotal(row.formGroupIndex)"
+                        fluid
+                        [style]="{ minWidth: '130px' }"
+                      />
+                    </td>
+                    <td class="p-2">
+                      <p-inputNumber
+                        formControlName="unitPrice"
+                        mode="currency"
+                        currency="COP"
+                        locale="es-CO"
+                        (onInput)="updateItemSubtotal(row.formGroupIndex)"
+                        maxFractionDigits="0"
+                        [style]="{ width: '100%' }"
+                      />
+                    </td>
+                    <td class="p-2">
+                      <p-inputNumber
+                        [ngModel]="
+                          itemsArray.at(row.formGroupIndex).get('subtotal')
+                            ?.value
+                        "
+                        [ngModelOptions]="{ standalone: true }"
+                        mode="currency"
+                        currency="COP"
+                        locale="es-CO"
+                        [readonly]="true"
+                        [disabled]="true"
+                        maxFractionDigits="0"
+                        [style]="{ width: '100%' }"
+                      />
+                    </td>
+                    @if (!viewMode()) {
+                      <td class="p-2 text-center w-12">
+                        <p-button
+                          icon="pi pi-trash"
+                          severity="danger"
+                          (onClick)="removeItem(row.formGroupIndex)"
+                          size="small"
+                        />
+                      </td>
+                    }
+                  </tr>
+                } @else {
+                  @if (row.type === 'total') {
+                    <tr>
+                      <td colspan="3" class="p-2 text-right font-bold text-lg">
+                        Total:
+                      </td>
+                      <td colspan="@if (viewMode()) {1} @else {2}" class="p-2">
+                        <p-inputNumber
+                          [ngModel]="totalAmount()"
+                          [ngModelOptions]="{ standalone: true }"
+                          mode="currency"
+                          currency="COP"
+                          locale="es-CO"
+                          [readonly]="true"
+                          [disabled]="true"
+                          maxFractionDigits="0"
+                          [style]="{ width: '100%' }"
+                          styleClass="font-bold"
+                        />
+                      </td>
+                    </tr>
+                  }
                 }
-              </div>
-            }
+              </ng-template>
+            </p-table>
           </div>
         </div>
       </form>
 
       <ng-template pTemplate="footer">
         <p-button
-          [label]="purchaseOrderStore.viewOnly() ? 'Cerrar' : 'Cancelar'"
+          [label]="viewMode() ? 'Cerrar' : 'Cancelar'"
           icon="pi pi-times"
-          text
-          (click)="purchaseOrderStore.closeOrderDialog()"
+          styleClass="p-button-text"
+          (onClick)="purchaseOrderStore.closeOrderDialog()"
         />
 
-        @if (!purchaseOrderStore.viewOnly()) {
+        @if (!viewMode()) {
           <p-button
             label="Guardar"
             icon="pi pi-check"
-            (click)="
+            (onClick)="
               orderForm.valid ? saveOrder() : orderForm.markAllAsTouched()
             "
-            [disabled]="purchaseOrderStore.loading() || isFormDisabled()"
+            [disabled]="
+              purchaseOrderStore.loading() ||
+              orderForm.invalid ||
+              orderForm.pristine
+            "
           />
         }
       </ng-template>
@@ -265,12 +309,42 @@ export class OrderDialogComponent {
   readonly productStore = inject(ProductStore);
   readonly categoryStore = inject(CategoryStore);
 
-  readonly isFormDisabled = computed(() => {
-    const order = this.purchaseOrderStore.selectedOrder();
-    return (
-      this.purchaseOrderStore.viewOnly() ||
-      (!!order && order.status !== 'DRAFT')
-    );
+  readonly viewMode = computed(() => {
+    return this.purchaseOrderStore.viewOnly();
+  });
+
+  readonly dialogHeader = computed(() => {
+    const selectedOrder = this.purchaseOrderStore.selectedOrder();
+    if (selectedOrder) {
+      return this.viewMode()
+        ? `Ver Pedido #${selectedOrder.orderNumber}`
+        : `Editar Pedido #${selectedOrder.orderNumber}`;
+    }
+    return 'Registrar Nuevo Pedido';
+  });
+
+  readonly totalAmount = computed(() => {
+    let total = 0;
+    for (let i = 0; i < this.itemsArray.length; i++) {
+      const itemGroup = this.itemsArray.at(i);
+      total += itemGroup.get('subtotal')?.value ?? 0;
+    }
+    return total;
+  });
+
+  readonly itemsCountSignal = signal(0);
+
+  readonly tableRows = computed(() => {
+    this.itemsCountSignal();
+
+    const itemRows = this.itemsArray.controls.map((_, i) => ({
+      isSummary: false,
+      formGroupIndex: i,
+    }));
+
+    const summaryRows = [{ isSummary: true, type: 'total' }];
+
+    return [...itemRows, ...summaryRows];
   });
 
   readonly orderForm: FormGroup = this.fb.group({
@@ -294,13 +368,15 @@ export class OrderDialogComponent {
   constructor() {
     effect(() => {
       const order = this.purchaseOrderStore.selectedOrder();
-      const disableForm = this.isFormDisabled();
+      const viewOnly = this.viewMode();
 
       untracked(() => {
         if (order) {
           while (this.itemsArray.length) {
             this.itemsArray.removeAt(0);
           }
+
+          this.itemsCountSignal.set(0);
 
           const orderDate = order.orderDate ? new Date(order.orderDate) : null;
           const expectedDeliveryDate = order.expectedDeliveryDate
@@ -315,54 +391,51 @@ export class OrderDialogComponent {
 
           if (order.items && order.items.length > 0) {
             order.items.forEach((item) => {
-              this.itemsArray.push(
-                this.fb.group({
-                  id: [item.id],
-                  productId: [item.product.id, Validators.required],
-                  quantity: [
-                    item.quantity,
-                    [Validators.required, Validators.min(1)],
-                  ],
-                  unitPrice: [
-                    item.unitPrice,
-                    [Validators.required, Validators.min(0)],
-                  ],
-                  notes: [item.notes ?? ''],
-                }),
-              );
+              const itemGroup = this.fb.group({
+                id: [item.id],
+                productId: [
+                  { value: item.product.id, disabled: viewOnly },
+                  Validators.required,
+                ],
+                quantity: [
+                  { value: item.quantity, disabled: viewOnly },
+                  [Validators.required, Validators.min(1)],
+                ],
+                unitPrice: [
+                  { value: item.unitPrice, disabled: viewOnly },
+                  [Validators.required, Validators.min(0)],
+                ],
+                subtotal: [
+                  item.totalPrice,
+                  [Validators.required, Validators.min(0)],
+                ],
+              });
+
+              this.itemsArray.push(itemGroup);
             });
           }
+
+          this.itemsCountSignal.set(this.itemsArray.length);
+          this.orderForm.markAsPristine();
+
+          if (viewOnly) {
+            this.orderForm.disable();
+          }
         } else {
+          this.orderForm.enable();
+
           this.orderForm.reset({
             supplierId: null,
             orderDate: new Date(),
             expectedDeliveryDate: null,
           });
-          while (this.itemsArray.length) {
+
+          while (this.itemsArray.length > 0) {
             this.itemsArray.removeAt(0);
           }
-        }
 
-        if (disableForm) {
-          this.orderForm.get('supplierId')?.disable();
-          this.orderForm.get('orderDate')?.disable();
-          this.orderForm.get('expectedDeliveryDate')?.disable();
-          this.itemsArray.controls.forEach((controlGroup) => {
-            (controlGroup as FormGroup).controls['productId']?.disable();
-            (controlGroup as FormGroup).controls['quantity']?.disable();
-            (controlGroup as FormGroup).controls['unitPrice']?.disable();
-            (controlGroup as FormGroup).controls['notes']?.disable();
-          });
-        } else {
-          this.orderForm.get('supplierId')?.enable();
-          this.orderForm.get('orderDate')?.enable();
-          this.orderForm.get('expectedDeliveryDate')?.enable();
-          this.itemsArray.controls.forEach((controlGroup) => {
-            (controlGroup as FormGroup).controls['productId']?.enable();
-            (controlGroup as FormGroup).controls['quantity']?.enable();
-            (controlGroup as FormGroup).controls['unitPrice']?.enable();
-            (controlGroup as FormGroup).controls['notes']?.enable();
-          });
+          this.itemsCountSignal.set(0);
+          this.addItem();
         }
       });
     });
@@ -373,18 +446,24 @@ export class OrderDialogComponent {
       productId: [null, Validators.required],
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitPrice: [0, [Validators.required, Validators.min(0)]],
-      notes: [''],
+      subtotal: [0, [Validators.required, Validators.min(0)]],
     });
 
-    if (this.isFormDisabled()) {
+    if (this.viewMode()) {
       newItem.disable();
     }
 
     this.itemsArray.push(newItem);
+    this.itemsCountSignal.set(this.itemsArray.length);
+    this.orderForm.markAsDirty();
   }
 
   removeItem(index: number): void {
-    this.itemsArray.removeAt(index);
+    if (this.itemsArray.length > 1) {
+      this.itemsArray.removeAt(index);
+      this.itemsCountSignal.set(this.itemsArray.length);
+      this.orderForm.markAsDirty();
+    }
   }
 
   onProductChange(index: number, productId: number): void {
@@ -393,11 +472,25 @@ export class OrderDialogComponent {
     const product = this.productStore
       .entities()
       .find((p) => p.id === productId);
+
     if (product) {
-      this.itemsArray.at(index).patchValue({
+      const itemGroup = this.itemsArray.at(index);
+      itemGroup.patchValue({
         unitPrice: product.costPrice,
       });
+      this.updateItemSubtotal(index);
     }
+  }
+
+  updateItemSubtotal(index: number): void {
+    const itemGroup = this.itemsArray.at(index);
+    const quantity = itemGroup.get('quantity')?.value ?? 0;
+    const unitPrice = itemGroup.get('unitPrice')?.value ?? 0;
+
+    const subtotal = quantity * unitPrice;
+    itemGroup.get('subtotal')?.setValue(subtotal);
+
+    this.orderForm.markAsDirty();
   }
 
   formatDateToISO(date: Date | null): string | null {
@@ -406,6 +499,11 @@ export class OrderDialogComponent {
   }
 
   saveOrder(): void {
+    if (this.orderForm.invalid) {
+      this.orderForm.markAllAsTouched();
+      return;
+    }
+
     const formValue = this.orderForm.getRawValue();
 
     const orderData: PurchaseOrderData = {
@@ -414,12 +512,11 @@ export class OrderDialogComponent {
       expectedDeliveryDate:
         this.formatDateToISO(formValue.expectedDeliveryDate) ?? undefined,
       items: formValue.items.map(
-        (item: PurchaseOrderItemData & { id?: number }) => {
+        (item: PurchaseOrderItemData & { id?: number; subtotal?: number }) => {
           const itemData: PurchaseOrderItemData = {
             productId: item.productId,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-            notes: item.notes,
           };
 
           if (item.id) {
@@ -437,6 +534,5 @@ export class OrderDialogComponent {
     } else {
       this.purchaseOrderStore.create(orderData);
     }
-    this.purchaseOrderStore.closeOrderDialog();
   }
 }
