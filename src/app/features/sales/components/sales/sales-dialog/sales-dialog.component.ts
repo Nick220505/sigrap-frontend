@@ -68,7 +68,7 @@ import { SaleStore } from '../../../stores/sale.store';
               <p-select
                 id="customerId"
                 formControlName="customerId"
-                [options]="customers()"
+                [options]="this.customerStore.entities()"
                 optionLabel="fullName"
                 optionValue="id"
                 placeholder="Seleccionar Cliente"
@@ -384,13 +384,6 @@ export class SalesDialogComponent {
   readonly userStore = inject(UserStore);
 
   private readonly itemsCountSignal = signal(0);
-
-  readonly customers = computed(() => {
-    return this.customerStore.entities().map((customer) => ({
-      ...customer,
-      fullName: `${customer.firstName} ${customer.lastName}`,
-    }));
-  });
 
   readonly viewMode = computed(() => {
     const selectedSale = this.saleStore.selectedSale();

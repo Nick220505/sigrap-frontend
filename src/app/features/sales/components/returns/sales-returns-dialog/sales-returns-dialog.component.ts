@@ -97,11 +97,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
                 <input
                   id="customerName"
                   pInputText
-                  [value]="
-                    originalSale.customer.firstName +
-                    ' ' +
-                    originalSale.customer.lastName
-                  "
+                  [value]="originalSale.customer.fullName"
                   readonly
                   disabled
                 />

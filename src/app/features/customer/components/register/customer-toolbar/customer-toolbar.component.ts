@@ -64,8 +64,7 @@ export class CustomerToolbarComponent {
         <ul class='mt-2 mb-0'>
           ${customers
             .map(
-              ({ firstName, lastName }: CustomerInfo) =>
-                `<li>• <b>${firstName} ${lastName}</b></li>`,
+              ({ fullName }: CustomerInfo) => `<li>• <b>${fullName}</b></li>`,
             )
             .join('')}
         </ul>

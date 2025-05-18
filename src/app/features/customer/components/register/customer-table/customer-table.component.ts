@@ -32,13 +32,11 @@ import { CustomerStore } from '../../../stores/customer.store';
   template: `
     @let columns =
       [
-        { field: 'firstName', header: 'Nombre' },
-        { field: 'lastName', header: 'Apellido' },
+        { field: 'fullName', header: 'Nombre' },
         { field: 'documentId', header: 'Documento' },
         { field: 'email', header: 'Email' },
         { field: 'phoneNumber', header: 'Teléfono' },
         { field: 'address', header: 'Dirección' },
-        { field: 'status', header: 'Estado' },
       ];
 
     <p-table
@@ -51,13 +49,7 @@ import { CustomerStore } from '../../../stores/customer.store';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
-      [globalFilterFields]="[
-        'firstName',
-        'lastName',
-        'documentId',
-        'email',
-        'address',
-      ]"
+      [globalFilterFields]="['fullName', 'documentId', 'email', 'address']"
       [tableStyle]="{ 'min-width': '75rem' }"
       rowHover
       dataKey="id"
@@ -139,11 +131,7 @@ import { CustomerStore } from '../../../stores/customer.store';
 
           @for (column of columns; track column.field) {
             <td>
-              @if (column.field === 'status') {
-                <span [class]="getStatusClass(customer.status)">
-                  {{ getStatusLabel(customer.status) }}
-                </span>
-              } @else if (column.field === 'phoneNumber') {
+              @if (column.field === 'phoneNumber') {
                 {{ customer[column.field] || 'No especificado' }}
               } @else {
                 {{ customer[column.field] }}
@@ -226,37 +214,11 @@ export class CustomerTableComponent {
     this.dt().clear();
   }
 
-  deleteCustomer({ id, firstName, lastName }: CustomerInfo): void {
+  deleteCustomer({ id, fullName }: CustomerInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar cliente',
-      message: `¿Está seguro de que desea eliminar al cliente <b>${firstName} ${lastName}</b>?`,
+      message: `¿Está seguro de que desea eliminar al cliente <b>${fullName}</b>?`,
       accept: () => this.customerStore.delete(id),
     });
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm';
-      case 'INACTIVE':
-        return 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm';
-      case 'BLOCKED':
-        return 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm';
-      default:
-        return '';
-    }
-  }
-
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'Activo';
-      case 'INACTIVE':
-        return 'Inactivo';
-      case 'BLOCKED':
-        return 'Bloqueado';
-      default:
-        return status;
-    }
   }
 }

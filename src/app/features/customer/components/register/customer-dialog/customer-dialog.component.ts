@@ -11,7 +11,6 @@ import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { CustomerStore } from '../../../stores/customer.store';
 
 @Component({
@@ -22,7 +21,6 @@ import { CustomerStore } from '../../../stores/customer.store';
     DialogModule,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -42,16 +40,16 @@ import { CustomerStore } from '../../../stores/customer.store';
     >
       <form [formGroup]="customerForm" class="flex flex-col gap-4 pt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="col-span-1">
-            @let firstNameControlInvalid =
-              customerForm.get('firstName')?.invalid &&
-              customerForm.get('firstName')?.touched;
+          <div class="col-span-1 md:col-span-2">
+            @let fullNameControlInvalid =
+              customerForm.get('fullName')?.invalid &&
+              customerForm.get('fullName')?.touched;
 
             <div
               class="flex flex-col gap-2"
-              [class.p-invalid]="firstNameControlInvalid"
+              [class.p-invalid]="fullNameControlInvalid"
             >
-              <label for="firstName" class="font-bold">Nombre</label>
+              <label for="fullName" class="font-bold">Nombre completo</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user"></i>
@@ -59,51 +57,20 @@ import { CustomerStore } from '../../../stores/customer.store';
                 <input
                   type="text"
                   pInputText
-                  id="firstName"
-                  formControlName="firstName"
-                  placeholder="Ingrese el nombre"
-                  [class.ng-dirty]="firstNameControlInvalid"
-                  [class.ng-invalid]="firstNameControlInvalid"
+                  id="fullName"
+                  formControlName="fullName"
+                  placeholder="Ingrese el nombre completo"
+                  [class.ng-dirty]="fullNameControlInvalid"
+                  [class.ng-invalid]="fullNameControlInvalid"
                   required
                   fluid
                 />
               </p-inputgroup>
 
-              @if (firstNameControlInvalid) {
-                <small class="text-red-500">El nombre es obligatorio.</small>
-              }
-            </div>
-          </div>
-
-          <div class="col-span-1">
-            @let lastNameControlInvalid =
-              customerForm.get('lastName')?.invalid &&
-              customerForm.get('lastName')?.touched;
-
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="lastNameControlInvalid"
-            >
-              <label for="lastName" class="font-bold">Apellido</label>
-              <p-inputgroup>
-                <p-inputgroup-addon>
-                  <i class="pi pi-user"></i>
-                </p-inputgroup-addon>
-                <input
-                  type="text"
-                  pInputText
-                  id="lastName"
-                  formControlName="lastName"
-                  placeholder="Ingrese el apellido"
-                  [class.ng-dirty]="lastNameControlInvalid"
-                  [class.ng-invalid]="lastNameControlInvalid"
-                  required
-                  fluid
-                />
-              </p-inputgroup>
-
-              @if (lastNameControlInvalid) {
-                <small class="text-red-500">El apellido es obligatorio.</small>
+              @if (fullNameControlInvalid) {
+                <small class="text-red-500"
+                  >El nombre completo es obligatorio.</small
+                >
               }
             </div>
           </div>
@@ -229,41 +196,6 @@ import { CustomerStore } from '../../../stores/customer.store';
               }
             </div>
           </div>
-
-          <div class="col-span-1">
-            @let statusControlInvalid =
-              customerForm.get('status')?.invalid &&
-              customerForm.get('status')?.touched;
-
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="statusControlInvalid"
-            >
-              <label for="status" class="font-bold">Estado</label>
-              <p-inputgroup>
-                <p-inputgroup-addon>
-                  <i class="pi pi-check-circle"></i>
-                </p-inputgroup-addon>
-                <p-select
-                  id="status"
-                  formControlName="status"
-                  [options]="statuses"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Seleccione un estado"
-                  [class.ng-dirty]="statusControlInvalid"
-                  [class.ng-invalid]="statusControlInvalid"
-                  appendTo="body"
-                  styleClass="w-full"
-                  required
-                />
-              </p-inputgroup>
-
-              @if (statusControlInvalid) {
-                <small class="text-red-500">El estado es obligatorio.</small>
-              }
-            </div>
-          </div>
         </div>
       </form>
 
@@ -293,20 +225,12 @@ export class CustomerDialogComponent {
   private readonly fb = inject(FormBuilder);
   readonly customerStore = inject(CustomerStore);
 
-  readonly statuses = [
-    { label: 'Activo', value: 'ACTIVE' },
-    { label: 'Inactivo', value: 'INACTIVE' },
-    { label: 'Bloqueado', value: 'BLOCKED' },
-  ];
-
   readonly customerForm: FormGroup = this.fb.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
+    fullName: ['', [Validators.required]],
     documentId: ['', [Validators.required]],
     phoneNumber: [''],
     email: ['', [Validators.required, Validators.email]],
     address: ['', [Validators.required]],
-    status: ['ACTIVE', [Validators.required]],
   });
 
   constructor() {
@@ -316,9 +240,7 @@ export class CustomerDialogComponent {
         if (customer) {
           this.customerForm.patchValue(customer);
         } else {
-          this.customerForm.reset({
-            status: 'ACTIVE',
-          });
+          this.customerForm.reset();
         }
       });
     });

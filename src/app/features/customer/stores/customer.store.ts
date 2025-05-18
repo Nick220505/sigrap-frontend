@@ -20,11 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import {
-  CustomerData,
-  CustomerInfo,
-  CustomerStatus,
-} from '../models/customer.model';
+import { CustomerData, CustomerInfo } from '../models/customer.model';
 import { CustomerService } from '../services/customer.service';
 
 export interface CustomerState {
@@ -45,15 +41,6 @@ export const CustomerStore = signalStore(
   }),
   withComputed(({ entities }) => ({
     customersCount: computed(() => entities().length),
-    activeCustomers: computed(() =>
-      entities().filter((cust) => cust.status === CustomerStatus.ACTIVE),
-    ),
-    inactiveCustomers: computed(() =>
-      entities().filter((cust) => cust.status === CustomerStatus.INACTIVE),
-    ),
-    blockedCustomers: computed(() =>
-      entities().filter((cust) => cust.status === CustomerStatus.BLOCKED),
-    ),
   })),
   withProps(() => ({
     customerService: inject(CustomerService),
@@ -109,7 +96,7 @@ export const CustomerStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Cliente creado',
-                  detail: `El cliente ${createdCustomer.firstName} ${createdCustomer.lastName} ha sido creado correctamente`,
+                  detail: `El cliente ${createdCustomer.fullName} ha sido creado correctamente`,
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -145,7 +132,7 @@ export const CustomerStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Cliente actualizado',
-                  detail: `El cliente ${updatedCustomer.firstName} ${updatedCustomer.lastName} ha sido actualizado correctamente`,
+                  detail: `El cliente ${updatedCustomer.fullName} ha sido actualizado correctamente`,
                 });
                 patchState(store, { dialogVisible: false });
               },
