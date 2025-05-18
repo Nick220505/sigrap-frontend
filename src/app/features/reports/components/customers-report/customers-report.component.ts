@@ -12,6 +12,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectChangeEvent, SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
+import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 
 interface CustomerRanking {
@@ -56,100 +57,82 @@ interface ChartTooltipContext {
     SkeletonModule,
     TooltipModule,
     SelectModule,
+    ToolbarModule,
   ],
   template: `
     <div class="p-4">
       <h2 class="text-2xl font-bold mb-4">Ranking de Clientes Frecuentes</h2>
 
-      <div class="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <p-card styleClass="h-full">
-          <div class="flex flex-col gap-4">
-            <div class="flex flex-col gap-3">
-              <span class="font-medium text-sm">Periodo de Análisis</span>
-              <div class="grid grid-cols-1 gap-3">
-                <span class="p-float-label w-full">
-                  <p-datePicker
-                    [ngModel]="dateRange()[0]"
-                    [showIcon]="true"
-                    [maxDate]="dateRange()[1] || today"
-                    dateFormat="dd/mm/yy"
-                    styleClass="w-full"
-                    inputId="startDate"
-                    (onSelect)="updateDateRange(0, $event)"
-                  ></p-datePicker>
-                  <label for="startDate">Fecha Inicial</label>
-                </span>
+      <p-toolbar styleClass="mb-6">
+        <ng-template #start>
+          <div class="flex flex-wrap items-center gap-3 mr-3">
+            <span class="font-medium text-sm">Periodo:</span>
+            <span class="p-float-label">
+              <p-datePicker
+                [ngModel]="dateRange()[0]"
+                [showIcon]="true"
+                [maxDate]="dateRange()[1] || today"
+                dateFormat="dd/mm/yy"
+                styleClass="mr-2"
+                inputId="startDate"
+                (onSelect)="updateDateRange(0, $event)"
+              ></p-datePicker>
+              <label for="startDate">Fecha Inicial</label>
+            </span>
 
-                <span class="p-float-label w-full">
-                  <p-datePicker
-                    [ngModel]="dateRange()[1]"
-                    [showIcon]="true"
-                    [minDate]="dateRange()[0]"
-                    [maxDate]="today"
-                    dateFormat="dd/mm/yy"
-                    styleClass="w-full"
-                    inputId="endDate"
-                    (onSelect)="updateDateRange(1, $event)"
-                  ></p-datePicker>
-                  <label for="endDate">Fecha Final</label>
-                </span>
+            <span class="p-float-label">
+              <p-datePicker
+                [ngModel]="dateRange()[1]"
+                [showIcon]="true"
+                [minDate]="dateRange()[0]"
+                [maxDate]="today"
+                dateFormat="dd/mm/yy"
+                inputId="endDate"
+                (onSelect)="updateDateRange(1, $event)"
+              ></p-datePicker>
+              <label for="endDate">Fecha Final</label>
+            </span>
 
-                <div class="flex gap-2">
-                  <button
-                    pButton
-                    type="button"
-                    label="Aplicar"
-                    icon="pi pi-filter"
-                    (click)="applyDateFilter()"
-                    [disabled]="!(dateRange()[0] && dateRange()[1])"
-                    class="flex-grow"
-                    aria-label="Aplicar filtro de fechas"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    label="Limpiar"
-                    icon="pi pi-times"
-                    class="p-button-outlined p-button-secondary flex-grow"
-                    (click)="clearFilters()"
-                    [disabled]="!(dateRange()[0] || dateRange()[1])"
-                    aria-label="Limpiar filtros"
-                  ></button>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-3">
-              <span class="font-medium text-sm"
-                >Cantidad de clientes a mostrar</span
+            <span class="flex items-center gap-2 ml-3">
+              <span class="font-medium text-sm whitespace-nowrap"
+                >Mostrar:</span
               >
               <p-select
                 [options]="limitOptions"
                 [ngModel]="customerLimitSignal()"
                 (onChange)="applyRankingLimit($event)"
-                styleClass="w-full"
-                placeholder="Seleccionar"
+                styleClass="w-28"
+                placeholder="Top"
                 inputId="customerLimit"
               ></p-select>
-            </div>
-
-            @if (isFiltered()) {
-              <div class="text-sm text-gray-500 mt-1 p-2 bg-gray-50 rounded">
-                <strong>Filtros aplicados:</strong>
-                @if (dateRange()[0] && dateRange()[1]) {
-                  <div>
-                    {{ dateRange()[0] | date: 'dd/MM/yyyy' }} -
-                    {{ dateRange()[1] | date: 'dd/MM/yyyy' }}
-                  </div>
-                }
-                @if (customerLimitSignal()) {
-                  <div>Top {{ customerLimitSignal() }} clientes</div>
-                }
-              </div>
-            }
+            </span>
           </div>
-        </p-card>
+        </ng-template>
 
+        <ng-template #end>
+          <div class="flex gap-2">
+            <p-button
+              label="Aplicar"
+              icon="pi pi-filter"
+              (onClick)="applyDateFilter()"
+              [disabled]="!(dateRange()[0] && dateRange()[1])"
+              pTooltip="Aplicar filtro de fechas"
+              tooltipPosition="top"
+            ></p-button>
+            <p-button
+              label="Limpiar"
+              icon="pi pi-times"
+              styleClass="p-button-outlined p-button-secondary"
+              (onClick)="clearFilters()"
+              [disabled]="!(dateRange()[0] || dateRange()[1])"
+              pTooltip="Limpiar todos los filtros"
+              tooltipPosition="top"
+            ></p-button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+
+      <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <p-card styleClass="h-full" header="Total de Ventas por Cliente">
           @if (saleStore.loading() || customerStore.loading()) {
             <div class="flex justify-center py-8">
