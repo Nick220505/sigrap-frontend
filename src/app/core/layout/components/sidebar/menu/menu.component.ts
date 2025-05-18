@@ -148,11 +148,6 @@ export class MenuComponent {
           routerLink: ['/ventas/registrar'],
         },
         {
-          label: 'Historial de Ventas',
-          icon: 'pi pi-fw pi-history',
-          routerLink: ['/ventas/historial'],
-        },
-        {
           label: 'Devoluciones',
           icon: 'pi pi-fw pi-refresh',
           routerLink: ['/ventas/devoluciones'],

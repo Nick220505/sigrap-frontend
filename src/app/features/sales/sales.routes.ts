@@ -11,14 +11,6 @@ export const salesRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'historial',
-    loadComponent: () =>
-      import('./components/history/sales-history.component').then(
-        (m) => m.SalesHistoryComponent,
-      ),
-    canActivate: [authGuard],
-  },
-  {
     path: 'devoluciones',
     loadComponent: () =>
       import('./components/returns/sales-returns.component').then(
