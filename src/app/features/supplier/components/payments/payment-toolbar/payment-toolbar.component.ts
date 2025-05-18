@@ -56,23 +56,6 @@ export class PaymentToolbarComponent {
     const selected = this.paymentTable().selectedPayments();
     if (selected.length === 0) return;
 
-    const nonDeletable = selected.filter(
-      (p) => p.status !== 'PENDING' && p.status !== 'FAILED',
-    );
-
-    if (nonDeletable.length > 0) {
-      const nonDeletableInvoices = nonDeletable
-        .map((p) => p.invoiceNumber)
-        .join(', ');
-      this.confirmationService.confirm({
-        header: 'Operación no permitida',
-        message: `Solo se pueden eliminar pagos en estado Pendiente o Fallido. Los siguientes pagos no se pueden eliminar: ${nonDeletableInvoices}`,
-        acceptVisible: false,
-        rejectLabel: 'Entendido',
-      });
-      return;
-    }
-
     this.confirmationService.confirm({
       header: 'Eliminar Pagos',
       message: `¿Está seguro de que desea eliminar ${selected.length} ${selected.length === 1 ? 'pago seleccionado' : 'pagos seleccionados'}?`,

@@ -2,11 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env';
 import { Observable } from 'rxjs';
-import {
-  PaymentData,
-  PaymentInfo,
-  PaymentStatus,
-} from '../models/payment.model';
+import { PaymentData, PaymentInfo } from '../models/payment.model';
 
 @Injectable({
   providedIn: 'root',
@@ -46,17 +42,6 @@ export class PaymentService {
   findBySupplier(supplierId: number): Observable<PaymentInfo[]> {
     return this.http.get<PaymentInfo[]>(
       `${this.paymentsUrl}/supplier/${supplierId}`,
-    );
-  }
-
-  findByStatus(status: PaymentStatus): Observable<PaymentInfo[]> {
-    return this.http.get<PaymentInfo[]>(`${this.paymentsUrl}/status/${status}`);
-  }
-
-  markAsCompleted(id: number): Observable<PaymentInfo> {
-    return this.http.patch<PaymentInfo>(
-      `${this.paymentsUrl}/${id}/complete`,
-      {},
     );
   }
 }

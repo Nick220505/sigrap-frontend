@@ -20,11 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { pipe, switchMap, tap } from 'rxjs';
-import {
-  PaymentData,
-  PaymentInfo,
-  PaymentStatus,
-} from '../models/payment.model';
+import { PaymentData, PaymentInfo } from '../models/payment.model';
 import { PaymentService } from '../services/payment.service';
 
 export interface PaymentState {
@@ -52,52 +48,9 @@ export const PaymentStore = signalStore(
     isLoadingOrRefreshing: computed(
       () => isLoading() && entities().length === 0,
     ),
-    pendingPaymentsAmount: computed(() =>
-      entities()
-        .filter(
-          (p: PaymentInfo) =>
-            p.status === PaymentStatus.PENDING ||
-            p.status === PaymentStatus.OVERDUE,
-        )
-        .reduce((sum: number, p: PaymentInfo) => sum + p.amount, 0),
+    totalPaymentsAmount: computed(() =>
+      entities().reduce((sum: number, p: PaymentInfo) => sum + p.amount, 0),
     ),
-    completedPaymentsLast30DaysAmount: computed(() => {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      return entities()
-        .filter(
-          (p: PaymentInfo) =>
-            p.status === PaymentStatus.COMPLETED &&
-            p.paymentDate &&
-            new Date(p.paymentDate) >= thirtyDaysAgo,
-        )
-        .reduce((sum: number, p: PaymentInfo) => sum + p.amount, 0);
-    }),
-    overdueInvoicesCount: computed(
-      () =>
-        entities().filter(
-          (p: PaymentInfo) => p.status === PaymentStatus.OVERDUE,
-        ).length,
-    ),
-    overdueInvoicesAmount: computed(() =>
-      entities()
-        .filter((p: PaymentInfo) => p.status === PaymentStatus.OVERDUE)
-        .reduce((sum: number, p: PaymentInfo) => sum + p.amount, 0),
-    ),
-    upcomingPaymentsNext7DaysCount: computed(() => {
-      const today = new Date();
-      const sevenDaysLater = new Date();
-      sevenDaysLater.setDate(today.getDate() + 7);
-      return entities().filter(
-        (p: PaymentInfo) =>
-          p.dueDate &&
-          (p.status === PaymentStatus.PENDING ||
-            p.status === PaymentStatus.OVERDUE) &&
-          new Date(p.dueDate) >= today &&
-          new Date(p.dueDate) <= sevenDaysLater,
-      ).length;
-    }),
   })),
   withMethods(
     (
@@ -222,34 +175,6 @@ export const PaymentStore = signalStore(
                       error.message || 'No se pudieron eliminar los pagos.',
                   });
                 },
-                finalize: () => patchState(store, { isLoading: false }),
-              }),
-            ),
-          ),
-        ),
-      ),
-      markAsCompleted: rxMethod<number>(
-        pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
-          switchMap((id) =>
-            paymentService.markAsCompleted(id).pipe(
-              tapResponse({
-                next: (updatedPayment) => {
-                  patchState(
-                    store,
-                    updateEntity({
-                      id: updatedPayment.id,
-                      changes: updatedPayment,
-                    }),
-                  );
-                  messageService.add({
-                    severity: 'success',
-                    summary: 'Pago Actualizado',
-                    detail: 'El pago ha sido actualizado correctamente.',
-                  });
-                },
-                error: (error: HttpErrorResponse) =>
-                  patchState(store, { error }),
                 finalize: () => patchState(store, { isLoading: false }),
               }),
             ),

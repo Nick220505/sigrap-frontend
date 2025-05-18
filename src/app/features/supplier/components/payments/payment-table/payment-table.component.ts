@@ -1,10 +1,7 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  PAYMENT_STATUS_ES,
-  PaymentInfo,
-} from '@features/supplier/models/payment.model';
+import { PaymentInfo } from '@features/supplier/models/payment.model';
 import { PaymentStore } from '@features/supplier/stores/payment.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -13,7 +10,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
@@ -28,18 +24,13 @@ import { TooltipModule } from 'primeng/tooltip';
     MessageModule,
     FormsModule,
     CurrencyPipe,
-    DatePipe,
-    TagModule,
   ],
   template: `
     @let columns =
       [
-        { field: 'invoiceNumber', header: 'Factura' },
+        { field: 'purchaseOrderNumber', header: 'Pedido' },
         { field: 'supplierName', header: 'Proveedor' },
-        { field: 'paymentDate', header: 'Fecha Pago' },
-        { field: 'dueDate', header: 'Fecha Vencimiento' },
         { field: 'amount', header: 'Monto' },
-        { field: 'status', header: 'Estado' },
       ];
 
     <p-table
@@ -52,7 +43,7 @@ import { TooltipModule } from 'primeng/tooltip';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pagos"
-      [globalFilterFields]="['invoiceNumber', 'supplierName', 'status']"
+      [globalFilterFields]="['purchaseOrderNumber', 'supplierName']"
       [tableStyle]="{ 'min-width': '60rem' }"
       rowHover
       dataKey="id"
@@ -123,21 +114,12 @@ import { TooltipModule } from 'primeng/tooltip';
       </ng-template>
 
       <ng-template pTemplate="body" let-payment let-columns="columns">
-        <tr [class.bg-red-50]="payment.status === 'OVERDUE'">
+        <tr>
           <td style="width: 3rem"><p-tableCheckbox [value]="payment" /></td>
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'amount') {
                 {{ payment[column.field] | currency: 'COP' : 'S/' : '1.0-0' }}
-              } @else if (
-                column.field === 'paymentDate' || column.field === 'dueDate'
-              ) {
-                {{ payment[column.field] | date: 'dd/MM/yyyy' }}
-              } @else if (column.field === 'status') {
-                <p-tag
-                  [severity]="getStatusSeverity(payment.status)"
-                  [value]="formatStatus(payment.status)"
-                />
               } @else {
                 {{ payment[column.field] || '-' }}
               }
@@ -158,23 +140,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 styleClass="p-button-rounded p-button-outlined"
                 severity="info"
                 (click)="editPayment(payment)"
-                [disabled]="
-                  payment.status === 'COMPLETED' ||
-                  payment.status === 'CANCELLED'
-                "
                 pTooltip="Editar pago"
-                tooltipPosition="top"
-              />
-              <p-button
-                icon="pi pi-dollar"
-                styleClass="p-button-rounded p-button-outlined"
-                severity="success"
-                (click)="markAsCompleted(payment)"
-                [disabled]="
-                  payment.status === 'COMPLETED' ||
-                  payment.status === 'CANCELLED'
-                "
-                pTooltip="Marcar como Pagado"
                 tooltipPosition="top"
               />
               <p-button
@@ -182,7 +148,6 @@ import { TooltipModule } from 'primeng/tooltip';
                 styleClass="p-button-rounded p-button-outlined"
                 severity="danger"
                 (click)="deletePayment(payment)"
-                [disabled]="payment.status === 'COMPLETED'"
                 pTooltip="Eliminar pago"
                 tooltipPosition="top"
               />
@@ -241,41 +206,11 @@ export class PaymentTableComponent {
     this.paymentStore.openPaymentDialog(payment, false);
   }
 
-  markAsCompleted(payment: PaymentInfo): void {
-    this.confirmationService.confirm({
-      header: 'Confirmar Pago',
-      message: `¿Está seguro de que desea marcar la factura <b>${payment.invoiceNumber}</b> como pagada?`,
-      accept: () => this.paymentStore.markAsCompleted(payment.id),
-    });
-  }
-
-  deletePayment({ id, invoiceNumber }: PaymentInfo): void {
+  deletePayment({ id, purchaseOrderNumber }: PaymentInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar Pago',
-      message: `¿Está seguro de que desea eliminar el pago de la factura <b>${invoiceNumber}</b>?`,
+      message: `¿Está seguro de que desea eliminar el pago ${purchaseOrderNumber ? 'para el pedido ' + purchaseOrderNumber : ''}?`,
       accept: () => this.paymentStore.deletePayment(id),
     });
-  }
-
-  getStatusSeverity(status: string): string {
-    switch (status) {
-      case 'COMPLETED':
-        return 'success';
-      case 'PENDING':
-        return 'info';
-      case 'PROCESSING':
-        return 'warning';
-      case 'OVERDUE':
-        return 'danger';
-      case 'FAILED':
-      case 'CANCELLED':
-        return 'danger';
-      default:
-        return 'secondary';
-    }
-  }
-
-  formatStatus(status: string): string {
-    return PAYMENT_STATUS_ES[status] || status;
   }
 }
