@@ -22,15 +22,19 @@ describe('ConfiguratorComponent', () => {
   let applyThemeSpy: jasmine.Spy;
 
   beforeEach(async () => {
-    const layoutServiceSpy = jasmine.createSpyObj('LayoutService', [], {
-      layoutConfig: signal({
-        primary: 'blue',
-        surface: 'slate',
-        preset: 'Aura',
-        menuMode: 'static',
-        darkTheme: false,
-      }),
-    });
+    const layoutServiceSpy = jasmine.createSpyObj(
+      'LayoutService',
+      ['ngOnDestroy'],
+      {
+        layoutConfig: signal({
+          primary: 'blue',
+          surface: 'slate',
+          preset: 'Aura',
+          menuMode: 'static',
+          darkTheme: false,
+        }),
+      },
+    );
 
     layoutConfigUpdateSpy = spyOn(
       layoutServiceSpy.layoutConfig,
@@ -95,6 +99,21 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should determine if menu mode button should be shown based on router URL', () => {
+      // Create a mock LayoutService with ngOnDestroy method
+      const layoutServiceMock = jasmine.createSpyObj(
+        'LayoutService',
+        ['ngOnDestroy'],
+        {
+          layoutConfig: signal({
+            primary: 'blue',
+            surface: 'slate',
+            preset: 'Aura',
+            menuMode: 'static',
+            darkTheme: false,
+          }),
+        },
+      );
+
       TestBed.resetTestingModule();
       const authRouterSpy = jasmine.createSpyObj('Router', [], {
         url: '/auth/login',
@@ -104,6 +123,7 @@ describe('ConfiguratorComponent', () => {
         imports: [ConfiguratorComponent],
         providers: [
           { provide: Router, useValue: authRouterSpy },
+          { provide: LayoutService, useValue: layoutServiceMock },
           { provide: PLATFORM_ID, useValue: 'browser' },
         ],
         schemas: [NO_ERRORS_SCHEMA],

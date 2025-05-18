@@ -412,13 +412,15 @@ export class LayoutService implements OnDestroy {
       clearInterval(this.timeCheckInterval);
     }
 
-    if (this.systemThemeMediaQuery && this.systemThemeHandler) {
-      if (this.systemThemeMediaQuery.removeEventListener) {
-        this.systemThemeMediaQuery.removeEventListener(
-          'change',
-          this.systemThemeHandler,
-        );
-      }
+    if (
+      this.systemThemeMediaQuery &&
+      this.systemThemeHandler &&
+      this.systemThemeMediaQuery.removeEventListener
+    ) {
+      this.systemThemeMediaQuery.removeEventListener(
+        'change',
+        this.systemThemeHandler,
+      );
     }
   }
 }

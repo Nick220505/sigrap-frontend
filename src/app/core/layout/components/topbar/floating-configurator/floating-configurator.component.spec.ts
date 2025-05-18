@@ -1,8 +1,34 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { LayoutService } from '@core/layout/services/layout.service';
 
 import { FloatingConfiguratorComponent } from './floating-configurator.component';
+
+// Create a mock for LayoutService
+const mockLayoutService = {
+  layoutConfig: signal({
+    darkTheme: false,
+    primary: 'blue',
+    surface: 'slate',
+    menuMode: 'static',
+    themeMode: 'light',
+  }),
+  layoutState: signal({
+    staticMenuDesktopInactive: false,
+    overlayMenuActive: false,
+    configSidebarVisible: false,
+    staticMenuMobileActive: false,
+    menuHoverActive: false,
+  }),
+  isDarkTheme: signal(false),
+  getPrimary: signal('blue'),
+  getSurface: signal('slate'),
+  isOverlay: signal(false),
+  transitionComplete: signal(false),
+  // Mock implementation that doesn't do anything but satisfies the interface
+  ngOnDestroy: jasmine.createSpy('ngOnDestroy'),
+};
 
 describe('FloatingConfiguratorComponent', () => {
   let component: FloatingConfiguratorComponent;
@@ -11,6 +37,7 @@ describe('FloatingConfiguratorComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FloatingConfiguratorComponent],
+      providers: [{ provide: LayoutService, useValue: mockLayoutService }],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });

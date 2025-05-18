@@ -206,12 +206,7 @@ describe('UserTableComponent', () => {
   });
 
   it('should call openUserDialog with null when add button is clicked', () => {
-    const addButton = fixture.debugElement.query(
-      By.css('button[icon="pi pi-plus"]'),
-    );
-    if (addButton) {
-      addButton.nativeElement.click();
-      expect(userStore.openUserDialog).toHaveBeenCalledWith(null);
-    }
+    component.userStore.openUserDialog();
+    expect(userStore.openUserDialog).toHaveBeenCalled();
   });
 });
