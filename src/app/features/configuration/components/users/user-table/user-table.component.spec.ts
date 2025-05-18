@@ -183,30 +183,24 @@ describe('UserTableComponent', () => {
 
   describe('User actions', () => {
     it('should call openUserDialog with the user', () => {
-      // Directly test the functionality by simulating what happens when the edit button is clicked
       component.userStore.openUserDialog(mockUsers[0]);
       expect(userStore.openUserDialog).toHaveBeenCalledWith(mockUsers[0]);
     });
 
     it('should show confirmation dialog when deleteUser is called', () => {
-      // Directly test the deleteUser method
       component.deleteUser(mockUsers[0]);
       expect(confirmationService.confirm).toHaveBeenCalled();
     });
 
     it('should call delete on userStore when deleteUser is called and confirmed', () => {
-      // Directly call deleteUser to test the functionality
       component.deleteUser(mockUsers[0]);
 
-      // Verify the confirmation service was called
       expect(confirmationService.confirm).toHaveBeenCalled();
 
-      // Manually trigger the accept callback
       const acceptCallback =
         confirmationService.confirm.calls.mostRecent().args[0].accept;
       if (acceptCallback) acceptCallback();
 
-      // Verify the delete was called with the correct ID
       expect(userStore.delete).toHaveBeenCalledWith(mockUsers[0].id);
     });
   });
