@@ -259,7 +259,7 @@ import { SaleStore } from '../../../stores/sale.store';
                         Descuento:
                       </td>
                       <td class="p-2">
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                           <div class="flex flex-col">
                             <label for="discountPercent" class="text-xs mb-1"
                               >Porcentaje</label
