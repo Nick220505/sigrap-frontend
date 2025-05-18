@@ -45,4 +45,10 @@ export class SaleReturnService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.saleReturnsUrl}/${id}`);
   }
+
+  deleteAllById(ids: number[]): Observable<void> {
+    return this.http.delete<void>(`${this.saleReturnsUrl}/delete-many`, {
+      body: ids,
+    });
+  }
 }

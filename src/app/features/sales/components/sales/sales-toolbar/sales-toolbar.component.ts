@@ -8,7 +8,6 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { SaleInfo } from '../../../models/sale.model';
 import { SaleService } from '../../../services/sale.service';
 import { SaleStore } from '../../../stores/sale.store';
 import { SalesTableComponent } from '../sales-table/sales-table.component';
@@ -98,20 +97,22 @@ export class SalesToolbarComponent {
   }
 
   deleteSelectedSales(): void {
-    const sales = this.salesTable().selectedSales();
+    const selection = this.salesTable().selectedSales();
+    if (!selection || selection.length === 0) {
+      return;
+    }
+
     this.confirmationService.confirm({
       header: 'Eliminar ventas',
       message: `
-          ¿Está seguro de que desea eliminar las ${sales.length} ventas seleccionadas?
+          ¿Está seguro de que desea eliminar las ${selection.length} ventas seleccionadas?
           <ul class='mt-2 mb-0'>
-            ${sales
-              .map((sale: SaleInfo) => `<li>• <b>Venta #${sale.id}</b></li>`)
-              .join('')}
+            ${selection.map((item) => `<li>• <b>Venta #${item.id}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {
-        const ids = sales.map((sale: SaleInfo) => sale.id);
-        ids.forEach((id: number) => this.saleStore.delete(id));
+        const ids = selection.map((item) => item.id);
+        this.saleStore.deleteAllById(ids);
       },
     });
   }

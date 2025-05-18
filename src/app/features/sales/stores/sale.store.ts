@@ -12,6 +12,7 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
   removeEntity,
   setAllEntities,
   updateEntity,
@@ -236,9 +237,6 @@ export const SaleStore = signalStore(
             tapResponse({
               next: () => {
                 patchState(store, removeEntity(id));
-
-                productStore.findAll();
-
                 messageService.add({
                   severity: 'success',
                   summary: 'Venta eliminada',
@@ -251,6 +249,36 @@ export const SaleStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail: 'Error al eliminar venta',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    deleteAllById: rxMethod<number[]>(
+      pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        concatMap((ids) =>
+          saleService.deleteAllById(ids).pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, removeEntities(ids));
+                messageService.add({
+                  severity: 'success',
+                  summary: 'Ventas eliminadas',
+                  detail:
+                    'Las ventas seleccionadas han sido eliminadas correctamente',
+                });
+              },
+              error: ({ message: error }: Error) => {
+                patchState(store, { error });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al eliminar ventas',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

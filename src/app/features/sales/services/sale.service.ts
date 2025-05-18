@@ -45,6 +45,12 @@ export class SaleService {
     return this.http.delete<void>(`${this.salesUrl}/${id}`);
   }
 
+  deleteAllById(ids: number[]): Observable<void> {
+    return this.http.delete<void>(`${this.salesUrl}/delete-many`, {
+      body: ids,
+    });
+  }
+
   generateDailySalesReport(
     date?: Date,
     exportPath?: string,

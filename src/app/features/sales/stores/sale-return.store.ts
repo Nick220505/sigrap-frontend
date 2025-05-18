@@ -11,6 +11,7 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
+  removeEntities,
   removeEntity,
   setAllEntities,
   updateEntity,
@@ -63,7 +64,7 @@ export const SaleReturnStore = signalStore(
                   patchState(store, setAllEntities(saleReturns)),
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message || 'Error al cargar devoluciones.';
+                    error.error?.message ?? 'Error al cargar devoluciones.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
@@ -95,7 +96,7 @@ export const SaleReturnStore = signalStore(
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message || 'Error al crear la devolución.';
+                    error.error?.message ?? 'Error al crear la devolución.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
@@ -132,7 +133,7 @@ export const SaleReturnStore = signalStore(
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ||
+                    error.error?.message ??
                     'Error al actualizar la devolución.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
@@ -165,7 +166,40 @@ export const SaleReturnStore = signalStore(
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message || 'Error al eliminar la devolución.';
+                    error.error?.message ?? 'Error al eliminar la devolución.';
+                  patchState(store, { error: errorMsg });
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: errorMsg,
+                  });
+                },
+                finalize: () => patchState(store, { loading: false }),
+              }),
+            ),
+          ),
+        ),
+      ),
+      deleteAllById: rxMethod<number[]>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap((ids) =>
+            saleReturnService.deleteAllById(ids).pipe(
+              tapResponse({
+                next: () => {
+                  patchState(store, removeEntities(ids), {
+                    selectedSaleReturnId: null,
+                  });
+                  messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Devoluciones eliminadas correctamente.',
+                  });
+                },
+                error: (error: HttpErrorResponse) => {
+                  const errorMsg =
+                    error.error?.message ??
+                    'Error al eliminar las devoluciones.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',

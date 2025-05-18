@@ -70,7 +70,7 @@ export class SalesReturnsToolbarComponent {
         `,
       accept: () => {
         const ids = selection.map((item) => item.id);
-        ids.forEach((id) => this.saleReturnStore.deleteById(id));
+        this.saleReturnStore.deleteAllById(ids);
       },
     });
   }
