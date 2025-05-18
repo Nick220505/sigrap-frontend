@@ -1,14 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
+import { SaleReturnStore } from '@features/sales/stores/sale-return.store';
+import { SalesReturnsDialogComponent } from './sales-returns-dialog/sales-returns-dialog.component';
+import { SalesReturnsTableComponent } from './sales-returns-table/sales-returns-table.component';
+import { SalesReturnsToolbarComponent } from './sales-returns-toolbar/sales-returns-toolbar.component';
 
 @Component({
   selector: 'app-sales-returns',
+  imports: [
+    SalesReturnsToolbarComponent,
+    SalesReturnsTableComponent,
+    SalesReturnsDialogComponent,
+  ],
   template: `
-    <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Devoluciones de Ventas</h2>
-      <p class="text-gray-600">
-        Esta funcionalidad estará disponible próximamente.
-      </p>
-    </div>
+    <app-sales-returns-toolbar [salesReturnsTable]="salesReturnsTable" />
+
+    <app-sales-returns-table #salesReturnsTable />
+
+    <app-sales-returns-dialog />
   `,
 })
-export class SalesReturnsComponent {}
+export class SalesReturnsComponent {
+  readonly saleReturnStore = inject(SaleReturnStore);
+  readonly salesReturnsTable = viewChild.required(SalesReturnsTableComponent);
+}
