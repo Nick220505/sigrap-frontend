@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -18,6 +18,8 @@ import {
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -49,6 +51,9 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
     SelectModule,
     TableModule,
     TextareaModule,
+    CurrencyPipe,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
   template: `
     <p-dialog
@@ -62,48 +67,79 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
       <form [formGroup]="returnForm" class="flex flex-col gap-4 pt-4">
         <div class="flex flex-col gap-2">
           <label for="originalSaleId" class="font-bold">Venta Original</label>
-          <p-select
-            id="originalSaleId"
-            formControlName="originalSaleId"
-            [options]="saleStore.entities()"
-            optionLabel="id"
-            optionValue="id"
-            placeholder="Seleccionar Venta Original"
-            (onChange)="onOriginalSaleChange($event.value)"
-            [filter]="true"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          <p-inputgroup>
+            <p-inputgroup-addon>
+              <i class="pi pi-shopping-cart"></i>
+            </p-inputgroup-addon>
+            <p-select
+              id="originalSaleId"
+              formControlName="originalSaleId"
+              [options]="saleStore.entities()"
+              optionLabel="id"
+              optionValue="id"
+              placeholder="Seleccionar Venta Original"
+              (onChange)="onOriginalSaleChange($event.value)"
+              [filter]="true"
+              styleClass="w-full"
+              appendTo="body"
+            ></p-select>
+          </p-inputgroup>
         </div>
 
         @if (selectedOriginalSale(); as originalSale) {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <label for="customerName" class="font-bold">Cliente</label>
-              <input
-                id="customerName"
-                pInputText
-                [value]="
-                  originalSale.customer.firstName +
-                  ' ' +
-                  originalSale.customer.lastName
-                "
-                readonly
-                disabled
-              />
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-user"></i>
+                </p-inputgroup-addon>
+                <input
+                  id="customerName"
+                  pInputText
+                  [value]="
+                    originalSale.customer.firstName +
+                    ' ' +
+                    originalSale.customer.lastName
+                  "
+                  readonly
+                  disabled
+                />
+              </p-inputgroup>
             </div>
             <div class="flex flex-col gap-2">
               <label for="employeeName" class="font-bold"
                 >Empleado (Venta Original)</label
               >
-              <input
-                id="employeeName"
-                pInputText
-                [value]="originalSale.employee.name"
-                readonly
-                disabled
-              />
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="pi pi-user-edit"></i>
+                </p-inputgroup-addon>
+                <input
+                  id="employeeName"
+                  pInputText
+                  [value]="originalSale.employee.name"
+                  readonly
+                  disabled
+                />
+              </p-inputgroup>
             </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="reason" class="font-bold">Razón de la Devolución</label>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-comment"></i>
+              </p-inputgroup-addon>
+              <textarea
+                id="reason"
+                pTextarea
+                formControlName="reason"
+                rows="3"
+                class="w-full"
+              ></textarea>
+            </p-inputgroup>
           </div>
 
           <div class="flex flex-col gap-2">
@@ -126,6 +162,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
                   pTemplate="body"
                   let-itemFormGroup
                   let-i="rowIndex"
+                  let-last="last"
                 >
                   <tr [formGroupName]="i">
                     <td>
@@ -168,32 +205,20 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
                     </td>
                   </tr>
                 </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="4" class="text-right font-bold">
+                      Total Devolución:
+                    </td>
+                    <td class="font-bold text-xl">
+                      {{
+                        returnForm.get('totalReturnAmount')?.value
+                          | currency: 'COP' : '$' : '1.0-0'
+                      }}
+                    </td>
+                  </tr>
+                </ng-template>
               </p-table>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex flex-col gap-2">
-              <label for="reason" class="font-bold"
-                >Razón de la Devolución</label
-              >
-              <textarea
-                id="reason"
-                pTextarea
-                formControlName="reason"
-                rows="3"
-              ></textarea>
-            </div>
-            <div
-              class="flex flex-col items-end gap-2 p-4 bg-gray-50 rounded-md"
-            >
-              <div class="text-lg font-semibold">
-                Total Devolución:
-                {{
-                  returnForm.get('totalReturnAmount')?.value
-                    | currency: 'COP' : '$' : '1.0-0'
-                }}
-              </div>
             </div>
           </div>
         }
