@@ -34,7 +34,8 @@ import { TooltipModule } from 'primeng/tooltip';
     @let columns =
       [
         { field: 'id', header: 'ID' },
-        { field: 'orderDate', header: 'Fecha' },
+        { field: 'createdAt', header: 'Fecha Creación' },
+        { field: 'deliveryDate', header: 'Fecha Entrega' },
         { field: 'supplier.name', header: 'Proveedor' },
         { field: 'totalAmount', header: 'Total' },
         { field: 'status', header: 'Estado' },
@@ -137,7 +138,9 @@ import { TooltipModule } from 'primeng/tooltip';
                 {{ order[column.field] | currency: 'COP' : '$' : '1.0-0' }}
               } @else if (column.field === 'supplier.name') {
                 {{ order.supplier?.name || 'Sin proveedor' }}
-              } @else if (column.field === 'orderDate') {
+              } @else if (column.field === 'createdAt') {
+                {{ order[column.field] | date: 'dd/MM/yyyy' }}
+              } @else if (column.field === 'deliveryDate') {
                 {{ order[column.field] | date: 'dd/MM/yyyy' }}
               } @else if (column.field === 'status') {
                 <p-tag

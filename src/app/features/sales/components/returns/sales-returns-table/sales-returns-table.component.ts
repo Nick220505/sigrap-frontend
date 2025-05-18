@@ -55,8 +55,7 @@ import { TooltipModule } from 'primeng/tooltip';
       [globalFilterFields]="[
         'id',
         'originalSaleId',
-        'customer.firstName',
-        'customer.lastName',
+        'customer.fullName',
         'employee.name',
         'totalReturnAmount',
         'reason',
@@ -143,10 +142,7 @@ import { TooltipModule } from 'primeng/tooltip';
           </td>
           <td>{{ saleReturn.id }}</td>
           <td>#{{ saleReturn.originalSaleId }}</td>
-          <td>
-            {{ saleReturn.customer?.firstName }}
-            {{ saleReturn.customer?.lastName }}
-          </td>
+          <td>{{ saleReturn.customer?.fullName }}</td>
           <td>{{ saleReturn.employee?.name }}</td>
           <td>
             {{ saleReturn.totalReturnAmount | currency: 'COP' : '$' : '1.0-0' }}
