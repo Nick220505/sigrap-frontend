@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '@env';
-import { UserData, UserInfo, UserStatus } from '../models/user.model';
+import { UserData, UserInfo, UserRole } from '../models/user.model';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -18,9 +18,8 @@ describe('UserService', () => {
     name: 'Test User',
     email: 'test@example.com',
     phone: '+1234567890',
-    status: UserStatus.ACTIVE,
+    role: UserRole.ADMINISTRATOR,
     lastLogin: '2024-01-01T00:00:00Z',
-    roles: [],
   };
 
   beforeEach(() => {
@@ -73,8 +72,7 @@ describe('UserService', () => {
       email: 'new@example.com',
       password: 'password123',
       phone: '+1234567890',
-      status: UserStatus.ACTIVE,
-      roleIds: [],
+      role: UserRole.ADMINISTRATOR,
     };
     service.create(createDto).subscribe((user) => {
       expect(user).toEqual(mockUser);
@@ -150,26 +148,6 @@ describe('UserService', () => {
     const req = httpMock.expectOne(`${apiUrl}/reset-password`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ token, newPassword });
-    req.flush(mockUser);
-  });
-
-  it('should lock user account', () => {
-    service.lockAccount(1).subscribe((user) => {
-      expect(user).toEqual(mockUser);
-    });
-    const req = httpMock.expectOne(`${apiUrl}/1/lock`);
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({});
-    req.flush(mockUser);
-  });
-
-  it('should unlock user account', () => {
-    service.unlockAccount(1).subscribe((user) => {
-      expect(user).toEqual(mockUser);
-    });
-    const req = httpMock.expectOne(`${apiUrl}/1/unlock`);
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({});
     req.flush(mockUser);
   });
 });

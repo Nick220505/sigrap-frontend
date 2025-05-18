@@ -202,11 +202,13 @@ describe('ProductDialogComponent', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       (productStore.selectedProduct as WritableSignal<ProductInfo | null>).set({
         id: 1,
-        name: 'Existing Product',
-        description: 'Description',
-        costPrice: 100,
-        salePrice: 150,
+        name: 'Product 1',
+        description: 'Description 1',
+        costPrice: 10.0,
+        salePrice: 20.0,
         category: { id: 1, name: 'Category 1' } as CategoryInfo,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
       fixture.detectChanges();
 
@@ -237,22 +239,24 @@ describe('ProductDialogComponent', () => {
     it('should patch form values when editing an existing product', fakeAsync(() => {
       (productStore.selectedProduct as WritableSignal<ProductInfo | null>).set({
         id: 1,
-        name: 'Existing Product',
-        description: 'Test Description',
-        costPrice: 100,
-        salePrice: 150,
+        name: 'Product 1',
+        description: 'Description 1',
+        costPrice: 10.0,
+        salePrice: 20.0,
         category: { id: 1, name: 'Category 1' } as CategoryInfo,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
 
       tick();
       fixture.detectChanges();
 
-      expect(component.productForm.get('name')?.value).toBe('Existing Product');
+      expect(component.productForm.get('name')?.value).toBe('Product 1');
       expect(component.productForm.get('description')?.value).toBe(
-        'Test Description',
+        'Description 1',
       );
-      expect(component.productForm.get('costPrice')?.value).toBe(100);
-      expect(component.productForm.get('salePrice')?.value).toBe(150);
+      expect(component.productForm.get('costPrice')?.value).toBe(10.0);
+      expect(component.productForm.get('salePrice')?.value).toBe(20.0);
       expect(component.productForm.get('categoryId')?.value).toBe(1);
     }));
 
@@ -263,7 +267,9 @@ describe('ProductDialogComponent', () => {
         description: 'Description',
         costPrice: 100,
         salePrice: 150,
-        category: undefined,
+        category: { id: 0, name: '' } as CategoryInfo,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
 
       tick();
@@ -275,11 +281,13 @@ describe('ProductDialogComponent', () => {
     it('should reset form when selected product is null', fakeAsync(() => {
       (productStore.selectedProduct as WritableSignal<ProductInfo | null>).set({
         id: 1,
-        name: 'Existing Product',
-        description: 'Test Description',
-        costPrice: 100,
-        salePrice: 150,
+        name: 'Product 1',
+        description: 'Description 1',
+        costPrice: 10.0,
+        salePrice: 20.0,
         category: { id: 1, name: 'Category 1' } as CategoryInfo,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
       tick();
       fixture.detectChanges();
@@ -305,6 +313,8 @@ describe('ProductDialogComponent', () => {
         costPrice: 100,
         salePrice: 150,
         category: { id: 1, name: 'Category 1' } as CategoryInfo,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
       tick();
       fixture.detectChanges();
@@ -318,6 +328,8 @@ describe('ProductDialogComponent', () => {
         costPrice: 200,
         salePrice: 250,
         category: { id: 2, name: 'Category 2' } as CategoryInfo,
+        stock: 200,
+        minimumStockThreshold: 20,
       });
       tick();
       fixture.detectChanges();
@@ -392,6 +404,8 @@ describe('ProductDialogComponent', () => {
         costPrice: 100,
         salePrice: 150,
         categoryId: 1,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
 
       component.saveProduct();
@@ -402,6 +416,8 @@ describe('ProductDialogComponent', () => {
         costPrice: 100,
         salePrice: 150,
         categoryId: 1,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
       expect(productStore.closeProductDialog).toHaveBeenCalled();
     });
@@ -409,11 +425,13 @@ describe('ProductDialogComponent', () => {
     it('should call update when saving an existing product', () => {
       (productStore.selectedProduct as WritableSignal<ProductInfo | null>).set({
         id: 1,
-        name: 'Existing Product',
-        description: 'Old Description',
-        costPrice: 100,
-        salePrice: 150,
+        name: 'Product 1',
+        description: 'Description 1',
+        costPrice: 10.0,
+        salePrice: 20.0,
         category: { id: 1, name: 'Category 1' } as CategoryInfo,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
 
       component.productForm.patchValue({
@@ -422,6 +440,8 @@ describe('ProductDialogComponent', () => {
         costPrice: 120,
         salePrice: 180,
         categoryId: 2,
+        stock: 150,
+        minimumStockThreshold: 15,
       });
 
       component.saveProduct();
@@ -434,6 +454,8 @@ describe('ProductDialogComponent', () => {
           costPrice: 120,
           salePrice: 180,
           categoryId: 2,
+          stock: 150,
+          minimumStockThreshold: 15,
         },
       });
       expect(productStore.closeProductDialog).toHaveBeenCalled();
@@ -450,6 +472,8 @@ describe('ProductDialogComponent', () => {
         costPrice: 100,
         salePrice: 150,
         categoryId: null,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
 
       component.saveProduct();
@@ -460,7 +484,29 @@ describe('ProductDialogComponent', () => {
         costPrice: 100,
         salePrice: 150,
         categoryId: null,
+        stock: 100,
+        minimumStockThreshold: 10,
       });
+    });
+
+    it('should handle valid form submission when save button is clicked', () => {
+      (productStore.dialogVisible as WritableSignal<boolean>).set(true);
+      fixture.detectChanges();
+
+      component.productForm.patchValue({
+        name: 'Valid Product',
+        costPrice: 100,
+        salePrice: 150,
+        stock: 100,
+        minimumStockThreshold: 10,
+      });
+
+      const saveButton = fixture.debugElement.query(
+        By.css('p-button[label="Guardar"]'),
+      );
+      saveButton.triggerEventHandler('click', null);
+
+      expect(productStore.create).toHaveBeenCalled();
     });
   });
 
@@ -565,24 +611,6 @@ describe('ProductDialogComponent', () => {
       cancelButton.triggerEventHandler('click', null);
 
       expect(productStore.closeProductDialog).toHaveBeenCalled();
-    });
-
-    it('should handle valid form submission when save button is clicked', () => {
-      (productStore.dialogVisible as WritableSignal<boolean>).set(true);
-      fixture.detectChanges();
-
-      component.productForm.patchValue({
-        name: 'Valid Product',
-        costPrice: 100,
-        salePrice: 150,
-      });
-
-      const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Guardar"]'),
-      );
-      saveButton.triggerEventHandler('click', null);
-
-      expect(productStore.create).toHaveBeenCalled();
     });
 
     it('should handle invalid form submission when save button is clicked', () => {

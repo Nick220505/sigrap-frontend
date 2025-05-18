@@ -6,9 +6,9 @@ export interface ProductInfo {
   description?: string;
   costPrice: number;
   salePrice: number;
+  category: CategoryInfo;
   stock: number;
   minimumStockThreshold: number;
-  category?: CategoryInfo;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,7 +18,7 @@ export interface ProductData {
   description?: string;
   costPrice: number;
   salePrice: number;
+  categoryId: number;
   stock: number;
   minimumStockThreshold: number;
-  categoryId?: number;
 }

@@ -32,16 +32,20 @@ describe('ProductStore', () => {
       id: 1,
       name: 'Product 1',
       description: 'Description 1',
-      costPrice: 10,
-      salePrice: 15,
+      costPrice: 10.0,
+      salePrice: 20.0,
+      stock: 100,
+      minimumStockThreshold: 10,
       category: mockCategory,
     },
     {
       id: 2,
       name: 'Product 2',
       description: 'Description 2',
-      costPrice: 20,
-      salePrice: 30,
+      costPrice: 15.0,
+      salePrice: 25.0,
+      stock: 200,
+      minimumStockThreshold: 20,
       category: mockCategory,
     },
   ];
@@ -60,10 +64,12 @@ describe('ProductStore', () => {
     productService.create.and.returnValue(
       of({
         id: 3,
-        name: 'New Product',
-        description: 'New Description',
-        costPrice: 15,
-        salePrice: 25,
+        name: 'Product 3',
+        description: 'Description 3',
+        costPrice: 20.0,
+        salePrice: 30.0,
+        stock: 300,
+        minimumStockThreshold: 30,
         category: mockCategory,
       }),
     );
@@ -72,8 +78,10 @@ describe('ProductStore', () => {
         id: 1,
         name: 'Updated Product',
         description: 'Updated Description',
-        costPrice: 12,
-        salePrice: 18,
+        costPrice: 25.0,
+        salePrice: 35.0,
+        stock: 150,
+        minimumStockThreshold: 15,
         category: mockCategory,
       }),
     );
@@ -122,9 +130,11 @@ describe('ProductStore', () => {
       const productData: ProductData = {
         name: 'New Product',
         description: 'New Description',
-        costPrice: 15,
-        salePrice: 25,
-        categoryId: mockCategory.id,
+        costPrice: 10.0,
+        salePrice: 20.0,
+        categoryId: 1,
+        stock: 100,
+        minimumStockThreshold: 10,
       };
 
       store.create(productData);
@@ -133,7 +143,7 @@ describe('ProductStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Producto creado',
-        detail: 'El producto New Product ha sido creado correctamente',
+        detail: 'El producto Product 3 ha sido creado correctamente',
       });
     });
 
@@ -146,9 +156,11 @@ describe('ProductStore', () => {
       const productData: ProductData = {
         name: 'New Product',
         description: 'New Description',
-        costPrice: 15,
-        salePrice: 25,
-        categoryId: mockCategory.id,
+        costPrice: 10.0,
+        salePrice: 20.0,
+        categoryId: 1,
+        stock: 100,
+        minimumStockThreshold: 10,
       };
 
       store.create(productData);
@@ -164,11 +176,14 @@ describe('ProductStore', () => {
 
   describe('update', () => {
     it('should call the service method and show success message', () => {
-      const productData: Partial<ProductData> = {
+      const productData: ProductData = {
         name: 'Updated Product',
         description: 'Updated Description',
-        costPrice: 12,
-        salePrice: 18,
+        costPrice: 15.0,
+        salePrice: 25.0,
+        categoryId: 1,
+        stock: 150,
+        minimumStockThreshold: 15,
       };
 
       store.update({ id: 1, productData });
@@ -187,9 +202,14 @@ describe('ProductStore', () => {
         throwError(() => new Error('Failed to update product')),
       );
 
-      const productData: Partial<ProductData> = {
+      const productData: ProductData = {
         name: 'Updated Product',
         description: 'Updated Description',
+        costPrice: 15.0,
+        salePrice: 25.0,
+        categoryId: 1,
+        stock: 150,
+        minimumStockThreshold: 15,
       };
 
       store.update({ id: 1, productData });
@@ -283,8 +303,10 @@ describe('ProductStore', () => {
         id: 1,
         name: 'Test Product',
         description: 'Test Description',
-        costPrice: 10,
-        salePrice: 15,
+        costPrice: 10.0,
+        salePrice: 20.0,
+        stock: 100,
+        minimumStockThreshold: 10,
         category: mockCategory,
       };
 
@@ -306,8 +328,10 @@ describe('ProductStore', () => {
         id: 1,
         name: 'Test Product',
         description: 'Test Description',
-        costPrice: 10,
-        salePrice: 15,
+        costPrice: 10.0,
+        salePrice: 20.0,
+        stock: 100,
+        minimumStockThreshold: 10,
         category: mockCategory,
       };
       store.openProductDialog(product);

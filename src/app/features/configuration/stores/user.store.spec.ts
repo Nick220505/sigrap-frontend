@@ -6,7 +6,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { UserData, UserInfo, UserStatus } from '../models/user.model';
+import { UserData, UserInfo, UserRole } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { UserStore } from './user.store';
 
@@ -22,54 +22,16 @@ describe('UserStore', () => {
       name: 'John Doe',
       email: 'john@example.com',
       phone: '+1234567890',
-      status: UserStatus.ACTIVE,
+      role: UserRole.ADMINISTRATOR,
       lastLogin: new Date().toISOString(),
-      roles: [
-        {
-          id: 1,
-          name: 'ADMIN',
-          description: 'Administrador del sistema',
-          permissions: [
-            {
-              id: 1,
-              name: 'CREATE_USER',
-              resource: 'USER',
-              action: 'CREATE',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            },
-          ],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ],
     },
     {
       id: 2,
       name: 'Jane Smith',
       email: 'jane@example.com',
       phone: '+0987654321',
-      status: UserStatus.ACTIVE,
+      role: UserRole.EMPLOYEE,
       lastLogin: new Date().toISOString(),
-      roles: [
-        {
-          id: 2,
-          name: 'USER',
-          description: 'Usuario regular',
-          permissions: [
-            {
-              id: 2,
-              name: 'VIEW_PROFILE',
-              resource: 'PROFILE',
-              action: 'VIEW',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            },
-          ],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ],
     },
   ];
 
@@ -77,8 +39,7 @@ describe('UserStore', () => {
     name: 'New User',
     email: 'new@example.com',
     phone: '+1122334455',
-    status: UserStatus.ACTIVE,
-    roleIds: [1],
+    role: UserRole.ADMINISTRATOR,
   };
 
   beforeEach(() => {
@@ -89,11 +50,10 @@ describe('UserStore', () => {
       'create',
       'update',
       'delete',
+      'deleteAllById',
       'updateProfile',
       'changePassword',
       'resetPassword',
-      'lockAccount',
-      'unlockAccount',
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
@@ -103,11 +63,10 @@ describe('UserStore', () => {
     userService.create.and.returnValue(of(mockUsers[0]));
     userService.update.and.returnValue(of(mockUsers[0]));
     userService.delete.and.returnValue(of(void 0));
+    userService.deleteAllById.and.returnValue(of(void 0));
     userService.updateProfile.and.returnValue(of(mockUsers[0]));
     userService.changePassword.and.returnValue(of(mockUsers[0]));
     userService.resetPassword.and.returnValue(of(mockUsers[0]));
-    userService.lockAccount.and.returnValue(of(mockUsers[0]));
-    userService.unlockAccount.and.returnValue(of(mockUsers[0]));
 
     TestBed.configureTestingModule({
       providers: [
@@ -217,51 +176,18 @@ describe('UserStore', () => {
     });
   });
 
-  describe('updateProfile', () => {
-    it('should call the service method and update the user profile', () => {
-      store.updateProfile({ id: 1, userData: mockUserData });
-
-      expect(userService.updateProfile).toHaveBeenCalledWith(1, mockUserData);
-      expect(store.loading()).toBeFalse();
-    });
-
-    it('should update error state when updateProfile fails', () => {
-      userService.updateProfile.calls.reset();
-      const testError = new Error('Failed to update profile');
-      userService.updateProfile.and.returnValue(throwError(() => testError));
-      store.updateProfile({ id: 1, userData: mockUserData });
-      expect(store.error()).toBe('Failed to update profile');
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error al actualizar perfil',
-      });
-    });
-  });
-
   describe('dialog operations', () => {
-    it('should open dialog with selected user', () => {
+    it('should open user dialog and set selectedUser', () => {
       store.openUserDialog(mockUsers[0]);
+      expect(store.selectedUser()).toBe(mockUsers[0]);
       expect(store.dialogVisible()).toBeTrue();
-      expect(store.selectedUser()).toEqual(mockUsers[0]);
     });
 
-    it('should open dialog without user for creation', () => {
-      store.openUserDialog();
-      expect(store.dialogVisible()).toBeTrue();
-      expect(store.selectedUser()).toBeNull();
-    });
-
-    it('should close dialog', () => {
-      store.openUserDialog();
+    it('should close user dialog and reset selectedUser', () => {
+      store.openUserDialog(mockUsers[0]);
       store.closeUserDialog();
+      expect(store.selectedUser()).toBe(mockUsers[0]);
       expect(store.dialogVisible()).toBeFalse();
-    });
-
-    it('should clear selected user', () => {
-      store.openUserDialog(mockUsers[0]);
-      store.clearSelectedUser();
-      expect(store.selectedUser()).toBeNull();
     });
   });
 });

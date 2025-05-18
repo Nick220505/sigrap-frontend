@@ -33,21 +33,25 @@ describe('ProductTableComponent', () => {
   const mockProducts: ProductInfo[] = [
     {
       id: 1,
-      name: 'Test Product 1',
-      description: 'Test Description 1',
-      category: { id: 1, name: 'Test Category 1' },
-      costPrice: 100,
-      salePrice: 150,
+      name: 'Product 1',
+      description: 'Description 1',
+      category: { id: 1, name: 'Category 1' },
+      costPrice: 10.0,
+      salePrice: 20.0,
+      stock: 100,
+      minimumStockThreshold: 10,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
     {
       id: 2,
-      name: 'Test Product 2',
-      description: 'Test Description 2',
-      category: { id: 2, name: 'Test Category 2' },
-      costPrice: 200,
-      salePrice: 300,
+      name: 'Product 2',
+      description: 'Description 2',
+      category: { id: 2, name: 'Category 2' },
+      costPrice: 15.0,
+      salePrice: 25.0,
+      stock: 200,
+      minimumStockThreshold: 20,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
@@ -122,16 +126,16 @@ describe('ProductTableComponent', () => {
         By.css('tbody tr:first-child td'),
       );
       expect(firstRowCells[1].nativeElement.textContent.trim()).toBe(
-        'Test Product 1',
+        'Product 1',
       );
       expect(firstRowCells[2].nativeElement.textContent.trim()).toBe(
-        'Test Description 1',
+        'Description 1',
       );
     });
 
     it('should set up columns correctly', () => {
       const headerCells = fixture.debugElement.queryAll(By.css('th'));
-      expect(headerCells.length).toBe(expectedColumns.length + 2);
+      expect(headerCells.length).toBe(expectedColumns.length + 4);
     });
 
     it('should initialize with empty searchValue', () => {
@@ -208,6 +212,8 @@ describe('ProductTableComponent', () => {
         category: { id: 1, name: 'Test Category' },
         costPrice: 100,
         salePrice: 150,
+        stock: 100,
+        minimumStockThreshold: 10,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -228,11 +234,13 @@ describe('ProductTableComponent', () => {
         selectedProduct,
         {
           id: 3,
-          name: 'New Product',
-          description: 'New Description',
-          category: { id: 1, name: 'Test Category' },
-          costPrice: 300,
-          salePrice: 450,
+          name: 'Product 3',
+          description: 'Description 3',
+          category: { id: 3, name: 'Category 3' },
+          costPrice: 20.0,
+          salePrice: 30.0,
+          stock: 300,
+          minimumStockThreshold: 30,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -294,7 +302,7 @@ describe('ProductTableComponent', () => {
         confirmationService.confirm.calls.mostRecent().args[0];
       expect(confirmOptions.header).toBe('Eliminar producto');
       expect(confirmOptions.message).toBe(
-        '¿Está seguro de que desea eliminar el producto <b>Test Product 1</b>?',
+        '¿Está seguro de que desea eliminar el producto <b>Product 1</b>?',
       );
     });
 

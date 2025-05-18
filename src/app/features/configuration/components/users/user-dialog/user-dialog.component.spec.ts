@@ -12,10 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { PermissionInfo } from '../../../models/permission.model';
-import { RoleInfo } from '../../../models/role.model';
-import { UserInfo, UserStatus } from '../../../models/user.model';
-import { RoleStore } from '../../../stores/role.store';
+import { UserInfo, UserRole } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user.store';
 import { UserDialogComponent } from './user-dialog.component';
 
@@ -28,63 +25,20 @@ interface MockUserStore {
   loading: Signal<boolean>;
 }
 
-interface MockRoleStore {
-  entities: Signal<RoleInfo[]>;
-}
-
 describe('UserDialogComponent', () => {
   let component: UserDialogComponent;
   let fixture: ComponentFixture<UserDialogComponent>;
   let userStore: MockUserStore;
-  let roleStore: MockRoleStore;
   let messageService: jasmine.SpyObj<MessageService>;
-
-  const mockPermission: PermissionInfo = {
-    id: 1,
-    name: 'VIEW_USERS',
-    resource: 'USERS',
-    action: 'VIEW',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
 
   const mockUser: UserInfo = {
     id: 1,
     email: 'test@example.com',
     name: 'Test User',
     phone: '+1234567890',
-    status: UserStatus.ACTIVE,
+    role: UserRole.ADMINISTRATOR,
     lastLogin: new Date().toISOString(),
-    roles: [
-      {
-        id: 1,
-        name: 'ADMIN',
-        description: 'Administrator',
-        permissions: [mockPermission],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
   };
-
-  const mockRoles: RoleInfo[] = [
-    {
-      id: 1,
-      name: 'ADMIN',
-      description: 'Administrator',
-      permissions: [mockPermission],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      name: 'USER',
-      description: 'Regular User',
-      permissions: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ];
 
   beforeEach(async () => {
     userStore = {
@@ -94,10 +48,6 @@ describe('UserDialogComponent', () => {
       selectedUser: signal(null),
       dialogVisible: signal(true),
       loading: signal(false),
-    };
-
-    roleStore = {
-      entities: signal(mockRoles),
     };
 
     messageService = jasmine.createSpyObj('MessageService', ['add']);
@@ -116,7 +66,6 @@ describe('UserDialogComponent', () => {
       providers: [
         provideAnimations(),
         { provide: UserStore, useValue: userStore },
-        { provide: RoleStore, useValue: roleStore },
         { provide: MessageService, useValue: messageService },
       ],
     }).compileComponents();
@@ -135,14 +84,14 @@ describe('UserDialogComponent', () => {
       name: '',
       email: '',
       password: '',
-      roleIds: [],
+      role: null,
     });
     fixture.detectChanges();
 
     expect(component.userForm.get('name')?.value).toBe('');
     expect(component.userForm.get('email')?.value).toBe('');
     expect(component.userForm.get('password')?.value).toBe('');
-    expect(component.userForm.get('roleIds')?.value).toEqual([]);
+    expect(component.userForm.get('role')?.value).toBeNull();
   });
 
   it('should initialize form with user data in edit mode', () => {
@@ -151,9 +100,7 @@ describe('UserDialogComponent', () => {
 
     expect(component.userForm.get('name')?.value).toBe(mockUser.name);
     expect(component.userForm.get('email')?.value).toBe(mockUser.email);
-    expect(component.userForm.get('roleIds')?.value).toEqual(
-      mockUser.roles.map((role) => role.id),
-    );
+    expect(component.userForm.get('role')?.value).toEqual(mockUser.role);
   });
 
   describe('Form submission', () => {
@@ -162,7 +109,9 @@ describe('UserDialogComponent', () => {
         name: 'New User',
         email: 'new@example.com',
         password: 'Password1!',
-        roleIds: [1],
+        role: UserRole.ADMINISTRATOR,
+        documentId: null,
+        phone: null,
       };
 
       component.userForm.patchValue(formData);
@@ -180,7 +129,9 @@ describe('UserDialogComponent', () => {
         name: 'Updated User',
         email: 'updated@example.com',
         password: '',
-        roleIds: [2],
+        role: UserRole.EMPLOYEE,
+        documentId: null,
+        phone: '+1234567890',
       };
 
       component.userForm.patchValue(formData);

@@ -2,11 +2,7 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RoleInfo } from '@features/configuration/models/role.model';
-import {
-  UserInfo,
-  UserStatus,
-} from '@features/configuration/models/user.model';
+import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { UserStore } from '@features/configuration/stores/user.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -41,28 +37,16 @@ describe('UserToolbarComponent', () => {
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
   let mockUserTable: MockUserTable;
 
-  const mockRoles: RoleInfo[] = [
-    {
-      id: 1,
-      name: 'ADMIN',
-      description: 'Administrator',
-      permissions: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ];
-
   const createMockUser = (
     id: number,
     name: string,
     email: string,
-    roles: RoleInfo[],
+    role: UserRole = UserRole.ADMINISTRATOR,
   ): UserInfo => ({
     id,
     name,
     email,
-    roles,
-    status: UserStatus.ACTIVE,
+    role,
     lastLogin: new Date().toISOString(),
   });
 
@@ -152,8 +136,8 @@ describe('UserToolbarComponent', () => {
 
     it('should be enabled when users are selected', () => {
       const selectedUsersMock = [
-        createMockUser(1, 'User 1', 'user1@example.com', mockRoles),
-        createMockUser(2, 'User 2', 'user2@example.com', mockRoles),
+        createMockUser(1, 'User 1', 'user1@example.com'),
+        createMockUser(2, 'User 2', 'user2@example.com'),
       ];
       mockUserTable.selectedUsers.set(selectedUsersMock);
       fixture.detectChanges();
@@ -166,7 +150,7 @@ describe('UserToolbarComponent', () => {
 
     it('should be enabled (not disabled by loading) when loading if users are selected, as per current template', () => {
       const selectedUsersMock = [
-        createMockUser(1, 'User 1', 'user1@example.com', mockRoles),
+        createMockUser(1, 'User 1', 'user1@example.com'),
       ];
       mockUserTable.selectedUsers.set(selectedUsersMock);
       userStore.loading.set(true);
@@ -180,8 +164,8 @@ describe('UserToolbarComponent', () => {
 
     it('should call deleteAllById with selected user IDs when clicked', () => {
       const selectedUsersMock = [
-        createMockUser(1, 'User 1', 'user1@example.com', mockRoles),
-        createMockUser(2, 'User 2', 'user2@example.com', mockRoles),
+        createMockUser(1, 'User 1', 'user1@example.com'),
+        createMockUser(2, 'User 2', 'user2@example.com'),
       ];
       mockUserTable.selectedUsers.set(selectedUsersMock);
       fixture.detectChanges();
@@ -217,7 +201,7 @@ describe('UserToolbarComponent', () => {
       expect(exportButton.componentInstance.disabled).toBeFalse();
     });
 
-    it('should call exportCSV when clicked', () => {
+    it('should call exportCSV on the table when clicked', () => {
       userStore.usersCount.set(5);
       fixture.detectChanges();
 

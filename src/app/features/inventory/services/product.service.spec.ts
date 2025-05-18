@@ -22,12 +22,14 @@ describe('ProductService', () => {
   const mockProduct: ProductInfo = {
     id: 1,
     name: 'Test Product',
-    description: 'A test product',
-    costPrice: 10,
-    salePrice: 15,
-    category: mockCategory,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-02T00:00:00Z',
+    description: 'Test Description',
+    costPrice: 10.0,
+    salePrice: 20.0,
+    stock: 100,
+    minimumStockThreshold: 10,
+    category: { id: 1, name: 'Test Category' } as CategoryInfo,
+    createdAt: '2023-01-01T00:00:00Z',
+    updatedAt: '2023-01-01T00:00:00Z',
   };
 
   beforeEach(() => {
@@ -72,10 +74,12 @@ describe('ProductService', () => {
   it('should create a product', () => {
     const createDto: ProductData = {
       name: 'New Product',
-      description: 'Desc',
-      costPrice: 5,
-      salePrice: 10,
-      categoryId: mockCategory.id,
+      description: 'New Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      categoryId: 1,
+      stock: 150,
+      minimumStockThreshold: 15,
     };
     service.create(createDto).subscribe((product) => {
       expect(product).toEqual(mockProduct);

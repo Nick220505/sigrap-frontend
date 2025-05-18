@@ -286,7 +286,7 @@ export class ProductDialogComponent {
         if (product) {
           const formValue = {
             ...product,
-            categoryId: product.category?.id ?? null,
+            categoryId: product.category?.id > 0 ? product.category?.id : null,
           };
           this.productForm.patchValue(formValue);
         } else {

@@ -42,6 +42,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         name: 'Test User',
         lastLogin: new Date().toISOString(),
+        role: 'ADMINISTRATOR',
       };
 
       service.login(credentials).subscribe((response) => {
@@ -67,6 +68,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         name: 'Test User',
         lastLogin: new Date().toISOString(),
+        role: 'ADMINISTRATOR',
       };
 
       service.register(userData).subscribe((response) => {

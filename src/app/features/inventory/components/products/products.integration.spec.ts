@@ -34,22 +34,31 @@ describe('Products Feature Integration', () => {
       id: 1,
       name: 'Product 1',
       description: 'Description 1',
-      costPrice: 80,
-      salePrice: 100,
+      costPrice: 10.0,
+      salePrice: 20.0,
+      stock: 100,
+      minimumStockThreshold: 10,
+      category: { id: 1, name: 'Category 1' },
     },
     {
       id: 2,
       name: 'Product 2',
       description: 'Description 2',
-      costPrice: 150,
-      salePrice: 200,
+      costPrice: 15.0,
+      salePrice: 25.0,
+      stock: 200,
+      minimumStockThreshold: 20,
+      category: { id: 2, name: 'Category 2' },
     },
     {
       id: 3,
       name: 'Product 3',
       description: 'Description 3',
-      costPrice: 250,
-      salePrice: 300,
+      costPrice: 20.0,
+      salePrice: 30.0,
+      stock: 300,
+      minimumStockThreshold: 30,
+      category: { id: 3, name: 'Category 3' },
     },
   ];
 
@@ -166,9 +175,11 @@ describe('Products Feature Integration', () => {
     const newProduct: ProductData = {
       name: 'New Product',
       description: 'New Description',
-      costPrice: 120,
-      salePrice: 150,
+      costPrice: 10.0,
+      salePrice: 20.0,
       categoryId: 1,
+      stock: 100,
+      minimumStockThreshold: 10,
     };
 
     component.productStore.create(newProduct);
@@ -178,8 +189,14 @@ describe('Products Feature Integration', () => {
     expect(createReq.request.body).toEqual(newProduct);
 
     const createdProduct: ProductInfo = {
-      ...newProduct,
       id: 4,
+      name: 'New Product',
+      description: 'New Description',
+      costPrice: 10.0,
+      salePrice: 20.0,
+      category: { id: 1, name: 'Category 1' },
+      stock: 100,
+      minimumStockThreshold: 10,
     };
 
     createReq.flush(createdProduct);
@@ -201,53 +218,47 @@ describe('Products Feature Integration', () => {
     );
   }));
 
-  it('should update an existing product successfully', fakeAsync(() => {
+  it('should update a product successfully', fakeAsync(() => {
     const req = httpTestingController.expectOne(productsUrl);
     req.flush(mockProducts);
     tick();
     fixture.detectChanges();
 
-    component.productStore.openProductDialog(mockProducts[0]);
-
-    tick();
-    fixture.detectChanges();
-
-    expect(component.productStore.dialogVisible()).toBe(true);
-    expect(component.productStore.selectedProduct()).toEqual(mockProducts[0]);
-
-    const updatedProductData: Partial<ProductData> = {
-      name: 'Updated Product 1',
-      description: 'Updated Description 1',
-      costPrice: 100,
-      salePrice: 150,
+    const updatedProduct: ProductData = {
+      name: 'Updated Product',
+      description: 'Updated Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      categoryId: 2,
+      stock: 150,
+      minimumStockThreshold: 15,
     };
 
-    component.productStore.update({ id: 1, productData: updatedProductData });
+    component.productStore.update({ id: 1, productData: updatedProduct });
 
     const updateReq = httpTestingController.expectOne(`${productsUrl}/1`);
     expect(updateReq.request.method).toBe('PUT');
-    expect(updateReq.request.body).toEqual(updatedProductData);
+    expect(updateReq.request.body).toEqual(updatedProduct);
 
-    const updatedProduct: ProductInfo = {
+    const updatedProductInfo: ProductInfo = {
       ...mockProducts[0],
-      ...updatedProductData,
+      ...updatedProduct,
     };
 
-    updateReq.flush(updatedProduct);
+    updateReq.flush(updatedProductInfo);
 
     tick();
     fixture.detectChanges();
 
     expect(component.productStore.entities().find((p) => p.id === 1)).toEqual(
-      updatedProduct,
+      updatedProductInfo,
     );
 
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
         summary: 'Producto actualizado',
-        detail:
-          'El producto Updated Product 1 ha sido actualizado correctamente',
+        detail: 'El producto Updated Product ha sido actualizado correctamente',
       }),
     );
   }));
@@ -334,6 +345,8 @@ describe('Products Feature Integration', () => {
       costPrice: 120,
       salePrice: 150,
       categoryId: 1,
+      stock: 100,
+      minimumStockThreshold: 10,
     };
 
     component.productStore.create(newProduct);
@@ -358,5 +371,57 @@ describe('Products Feature Integration', () => {
     );
 
     expect(component.productStore.entities().length).toBe(3);
+  }));
+
+  it('should create a new product successfully with stock and minimumStockThreshold', fakeAsync(() => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    tick();
+    fixture.detectChanges();
+
+    const newProduct2: ProductData = {
+      name: 'Another Product',
+      description: 'Another Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      categoryId: 2,
+      stock: 150,
+      minimumStockThreshold: 15,
+    };
+
+    component.productStore.create(newProduct2);
+
+    const createReq = httpTestingController.expectOne(productsUrl);
+    expect(createReq.request.method).toBe('POST');
+    expect(createReq.request.body).toEqual(newProduct2);
+
+    const createdProduct: ProductInfo = {
+      id: 5,
+      name: 'Another Product',
+      description: 'Another Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      category: { id: 2, name: 'Category 2' },
+      stock: 150,
+      minimumStockThreshold: 15,
+    };
+
+    createReq.flush(createdProduct);
+
+    tick();
+    fixture.detectChanges();
+
+    expect(component.productStore.entities().length).toBe(4);
+    expect(component.productStore.entities().find((p) => p.id === 5)).toEqual(
+      createdProduct,
+    );
+
+    expect(messageService.add).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        severity: 'success',
+        summary: 'Producto creado',
+        detail: 'El producto Another Product ha sido creado correctamente',
+      }),
+    );
   }));
 });

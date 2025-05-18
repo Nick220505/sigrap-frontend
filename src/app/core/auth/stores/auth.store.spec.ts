@@ -22,6 +22,7 @@ describe('AuthStore', () => {
     email: 'test@example.com',
     name: 'Test User',
     lastLogin: new Date().toISOString(),
+    role: 'ADMINISTRATOR',
   };
 
   beforeEach(() => {
@@ -78,6 +79,7 @@ describe('AuthStore', () => {
         email: mockResponse.email,
         name: mockResponse.name,
         lastLogin: mockResponse.lastLogin,
+        role: mockResponse.role,
       });
       expect(store.token()).toBe(mockResponse.token);
       expect(store.loggedIn()).toBeTrue();
@@ -88,6 +90,7 @@ describe('AuthStore', () => {
           email: mockResponse.email,
           name: mockResponse.name,
           lastLogin: mockResponse.lastLogin,
+          role: mockResponse.role,
         }),
       );
     });
@@ -131,6 +134,7 @@ describe('AuthStore', () => {
         email: mockResponse.email,
         name: mockResponse.name,
         lastLogin: mockResponse.lastLogin,
+        role: mockResponse.role,
       });
       expect(store.token()).toBe(mockResponse.token);
       expect(store.loggedIn()).toBeTrue();
@@ -141,6 +145,7 @@ describe('AuthStore', () => {
           email: mockResponse.email,
           name: mockResponse.name,
           lastLogin: mockResponse.lastLogin,
+          role: mockResponse.role,
         }),
       );
     });
@@ -175,6 +180,7 @@ describe('AuthStore', () => {
         email: 'test@example.com',
         name: 'Test User',
         lastLogin: new Date().toISOString(),
+        role: 'ADMINISTRATOR',
       };
       localStorage.setItem('auth_token', 'test-token');
       localStorage.setItem('user_data', JSON.stringify(mockUser));
@@ -195,6 +201,7 @@ describe('AuthStore', () => {
         email: 'test@example.com',
         name: 'Test User',
         lastLogin: new Date().toISOString(),
+        role: 'ADMINISTRATOR',
       };
       const mockToken = 'test-token';
       localStorage.setItem('auth_token', mockToken);
