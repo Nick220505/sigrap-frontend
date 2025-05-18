@@ -127,7 +127,9 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="reason" class="font-bold">Razón de la Devolución</label>
+            <label for="reason" class="font-bold"
+              >Razón de la Devolución <span class="text-red-500">*</span></label
+            >
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-comment"></i>
@@ -138,8 +140,26 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
                 formControlName="reason"
                 rows="3"
                 class="w-full"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    returnForm.get('reason')?.invalid &&
+                    returnForm.get('reason')?.touched,
+                }"
+                placeholder="Ingrese el motivo detallado de la devolución..."
               ></textarea>
             </p-inputgroup>
+            @if (
+              returnForm.get('reason')?.invalid &&
+              returnForm.get('reason')?.touched
+            ) {
+              <small class="p-error">
+                @if (returnForm.get('reason')?.hasError('required')) {
+                  La razón de devolución es obligatoria.
+                } @else if (returnForm.get('reason')?.hasError('minlength')) {
+                  La razón debe tener al menos 5 caracteres.
+                }
+              </small>
+            }
           </div>
 
           <div class="flex flex-col gap-2">
@@ -263,7 +283,7 @@ export class SalesReturnsDialogComponent {
     customerId: [{ value: null, disabled: true }, Validators.required],
     employeeId: [null, Validators.required],
     totalReturnAmount: [{ value: 0, disabled: true }, Validators.required],
-    reason: [''],
+    reason: ['', [Validators.required, Validators.minLength(5)]],
     items: this.fb.array([]),
   });
 
