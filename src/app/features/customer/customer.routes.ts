@@ -9,13 +9,6 @@ export const customerRoutes: Routes = [
       ),
   },
   {
-    path: 'ranking',
-    loadComponent: () =>
-      import('./components/ranking/customer-ranking.component').then(
-        (m) => m.CustomerRankingComponent,
-      ),
-  },
-  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'registro',

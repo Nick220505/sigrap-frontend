@@ -122,11 +122,6 @@ export class MenuComponent {
           icon: 'pi pi-fw pi-user-plus',
           routerLink: ['/clientes/registro'],
         },
-        {
-          label: 'Ranking',
-          icon: 'pi pi-fw pi-star',
-          routerLink: ['/clientes/ranking'],
-        },
       ],
     },
     {
