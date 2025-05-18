@@ -143,6 +143,9 @@ import { TooltipModule } from 'primeng/tooltip';
                 [minDate]="minDeliveryDate"
                 styleClass="w-full"
                 appendTo="body"
+                [showOnFocus]="true"
+                [showClear]="true"
+                (onSelect)="onExpectedDeliveryDateSelected($event)"
               />
             </div>
           </div>
@@ -255,7 +258,7 @@ import { TooltipModule } from 'primeng/tooltip';
                       </td>
                       <td colspan="@if (viewMode()) {1} @else {2}" class="p-2">
                         <p-inputNumber
-                          [ngModel]="totalAmount()"
+                          [ngModel]="orderForm.get('totalAmount')?.value"
                           [ngModelOptions]="{ standalone: true }"
                           mode="currency"
                           currency="COP"
@@ -323,15 +326,6 @@ export class OrderDialogComponent {
     return 'Registrar Nuevo Pedido';
   });
 
-  readonly totalAmount = computed(() => {
-    let total = 0;
-    for (let i = 0; i < this.itemsArray.length; i++) {
-      const itemGroup = this.itemsArray.at(i);
-      total += itemGroup.get('subtotal')?.value ?? 0;
-    }
-    return total;
-  });
-
   readonly itemsCountSignal = signal(0);
 
   readonly tableRows = computed(() => {
@@ -351,6 +345,7 @@ export class OrderDialogComponent {
     supplierId: [null, Validators.required],
     orderDate: [new Date(), Validators.required],
     expectedDeliveryDate: [null],
+    totalAmount: [0, Validators.min(0)],
     items: this.fb.array([]),
   });
 
@@ -387,6 +382,7 @@ export class OrderDialogComponent {
             supplierId: order.supplier?.id,
             orderDate,
             expectedDeliveryDate,
+            totalAmount: order.totalAmount,
           });
 
           if (order.items && order.items.length > 0) {
@@ -416,6 +412,7 @@ export class OrderDialogComponent {
           }
 
           this.itemsCountSignal.set(this.itemsArray.length);
+          this.updateTotals();
           this.orderForm.markAsPristine();
 
           if (viewOnly) {
@@ -428,6 +425,7 @@ export class OrderDialogComponent {
             supplierId: null,
             orderDate: new Date(),
             expectedDeliveryDate: null,
+            totalAmount: 0,
           });
 
           while (this.itemsArray.length > 0) {
@@ -439,6 +437,15 @@ export class OrderDialogComponent {
         }
       });
     });
+
+    this.orderForm
+      .get('items')
+      ?.valueChanges.subscribe(() => this.updateTotals());
+  }
+
+  onExpectedDeliveryDateSelected(event: Date): void {
+    this.orderForm.get('expectedDeliveryDate')?.setValue(event);
+    this.orderForm.markAsDirty();
   }
 
   addItem(): void {
@@ -455,6 +462,7 @@ export class OrderDialogComponent {
 
     this.itemsArray.push(newItem);
     this.itemsCountSignal.set(this.itemsArray.length);
+    this.updateTotals();
     this.orderForm.markAsDirty();
   }
 
@@ -462,6 +470,7 @@ export class OrderDialogComponent {
     if (this.itemsArray.length > 1) {
       this.itemsArray.removeAt(index);
       this.itemsCountSignal.set(this.itemsArray.length);
+      this.updateTotals();
       this.orderForm.markAsDirty();
     }
   }
@@ -490,7 +499,18 @@ export class OrderDialogComponent {
     const subtotal = quantity * unitPrice;
     itemGroup.get('subtotal')?.setValue(subtotal);
 
+    this.updateTotals();
     this.orderForm.markAsDirty();
+  }
+
+  updateTotals(): void {
+    let total = 0;
+    for (let i = 0; i < this.itemsArray.length; i++) {
+      const itemGroup = this.itemsArray.at(i);
+      total += itemGroup.get('subtotal')?.value ?? 0;
+    }
+
+    this.orderForm.get('totalAmount')?.setValue(total);
   }
 
   formatDateToISO(date: Date | null): string | null {
