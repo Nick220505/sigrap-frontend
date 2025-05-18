@@ -16,13 +16,6 @@ export const employeeRoutes: Routes = [
       ).then((m) => m.EmployeeAttendanceComponent),
   },
   {
-    path: 'rendimiento',
-    loadComponent: () =>
-      import(
-        './components/employee-performance/employee-performance.component'
-      ).then((m) => m.EmployeePerformanceComponent),
-  },
-  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'horarios',

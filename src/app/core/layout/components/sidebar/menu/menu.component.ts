@@ -72,11 +72,6 @@ export class MenuComponent {
           icon: 'pi pi-fw pi-eye',
           routerLink: ['/empleados/asistencia'],
         },
-        {
-          label: 'Rendimiento',
-          icon: 'pi pi-fw pi-chart-line',
-          routerLink: ['/empleados/rendimiento'],
-        },
       ],
     },
     {
