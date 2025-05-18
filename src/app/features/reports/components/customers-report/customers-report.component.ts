@@ -51,7 +51,6 @@ interface PieChartTooltipContext {
 
 @Component({
   selector: 'app-customers-report',
-  standalone: true,
   imports: [
     ChartModule,
     CardModule,
@@ -258,7 +257,9 @@ interface PieChartTooltipContext {
                 </td>
                 <td>{{ customer.customer.fullName }}</td>
                 <td>{{ customer.purchaseCount }}</td>
-                <td>{{ customer.totalAmount | currency }}</td>
+                <td>
+                  {{ customer.totalAmount | currency: 'COP' : '$' : '1.0-0' }}
+                </td>
                 <td>
                   {{
                     lastPurchaseDate(customer.customer.id) | date: 'dd/MM/yyyy'
@@ -509,7 +510,7 @@ export class CustomersReportComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `$${context.parsed.y.toFixed(2)}`;
+            return `$${context.parsed.y.toFixed(0)}`;
           },
         },
       },
@@ -549,7 +550,7 @@ export class CustomersReportComponent implements OnInit {
             );
             const percentage =
               total > 0 ? ((value * 100) / total).toFixed(2) : '0';
-            return `${context.label || ''}: $${value.toFixed(2)} (${percentage}%)`;
+            return `${context.label || ''}: $${value.toFixed(0)} (${percentage}%)`;
           },
         },
       },
@@ -575,7 +576,7 @@ export class CustomersReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto de Ventas ($)',
+          text: 'Monto de Ventas (COP)',
         },
       },
     },
