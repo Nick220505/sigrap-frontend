@@ -1,8 +1,11 @@
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutService } from '@core/layout/services/layout.service';
-
+import { ButtonModule } from 'primeng/button';
+import { StyleClassModule } from 'primeng/styleclass';
+import { ConfiguratorComponent } from './configurator/configurator.component';
 import { FloatingConfiguratorComponent } from './floating-configurator.component';
 
 const mockLayoutService = {
@@ -34,13 +37,23 @@ describe('FloatingConfiguratorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FloatingConfiguratorComponent],
+      imports: [
+        FloatingConfiguratorComponent,
+        NoopAnimationsModule,
+        ButtonModule,
+        StyleClassModule,
+      ],
       providers: [{ provide: LayoutService, useValue: mockLayoutService }],
       schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
-  });
+    })
+      .overrideComponent(ConfiguratorComponent, {
+        set: {
+          template: '',
+          imports: [],
+        },
+      })
+      .compileComponents();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(FloatingConfiguratorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -100,5 +113,14 @@ describe('FloatingConfiguratorComponent', () => {
       );
       expect(configurator).toBeTruthy();
     });
+  });
+
+  it('should configure button with StyleClass properties', () => {
+    const button = fixture.debugElement.query(
+      By.css('[pStyleClass]'),
+    ).componentInstance;
+
+    expect(button).toBeTruthy();
+    expect(button.rounded).toBeTruthy();
   });
 });

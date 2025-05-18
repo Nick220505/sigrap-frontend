@@ -6,6 +6,7 @@ describe('LayoutService', () => {
   let localStorageSpy: jasmine.SpyObj<Storage>;
   let mediaQueryListeners: ((e: MediaQueryListEvent) => void)[] = [];
   let systemThemeDarkMode = false;
+  let matchMediaSpy: any;
 
   beforeEach(() => {
     mediaQueryListeners = [];
@@ -20,45 +21,29 @@ describe('LayoutService', () => {
     spyOnProperty(window, 'localStorage').and.returnValue(storageMock);
     localStorageSpy = storageMock;
 
-    spyOn(window, 'matchMedia').and.callFake(
-      (query: string): MediaQueryList => {
-        if (query === '(prefers-color-scheme: dark)') {
-          return {
-            matches: systemThemeDarkMode,
-            addEventListener: (
-              event: string,
-              listener: (e: MediaQueryListEvent) => void,
-            ) => {
+    // Define matchMedia mock only once per test
+    if (!matchMediaSpy) {
+      matchMediaSpy = spyOn(window, 'matchMedia').and.callFake((query) => {
+        return {
+          matches: systemThemeDarkMode,
+          media: query,
+          addEventListener: (event: string, listener: any) => {
+            if (event === 'change') {
               mediaQueryListeners.push(listener);
-            },
-            removeEventListener: (
-              event: string,
-              listener: (e: MediaQueryListEvent) => void,
-            ) => {
+            }
+          },
+          removeEventListener: (event: string, listener: any) => {
+            if (event === 'change') {
               const index = mediaQueryListeners.indexOf(listener);
               if (index !== -1) {
                 mediaQueryListeners.splice(index, 1);
               }
-            },
-            dispatchEvent: () => true,
-            onchange: null,
-            media: '(prefers-color-scheme: dark)',
-            addListener: jasmine.createSpy('addListener'),
-            removeListener: jasmine.createSpy('removeListener'),
-          } as MediaQueryList;
-        }
-        return {
-          matches: false,
-          addEventListener: jasmine.createSpy('addEventListener'),
-          removeEventListener: jasmine.createSpy('removeEventListener'),
-          dispatchEvent: () => true,
-          onchange: null,
-          media: query,
-          addListener: jasmine.createSpy('addListener'),
-          removeListener: jasmine.createSpy('removeListener'),
+            }
+          },
+          dispatchEvent: (event: any) => true,
         } as MediaQueryList;
-      },
-    );
+      });
+    }
 
     jasmine.clock().uninstall();
     jasmine.clock().install();
@@ -98,6 +83,8 @@ describe('LayoutService', () => {
 
   afterEach(() => {
     jasmine.clock().uninstall();
+    // Reset the spy after each test to avoid conflicts
+    matchMediaSpy = null;
   });
 
   it('should be created', () => {
