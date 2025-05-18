@@ -93,7 +93,6 @@ describe('CustomerStore', () => {
       customerService.findAll.and.returnValue(throwError(() => testError));
       store.findAll();
       expect(store.error()).toBe('Failed to fetch customers');
-      // No error message is shown for findAll failures in the actual implementation
     });
   });
 

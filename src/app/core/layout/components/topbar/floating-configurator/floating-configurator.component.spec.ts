@@ -5,7 +5,6 @@ import { LayoutService } from '@core/layout/services/layout.service';
 
 import { FloatingConfiguratorComponent } from './floating-configurator.component';
 
-// Create a mock for LayoutService
 const mockLayoutService = {
   layoutConfig: signal({
     darkTheme: false,
@@ -26,7 +25,6 @@ const mockLayoutService = {
   getSurface: signal('slate'),
   isOverlay: signal(false),
   transitionComplete: signal(false),
-  // Mock implementation that doesn't do anything but satisfies the interface
   ngOnDestroy: jasmine.createSpy('ngOnDestroy'),
 };
 

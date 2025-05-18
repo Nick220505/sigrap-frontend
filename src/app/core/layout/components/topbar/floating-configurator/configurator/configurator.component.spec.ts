@@ -99,7 +99,6 @@ describe('ConfiguratorComponent', () => {
     });
 
     it('should determine if menu mode button should be shown based on router URL', () => {
-      // Create a mock LayoutService with ngOnDestroy method
       const layoutServiceMock = jasmine.createSpyObj(
         'LayoutService',
         ['ngOnDestroy'],

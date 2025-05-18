@@ -14,7 +14,6 @@ describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
 
-  // Create a mock for AuthStore
   const mockAuthStore = {
     user: signal({
       id: 1,

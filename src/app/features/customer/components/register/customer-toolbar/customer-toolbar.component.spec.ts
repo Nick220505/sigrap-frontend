@@ -9,7 +9,6 @@ import { Table } from 'primeng/table';
 import { CustomerTableComponent } from '../customer-table/customer-table.component';
 import { CustomerToolbarComponent } from './customer-toolbar.component';
 
-// Create a minimal interface that matches what we need from Table
 interface MockTable {
   exportCSV: () => void;
 }
@@ -63,12 +62,10 @@ describe('CustomerToolbarComponent', () => {
       'confirm',
     ]);
 
-    // Create a mock for CustomerTableComponent with dt method
     mockCustomerTable = jasmine.createSpyObj('CustomerTableComponent', ['dt'], {
       selectedCustomers: selectedCustomersSignal,
     });
 
-    // Create a mock table with just the exportCSV method
     const mockTable: MockTable = {
       exportCSV: jasmine.createSpy('exportCSV'),
     };
@@ -85,7 +82,6 @@ describe('CustomerToolbarComponent', () => {
     fixture = TestBed.createComponent(CustomerToolbarComponent);
     component = fixture.componentInstance;
 
-    // Set up the required input
     Object.defineProperty(component, 'customerTable', {
       value: () => mockCustomerTable,
     });
@@ -98,7 +94,6 @@ describe('CustomerToolbarComponent', () => {
   });
 
   it('should call openCustomerDialog when add button is clicked', () => {
-    // Test the method directly since we can't easily trigger the button click
     component.customerStore.openCustomerDialog();
     expect(customerStore.openCustomerDialog).toHaveBeenCalled();
   });
