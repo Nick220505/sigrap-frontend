@@ -163,14 +163,14 @@ export class MenuComponent {
           routerLink: ['/reportes/clientes'],
         },
         {
+          label: 'Empleados',
+          icon: 'pi pi-fw pi-id-card',
+          routerLink: ['/reportes/empleados'],
+        },
+        {
           label: 'Financieros',
           icon: 'pi pi-fw pi-dollar',
           routerLink: ['/reportes/financieros'],
-        },
-        {
-          label: 'Rendimiento',
-          icon: 'pi pi-fw pi-chart-line',
-          routerLink: ['/reportes/rendimiento'],
         },
       ],
     },

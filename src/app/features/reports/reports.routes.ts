@@ -35,11 +35,11 @@ export const reportsRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'rendimiento',
+    path: 'empleados',
     loadComponent: () =>
-      import(
-        './components/performance-report/performance-report.component'
-      ).then((m) => m.PerformanceReportComponent),
+      import('./components/employees-report/employees-report.component').then(
+        (m) => m.EmployeesReportComponent,
+      ),
     canActivate: [authGuard],
   },
   {
