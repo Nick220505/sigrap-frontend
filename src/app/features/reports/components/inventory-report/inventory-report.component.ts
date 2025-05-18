@@ -50,11 +50,12 @@ interface ChartDataset {
 }
 
 interface ChartTooltipContext {
-  parsed: { y: number };
+  parsed: number | { x?: number; y: number };
   label?: string;
   dataset: {
     label: string;
   };
+  dataIndex?: number;
 }
 
 @Component({
@@ -519,8 +520,8 @@ export class InventoryReportComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            const value = context.parsed.y;
-            return `${context.label}: ${value} productos`;
+            // For pie charts
+            return `${context.label}: ${context.parsed} productos`;
           },
         },
       },
@@ -537,6 +538,9 @@ export class InventoryReportComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
+            if (typeof context.parsed === 'number') {
+              return `${context.dataset.label}: ${context.parsed} unidades`;
+            }
             return `${context.dataset.label}: ${context.parsed.y} unidades`;
           },
         },
