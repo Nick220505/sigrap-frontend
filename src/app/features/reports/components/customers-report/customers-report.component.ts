@@ -41,6 +41,14 @@ interface ChartTooltipContext {
   };
 }
 
+interface PieChartTooltipContext {
+  parsed: number;
+  label?: string;
+  dataset: {
+    data: number[];
+  };
+}
+
 @Component({
   selector: 'app-customers-report',
   standalone: true,
@@ -66,8 +74,10 @@ interface ChartTooltipContext {
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
-            <span class="font-medium text-sm">Periodo:</span>
-            <span class="p-float-label">
+            <div class="flex items-center gap-2">
+              <span class="font-medium text-sm whitespace-nowrap"
+                >Fecha Inicial:</span
+              >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
                 [showIcon]="true"
@@ -77,10 +87,12 @@ interface ChartTooltipContext {
                 inputId="startDate"
                 (onSelect)="updateDateRange(0, $event)"
               ></p-datePicker>
-              <label for="startDate">Fecha Inicial</label>
-            </span>
+            </div>
 
-            <span class="p-float-label">
+            <div class="flex items-center gap-2">
+              <span class="font-medium text-sm whitespace-nowrap"
+                >Fecha Final:</span
+              >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
                 [showIcon]="true"
@@ -90,10 +102,9 @@ interface ChartTooltipContext {
                 inputId="endDate"
                 (onSelect)="updateDateRange(1, $event)"
               ></p-datePicker>
-              <label for="endDate">Fecha Final</label>
-            </span>
+            </div>
 
-            <span class="flex items-center gap-2 ml-3">
+            <div class="flex items-center gap-2 ml-3">
               <span class="font-medium text-sm whitespace-nowrap"
                 >Mostrar:</span
               >
@@ -101,11 +112,11 @@ interface ChartTooltipContext {
                 [options]="limitOptions"
                 [ngModel]="customerLimitSignal()"
                 (onChange)="applyRankingLimit($event)"
-                styleClass="w-28"
+                styleClass="w-36"
                 placeholder="Top"
                 inputId="customerLimit"
               ></p-select>
-            </span>
+            </div>
           </div>
         </ng-template>
 
@@ -234,15 +245,15 @@ interface ChartTooltipContext {
                 <td>
                   <span
                     [ngClass]="{
-                      'bg-yellow-100 text-yellow-800 font-bold px-3 py-1 rounded-full':
-                        i === 0,
-                      'bg-gray-100 text-gray-800 font-bold px-3 py-1 rounded-full':
-                        i === 1,
-                      'bg-amber-50 text-amber-800 font-bold px-3 py-1 rounded-full':
-                        i === 2,
-                      'px-3 py-1': i > 2,
+                      'font-bold text-lg text-yellow-600': i === 0,
+                      'font-bold text-lg text-gray-600': i === 1,
+                      'font-bold text-lg text-amber-700': i === 2,
+                      'px-3': i > 2,
                     }"
-                    >{{ i + 1 }}</span
+                    >{{ i + 1
+                    }}{{
+                      i === 0 ? ' 🥇' : i === 1 ? ' 🥈' : i === 2 ? ' 🥉' : ''
+                    }}</span
                   >
                 </td>
                 <td>{{ customer.customer.fullName }}</td>
@@ -530,14 +541,15 @@ export class CustomersReportComponent implements OnInit {
       },
       tooltip: {
         callbacks: {
-          label: (context: ChartTooltipContext) => {
-            const value = context.parsed.y;
+          label: (context: PieChartTooltipContext) => {
+            const value = context.parsed || 0;
             const total = context.dataset.data.reduce(
               (a: number, b: number) => a + b,
               0,
             );
-            const percentage = ((value * 100) / total).toFixed(2);
-            return `${context.label}: $${value.toFixed(2)} (${percentage}%)`;
+            const percentage =
+              total > 0 ? ((value * 100) / total).toFixed(2) : '0';
+            return `${context.label || ''}: $${value.toFixed(2)} (${percentage}%)`;
           },
         },
       },
