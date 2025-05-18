@@ -128,7 +128,7 @@ import { SaleStore } from '../../../stores/sale.store';
                   <th class="w-1/8">Precio Unitario</th>
                   <th class="w-1/4">Subtotal</th>
                   @if (!viewMode()) {
-                    <th class="w-16">Acciones</th>
+                    <th class="w-12 text-center">Acciones</th>
                   }
                 </tr>
               </ng-template>
@@ -196,7 +196,7 @@ import { SaleStore } from '../../../stores/sale.store';
                       ></p-inputNumber>
                     </td>
                     @if (!viewMode()) {
-                      <td class="p-2 text-center">
+                      <td class="p-2 text-center w-12">
                         <p-button
                           icon="pi pi-trash"
                           severity="danger"
