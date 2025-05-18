@@ -33,7 +33,7 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'orderNumber', header: 'ID Pedido' },
+        { field: 'id', header: 'ID' },
         { field: 'orderDate', header: 'Fecha' },
         { field: 'supplier.name', header: 'Proveedor' },
         { field: 'totalAmount', header: 'Total' },
@@ -50,7 +50,7 @@ import { TooltipModule } from 'primeng/tooltip';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pedidos"
-      [globalFilterFields]="['orderNumber', 'supplier.name', 'status']"
+      [globalFilterFields]="['id', 'supplier.name', 'status']"
       [tableStyle]="{ 'min-width': '70rem' }"
       rowHover
       dataKey="id"
