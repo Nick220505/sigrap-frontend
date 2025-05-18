@@ -35,6 +35,7 @@ import { SaleStore } from '../../../stores/sale.store';
   template: `
     @let columns =
       [
+        { field: 'id', header: 'ID' },
         { field: 'customer', header: 'Cliente' },
         { field: 'totalAmount', header: 'Total Base' },
         { field: 'discountAmount', header: 'Descuento' },
