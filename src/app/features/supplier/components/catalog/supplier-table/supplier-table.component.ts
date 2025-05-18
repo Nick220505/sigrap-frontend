@@ -15,7 +15,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
@@ -29,7 +28,6 @@ import { TooltipModule } from 'primeng/tooltip';
     TooltipModule,
     MessageModule,
     FormsModule,
-    TagModule,
   ],
   template: `
     @let columns =
@@ -38,7 +36,6 @@ import { TooltipModule } from 'primeng/tooltip';
         { field: 'contactPerson', header: 'Contacto' },
         { field: 'email', header: 'Email' },
         { field: 'phone', header: 'Teléfono' },
-        { field: 'status', header: 'Estado' },
       ];
 
     <p-table
@@ -51,13 +48,7 @@ import { TooltipModule } from 'primeng/tooltip';
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} proveedores"
-      [globalFilterFields]="[
-        'name',
-        'contactPerson',
-        'email',
-        'phone',
-        'status',
-      ]"
+      [globalFilterFields]="['name', 'contactPerson', 'email', 'phone']"
       [tableStyle]="{ 'min-width': '60rem' }"
       rowHover
       dataKey="id"
@@ -139,14 +130,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
           @for (column of columns; track column.field) {
             <td>
-              @if (column.field === 'status') {
-                <p-tag
-                  [severity]="getStatusSeverity(supplier.status)"
-                  [value]="getStatusLabel(supplier.status)"
-                />
-              } @else {
-                {{ supplier[column.field] || '-' }}
-              }
+              {{ supplier[column.field] || '-' }}
             </td>
           }
 
@@ -233,39 +217,5 @@ export class SupplierTableComponent {
       message: `¿Está seguro de que desea eliminar el proveedor <b>${supplier.name}</b>?`,
       accept: () => this.supplierStore.delete(supplier.id),
     });
-  }
-
-  getStatusSeverity(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'success';
-      case 'INACTIVE':
-        return 'secondary';
-      case 'PROBATION':
-        return 'warning';
-      case 'TERMINATED':
-        return 'danger';
-      case 'BLACKLISTED':
-        return 'danger';
-      default:
-        return 'info';
-    }
-  }
-
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'ACTIVE':
-        return 'Activo';
-      case 'INACTIVE':
-        return 'Inactivo';
-      case 'PROBATION':
-        return 'En Prueba';
-      case 'TERMINATED':
-        return 'Terminado';
-      case 'BLACKLISTED':
-        return 'Lista Negra';
-      default:
-        return status;
-    }
   }
 }
