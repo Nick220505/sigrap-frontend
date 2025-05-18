@@ -382,14 +382,48 @@ export const SaleStore = signalStore(
 
     findByDateRange: rxMethod<{ startDate: string; endDate: string }>(
       pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
+        tap((params) => {
+          console.log('SaleStore: findByDateRange called with params:', params);
+          patchState(store, { loading: true, error: null });
+        }),
         switchMap(({ startDate, endDate }) =>
           saleService.findByDateRange(startDate, endDate).pipe(
+            tap((response) => {
+              console.log('SaleStore: Raw API response received:', response);
+            }),
             tapResponse({
               next: (sales) => {
+                console.log(
+                  `SaleStore: Received ${sales.length} sales from API`,
+                );
+                console.log('SaleStore: First 3 sales:', sales.slice(0, 3));
+
+                // Check if sales have necessary properties
+                if (sales.length > 0) {
+                  const firstSale = sales[0];
+                  console.log(
+                    'SaleStore: Sample sale structure:',
+                    JSON.stringify({
+                      id: firstSale.id,
+                      customer: firstSale.customer
+                        ? {
+                            id: firstSale.customer.id,
+                            fullName: firstSale.customer.fullName,
+                          }
+                        : 'missing',
+                      createdAt: firstSale.createdAt,
+                      finalAmount: firstSale.finalAmount,
+                    }),
+                  );
+                }
+
                 patchState(store, setAllEntities(sales));
               },
               error: ({ message: error }: Error) => {
+                console.error(
+                  'SaleStore: Error fetching sales by date range:',
+                  error,
+                );
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
@@ -397,7 +431,10 @@ export const SaleStore = signalStore(
                   detail: 'Error al cargar ventas por rango de fechas',
                 });
               },
-              finalize: () => patchState(store, { loading: false }),
+              finalize: () => {
+                console.log('SaleStore: findByDateRange request completed');
+                patchState(store, { loading: false });
+              },
             }),
           ),
         ),

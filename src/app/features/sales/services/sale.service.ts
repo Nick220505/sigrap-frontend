@@ -28,7 +28,7 @@ export class SaleService {
   }
 
   findByDateRange(startDate: string, endDate: string): Observable<SaleInfo[]> {
-    return this.http.get<SaleInfo[]>(`${this.salesUrl}/date-range`, {
+    return this.http.get<SaleInfo[]>(`${this.salesUrl}/by-date-range`, {
       params: { startDate, endDate },
     });
   }
@@ -77,7 +77,6 @@ export class SaleService {
           tap((response: HttpResponse<Blob>) => {
             const blob = response.body;
             if (!blob) {
-              console.error('No content received from the server');
               return;
             }
 
