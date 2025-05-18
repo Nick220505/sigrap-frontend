@@ -55,8 +55,7 @@ import { SaleStore } from '../../../stores/sale.store';
       showCurrentPageReport
       currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} ventas"
       [globalFilterFields]="[
-        'customer.firstName',
-        'customer.lastName',
+        'customer.fullName',
         'totalAmount',
         'discountAmount',
         'taxAmount',
@@ -148,7 +147,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 @case ('customer') {
                   {{
                     sale.customer
-                      ? sale.customer.firstName + ' ' + sale.customer.lastName
+                      ? sale.customer.fullName
                       : 'Cliente no registrado'
                   }}
                 }
