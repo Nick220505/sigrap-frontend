@@ -7,6 +7,8 @@ import { SaleReturnStore } from '@features/sales/stores/sale-return.store';
 import { SaleStore } from '@features/sales/stores/sale.store';
 import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.model';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order.store';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -81,7 +83,7 @@ interface PieChartTooltipContext {
     ToolbarModule,
   ],
   template: `
-    <div class="p-4">
+    <div class="p-4" id="reportContent">
       <h2 class="text-2xl font-bold mb-4">Reportes Financieros</h2>
 
       <p-toolbar styleClass="mb-6">
@@ -121,6 +123,15 @@ interface PieChartTooltipContext {
 
         <ng-template #end>
           <div class="flex gap-2">
+            <p-button
+              label="Exportar PDF"
+              icon="pi pi-file-pdf"
+              styleClass="p-button-help"
+              (onClick)="exportToPDF()"
+              [loading]="isExporting()"
+              pTooltip="Exportar reporte en PDF"
+              tooltipPosition="top"
+            ></p-button>
             <p-button
               label="Aplicar"
               icon="pi pi-filter"
@@ -336,6 +347,109 @@ interface PieChartTooltipContext {
           </p-table>
         }
       </p-card>
+    </div>
+
+    <!-- Hidden container for PDF export -->
+    <div class="p-4" id="exportContent" style="display: none;">
+      <h2 class="text-2xl font-bold mb-4">Reporte Financiero</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <div class="p-4 border rounded-lg bg-white">
+          <div class="flex flex-col items-center">
+            <h3 class="text-xl font-semibold mb-2">Ingresos Totales</h3>
+            <span class="text-3xl font-bold text-green-600">{{
+              totalRevenue() | currency: 'COP' : '$' : '1.0-0'
+            }}</span>
+          </div>
+        </div>
+
+        <div class="p-4 border rounded-lg bg-white">
+          <div class="flex flex-col items-center">
+            <h3 class="text-xl font-semibold mb-2">Gastos Totales</h3>
+            <span class="text-3xl font-bold text-red-600">{{
+              totalExpenses() | currency: 'COP' : '$' : '1.0-0'
+            }}</span>
+          </div>
+        </div>
+
+        <div class="p-4 border rounded-lg bg-white">
+          <div class="flex flex-col items-center">
+            <h3 class="text-xl font-semibold mb-2">Utilidad</h3>
+            <span
+              class="text-3xl font-bold"
+              [ngClass]="{
+                'text-green-600': totalProfit() > 0,
+                'text-red-600': totalProfit() < 0,
+                'text-gray-600': totalProfit() === 0,
+              }"
+              >{{ totalProfit() | currency: 'COP' : '$' : '1.0-0' }}</span
+            >
+            <span
+              class="text-lg mt-1"
+              [ngClass]="{
+                'text-green-600': profitMargin() > 0,
+                'text-red-600': profitMargin() < 0,
+                'text-gray-600': profitMargin() === 0,
+              }"
+              >{{ profitMargin() | number: '1.1-1' }}%</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 p-4 border rounded-lg bg-white">
+        <h3 class="text-xl font-semibold mb-4">
+          Resumen Financiero por Periodos
+        </h3>
+        <table class="w-full">
+          <thead>
+            <tr class="border-b">
+              <th class="p-2 text-left">Periodo</th>
+              <th class="p-2 text-right">Ingresos</th>
+              <th class="p-2 text-right">Gastos</th>
+              <th class="p-2 text-right">Devoluciones</th>
+              <th class="p-2 text-right">Utilidad</th>
+              <th class="p-2 text-right">Margen de Utilidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (summary of financialSummaries(); track summary.period) {
+              <tr class="border-b">
+                <td class="p-2">{{ summary.period }}</td>
+                <td class="p-2 text-right">
+                  {{ summary.revenue | currency: 'COP' : '$' : '1.0-0' }}
+                </td>
+                <td class="p-2 text-right">
+                  {{ summary.expenses | currency: 'COP' : '$' : '1.0-0' }}
+                </td>
+                <td class="p-2 text-right">
+                  {{ summary.returns | currency: 'COP' : '$' : '1.0-0' }}
+                </td>
+                <td class="p-2 text-right">
+                  <span
+                    [ngClass]="{
+                      'text-green-600 font-medium': summary.profit > 0,
+                      'text-red-600 font-medium': summary.profit < 0,
+                    }"
+                    >{{
+                      summary.profit | currency: 'COP' : '$' : '1.0-0'
+                    }}</span
+                  >
+                </td>
+                <td class="p-2 text-right">
+                  <span
+                    [ngClass]="{
+                      'text-green-600 font-medium': summary.profitMargin > 0,
+                      'text-red-600 font-medium': summary.profitMargin < 0,
+                    }"
+                    >{{ summary.profitMargin | number: '1.1-1' }}%</span
+                  >
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   `,
 })
@@ -1071,6 +1185,141 @@ export class FinancialReportComponent implements OnInit {
       }
 
       return new Date();
+    }
+  }
+
+  isExporting = signal(false);
+  private applyCompatibleStyles(element: HTMLElement): void {
+    // Convert oklch colors to RGB
+    const applyToElement = (el: HTMLElement) => {
+      const style = window.getComputedStyle(el);
+      const color = style.getPropertyValue('color');
+      const backgroundColor = style.getPropertyValue('background-color');
+      const borderColor = style.getPropertyValue('border-color');
+
+      // Only convert if the color is in oklch format
+      if (color.includes('oklch')) {
+        el.style.color = this.convertToRGB(color);
+      }
+      if (backgroundColor.includes('oklch')) {
+        el.style.backgroundColor = this.convertToRGB(backgroundColor);
+      }
+      if (borderColor.includes('oklch')) {
+        el.style.borderColor = this.convertToRGB(borderColor);
+      }
+
+      // Ensure PrimeNG component backgrounds are set
+      if (el.classList.contains('p-card')) {
+        el.style.backgroundColor = '#ffffff';
+      }
+    };
+
+    // Apply to main element
+    applyToElement(element);
+
+    // Apply to all child elements
+    const allElements = element.getElementsByTagName('*');
+    for (const el of Array.from(allElements)) {
+      applyToElement(el as HTMLElement);
+    }
+  }
+
+  private convertToRGB(color: string): string {
+    // Simple conversion for oklch colors - you may need to adjust these values
+    if (color.includes('oklch')) {
+      return '#000000'; // Default to black if oklch
+    }
+    return color;
+  }
+
+  async exportToPDF() {
+    try {
+      this.isExporting.set(true);
+      const exportContent = document.getElementById('exportContent');
+
+      if (!exportContent) {
+        throw new Error('Export content element not found');
+      }
+
+      // Create a clone and prepare it for PDF export
+      const clone = exportContent.cloneNode(true) as HTMLElement;
+      clone.style.display = 'block';
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      clone.style.width = '1024px'; // Set fixed width for consistent rendering
+      clone.style.backgroundColor = '#ffffff';
+      document.body.appendChild(clone);
+
+      // Apply compatible styles
+      this.applyCompatibleStyles(clone);
+
+      // Wait for styles and images to load
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Capture the content with specific dimensions
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: 1024,
+        height: clone.offsetHeight,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById('exportContent');
+          if (clonedElement) {
+            clonedElement.style.width = '1024px';
+          }
+        },
+      });
+
+      // Clean up the clone
+      document.body.removeChild(clone);
+
+      // Create PDF with proper dimensions
+      const imgWidth = 208; // A4 width in mm
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      const pdf = new jsPDF('p', 'mm');
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(
+        canvas.toDataURL('image/png', 1.0),
+        'PNG',
+        0,
+        position,
+        imgWidth,
+        imgHeight,
+        '',
+        'FAST',
+      );
+      heightLeft -= pageHeight;
+
+      // Add subsequent pages if content is longer than one page
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(
+          canvas.toDataURL('image/png', 1.0),
+          'PNG',
+          0,
+          position,
+          imgWidth,
+          imgHeight,
+          '',
+          'FAST',
+        );
+        heightLeft -= pageHeight;
+      }
+
+      // Save the PDF
+      pdf.save('reporte-financiero.pdf');
+    } catch (error) {
+      console.error('Error al exportar el PDF:', error);
+    } finally {
+      this.isExporting.set(false);
     }
   }
 }
