@@ -13,6 +13,7 @@ import { MenuComponent } from './menu.component';
 describe('MenuComponent', () => {
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
+  let originalMatchMedia: typeof window.matchMedia;
 
   const mockAuthStore = {
     user: signal({
@@ -24,6 +25,32 @@ describe('MenuComponent', () => {
   };
 
   beforeEach(async () => {
+    // Store original matchMedia
+    originalMatchMedia = window.matchMedia;
+
+    // Mock matchMedia
+    try {
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: jasmine.createSpy('matchMedia').and.returnValue({
+          matches: false,
+          media: '',
+          onchange: null,
+          addListener: jasmine.createSpy('addListener'),
+          removeListener: jasmine.createSpy('removeListener'),
+          addEventListener: jasmine.createSpy('addEventListener'),
+          removeEventListener: jasmine.createSpy('removeEventListener'),
+          dispatchEvent: jasmine.createSpy('dispatchEvent'),
+        }),
+      });
+    } catch (e) {
+      // If already spied upon, ignore the error
+      const error = e as Error;
+      if (!error.message?.includes('already been spied upon')) {
+        throw error;
+      }
+    }
+
     await TestBed.configureTestingModule({
       imports: [MenuComponent, NoopAnimationsModule, MenuItemComponent],
       providers: [
@@ -39,6 +66,14 @@ describe('MenuComponent', () => {
     fixture = TestBed.createComponent(MenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    // Restore original matchMedia
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: originalMatchMedia,
+    });
   });
 
   it('should create', () => {

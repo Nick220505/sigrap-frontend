@@ -6,9 +6,46 @@ describe('LayoutService', () => {
   let localStorageSpy: jasmine.SpyObj<Storage>;
   let mediaQueryListeners: ((e: MediaQueryListEvent) => void)[] = [];
   let systemThemeDarkMode = false;
-  let matchMediaSpy: any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let matchMediaSpy: jasmine.Spy;
+
+  const createMediaQueryListMock = (matches: boolean): MediaQueryList => {
+    return {
+      matches,
+      media: '(prefers-color-scheme: dark)',
+      onchange: null,
+      addEventListener: (event: string, listener: EventListener) => {
+        if (event === 'change') {
+          mediaQueryListeners.push(
+            listener as (e: MediaQueryListEvent) => void,
+          );
+        }
+      },
+      removeEventListener: (event: string, listener: EventListener) => {
+        if (event === 'change') {
+          const index = mediaQueryListeners.indexOf(
+            listener as (e: MediaQueryListEvent) => void,
+          );
+          if (index !== -1) {
+            mediaQueryListeners.splice(index, 1);
+          }
+        }
+      },
+      dispatchEvent: () => true,
+      addListener: (listener: (e: MediaQueryListEvent) => void) => {
+        mediaQueryListeners.push(listener);
+      },
+      removeListener: (listener: (e: MediaQueryListEvent) => void) => {
+        const index = mediaQueryListeners.indexOf(listener);
+        if (index !== -1) {
+          mediaQueryListeners.splice(index, 1);
+        }
+      },
+    } as MediaQueryList;
+  };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     mediaQueryListeners = [];
     systemThemeDarkMode = false;
 
@@ -21,28 +58,15 @@ describe('LayoutService', () => {
     spyOnProperty(window, 'localStorage').and.returnValue(storageMock);
     localStorageSpy = storageMock;
 
-    // Define matchMedia mock only once per test
-    if (!matchMediaSpy) {
-      matchMediaSpy = spyOn(window, 'matchMedia').and.callFake((query) => {
-        return {
-          matches: systemThemeDarkMode,
-          media: query,
-          addEventListener: (event: string, listener: any) => {
-            if (event === 'change') {
-              mediaQueryListeners.push(listener);
-            }
-          },
-          removeEventListener: (event: string, listener: any) => {
-            if (event === 'change') {
-              const index = mediaQueryListeners.indexOf(listener);
-              if (index !== -1) {
-                mediaQueryListeners.splice(index, 1);
-              }
-            }
-          },
-          dispatchEvent: (event: any) => true,
-        } as MediaQueryList;
+    try {
+      matchMediaSpy = spyOn(window, 'matchMedia').and.callFake((_query) => {
+        return createMediaQueryListMock(systemThemeDarkMode);
       });
+    } catch (e) {
+      const error = e as Error;
+      if (!error.message?.includes('already been spied upon')) {
+        throw error;
+      }
     }
 
     jasmine.clock().uninstall();
@@ -54,9 +78,7 @@ describe('LayoutService', () => {
 
     service = TestBed.inject(LayoutService);
 
-    spyOn(service, 'toggleDarkModeClass').and.callFake(
-      jasmine.createSpy('toggleDarkModeClass'),
-    );
+    spyOn(service, 'toggleDarkModeClass').and.callThrough();
 
     const serviceAsUnknown = service as unknown;
     const serviceWithPrivate = serviceAsUnknown as {
@@ -83,8 +105,6 @@ describe('LayoutService', () => {
 
   afterEach(() => {
     jasmine.clock().uninstall();
-    // Reset the spy after each test to avoid conflicts
-    matchMediaSpy = null;
   });
 
   it('should be created', () => {

@@ -10,8 +10,12 @@ import { SidebarComponent } from './sidebar.component';
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
+  let originalMatchMedia: typeof window.matchMedia;
 
   beforeEach(async () => {
+    // Store original matchMedia
+    originalMatchMedia = window.matchMedia;
+
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
@@ -35,6 +39,14 @@ describe('SidebarComponent', () => {
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    // Restore original matchMedia
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: originalMatchMedia,
+    });
   });
 
   it('should create', () => {
