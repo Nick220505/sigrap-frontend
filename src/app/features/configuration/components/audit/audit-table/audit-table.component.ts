@@ -27,7 +27,6 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
     @let columns =
       [
         { field: 'entityName', header: 'Entidad' },
-        { field: 'entityId', header: 'ID Entidad' },
         { field: 'action', header: 'Acción' },
         { field: 'username', header: 'Usuario' },
         { field: 'timestamp', header: 'Fecha y Hora' },
@@ -93,22 +92,6 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
               </div>
             </th>
           }
-
-          <th>
-            <div class="flex items-center gap-2">
-              <span>Detalles</span>
-              <button
-                type="button"
-                pButton
-                icon="pi pi-filter-slash"
-                class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
-                tooltipPosition="top"
-                (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
-              ></button>
-            </div>
-          </th>
         </tr>
       </ng-template>
 
@@ -126,24 +109,12 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
               }
             </td>
           }
-
-          <td>
-            <p-button
-              icon="pi pi-eye"
-              rounded
-              outlined
-              (click)="auditLogStore.openAuditLogDialog(auditLog)"
-              pTooltip="Ver detalles"
-              tooltipPosition="top"
-              [disabled]="auditLogStore.loading()"
-            />
-          </td>
         </tr>
       </ng-template>
 
       <ng-template #emptymessage>
         <tr>
-          <td [attr.colspan]="columns.length + 1" class="text-center py-4">
+          <td [attr.colspan]="columns.length" class="text-center py-4">
             @if (auditLogStore.error(); as error) {
               <div class="flex justify-center p-6">
                 <p-message severity="error">
