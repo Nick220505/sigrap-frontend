@@ -1,5 +1,5 @@
 import { DecimalPipe, NgClass } from '@angular/common';
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryInfo } from '@features/inventory/models/category.model';
 import { ProductInfo } from '@features/inventory/models/product.model';
@@ -11,8 +11,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { DatePickerModule } from 'primeng/datepicker';
-import { DropdownModule } from 'primeng/dropdown';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
@@ -73,36 +73,13 @@ interface ChartTooltipContext {
     SkeletonModule,
     TooltipModule,
     ToolbarModule,
-    DropdownModule,
+    SelectModule,
     SelectButtonModule,
     ProgressBarModule,
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Estado del Inventario</h2>
-
-      <p-toolbar styleClass="mb-6">
-        <ng-template pTemplate="start">
-          <div class="flex flex-wrap items-center gap-3">
-            <p-selectButton
-              [options]="stockViewOptions"
-              [(ngModel)]="selectedStockView"
-              optionLabel="label"
-              optionValue="value"
-            ></p-selectButton>
-          </div>
-        </ng-template>
-
-        <ng-template pTemplate="end">
-          <p-dropdown
-            [options]="categoryOptions()"
-            [(ngModel)]="selectedCategory"
-            placeholder="Todas las Categorías"
-            [showClear]="true"
-            (onChange)="filterByCategory()"
-          ></p-dropdown>
-        </ng-template>
-      </p-toolbar>
+      <h2 class="text-2xl font-bold mb-4">{{ reportTitle() }}</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
@@ -203,6 +180,46 @@ interface ChartTooltipContext {
         </p-card>
       </div>
 
+      <p-toolbar styleClass="mb-6">
+        <ng-template pTemplate="start">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex gap-1">
+              <p-button
+                label="Todos"
+                [outlined]="selectedStockView() !== 'all'"
+                [raised]="selectedStockView() === 'all'"
+                (onClick)="changeView('all')"
+                styleClass="p-button-sm"
+              ></p-button>
+              <p-button
+                label="Stock Bajo"
+                [outlined]="selectedStockView() !== 'low'"
+                [raised]="selectedStockView() === 'low'"
+                (onClick)="changeView('low')"
+                styleClass="p-button-sm"
+              ></p-button>
+              <p-button
+                label="Críticos"
+                [outlined]="selectedStockView() !== 'critical'"
+                [raised]="selectedStockView() === 'critical'"
+                (onClick)="changeView('critical')"
+                styleClass="p-button-sm"
+              ></p-button>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="end">
+          <p-select
+            [options]="categoryOptions()"
+            [(ngModel)]="selectedCategory"
+            placeholder="Todas las Categorías"
+            [showClear]="true"
+            (onChange)="filterByCategory()"
+          ></p-select>
+        </ng-template>
+      </p-toolbar>
+
       <p-card header="Estado de Inventario por Producto">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
@@ -243,8 +260,10 @@ interface ChartTooltipContext {
             <ng-template pTemplate="body" let-product>
               <tr
                 [ngClass]="{
-                  'bg-red-50': product.stockStatus === 'critical',
-                  'bg-yellow-50': product.stockStatus === 'low',
+                  'bg-red-100 dark:bg-red-900/40':
+                    product.stockStatus === 'critical',
+                  'bg-amber-50 dark:bg-amber-900/30':
+                    product.stockStatus === 'low',
                 }"
               >
                 <td>{{ product.product.name }}</td>
@@ -260,14 +279,14 @@ interface ChartTooltipContext {
                 <td>{{ product.sales }}</td>
                 <td>
                   <span
-                    [ngClass]="{
-                      'bg-green-100 text-green-800 px-2 py-1 rounded-lg':
-                        product.stockStatus === 'normal',
-                      'bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg':
-                        product.stockStatus === 'low',
-                      'bg-red-100 text-red-800 px-2 py-1 rounded-lg':
-                        product.stockStatus === 'critical',
-                    }"
+                    class="px-2 py-1 rounded-lg"
+                    [ngClass]="
+                      product.stockStatus === 'normal'
+                        ? 'bg-emerald-400 text-emerald-950 dark:bg-emerald-600 dark:text-emerald-50'
+                        : product.stockStatus === 'low'
+                          ? 'bg-amber-200 text-amber-950 dark:bg-amber-500 dark:text-amber-950'
+                          : 'bg-red-200 text-red-950 dark:bg-red-600 dark:text-red-50'
+                    "
                   >
                     {{ getStockStatusLabel(product.stockStatus) }}
                   </span>
@@ -317,19 +336,24 @@ interface ChartTooltipContext {
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-category>
-              <tr [ngClass]="{ 'bg-yellow-50': category.lowStockCount > 0 }">
+              <tr
+                [ngClass]="{
+                  'bg-amber-50 dark:bg-amber-900/30':
+                    category.lowStockCount > 0,
+                }"
+              >
                 <td>{{ category.category.name }}</td>
                 <td>{{ category.productCount }}</td>
                 <td>{{ category.totalStock }}</td>
                 <td>{{ category.averageStock | number: '1.0-0' }}</td>
                 <td>
                   <span
-                    [ngClass]="{
-                      'bg-green-100 text-green-800 px-2 py-1 rounded-lg':
-                        category.lowStockCount === 0,
-                      'bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg':
-                        category.lowStockCount > 0,
-                    }"
+                    class="px-2 py-1 rounded-lg"
+                    [ngClass]="
+                      category.lowStockCount === 0
+                        ? 'bg-emerald-400 text-emerald-950 dark:bg-emerald-600 dark:text-emerald-50'
+                        : 'bg-amber-200 text-amber-950 dark:bg-amber-500 dark:text-amber-950'
+                    "
                   >
                     {{ category.lowStockCount }}
                   </span>
@@ -355,12 +379,12 @@ export class InventoryReportComponent implements OnInit {
   public saleStore = inject(SaleStore);
 
   stockViewOptions = [
-    { label: 'Todos', value: 'all' },
-    { label: 'Stock Bajo', value: 'low' },
-    { label: 'Críticos', value: 'critical' },
+    { label: 'Todos', value: 'all', id: 1 },
+    { label: 'Stock Bajo', value: 'low', id: 2 },
+    { label: 'Críticos', value: 'critical', id: 3 },
   ];
 
-  selectedStockView = 'all';
+  selectedStockView = signal('all');
   selectedCategory: number | null = null;
 
   isLoading = computed(() => {
@@ -380,16 +404,13 @@ export class InventoryReportComponent implements OnInit {
       (product) => product.category.id === this.selectedCategory,
     );
   });
-
   productInventoryData = computed<ProductInventoryData[]>(() => {
     const products = this.filteredProducts();
     const sales = this.saleStore.entities();
-
     return products.map((product) => {
       const stockPercentage = this.calculateStockPercentage(product);
       const productSales = this.calculateProductSales(product, sales);
       const stockStatus = this.determineStockStatus(product);
-
       return {
         product,
         stockPercentage,
@@ -400,10 +421,11 @@ export class InventoryReportComponent implements OnInit {
       };
     });
   });
-
   displayedProducts = computed(() => {
     const data = this.productInventoryData();
-    switch (this.selectedStockView) {
+    const view = this.selectedStockView();
+
+    switch (view) {
       case 'low':
         return data.filter(
           (p) => p.stockStatus === 'low' || p.stockStatus === 'critical',
@@ -417,45 +439,68 @@ export class InventoryReportComponent implements OnInit {
 
   categoryInventoryData = computed<CategoryInventoryData[]>(() => {
     const categories = this.categoryStore.entities();
-    const products = this.productStore.entities();
+    const allInventoryData = this.displayedProducts();
+    const productsGroupedByCategory = new Map<number, ProductInventoryData[]>();
 
-    return categories.map((category) => {
-      const categoryProducts = products.filter(
-        (p) => p.category.id === category.id,
-      );
-      const totalStock = categoryProducts.reduce((sum, p) => sum + p.stock, 0);
-      const lowStockCount = categoryProducts.filter(
-        (p) => p.stock <= p.minimumStockThreshold,
-      ).length;
-
-      return {
-        category,
-        productCount: categoryProducts.length,
-        totalStock,
-        averageStock:
-          categoryProducts.length > 0
-            ? totalStock / categoryProducts.length
-            : 0,
-        lowStockCount,
-      };
+    allInventoryData.forEach((productData) => {
+      const categoryId = productData.product.category.id;
+      if (!productsGroupedByCategory.has(categoryId)) {
+        productsGroupedByCategory.set(categoryId, []);
+      }
+      productsGroupedByCategory.get(categoryId)!.push(productData);
     });
+
+    return categories
+      .map((category) => {
+        const categoryProducts =
+          productsGroupedByCategory.get(category.id) || [];
+        const totalStock = categoryProducts.reduce(
+          (sum, p) => sum + p.product.stock,
+          0,
+        );
+        const lowStockCount = categoryProducts.filter(
+          (p) => p.stockStatus === 'low' || p.stockStatus === 'critical',
+        ).length;
+
+        return {
+          category,
+          productCount: categoryProducts.length,
+          totalStock,
+          averageStock:
+            categoryProducts.length > 0
+              ? totalStock / categoryProducts.length
+              : 0,
+          lowStockCount,
+        };
+      })
+      .filter((categoryData) => categoryData.productCount > 0);
   });
 
   totalProducts = computed(() => {
-    return this.filteredProducts().length;
+    return this.displayedProducts().length;
   });
-
   totalStock = computed(() => {
-    return this.filteredProducts().reduce(
-      (sum, product) => sum + product.stock,
+    return this.displayedProducts().reduce(
+      (sum, product) => sum + product.product.stock,
       0,
     );
   });
-
   lowStockCount = computed(() => {
-    return this.filteredProducts().filter(
-      (product) => product.stock <= product.minimumStockThreshold,
+    return this.displayedProducts().filter(
+      (product) =>
+        product.stockStatus === 'low' || product.stockStatus === 'critical',
     ).length;
+  });
+
+  reportTitle = computed(() => {
+    switch (this.selectedStockView()) {
+      case 'low':
+        return 'Productos con Stock Bajo';
+      case 'critical':
+        return 'Productos en Estado Crítico';
+      default:
+        return 'Estado del Inventario';
+    }
   });
 
   categoryOptions = computed(() => {
@@ -520,7 +565,6 @@ export class InventoryReportComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            // For pie charts
             return `${context.label}: ${context.parsed} productos`;
           },
         },
@@ -566,7 +610,7 @@ export class InventoryReportComponent implements OnInit {
   }
 
   filterByCategory() {
-    this.selectedStockView = 'all';
+    this.selectedStockView.set('all');
   }
 
   private calculateStockPercentage(product: ProductInfo): number {
@@ -609,11 +653,11 @@ export class InventoryReportComponent implements OnInit {
   getStockProgressClass(status: 'normal' | 'low' | 'critical'): string {
     switch (status) {
       case 'critical':
-        return 'bg-red-500';
+        return 'bg-red-600';
       case 'low':
-        return 'bg-yellow-500';
+        return 'bg-amber-500';
       default:
-        return 'bg-green-500';
+        return 'bg-emerald-500';
     }
   }
 
@@ -626,5 +670,9 @@ export class InventoryReportComponent implements OnInit {
       default:
         return 'Normal';
     }
+  }
+
+  changeView(view: 'all' | 'low' | 'critical') {
+    this.selectedStockView.set(view);
   }
 }
