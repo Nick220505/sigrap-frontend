@@ -5,6 +5,8 @@ import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale.store';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -128,6 +130,15 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
+              label="Exportar PDF"
+              icon="pi pi-file-pdf"
+              styleClass="p-button-help"
+              (onClick)="exportToPDF()"
+              [loading]="isExporting()"
+              pTooltip="Exportar reporte en PDF"
+              tooltipPosition="top"
+            ></p-button>
+            <p-button
               label="Aplicar"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
@@ -238,22 +249,12 @@ interface PieChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Productos Más Vendidos">
-        @if (saleStore.loading() || productStore.loading()) {
-          <div class="flex flex-col gap-3 py-3">
-            <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
-            <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
-            <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
-            <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
-            <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
-          </div>
-        } @else {
+      <div id="exportContent" style="display: none;">
+        <p-card header="Productos Más Vendidos">
           <p-table
             [value]="topProductsData()"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm p-datatable-striped"
-            [paginator]="true"
-            [rows]="10"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -267,18 +268,7 @@ interface PieChartTooltipContext {
             <ng-template pTemplate="body" let-product let-i="rowIndex">
               <tr>
                 <td>
-                  <span
-                    [ngClass]="{
-                      'font-bold text-lg text-yellow-600': i === 0,
-                      'font-bold text-lg text-gray-600': i === 1,
-                      'font-bold text-lg text-amber-700': i === 2,
-                      'px-3': i > 2,
-                    }"
-                    >{{ i + 1
-                    }}{{
-                      i === 0 ? ' 🥇' : i === 1 ? ' 🥈' : i === 2 ? ' 🥉' : ''
-                    }}</span
-                  >
+                  <span>{{ i + 1 }}</span>
                 </td>
                 <td>{{ product.product.name }}</td>
                 <td>{{ product.quantity }}</td>
@@ -293,16 +283,9 @@ interface PieChartTooltipContext {
                 </td>
               </tr>
             </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="5" class="text-center p-4">
-                  No se encontraron ventas en el período seleccionado.
-                </td>
-              </tr>
-            </ng-template>
           </p-table>
-        }
-      </p-card>
+        </p-card>
+      </div>
     </div>
   `,
 })
@@ -316,6 +299,7 @@ export class SalesReportComponent implements OnInit {
   ]);
 
   today = new Date();
+  isExporting = signal(false);
 
   topProductsData = computed(() => {
     const sales = this.filteredSales();
@@ -841,5 +825,140 @@ export class SalesReportComponent implements OnInit {
 
   private truncateName(name: string): string {
     return name.length > 15 ? `${name.substring(0, 15)}...` : name;
+  }
+
+  private applyCompatibleStyles(element: HTMLElement): void {
+    // Convert oklch colors to RGB
+    const applyToElement = (el: HTMLElement) => {
+      const style = window.getComputedStyle(el);
+      const color = style.getPropertyValue('color');
+      const backgroundColor = style.getPropertyValue('background-color');
+      const borderColor = style.getPropertyValue('border-color');
+
+      // Only convert if the color is in oklch format
+      if (color.includes('oklch')) {
+        el.style.color = this.convertToRGB(color);
+      }
+      if (backgroundColor.includes('oklch')) {
+        el.style.backgroundColor = this.convertToRGB(backgroundColor);
+      }
+      if (borderColor.includes('oklch')) {
+        el.style.borderColor = this.convertToRGB(borderColor);
+      }
+
+      // Ensure PrimeNG component backgrounds are set
+      if (el.classList.contains('p-card')) {
+        el.style.backgroundColor = '#ffffff';
+      }
+    };
+
+    // Apply to main element
+    applyToElement(element);
+
+    // Apply to all child elements
+    const allElements = element.getElementsByTagName('*');
+    for (const el of Array.from(allElements)) {
+      applyToElement(el as HTMLElement);
+    }
+  }
+
+  private convertToRGB(color: string): string {
+    // Simple conversion for oklch colors - you may need to adjust these values
+    if (color.includes('oklch')) {
+      return '#000000'; // Default to black if oklch
+    }
+    return color;
+  }
+
+  async exportToPDF() {
+    try {
+      this.isExporting.set(true);
+      const exportContent = document.getElementById('exportContent');
+
+      if (!exportContent) {
+        throw new Error('Export content element not found');
+      }
+
+      // Create a clone and prepare it for PDF export
+      const clone = exportContent.cloneNode(true) as HTMLElement;
+      clone.style.display = 'block';
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      clone.style.width = '1024px'; // Set fixed width for consistent rendering
+      clone.style.backgroundColor = '#ffffff';
+      document.body.appendChild(clone);
+
+      // Apply compatible styles
+      this.applyCompatibleStyles(clone);
+
+      // Wait for styles and images to load
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Capture the content with specific dimensions
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: 1024,
+        height: clone.offsetHeight,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById('exportContent');
+          if (clonedElement) {
+            clonedElement.style.width = '1024px';
+          }
+        },
+      });
+
+      // Clean up the clone
+      document.body.removeChild(clone);
+
+      // Create PDF with proper dimensions
+      const imgWidth = 208; // A4 width in mm
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      const pdf = new jsPDF('p', 'mm');
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(
+        canvas.toDataURL('image/png', 1.0),
+        'PNG',
+        0,
+        position,
+        imgWidth,
+        imgHeight,
+        '',
+        'FAST',
+      );
+      heightLeft -= pageHeight;
+
+      // Add subsequent pages if content is longer than one page
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(
+          canvas.toDataURL('image/png', 1.0),
+          'PNG',
+          0,
+          position,
+          imgWidth,
+          imgHeight,
+          '',
+          'FAST',
+        );
+        heightLeft -= pageHeight;
+      }
+
+      // Save the PDF
+      pdf.save('reporte-ventas.pdf');
+    } catch (error) {
+      console.error('Error al exportar el PDF:', error);
+      throw error;
+    } finally {
+      this.isExporting.set(false);
+    }
   }
 }
