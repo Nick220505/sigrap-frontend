@@ -35,6 +35,7 @@ import { SaleStore } from '../../../stores/sale.store';
     DatePipe,
     CurrencyPipe,
   ],
+  providers: [DatePipe, CurrencyPipe],
   template: `
     @let columns =
       [
@@ -241,135 +242,12 @@ import { SaleStore } from '../../../stores/sale.store';
         </tr>
       </ng-template>
     </p-table>
-
-    <!-- Hidden container for PDF exports -->
-    <div id="exportSaleContent" style="display: none;">
-      <div class="p-4">
-        <h2 class="text-xl font-bold mb-4">
-          Detalle de Venta #{{ saleBeingExported()?.id }}
-        </h2>
-
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p class="font-bold">Cliente:</p>
-            <p>
-              {{
-                saleBeingExported()?.customer?.fullName ||
-                  'Cliente no registrado'
-              }}
-            </p>
-          </div>
-          <div>
-            <p class="font-bold">Fecha:</p>
-            <p>
-              {{
-                saleBeingExported()?.createdAt
-                  | date: 'dd/MM/yyyy HH:mm' : 'UTC-5'
-              }}
-            </p>
-          </div>
-        </div>
-
-        <table class="w-full mb-4" style="border-collapse: collapse;">
-          <thead>
-            <tr style="background-color: #f8f9fa;">
-              <th style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                Producto
-              </th>
-              <th style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                Cantidad
-              </th>
-              <th style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                Precio Unitario
-              </th>
-              <th style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                Subtotal
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of saleBeingExported()?.items; track item.product.id) {
-              <tr>
-                <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                  {{ item.product.name }}
-                </td>
-                <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                  {{ item.quantity }}
-                </td>
-                <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                  {{ item.unitPrice | currency: 'COP' : '$' : '1.0-0' }}
-                </td>
-                <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                  {{ item.subtotal | currency: 'COP' : '$' : '1.0-0' }}
-                </td>
-              </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr>
-              <td
-                colspan="3"
-                style="text-align: right; border: 1px solid #dee2e6; padding: 0.5rem;"
-              >
-                <strong>Total Base:</strong>
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                {{
-                  saleBeingExported()?.totalAmount
-                    | currency: 'COP' : '$' : '1.0-0'
-                }}
-              </td>
-            </tr>
-            <tr>
-              <td
-                colspan="3"
-                style="text-align: right; border: 1px solid #dee2e6; padding: 0.5rem;"
-              >
-                <strong>Descuento:</strong>
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                {{
-                  saleBeingExported()?.discountAmount
-                    | currency: 'COP' : '$' : '1.0-0'
-                }}
-              </td>
-            </tr>
-            <tr>
-              <td
-                colspan="3"
-                style="text-align: right; border: 1px solid #dee2e6; padding: 0.5rem;"
-              >
-                <strong>Impuesto (19% IVA):</strong>
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                {{
-                  saleBeingExported()?.taxAmount
-                    | currency: 'COP' : '$' : '1.0-0'
-                }}
-              </td>
-            </tr>
-            <tr style="background-color: #f8f9fa;">
-              <td
-                colspan="3"
-                style="text-align: right; border: 1px solid #dee2e6; padding: 0.5rem;"
-              >
-                <strong>Total Final:</strong>
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.5rem;">
-                <strong>{{
-                  saleBeingExported()?.finalAmount
-                    | currency: 'COP' : '$' : '1.0-0'
-                }}</strong>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
   `,
 })
 export class SalesTableComponent {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly datePipe = inject(DatePipe);
+  private readonly currencyPipe = inject(CurrencyPipe);
   readonly saleStore = inject(SaleStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -386,7 +264,6 @@ export class SalesTableComponent {
   // PDF Export state
   readonly isExporting = signal(false);
   readonly currentExportId = signal<number | null>(null);
-  readonly saleBeingExported = signal<SaleInfo | null>(null);
 
   clearAllFilters(): void {
     this.searchValue.set('');
@@ -401,60 +278,158 @@ export class SalesTableComponent {
     });
   }
 
+  private createPdfContent(sale: SaleInfo): HTMLDivElement {
+    const container = document.createElement('div');
+    container.style.cssText =
+      'padding: 0.5rem; width: 800px; max-width: 800px;'; // Fixed width for better scaling
+    container.innerHTML = `
+      <div style="padding: 1rem;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center;">
+          Detalle de Venta #${sale.id}
+        </h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+          <div>
+            <p style="font-size: 1.1rem; font-weight: bold;">Cliente:</p>
+            <p style="font-size: 1.1rem;">${sale.customer?.fullName || 'Cliente no registrado'}</p>
+          </div>
+          <div>
+            <p style="font-size: 1.1rem; font-weight: bold;">Fecha:</p>
+            <p style="font-size: 1.1rem;">${this.datePipe.transform(sale.createdAt, 'dd/MM/yyyy HH:mm', 'UTC-5')}</p>
+          </div>
+        </div>
+
+        <table style="width: 100%; margin-bottom: 2rem; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color: #f8f9fa;">
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Producto</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Cantidad</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Precio Unitario</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sale.items
+              .map(
+                (item) => `
+              <tr>
+                <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">${
+                  item.product.name
+                }</td>
+                <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: center;">${
+                  item.quantity
+                }</td>
+                <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">${this.currencyPipe.transform(
+                  item.unitPrice,
+                  'COP',
+                  '$',
+                  '1.0-0',
+                )}</td>
+                <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">${this.currencyPipe.transform(
+                  item.subtotal,
+                  'COP',
+                  '$',
+                  '1.0-0',
+                )}</td>
+              </tr>
+            `,
+              )
+              .join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
+                <strong>Total Base:</strong>
+              </td>
+              <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
+                ${this.currencyPipe.transform(sale.totalAmount, 'COP', '$', '1.0-0')}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
+                <strong>Descuento:</strong>
+              </td>
+              <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
+                ${this.currencyPipe.transform(sale.discountAmount, 'COP', '$', '1.0-0')}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
+                <strong>Impuesto (19% IVA):</strong>
+              </td>
+              <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
+                ${this.currencyPipe.transform(sale.taxAmount, 'COP', '$', '1.0-0')}
+              </td>
+            </tr>
+            <tr style="background-color: #f8f9fa;">
+              <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
+                <strong>Total Final:</strong>
+              </td>
+              <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
+                <strong>${this.currencyPipe.transform(sale.finalAmount, 'COP', '$', '1.0-0')}</strong>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    `;
+
+    document.body.appendChild(container);
+    return container;
+  }
+
   async exportSaleToPDF(sale: SaleInfo): Promise<void> {
     if (this.isExporting()) return;
 
     try {
       this.isExporting.set(true);
       this.currentExportId.set(sale.id);
-      this.saleBeingExported.set(sale);
 
-      // Allow the template to update with the current sale data
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const container = document.getElementById('exportSaleContent');
-      if (!container) throw new Error('Export container not found');
-
-      // Set container visible for canvas capture
-      container.style.display = 'block';
+      const container = this.createPdfContent(sale);
 
       const canvas = await html2canvas(container, {
-        scale: 2,
+        scale: 1, // Using base scale since we're using larger font sizes
         logging: false,
         useCORS: true,
       });
 
-      // Hide container again
-      container.style.display = 'none';
+      container.remove();
 
       const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 210; // A4 width in mm (297 x 210)
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // A4 dimensions in mm
+      const pdfWidth = 210;
+      const pdfHeight = 297;
+
+      // Calculate dimensions to fit the content better with margins
+      const margins = 10; // 10mm margins
+      const availableWidth = pdfWidth - margins * 2;
+      const availableHeight = pdfHeight - margins * 2;
+
+      // Calculate image dimensions to fit within available space while maintaining aspect ratio
+      const imgAspectRatio = canvas.width / canvas.height;
+      let imgWidth = availableWidth;
+      let imgHeight = imgWidth / imgAspectRatio;
+
+      // If height exceeds available height, scale down based on height
+      if (imgHeight > availableHeight) {
+        imgHeight = availableHeight;
+        imgWidth = imgHeight * imgAspectRatio;
+      }
 
       const doc = new jsPDF('p', 'mm', 'a4');
 
-      let heightLeft = imgHeight;
-      let position = 0;
+      // Center the content
+      const xPosition = (pdfWidth - imgWidth) / 2;
+      const yPosition = (pdfHeight - imgHeight) / 2;
 
-      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      // Add new pages if necessary
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        doc.addPage();
-        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
+      doc.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, imgHeight);
       doc.save(`venta_${sale.id}.pdf`);
     } catch (error) {
       console.error('Error exporting sale to PDF:', error);
     } finally {
       this.isExporting.set(false);
       this.currentExportId.set(null);
-      this.saleBeingExported.set(null);
     }
   }
 }
