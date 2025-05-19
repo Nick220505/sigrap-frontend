@@ -189,21 +189,21 @@ interface ChartTooltipContext {
                 [outlined]="selectedStockView() !== 'all'"
                 [raised]="selectedStockView() === 'all'"
                 (onClick)="changeView('all')"
-                styleClass="p-button-sm"
+                styleClass="p-button-sm mr-1"
               ></p-button>
               <p-button
                 label="Stock Bajo"
                 [outlined]="selectedStockView() !== 'low'"
                 [raised]="selectedStockView() === 'low'"
                 (onClick)="changeView('low')"
-                styleClass="p-button-sm"
+                styleClass="p-button-sm p-button-warning mr-1"
               ></p-button>
               <p-button
                 label="Críticos"
                 [outlined]="selectedStockView() !== 'critical'"
                 [raised]="selectedStockView() === 'critical'"
                 (onClick)="changeView('critical')"
-                styleClass="p-button-sm"
+                styleClass="p-button-sm p-button-danger"
               ></p-button>
             </div>
           </div>
@@ -212,10 +212,11 @@ interface ChartTooltipContext {
         <ng-template pTemplate="end">
           <p-select
             [options]="categoryOptions()"
-            [(ngModel)]="selectedCategory"
+            [ngModel]="selectedCategory()"
+            (ngModelChange)="selectedCategory.set($event); filterByCategory()"
             placeholder="Todas las Categorías"
             [showClear]="true"
-            (onChange)="filterByCategory()"
+            class="w-64"
           ></p-select>
         </ng-template>
       </p-toolbar>
@@ -385,7 +386,7 @@ export class InventoryReportComponent implements OnInit {
   ];
 
   selectedStockView = signal('all');
-  selectedCategory: number | null = null;
+  selectedCategory = signal<number | null>(null);
 
   isLoading = computed(() => {
     return (
@@ -397,11 +398,11 @@ export class InventoryReportComponent implements OnInit {
 
   filteredProducts = computed(() => {
     const products = this.productStore.entities();
-    if (this.selectedCategory === null) {
+    if (this.selectedCategory() === null) {
       return products;
     }
     return products.filter(
-      (product) => product.category.id === this.selectedCategory,
+      (product) => product.category.id === this.selectedCategory(),
     );
   });
   productInventoryData = computed<ProductInventoryData[]>(() => {
@@ -610,6 +611,7 @@ export class InventoryReportComponent implements OnInit {
   }
 
   filterByCategory() {
+    // When a category is selected, reset the view to 'all'
     this.selectedStockView.set('all');
   }
 
