@@ -1,4 +1,4 @@
-import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductInfo } from '@features/inventory/models/product.model';
@@ -81,7 +81,6 @@ interface PieChartTooltipContext {
     FormsModule,
     CurrencyPipe,
     DecimalPipe,
-    NgClass,
     TableModule,
     SkeletonModule,
     TooltipModule,
