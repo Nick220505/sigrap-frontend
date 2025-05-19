@@ -9,6 +9,8 @@ import { AttendanceStore } from '@features/employee/stores/attendance.store';
 import { ScheduleStore } from '@features/employee/stores/schedule.store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale.store';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -112,6 +114,15 @@ interface ChartTooltipContext {
 
         <ng-template pTemplate="end">
           <div class="flex gap-2">
+            <p-button
+              label="Exportar PDF"
+              icon="pi pi-file-pdf"
+              styleClass="p-button-help"
+              (onClick)="exportToPDF()"
+              [loading]="isExporting()"
+              pTooltip="Exportar reporte en PDF"
+              tooltipPosition="top"
+            ></p-button>
             <p-button
               label="Aplicar"
               icon="pi pi-filter"
@@ -315,6 +326,139 @@ interface ChartTooltipContext {
           </p-table>
         }
       </p-card>
+
+      <!-- Hidden container for PDF export -->
+      <div class="p-4" id="exportContent" style="display: none;">
+        <h2 class="text-2xl font-bold mb-4">Rendimiento de Empleados</h2>
+
+        <div class="mb-6 border rounded-lg bg-white">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
+            <div class="flex flex-col items-center border rounded-lg p-4">
+              <h3 class="text-xl font-semibold mb-2">Total de Ventas</h3>
+              <span class="text-3xl font-bold text-blue-600">
+                {{ totalSalesAmount() | currency: 'COP' : '$' : '1.0-0' }}
+              </span>
+            </div>
+
+            <div class="flex flex-col items-center border rounded-lg p-4">
+              <h3 class="text-xl font-semibold mb-2">Ventas Realizadas</h3>
+              <span class="text-3xl font-bold text-indigo-600">
+                {{ totalSalesCount() }} ventas
+              </span>
+            </div>
+
+            <div class="flex flex-col items-center border rounded-lg p-4">
+              <h3 class="text-xl font-semibold mb-2">Valor Promedio</h3>
+              <span class="text-3xl font-bold text-green-600">
+                {{ averageSaleValue() | currency: 'COP' : '$' : '1.0-0' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="border rounded-lg bg-white p-4">
+          <h3 class="text-xl font-semibold mb-4">Rendimiento de Empleados</h3>
+          <table
+            class="w-full border-collapse"
+            style="border: 1px solid #dee2e6;"
+          >
+            <thead>
+              <tr style="background-color: #f8f9fa;">
+                <th
+                  style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
+                >
+                  Empleado
+                </th>
+                <th
+                  style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
+                >
+                  Ventas
+                </th>
+                <th
+                  style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
+                >
+                  Total Ventas
+                </th>
+                <th
+                  style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
+                >
+                  Valor Promedio
+                </th>
+                <th
+                  style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
+                >
+                  Horas Programadas
+                </th>
+                <th
+                  style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
+                >
+                  Índice de Productividad
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (
+                employee of employeePerformanceData();
+                track employee.employee.id
+              ) {
+                <tr>
+                  <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
+                    {{ employee.employee.name }}
+                  </td>
+                  <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
+                    {{ employee.salesCount }}
+                  </td>
+                  <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
+                    {{
+                      employee.totalSalesAmount
+                        | currency: 'COP' : '$' : '1.0-0'
+                    }}
+                  </td>
+                  <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
+                    {{
+                      employee.averageSaleValue
+                        | currency: 'COP' : '$' : '1.0-0'
+                    }}
+                  </td>
+                  <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
+                    {{ employee.scheduledHours | number: '1.1-1' }}
+                  </td>
+                  <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
+                    <span
+                      [ngClass]="{
+                        'text-green-600 font-bold':
+                          employee.productivityIndex >
+                          averageProductivityIndex(),
+                        'text-red-600 font-bold':
+                          employee.productivityIndex <
+                          averageProductivityIndex() * 0.7,
+                        'text-yellow-600 font-bold':
+                          employee.productivityIndex >=
+                            averageProductivityIndex() * 0.7 &&
+                          employee.productivityIndex <=
+                            averageProductivityIndex(),
+                      }"
+                      >{{ employee.productivityIndex | number: '1.0-0' }}</span
+                    >
+                  </td>
+                </tr>
+              }
+              @if (employeePerformanceData().length === 0) {
+                <tr>
+                  <td
+                    colspan="6"
+                    class="text-center p-4"
+                    style="border: 1px solid #dee2e6;"
+                  >
+                    No hay datos de empleados disponibles para el período
+                    seleccionado.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   `,
 })
@@ -660,6 +804,142 @@ export class EmployeesReportComponent implements OnInit {
       },
     },
   };
+
+  isExporting = signal(false);
+
+  private applyCompatibleStyles(element: HTMLElement): void {
+    // Convert oklch colors to RGB
+    const applyToElement = (el: HTMLElement) => {
+      const style = window.getComputedStyle(el);
+      const color = style.getPropertyValue('color');
+      const backgroundColor = style.getPropertyValue('background-color');
+      const borderColor = style.getPropertyValue('border-color');
+
+      // Only convert if the color is in oklch format
+      if (color.includes('oklch')) {
+        el.style.color = this.convertToRGB(color);
+      }
+      if (backgroundColor.includes('oklch')) {
+        el.style.backgroundColor = this.convertToRGB(backgroundColor);
+      }
+      if (borderColor.includes('oklch')) {
+        el.style.borderColor = this.convertToRGB(borderColor);
+      }
+
+      // Ensure PrimeNG component backgrounds are set
+      if (el.classList.contains('p-card')) {
+        el.style.backgroundColor = '#ffffff';
+      }
+    };
+
+    // Apply to main element
+    applyToElement(element);
+
+    // Apply to all child elements
+    const allElements = element.getElementsByTagName('*');
+    for (const el of Array.from(allElements)) {
+      applyToElement(el as HTMLElement);
+    }
+  }
+
+  private convertToRGB(color: string): string {
+    // Simple conversion for oklch colors - you may need to adjust these values
+    if (color.includes('oklch')) {
+      return '#000000'; // Default to black if oklch
+    }
+    return color;
+  }
+
+  async exportToPDF() {
+    try {
+      this.isExporting.set(true);
+      const exportContent = document.getElementById('exportContent');
+
+      if (!exportContent) {
+        throw new Error('Export content element not found');
+      }
+
+      // Create a clone and prepare it for PDF export
+      const clone = exportContent.cloneNode(true) as HTMLElement;
+      clone.style.display = 'block';
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      clone.style.width = '1024px'; // Set fixed width for consistent rendering
+      clone.style.backgroundColor = '#ffffff';
+      document.body.appendChild(clone);
+
+      // Apply compatible styles
+      this.applyCompatibleStyles(clone);
+
+      // Wait for styles and images to load
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Capture the content with specific dimensions
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: 1024,
+        height: clone.offsetHeight,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById('exportContent');
+          if (clonedElement) {
+            clonedElement.style.width = '1024px';
+          }
+        },
+      });
+
+      // Clean up the clone
+      document.body.removeChild(clone);
+
+      // Create PDF with proper dimensions
+      const imgWidth = 208; // A4 width in mm
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      const pdf = new jsPDF('p', 'mm');
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(
+        canvas.toDataURL('image/png', 1.0),
+        'PNG',
+        0,
+        position,
+        imgWidth,
+        imgHeight,
+        '',
+        'FAST',
+      );
+      heightLeft -= pageHeight;
+
+      // Add subsequent pages if content is longer than one page
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(
+          canvas.toDataURL('image/png', 1.0),
+          'PNG',
+          0,
+          position,
+          imgWidth,
+          imgHeight,
+          '',
+          'FAST',
+        );
+        heightLeft -= pageHeight;
+      }
+
+      // Save the PDF
+      pdf.save('reporte-empleados.pdf');
+    } catch (error) {
+      console.error('Error al exportar el PDF:', error);
+    } finally {
+      this.isExporting.set(false);
+    }
+  }
 
   ngOnInit() {
     const endDate = new Date();
