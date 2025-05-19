@@ -58,16 +58,6 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
           </div>
 
           <div class="flex items-center gap-2">
-            <p-button
-              label="Exportar PDF"
-              icon="pi pi-file-pdf"
-              styleClass="p-button-help"
-              (onClick)="exportToPDF()"
-              [loading]="isExporting()"
-              [disabled]="auditLogStore.entities().length === 0"
-              pTooltip="Exportar registros en PDF"
-              tooltipPosition="top"
-            ></p-button>
             <p-iconfield class="w-full">
               <p-inputicon>
                 <i class="pi pi-search"></i>

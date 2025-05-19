@@ -25,7 +25,17 @@ import { AuditTableComponent } from '../audit-table/audit-table.component';
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Exportar PDF"
+          icon="pi pi-file-pdf"
+          styleClass="p-button-help mr-2"
+          [loading]="auditTable().isExporting()"
+          [disabled]="auditLogStore.entities().length === 0"
+          pTooltip="Exportar registros en PDF"
+          tooltipPosition="top"
+          (onClick)="auditTable().exportToPDF()"
+        />
+        <p-button
+          label="Exportar CSV"
           icon="pi pi-download"
           severity="secondary"
           pTooltip="Exportar registros a CSV"
