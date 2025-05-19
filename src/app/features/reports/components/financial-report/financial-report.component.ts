@@ -84,7 +84,7 @@ interface PieChartTooltipContext {
     <div class="p-4">
       <h2 class="text-2xl font-bold mb-4">Reportes Financieros</h2>
 
-      <p-toolbar styleClass="mb-6">
+      <!-- <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
@@ -140,7 +140,7 @@ interface PieChartTooltipContext {
             ></p-button>
           </div>
         </ng-template>
-      </p-toolbar>
+      </p-toolbar> -->
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
