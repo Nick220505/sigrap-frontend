@@ -18,7 +18,6 @@ describe('PurchaseOrderService', () => {
 
   const mockPurchaseOrder: PurchaseOrderInfo = {
     id: 1,
-    orderNumber: 'PO-2023-001',
     supplier: {
       id: 1,
       name: 'Test Supplier',
