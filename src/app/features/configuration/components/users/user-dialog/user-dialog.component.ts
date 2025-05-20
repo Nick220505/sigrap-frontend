@@ -1,4 +1,4 @@
-import { Component, effect, inject, untracked } from '@angular/core';
+import { Component, computed, effect, inject, untracked } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -137,12 +137,12 @@ import { UserStore } from '../../../stores/user.store';
           </p-inputgroup>
         </div>
 
-        @if (!userStore.selectedUser()) {
-          <app-password-field
-            id="password"
-            [control]="$any(userForm.get('password'))"
-          />
-        }
+        <app-password-field
+          id="password"
+          [label]="isEditMode() ? 'Contraseña (Opcional)' : 'Contraseña'"
+          [control]="$any(userForm.get('password'))"
+          [required]="!isEditMode()"
+        />
 
         <div class="flex flex-col gap-2">
           <label for="role" class="font-bold">Rol</label>
@@ -191,6 +191,8 @@ export class UserDialogComponent {
     { label: 'Empleado', value: UserRole.EMPLOYEE },
   ];
 
+  readonly isEditMode = computed(() => !!this.userStore.selectedUser());
+
   readonly userForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -213,10 +215,22 @@ export class UserDialogComponent {
       const user = this.userStore.selectedUser();
       untracked(() => {
         if (user) {
-          this.userForm.patchValue(user);
+          this.userForm.patchValue({
+            ...user,
+            password: '',
+          });
           this.userForm.get('password')?.clearValidators();
+          this.userForm
+            .get('password')
+            ?.setValidators(
+              Validators.pattern(
+                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+              ),
+            );
         } else {
-          this.userForm.reset();
+          this.userForm.reset({
+            role: UserRole.EMPLOYEE,
+          });
           this.userForm
             .get('password')
             ?.setValidators([
@@ -233,6 +247,14 @@ export class UserDialogComponent {
 
   saveUser(): void {
     const userData: UserData = this.userForm.value;
+
+    if (
+      this.isEditMode() &&
+      (!userData.password || userData.password.trim() === '')
+    ) {
+      delete userData.password;
+    }
+
     const id = this.userStore.selectedUser()?.id;
     if (id) {
       this.userStore.update({ id, userData });
