@@ -122,7 +122,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden creada',
-                  detail: `La orden ${createdOrder.orderNumber} ha sido creada correctamente`,
+                  detail: `La orden #${createdOrder.id} ha sido creada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -151,7 +151,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden actualizada',
-                  detail: `La orden ${updatedOrder.orderNumber} ha sido actualizada correctamente`,
+                  detail: `La orden #${updatedOrder.id} ha sido actualizada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -247,7 +247,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden enviada',
-                  detail: `La orden ${updatedOrder.orderNumber} ha sido enviada correctamente`,
+                  detail: `La orden #${updatedOrder.id} ha sido enviada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -276,7 +276,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden confirmada',
-                  detail: `La orden ${updatedOrder.orderNumber} ha sido confirmada correctamente`,
+                  detail: `La orden #${updatedOrder.id} ha sido confirmada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -305,7 +305,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden enviada',
-                  detail: `La orden ${updatedOrder.orderNumber} ha sido marcada como enviada`,
+                  detail: `La orden #${updatedOrder.id} ha sido marcada como enviada`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -334,7 +334,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden entregada',
-                  detail: `La orden ${updatedOrder.orderNumber} ha sido marcada como entregada`,
+                  detail: `La orden #${updatedOrder.id} ha sido marcada como entregada`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -363,7 +363,7 @@ export const PurchaseOrderStore = signalStore(
                 messageService.add({
                   severity: 'success',
                   summary: 'Orden cancelada',
-                  detail: `La orden ${updatedOrder.orderNumber} ha sido cancelada correctamente`,
+                  detail: `La orden #${updatedOrder.id} ha sido cancelada correctamente`,
                 });
               },
               error: ({ message: error }: Error) => {
