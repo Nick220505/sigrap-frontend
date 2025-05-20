@@ -143,10 +143,29 @@ import { TooltipModule } from 'primeng/tooltip';
               } @else if (column.field === 'deliveryDate') {
                 {{ order[column.field] | date: 'dd/MM/yyyy' }}
               } @else if (column.field === 'status') {
-                <p-tag
-                  [severity]="getStatusSeverity(order[column.field])"
-                  [value]="formatStatus(order[column.field])"
-                />
+                @switch (order[column.field]) {
+                  @case ('DELIVERED') {
+                    <p-tag severity="success" value="Entregado" />
+                  }
+                  @case ('SHIPPED') {
+                    <p-tag severity="info" value="Enviado" />
+                  }
+                  @case ('CONFIRMED') {
+                    <p-tag severity="info" value="Confirmado" />
+                  }
+                  @case ('DRAFT') {
+                    <p-tag severity="warning" value="Borrador" />
+                  }
+                  @case ('SUBMITTED') {
+                    <p-tag severity="warning" value="Enviado" />
+                  }
+                  @case ('CANCELLED') {
+                    <p-tag severity="danger" value="Cancelado" />
+                  }
+                  @default {
+                    <p-tag severity="info" value="{{ order[column.field] }}" />
+                  }
+                }
               } @else {
                 {{ order[column.field] }}
               }
@@ -239,41 +258,5 @@ export class OrderTableComponent {
       message: `¿Está seguro de que desea eliminar el pedido <b>#${id}</b>?`,
       accept: () => this.purchaseOrderStore.delete(id),
     });
-  }
-
-  getStatusSeverity(status: string): string {
-    switch (status) {
-      case 'DELIVERED':
-        return 'success';
-      case 'SHIPPED':
-      case 'CONFIRMED':
-        return 'info';
-      case 'DRAFT':
-      case 'SUBMITTED':
-        return 'warning';
-      case 'CANCELLED':
-        return 'danger';
-      default:
-        return 'info';
-    }
-  }
-
-  formatStatus(status: string): string {
-    switch (status) {
-      case 'DELIVERED':
-        return 'Entregado';
-      case 'SHIPPED':
-        return 'Enviado';
-      case 'CONFIRMED':
-        return 'Confirmado';
-      case 'DRAFT':
-        return 'Borrador';
-      case 'SUBMITTED':
-        return 'Enviado';
-      case 'CANCELLED':
-        return 'Cancelado';
-      default:
-        return status;
-    }
   }
 }
