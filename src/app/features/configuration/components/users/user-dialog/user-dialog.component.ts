@@ -203,7 +203,7 @@ export class UserDialogComponent {
       [
         Validators.required,
         Validators.pattern(
-          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$',
         ),
       ],
     ],
@@ -224,7 +224,7 @@ export class UserDialogComponent {
             .get('password')
             ?.setValidators(
               Validators.pattern(
-                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$',
               ),
             );
         } else {
@@ -236,7 +236,7 @@ export class UserDialogComponent {
             ?.setValidators([
               Validators.required,
               Validators.pattern(
-                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$',
               ),
             ]);
         }
