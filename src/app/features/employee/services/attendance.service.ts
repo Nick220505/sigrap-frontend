@@ -42,18 +42,4 @@ export class AttendanceService {
       clockOutData,
     );
   }
-
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.attendanceUrl}/${id}`);
-  }
-
-  deleteAllById(ids: number[]): Observable<void> {
-    return this.http.request<void>(
-      'delete',
-      `${this.attendanceUrl}/delete-many`,
-      {
-        body: ids,
-      },
-    );
-  }
 }

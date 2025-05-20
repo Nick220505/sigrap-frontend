@@ -12,8 +12,6 @@ import {
 } from '@ngrx/signals';
 import {
   addEntity,
-  removeEntities,
-  removeEntity,
   setAllEntities,
   updateEntity,
   withEntities,
@@ -157,63 +155,6 @@ export const AttendanceStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail: 'Error al registrar salida',
-                });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
-          ),
-        ),
-      ),
-    ),
-    delete: rxMethod<number>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        concatMap((id) =>
-          attendanceService.delete(id).pipe(
-            tapResponse({
-              next: () => {
-                patchState(store, removeEntity(id));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Asistencia eliminada',
-                  detail: 'La asistencia ha sido eliminada correctamente',
-                });
-              },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al eliminar asistencia',
-                });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
-          ),
-        ),
-      ),
-    ),
-    deleteAllById: rxMethod<number[]>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        concatMap((ids) =>
-          attendanceService.deleteAllById(ids).pipe(
-            tapResponse({
-              next: () => {
-                patchState(store, removeEntities(ids));
-                messageService.add({
-                  severity: 'success',
-                  summary: 'Asistencias eliminadas',
-                  detail:
-                    'Las asistencias seleccionadas han sido eliminadas correctamente',
-                });
-              },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al eliminar asistencias',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

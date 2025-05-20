@@ -1,6 +1,5 @@
 import { Component, inject, input } from '@angular/core';
 import { AttendanceTableComponent } from '@features/employee/components/employee-attendance/attendance-table/attendance-table.component';
-import { AttendanceInfo } from '@features/employee/models/attendance.model';
 import { AttendanceStore } from '@features/employee/stores/attendance.store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -22,18 +21,6 @@ import { TooltipModule } from 'primeng/tooltip';
           tooltipPosition="top"
           (onClick)="attendanceStore.openClockInDialog()"
         />
-
-        <p-button
-          label="Eliminar"
-          icon="pi pi-trash"
-          severity="danger"
-          outlined
-          pTooltip="Eliminar registros seleccionados"
-          tooltipPosition="top"
-          [disabled]="attendanceTable().selectedAttendances().length === 0"
-          (onClick)="deleteSelectedAttendances()"
-          class="mr-2"
-        />
       </ng-template>
 
       <ng-template #end>
@@ -54,26 +41,4 @@ export class AttendanceToolbarComponent {
   private readonly confirmationService = inject(ConfirmationService);
   readonly attendanceStore = inject(AttendanceStore);
   readonly attendanceTable = input.required<AttendanceTableComponent>();
-
-  deleteSelectedAttendances(): void {
-    const attendances = this.attendanceTable().selectedAttendances();
-    this.confirmationService.confirm({
-      header: 'Eliminar registros',
-      message: `
-        ¿Está seguro de que desea eliminar los ${attendances.length} registros de asistencia seleccionados?
-        <ul class='mt-2 mb-0'>
-          ${attendances
-            .map(
-              ({ userName, date }: AttendanceInfo) =>
-                `<li>• <b>${userName}</b> - ${date}</li>`,
-            )
-            .join('')}
-        </ul>
-      `,
-      accept: () => {
-        const ids = attendances.map(({ id }: AttendanceInfo) => id);
-        this.attendanceStore.deleteAllById(ids);
-      },
-    });
-  }
 }

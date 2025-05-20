@@ -94,10 +94,6 @@ import { TooltipModule } from 'primeng/tooltip';
 
       <ng-template #header>
         <tr>
-          <th style="width: 3rem">
-            <p-tableHeaderCheckbox />
-          </th>
-
           @for (column of columns; track column.field) {
             <th pSortableColumn="{{ column.field }}">
               <div class="flex items-center gap-2">
@@ -136,10 +132,6 @@ import { TooltipModule } from 'primeng/tooltip';
 
       <ng-template #body let-attendance let-columns="columns">
         <tr>
-          <td style="width: 3rem">
-            <p-tableCheckbox [value]="attendance" />
-          </td>
-
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'status') {
@@ -217,17 +209,6 @@ import { TooltipModule } from 'primeng/tooltip';
                 !attendance.clockInTime
               "
             />
-
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              rounded
-              outlined
-              (click)="deleteAttendance(attendance)"
-              pTooltip="Eliminar registro"
-              tooltipPosition="top"
-              [disabled]="attendanceStore.loading()"
-            />
           </td>
         </tr>
       </ng-template>
@@ -293,14 +274,6 @@ export class AttendanceTableComponent {
           attendanceId: id,
         });
       },
-    });
-  }
-
-  deleteAttendance({ id, userName }: AttendanceInfo): void {
-    this.confirmationService.confirm({
-      header: 'Eliminar registro',
-      message: `¿Está seguro de que desea eliminar el registro de asistencia de <b>${userName}</b>?`,
-      accept: () => this.attendanceStore.deleteAllById([id]),
     });
   }
 }
