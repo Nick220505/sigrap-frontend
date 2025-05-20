@@ -109,8 +109,6 @@ import { TooltipModule } from 'primeng/tooltip';
               inputId="deliveryDate"
               formControlName="deliveryDate"
               [showIcon]="true"
-              dateFormat="dd/mm/yy"
-              [minDate]="minDeliveryDate"
               appendTo="body"
               [showOnFocus]="true"
             />
