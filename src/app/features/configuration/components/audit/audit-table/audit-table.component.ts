@@ -1,8 +1,8 @@
 import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import 'jspdf-autotable'; // Import for autoTable functionality
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
@@ -15,6 +15,13 @@ import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { AuditLogStore } from '../../../stores/audit-log.store';
+
+// Add jsPDF augmentation for TypeScript
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 
 @Component({
   selector: 'app-audit-table',
@@ -226,12 +233,9 @@ export class AuditTableComponent {
     this.searchValue.set(value);
 
     if (value) {
-      // Determine what type of search to perform based on the input
       if (value.includes('@')) {
-        // Looks like an email/username
         this.auditLogStore.findByUsername({ username: value });
       } else if (value.match(/^[0-9]+$/)) {
-        // Looks like an ID
         this.auditLogStore.findByEntityId({ entityId: value });
       } else if (
         value.toUpperCase() === 'CREATE' ||
@@ -239,14 +243,11 @@ export class AuditTableComponent {
         value.toUpperCase() === 'DELETE' ||
         value.toUpperCase() === 'VIEW'
       ) {
-        // Looks like an action
         this.auditLogStore.findByAction({ action: value.toUpperCase() });
       } else {
-        // Try as entity name
         this.auditLogStore.findByEntityName({ entityName: value });
       }
     } else {
-      // Empty search - reset to all
       this.auditLogStore.findAll({});
     }
   }
@@ -260,7 +261,6 @@ export class AuditTableComponent {
         endDate: endDateStr,
       });
     } else {
-      // To show a message, you should integrate with a notification service
       console.warn('Debe seleccionar ambas fechas');
     }
   }
@@ -288,125 +288,160 @@ export class AuditTableComponent {
 
       // Clone the table to avoid modifying the original
       const clonedTable = table.cloneNode(true) as HTMLElement;
-      document.body.appendChild(clonedTable);
 
-      // Apply basic styles needed for PDF rendering
-      clonedTable.style.position = 'absolute';
-      clonedTable.style.top = '-9999px';
-      clonedTable.style.left = '-9999px';
-      clonedTable.style.width = `${table.offsetWidth}px`;
+      // Create a container for the PDF content with better styling
+      const container = document.createElement('div');
+      container.style.padding = '20px';
+      container.style.fontFamily = 'Helvetica, Arial, sans-serif';
 
-      // Force safe colors by overriding all styles that could use oklch
-      this.removeUnsupportedColors(clonedTable);
+      // Add a title
+      const title = document.createElement('h1');
+      title.textContent = 'Registro de Auditoría';
+      title.style.fontSize = '18px';
+      title.style.fontWeight = 'bold';
+      title.style.marginBottom = '15px';
+      title.style.textAlign = 'center';
 
-      // Generate the PDF
-      const canvas = await html2canvas(clonedTable, {
-        backgroundColor: null,
-        logging: false,
-        removeContainer: true,
-        scale: 1.5, // Higher quality
-        allowTaint: true,
-        useCORS: true,
-        onclone: (document) => {
-          // Additional processing on the cloned document if needed
-          const clonedElement = document.querySelector(
-            '.p-datatable',
-          ) as HTMLElement;
-          if (clonedElement) {
-            this.removeUnsupportedColors(clonedElement);
+      container.appendChild(title);
+      container.appendChild(clonedTable);
+
+      // Set container to be invisible on the page but valid for PDF generation
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      document.body.appendChild(container);
+
+      // Fix styling issues for PDF rendering
+      const allElements = container.querySelectorAll('*');
+      allElements.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          // Replace unsupported colors
+          if (window.getComputedStyle(el).color?.includes('oklch')) {
+            el.style.color = 'rgb(0, 0, 0)';
           }
-        },
+          if (window.getComputedStyle(el).backgroundColor?.includes('oklch')) {
+            el.style.backgroundColor = 'rgb(255, 255, 255)';
+          }
+
+          // Ensure text is visible in PDF
+          if (el.classList.contains('bg-blue-100'))
+            el.style.backgroundColor = '#dbeafe';
+          if (el.classList.contains('text-blue-800'))
+            el.style.color = '#1e40af';
+
+          if (el.classList.contains('bg-green-100'))
+            el.style.backgroundColor = '#dcfce7';
+          if (el.classList.contains('text-green-800'))
+            el.style.color = '#166534';
+
+          if (el.classList.contains('bg-yellow-100'))
+            el.style.backgroundColor = '#fef9c3';
+          if (el.classList.contains('text-yellow-800'))
+            el.style.color = '#854d0e';
+
+          if (el.classList.contains('bg-red-100'))
+            el.style.backgroundColor = '#fee2e2';
+          if (el.classList.contains('text-red-800')) el.style.color = '#991b1b';
+
+          if (el.classList.contains('bg-purple-100'))
+            el.style.backgroundColor = '#f3e8ff';
+          if (el.classList.contains('text-purple-800'))
+            el.style.color = '#6b21a8';
+
+          if (el.classList.contains('bg-gray-100'))
+            el.style.backgroundColor = '#f3f4f6';
+
+          // Ensure borders are visible
+          if (el.tagName === 'TD' || el.tagName === 'TH') {
+            el.style.borderBottom = '1px solid #e5e7eb';
+            el.style.padding = '8px';
+          }
+        }
       });
 
-      document.body.removeChild(clonedTable);
-
-      const imgData = canvas.toDataURL('image/png');
+      // Create jsPDF instance
       const pdf = new jsPDF({
-        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-        unit: 'px',
+        orientation: 'landscape',
+        unit: 'pt',
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const widthRatio = pdfWidth / canvas.width;
-      const heightRatio = pdfHeight / canvas.height;
-      const ratio = Math.min(widthRatio, heightRatio);
-
-      const canvasWidth = canvas.width * ratio;
-      const canvasHeight = canvas.height * ratio;
-
-      const marginX = (pdfWidth - canvasWidth) / 2;
-      const marginY = 20;
-
-      // Add title
-      pdf.setFontSize(16);
-      pdf.text('Registro de Auditoría', pdfWidth / 2, marginY - 5, {
-        align: 'center',
+      // Add the content to the PDF
+      await pdf.html(container, {
+        callback: function (pdf) {
+          pdf.save('auditoria.pdf');
+          // Clean up
+          document.body.removeChild(container);
+        },
+        html2canvas: {
+          scale: 0.7,
+          useCORS: true,
+          allowTaint: true,
+        },
+        margin: [40, 40, 40, 40],
+        autoPaging: 'text',
+        x: 0,
+        y: 0,
+        width: pdf.internal.pageSize.getWidth() - 80,
+        windowWidth: clonedTable.offsetWidth,
       });
-
-      pdf.addImage(imgData, 'PNG', marginX, marginY, canvasWidth, canvasHeight);
-      pdf.save('auditoria.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
+      // If there's an error with the direct HTML approach, fall back to the original method
+      this.fallbackPDFExport();
     } finally {
       this.isExporting.set(false);
     }
   }
 
-  // New simpler method to remove unsupported colors
-  private removeUnsupportedColors(element: HTMLElement): void {
-    // Override problematic styles with inline styles
-    const elementsWithClasses = element.querySelectorAll('*');
-    elementsWithClasses.forEach((el) => {
-      if (el instanceof HTMLElement) {
-        // Override background colors
-        el.style.backgroundColor = this.getSafeColor(
-          window.getComputedStyle(el).backgroundColor,
+  // Fallback method in case the direct HTML approach fails
+  private fallbackPDFExport(): void {
+    try {
+      const table = document.querySelector('.p-datatable') as HTMLElement;
+      if (!table) return;
+
+      const pdf = new jsPDF('landscape', 'pt');
+
+      // Add title
+      pdf.setFontSize(18);
+      pdf.text(
+        'Registro de Auditoría',
+        pdf.internal.pageSize.getWidth() / 2,
+        40,
+        { align: 'center' },
+      );
+
+      // Convert all rows to data
+      const rows = Array.from(table.querySelectorAll('tbody tr'));
+      const headers = Array.from(table.querySelectorAll('thead th')).map((th) =>
+        (th.textContent || '').trim(),
+      );
+
+      const data = rows.map((row) => {
+        return Array.from(row.querySelectorAll('td')).map((cell) =>
+          (cell.textContent || '').trim(),
         );
+      });
 
-        // Override text colors
-        el.style.color = this.getSafeColor(window.getComputedStyle(el).color);
+      // Generate table in PDF
+      pdf.autoTable({
+        head: [headers],
+        body: data,
+        startY: 60,
+        styles: {
+          fontSize: 10,
+          cellPadding: 5,
+          lineColor: [200, 200, 200],
+          lineWidth: 0.1,
+        },
+        headStyles: {
+          fillColor: [240, 240, 240],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold',
+        },
+      });
 
-        // Override border colors
-        el.style.borderColor = this.getSafeColor(
-          window.getComputedStyle(el).borderColor,
-        );
-
-        // Remove box shadows and gradients that might use oklch
-        el.style.boxShadow = 'none';
-
-        // If it has a background image or gradient, simplify it
-        const background = window.getComputedStyle(el).background;
-        if (
-          background &&
-          (background.includes('gradient') || background.includes('oklch'))
-        ) {
-          el.style.background = 'none';
-        }
-      }
-    });
-  }
-
-  // Simple helper to get a safe color
-  private getSafeColor(color: string): string {
-    if (!color) return 'black';
-
-    // Return safe default colors for unsupported formats
-    if (
-      color.includes('oklch') ||
-      color.includes('lab') ||
-      color.includes('lch') ||
-      color.includes('hwb')
-    ) {
-      return 'rgb(128, 128, 128)';
+      pdf.save('auditoria.pdf');
+    } catch (error) {
+      console.error('Error in fallback PDF export:', error);
     }
-
-    // Handle rgba by converting to rgb
-    if (color.startsWith('rgba')) {
-      return color.replace('rgba', 'rgb').replace(/,[^,]*\)$/, ')');
-    }
-
-    return color;
   }
 }
