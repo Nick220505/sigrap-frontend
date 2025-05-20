@@ -28,7 +28,6 @@ describe('PurchaseOrderStore', () => {
 
   const mockPurchaseOrder: PurchaseOrderInfo = {
     id: 1,
-    orderNumber: 'PO-2023-001',
     supplier: {
       id: 1,
       name: 'Test Supplier',
@@ -206,7 +205,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Orden creada',
-        detail: `La orden ${mockPurchaseOrder.orderNumber} ha sido creada correctamente`,
+        detail: `La orden #${mockPurchaseOrder.id} ha sido creada correctamente`,
       });
     });
 
@@ -237,7 +236,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Orden actualizada',
-        detail: `La orden ${mockPurchaseOrder.orderNumber} ha sido actualizada correctamente`,
+        detail: `La orden #${mockPurchaseOrder.id} ha sido actualizada correctamente`,
       });
     });
 
@@ -265,7 +264,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Orden enviada',
-        detail: `La orden ${mockPurchaseOrder.orderNumber} ha sido enviada correctamente`,
+        detail: `La orden #${mockPurchaseOrder.id} ha sido enviada correctamente`,
       });
     });
 
