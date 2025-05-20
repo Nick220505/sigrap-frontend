@@ -106,6 +106,7 @@ import { TooltipModule } from 'primeng/tooltip';
             <label for="deliveryDate" class="font-bold">Fecha de Entrega</label>
             <p-datePicker
               id="deliveryDate"
+              inputId="deliveryDate"
               formControlName="deliveryDate"
               [showIcon]="true"
               dateFormat="dd/mm/yy"
