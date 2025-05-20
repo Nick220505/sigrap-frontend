@@ -527,5 +527,6 @@ export class OrderDialogComponent {
     } else {
       this.purchaseOrderStore.create(orderData);
     }
+    this.purchaseOrderStore.closeOrderDialog();
   }
 }
