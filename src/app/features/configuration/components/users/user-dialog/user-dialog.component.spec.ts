@@ -165,7 +165,6 @@ describe('UserDialogComponent', () => {
       email: 'updated@example.com',
       documentId: null,
       phone: null,
-      password: null,
       role: UserRole.EMPLOYEE,
     });
 
@@ -178,7 +177,6 @@ describe('UserDialogComponent', () => {
         email: 'updated@example.com',
         documentId: null,
         phone: null,
-        password: null,
         role: UserRole.EMPLOYEE,
       },
     });
