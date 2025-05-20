@@ -30,21 +30,16 @@ describe('AttendanceStore', () => {
     clockOutTime: '17:00:00',
     totalHours: 8,
     status: 'PRESENT' as AttendanceStatus,
-    notes: 'Regular day',
     createdAt: '2023-01-01T09:00:00Z',
     updatedAt: '2023-01-01T17:00:00Z',
   };
 
   const mockClockInData: ClockInData = {
     userId: 1,
-    timestamp: '2023-01-01T09:00:00Z',
-    notes: 'Clocking in',
   };
 
   const mockClockOutData: ClockOutData = {
     attendanceId: 1,
-    timestamp: '2023-01-01T17:00:00Z',
-    notes: 'Clocking out',
   };
 
   beforeEach(() => {
@@ -53,8 +48,6 @@ describe('AttendanceStore', () => {
       'findByEmployeeId',
       'clockIn',
       'clockOut',
-      'delete',
-      'deleteAllById',
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
@@ -62,8 +55,6 @@ describe('AttendanceStore', () => {
     attendanceService.findByEmployeeId.and.returnValue(of([mockAttendance]));
     attendanceService.clockIn.and.returnValue(of(mockAttendance));
     attendanceService.clockOut.and.returnValue(of(mockAttendance));
-    attendanceService.delete.and.returnValue(of(void 0));
-    attendanceService.deleteAllById.and.returnValue(of(void 0));
 
     TestBed.configureTestingModule({
       providers: [
@@ -183,70 +174,6 @@ describe('AttendanceStore', () => {
         summary: 'Error',
         detail: 'Error al registrar salida',
       });
-    });
-  });
-
-  describe('delete', () => {
-    it('should delete an attendance record', () => {
-      store.delete(1);
-
-      expect(attendanceService.delete).toHaveBeenCalledWith(1);
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'success',
-        summary: 'Asistencia eliminada',
-        detail: 'La asistencia ha sido eliminada correctamente',
-      });
-    });
-
-    it('should handle error when deleting attendance fails', () => {
-      attendanceService.delete.and.returnValue(
-        throwError(() => new Error('Error deleting attendance')),
-      );
-
-      store.delete(1);
-
-      expect(store.error()).toBe('Error deleting attendance');
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error al eliminar asistencia',
-      });
-    });
-  });
-
-  describe('deleteAllById', () => {
-    it('should delete multiple attendance records', () => {
-      store.deleteAllById([1, 2]);
-
-      expect(attendanceService.deleteAllById).toHaveBeenCalledWith([1, 2]);
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'success',
-        summary: 'Asistencias eliminadas',
-        detail:
-          'Las asistencias seleccionadas han sido eliminadas correctamente',
-      });
-    });
-
-    it('should handle error when deleting multiple attendance records fails', () => {
-      attendanceService.deleteAllById.and.returnValue(
-        throwError(() => new Error('Error deleting attendances')),
-      );
-
-      store.deleteAllById([1, 2]);
-
-      expect(store.error()).toBe('Error deleting attendances');
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error al eliminar asistencias',
-      });
-    });
-  });
-
-  describe('computed properties', () => {
-    it('should compute attendancesCount', () => {
-      store.findAll();
-      expect(store.attendancesCount()).toBe(1);
     });
   });
 

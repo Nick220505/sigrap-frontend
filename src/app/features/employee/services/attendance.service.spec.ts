@@ -84,8 +84,6 @@ describe('AttendanceService', () => {
   it('should clock in', () => {
     const clockInData: ClockInData = {
       userId: 1,
-      timestamp: '2023-01-01T09:00:00Z',
-      notes: 'Regular clock in',
     };
     service.clockIn(clockInData).subscribe((attendance) => {
       expect(attendance).toEqual(mockAttendance);
@@ -99,8 +97,6 @@ describe('AttendanceService', () => {
   it('should clock out', () => {
     const clockOutData: ClockOutData = {
       attendanceId: 1,
-      timestamp: '2023-01-01T17:00:00Z',
-      notes: 'Regular clock out',
     };
     service.clockOut(clockOutData).subscribe((attendance) => {
       expect(attendance).toEqual(mockAttendance);
@@ -109,21 +105,5 @@ describe('AttendanceService', () => {
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(clockOutData);
     req.flush(mockAttendance);
-  });
-
-  it('should delete an attendance', () => {
-    service.delete(1).subscribe();
-    const req = httpMock.expectOne(`${apiUrl}/1`);
-    expect(req.request.method).toBe('DELETE');
-    req.flush(null);
-  });
-
-  it('should delete multiple attendances by ids', () => {
-    const ids = [1, 2, 3];
-    service.deleteAllById(ids).subscribe();
-    const req = httpMock.expectOne(`${apiUrl}/delete-many`);
-    expect(req.request.method).toBe('DELETE');
-    expect(req.request.body).toEqual(ids);
-    req.flush(null);
   });
 });
