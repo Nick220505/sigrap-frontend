@@ -19,7 +19,9 @@ import { PasswordModule } from 'primeng/password';
         [class.ng-dirty]="showError()"
         [class.ng-invalid]="showError()"
         [required]="required()"
-        [strongRegex]="'^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$'"
+        [strongRegex]="
+          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$'
+        "
         appendTo="body"
         fluid
       >
@@ -122,7 +124,9 @@ export class PasswordFieldComponent {
         this.hasLowercase.set(/[a-z]/.test(password));
         this.hasUppercase.set(/[A-Z]/.test(password));
         this.hasNumber.set(/\d/.test(password));
-        this.hasSpecialChar.set(/[@$!%*?&]/.test(password));
+        this.hasSpecialChar.set(
+          /[!@#$%^&*()_+\-=[\]{}|;:,.<>/?]/.test(password),
+        );
       });
     });
   }
