@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpStatusCode, provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -115,7 +115,7 @@ describe('AuthStore', () => {
 
     it('should handle 401 Unauthorized status with appropriate message', () => {
       const httpError = {
-        status: 401,
+        status: HttpStatusCode.Unauthorized,
       };
       authService.login.and.returnValue(throwError(() => httpError));
 
@@ -131,7 +131,7 @@ describe('AuthStore', () => {
 
     it('should handle 403 Forbidden status with appropriate message', () => {
       const httpError = {
-        status: 403,
+        status: HttpStatusCode.Forbidden,
       };
       authService.login.and.returnValue(throwError(() => httpError));
 
@@ -158,6 +158,22 @@ describe('AuthStore', () => {
         severity: 'error',
         summary: 'Error',
         detail: 'Credenciales inválidas',
+      });
+    });
+
+    it('should handle other error messages', () => {
+      const error = {
+        error: { message: 'Other error' },
+      };
+      authService.login.and.returnValue(throwError(() => error));
+
+      store.login(credentials);
+
+      expect(store.error()).toBe('Other error');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Other error',
       });
     });
 
@@ -218,7 +234,7 @@ describe('AuthStore', () => {
 
     it('should handle conflict status (409) with email exists message', () => {
       const httpError = {
-        status: 409,
+        status: HttpStatusCode.Conflict,
       };
       authService.register.and.returnValue(throwError(() => httpError));
 
