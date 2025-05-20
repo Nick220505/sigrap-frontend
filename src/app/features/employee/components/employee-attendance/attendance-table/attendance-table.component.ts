@@ -280,7 +280,6 @@ export class AttendanceTableComponent {
       accept: () => {
         this.attendanceStore.clockOut({
           attendanceId: id,
-          timestamp: new Date().toISOString(),
         });
       },
     });

@@ -62,7 +62,6 @@ import { Select } from 'primeng/select';
               styleClass="w-full"
               filter
               filterBy="name"
-              showClear
             />
           </p-inputgroup>
           @if (userIdControlInvalid) {
