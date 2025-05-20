@@ -246,6 +246,56 @@ export class AuditTableComponent {
     }
   }
 
+  exportToCSV(): void {
+    try {
+      this.isExporting.set(true);
+
+      const data = this.auditLogStore.entities();
+      if (!data || data.length === 0) {
+        console.warn('No hay datos para exportar');
+        this.isExporting.set(false);
+        return;
+      }
+
+      const headers = ['Fecha', 'Usuario', 'Acción', 'Entidad'];
+      let csvContent = headers.join(',') + '\n';
+
+      data.forEach((audit) => {
+        if (!audit) return;
+
+        const timestamp = audit.timestamp
+          ? new Date(audit.timestamp).toLocaleString('es-ES')
+          : '';
+
+        const row = [
+          `"${timestamp}"`,
+          `"${audit.username || ''}"`,
+          `"${audit.action || ''}"`,
+          `"${audit.entityName || ''}"`,
+        ];
+
+        csvContent += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'auditoria.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error al exportar a CSV:', error);
+      alert(
+        'Hubo un error al exportar el archivo CSV. Por favor, inténtelo de nuevo.',
+      );
+    } finally {
+      this.isExporting.set(false);
+    }
+  }
+
   async exportToPDF() {
     try {
       this.isExporting.set(true);

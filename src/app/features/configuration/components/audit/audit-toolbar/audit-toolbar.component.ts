@@ -40,7 +40,7 @@ import { AuditTableComponent } from '../audit-table/audit-table.component';
           severity="secondary"
           pTooltip="Exportar registros a CSV"
           tooltipPosition="top"
-          (onClick)="auditTable().dt().exportCSV()"
+          (onClick)="auditTable().exportToCSV()"
           [disabled]="auditLogStore.auditLogsCount() === 0"
         />
       </ng-template>
