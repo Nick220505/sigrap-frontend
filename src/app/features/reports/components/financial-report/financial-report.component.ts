@@ -1190,14 +1190,11 @@ export class FinancialReportComponent implements OnInit {
 
   isExporting = signal(false);
   private applyCompatibleStyles(element: HTMLElement): void {
-    // Convert oklch colors to RGB
     const applyToElement = (el: HTMLElement) => {
       const style = window.getComputedStyle(el);
       const color = style.getPropertyValue('color');
       const backgroundColor = style.getPropertyValue('background-color');
       const borderColor = style.getPropertyValue('border-color');
-
-      // Only convert if the color is in oklch format
       if (color.includes('oklch')) {
         el.style.color = this.convertToRGB(color);
       }
@@ -1207,17 +1204,12 @@ export class FinancialReportComponent implements OnInit {
       if (borderColor.includes('oklch')) {
         el.style.borderColor = this.convertToRGB(borderColor);
       }
-
-      // Ensure PrimeNG component backgrounds are set
       if (el.classList.contains('p-card')) {
         el.style.backgroundColor = '#ffffff';
       }
     };
 
-    // Apply to main element
     applyToElement(element);
-
-    // Apply to all child elements
     const allElements = element.getElementsByTagName('*');
     for (const el of Array.from(allElements)) {
       applyToElement(el as HTMLElement);
@@ -1225,9 +1217,8 @@ export class FinancialReportComponent implements OnInit {
   }
 
   private convertToRGB(color: string): string {
-    // Simple conversion for oklch colors - you may need to adjust these values
     if (color.includes('oklch')) {
-      return '#000000'; // Default to black if oklch
+      return '#000000';
     }
     return color;
   }
@@ -1241,22 +1232,15 @@ export class FinancialReportComponent implements OnInit {
         throw new Error('Export content element not found');
       }
 
-      // Create a clone and prepare it for PDF export
       const clone = exportContent.cloneNode(true) as HTMLElement;
       clone.style.display = 'block';
       clone.style.position = 'absolute';
       clone.style.left = '-9999px';
-      clone.style.width = '1024px'; // Set fixed width for consistent rendering
+      clone.style.width = '1024px';
       clone.style.backgroundColor = '#ffffff';
       document.body.appendChild(clone);
-
-      // Apply compatible styles
       this.applyCompatibleStyles(clone);
-
-      // Wait for styles and images to load
       await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Capture the content with specific dimensions
       const canvas = await html2canvas(clone, {
         scale: 2,
         useCORS: true,
@@ -1272,19 +1256,16 @@ export class FinancialReportComponent implements OnInit {
         },
       });
 
-      // Clean up the clone
       document.body.removeChild(clone);
 
-      // Create PDF with proper dimensions
-      const imgWidth = 208; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm
+      const imgWidth = 208;
+      const pageHeight = 295;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
 
       const pdf = new jsPDF('p', 'mm');
       let position = 0;
 
-      // Add first page
       pdf.addImage(
         canvas.toDataURL('image/png', 1.0),
         'PNG',
