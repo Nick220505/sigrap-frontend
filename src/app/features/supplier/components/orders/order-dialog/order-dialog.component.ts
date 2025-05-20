@@ -385,10 +385,9 @@ export class OrderDialogComponent {
           this.calculateSubtotals();
           this.updateTotals();
 
-          this.orderForm.markAsPristine();
-
           if (viewOnly) {
             this.orderForm.disable();
+            this.orderForm.markAsPristine();
           }
         } else {
           this.orderForm.enable();
