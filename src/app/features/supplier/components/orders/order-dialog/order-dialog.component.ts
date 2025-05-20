@@ -338,7 +338,7 @@ export class OrderDialogComponent {
 
       untracked(() => {
         if (order) {
-          while (this.itemsArray.length) {
+          while (this.itemsArray.length > 0) {
             this.itemsArray.removeAt(0);
           }
 
@@ -381,7 +381,10 @@ export class OrderDialogComponent {
           }
 
           this.itemsCountSignal.set(this.itemsArray.length);
+
+          this.calculateSubtotals();
           this.updateTotals();
+
           this.orderForm.markAsPristine();
 
           if (viewOnly) {
@@ -410,6 +413,7 @@ export class OrderDialogComponent {
       .get('items')
       ?.valueChanges.subscribe(() => this.updateTotals());
   }
+
   addItem(): void {
     const newItem = this.fb.group({
       productId: [null, Validators.required],
@@ -424,7 +428,7 @@ export class OrderDialogComponent {
 
     this.itemsArray.push(newItem);
     this.itemsCountSignal.set(this.itemsArray.length);
-    this.updateTotals();
+    this.updateItemSubtotal(this.itemsArray.length - 1);
     this.orderForm.markAsDirty();
   }
 
@@ -453,7 +457,13 @@ export class OrderDialogComponent {
     }
   }
 
-  updateItemSubtotal(index: number): void {
+  calculateSubtotals(): void {
+    for (let i = 0; i < this.itemsArray.length; i++) {
+      this.updateItemSubtotal(i, false);
+    }
+  }
+
+  updateItemSubtotal(index: number, updateTotal = true): void {
     const itemGroup = this.itemsArray.at(index);
     const quantity = itemGroup.get('quantity')?.value ?? 0;
     const unitPrice = itemGroup.get('unitPrice')?.value ?? 0;
@@ -461,12 +471,15 @@ export class OrderDialogComponent {
     const subtotal = quantity * unitPrice;
     itemGroup.get('subtotal')?.setValue(subtotal);
 
-    this.updateTotals();
-    this.orderForm.markAsDirty();
+    if (updateTotal) {
+      this.updateTotals();
+      this.orderForm.markAsDirty();
+    }
   }
 
   updateTotals(): void {
     let total = 0;
+
     for (let i = 0; i < this.itemsArray.length; i++) {
       const itemGroup = this.itemsArray.at(i);
       const subtotal = itemGroup.get('subtotal')?.value ?? 0;
