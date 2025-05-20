@@ -110,10 +110,8 @@ import { TooltipModule } from 'primeng/tooltip';
               [showIcon]="true"
               dateFormat="dd/mm/yy"
               [minDate]="minDeliveryDate"
-              styleClass="w-full"
               appendTo="body"
               [showOnFocus]="true"
-              [showClear]="true"
               (onSelect)="onDeliveryDateSelected($event)"
             />
             @if (
