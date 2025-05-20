@@ -112,7 +112,6 @@ import { TooltipModule } from 'primeng/tooltip';
               [minDate]="minDeliveryDate"
               appendTo="body"
               [showOnFocus]="true"
-              (onSelect)="onDeliveryDateSelected($event)"
             />
             @if (
               orderForm.get('deliveryDate')?.invalid &&
@@ -412,12 +411,6 @@ export class OrderDialogComponent {
       .get('items')
       ?.valueChanges.subscribe(() => this.updateTotals());
   }
-
-  onDeliveryDateSelected(event: Date): void {
-    this.orderForm.get('deliveryDate')?.setValue(event);
-    this.orderForm.markAsDirty();
-  }
-
   addItem(): void {
     const newItem = this.fb.group({
       productId: [null, Validators.required],
