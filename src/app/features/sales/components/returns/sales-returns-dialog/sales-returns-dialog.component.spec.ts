@@ -310,12 +310,10 @@ describe('SalesReturnsDialogComponent', () => {
     });
 
     it('should reset form when sale is deselected', () => {
-      // First select a sale
       component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
       fixture.detectChanges();
 
-      // Then deselect
       component.returnForm.get('originalSaleId')?.setValue(null);
       component.onOriginalSaleChange(null);
       fixture.detectChanges();
@@ -389,48 +387,42 @@ describe('SalesReturnsDialogComponent', () => {
     });
 
     it('should require reason field', fakeAsync(() => {
-      // Create a valid form setup except for the reason field
       component.returnForm.get('reason')?.setValue('');
       component.returnForm.get('reason')?.markAsTouched();
       component.returnItemsArray.at(0).get('quantity')?.setValue(1);
       component.updateReturnItemSubtotal(0);
 
-      tick(); // Wait for Angular validation
+      tick();
       fixture.detectChanges();
 
-      // Check if the form is invalid
       expect(component.returnForm.get('reason')?.invalid).toBeTrue();
       expect(
         component.returnForm.get('reason')?.errors?.['required'],
       ).toBeTruthy();
 
-      // Now set a valid reason
       component.returnForm.get('reason')?.setValue('Valid reason for return');
-      tick(); // Wait for Angular validation to update
+      tick();
       fixture.detectChanges();
 
       expect(component.returnForm.get('reason')?.invalid).toBeFalse();
     }));
 
     it('should enforce minimum length for reason', fakeAsync(() => {
-      // Set a very short reason (below minimum length)
       component.returnForm.get('reason')?.setValue('abc');
       component.returnForm.get('reason')?.markAsTouched();
       component.returnItemsArray.at(0).get('quantity')?.setValue(1);
       component.updateReturnItemSubtotal(0);
 
-      tick(); // Wait for Angular validation
+      tick();
       fixture.detectChanges();
 
-      // Check if the form has minlength error
       expect(component.returnForm.get('reason')?.invalid).toBeTrue();
       expect(
         component.returnForm.get('reason')?.errors?.['minlength'],
       ).toBeTruthy();
 
-      // Now set a valid length reason
       component.returnForm.get('reason')?.setValue('Valid reason');
-      tick(); // Wait for Angular validation to update
+      tick();
       fixture.detectChanges();
 
       expect(component.returnForm.get('reason')?.invalid).toBeFalse();
@@ -440,7 +432,6 @@ describe('SalesReturnsDialogComponent', () => {
       const reasonControl = component.returnForm.get('reason');
       reasonControl?.setValue('Valid reason');
 
-      // Set all quantities to 0
       component.returnItemsArray.controls.forEach((control, index) => {
         control.get('quantity')?.setValue(0);
         component.updateReturnItemSubtotal(index);
@@ -450,7 +441,6 @@ describe('SalesReturnsDialogComponent', () => {
 
       expect(component.returnHasNoItems()).toBeTrue();
 
-      // Set one quantity > 0
       component.returnItemsArray.at(0).get('quantity')?.setValue(1);
       component.updateReturnItemSubtotal(0);
       fixture.detectChanges();

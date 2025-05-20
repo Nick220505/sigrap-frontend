@@ -146,7 +146,6 @@ describe('SalesReturnsTableComponent', () => {
     fixture = TestBed.createComponent(SalesReturnsTableComponent);
     component = fixture.componentInstance;
 
-    // Set up the dt viewChild property with a function that returns the mocked table
     Object.defineProperty(component, 'dt', {
       value: () => mockTable,
     });
@@ -185,13 +184,10 @@ describe('SalesReturnsTableComponent', () => {
     it('should update searchValue when search input changes', () => {
       const testValue = 'test search';
 
-      // First set the value in the component's signal
       component.searchValue.set(testValue);
 
-      // Manually trigger the filterGlobal method that would be called by the input event
       component.dt().filterGlobal(testValue, 'contains');
 
-      // Check that filterGlobal was called with the correct parameters
       expect(mockTable.filterGlobal).toHaveBeenCalledWith(
         testValue,
         'contains',

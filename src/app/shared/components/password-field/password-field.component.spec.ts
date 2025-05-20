@@ -79,12 +79,10 @@ describe('PasswordFieldComponent', () => {
     control.setValue('');
     control.markAsTouched();
 
-    // Trigger the control's valueChanges subscription
     control.updateValueAndValidity();
     tick();
     fixture.detectChanges();
 
-    // Manually set the showError signal since we're in a test
     passwordFieldComponent.showError.set(true);
     fixture.detectChanges();
 
@@ -98,16 +96,13 @@ describe('PasswordFieldComponent', () => {
   it('should validate complex password pattern', fakeAsync(() => {
     const control = hostComponent.passwordControl;
 
-    // Invalid password - missing requirements
     control.setValue('simple');
     control.markAsTouched();
 
-    // Trigger the control's valueChanges subscription
     control.updateValueAndValidity();
     tick();
     fixture.detectChanges();
 
-    // Manually set the showError signal since we're in a test
     passwordFieldComponent.showError.set(true);
     fixture.detectChanges();
 
@@ -117,16 +112,13 @@ describe('PasswordFieldComponent', () => {
       'La contraseña debe cumplir todos los requisitos',
     );
 
-    // Valid complex password
     control.setValue('StrongP@ss123');
     control.markAsTouched();
 
-    // Trigger the control's valueChanges subscription
     control.updateValueAndValidity();
     tick();
     fixture.detectChanges();
 
-    // Manually set the showError signal since we're in a test
     passwordFieldComponent.showError.set(false);
     fixture.detectChanges();
 
@@ -138,11 +130,9 @@ describe('PasswordFieldComponent', () => {
     const control = hostComponent.passwordControl;
     control.setValue('Test1@');
 
-    // Trigger the control's valueChanges subscription
     control.updateValueAndValidity();
     tick();
 
-    // Manually set the indicator signals
     passwordFieldComponent.hasUppercase.set(true);
     passwordFieldComponent.hasLowercase.set(true);
     passwordFieldComponent.hasNumber.set(true);
@@ -150,11 +140,9 @@ describe('PasswordFieldComponent', () => {
     passwordFieldComponent.hasMinLength.set(false);
     fixture.detectChanges();
 
-    // Wait for footer template rendering
     tick(100);
     fixture.detectChanges();
 
-    // Using the parent element as the password component attaches the template to body
     expect(passwordFieldComponent.hasUppercase()).toBeTrue();
     expect(passwordFieldComponent.hasLowercase()).toBeTrue();
     expect(passwordFieldComponent.hasNumber()).toBeTrue();

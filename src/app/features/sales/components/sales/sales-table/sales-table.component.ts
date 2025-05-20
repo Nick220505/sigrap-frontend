@@ -261,7 +261,6 @@ export class SalesTableComponent {
     },
   });
 
-  // PDF Export state
   readonly isExporting = signal(false);
   readonly currentExportId = signal<number | null>(null);
 
@@ -281,7 +280,7 @@ export class SalesTableComponent {
   private createPdfContent(sale: SaleInfo): HTMLDivElement {
     const container = document.createElement('div');
     container.style.cssText =
-      'padding: 0.5rem; width: 800px; max-width: 800px;'; // Fixed width for better scaling
+      'padding: 0.5rem; width: 800px; max-width: 800px;';
     container.innerHTML = `
       <div style="padding: 1rem;">
         <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center;">
@@ -388,7 +387,7 @@ export class SalesTableComponent {
       const container = this.createPdfContent(sale);
 
       const canvas = await html2canvas(container, {
-        scale: 1, // Using base scale since we're using larger font sizes
+        scale: 1,
         logging: false,
         useCORS: true,
       });
@@ -397,21 +396,17 @@ export class SalesTableComponent {
 
       const imgData = canvas.toDataURL('image/png');
 
-      // A4 dimensions in mm
       const pdfWidth = 210;
       const pdfHeight = 297;
 
-      // Calculate dimensions to fit the content better with margins
-      const margins = 10; // 10mm margins
+      const margins = 10;
       const availableWidth = pdfWidth - margins * 2;
       const availableHeight = pdfHeight - margins * 2;
 
-      // Calculate image dimensions to fit within available space while maintaining aspect ratio
       const imgAspectRatio = canvas.width / canvas.height;
       let imgWidth = availableWidth;
       let imgHeight = imgWidth / imgAspectRatio;
 
-      // If height exceeds available height, scale down based on height
       if (imgHeight > availableHeight) {
         imgHeight = availableHeight;
         imgWidth = imgHeight * imgAspectRatio;
@@ -419,7 +414,6 @@ export class SalesTableComponent {
 
       const doc = new jsPDF('p', 'mm', 'a4');
 
-      // Center the content
       const xPosition = (pdfWidth - imgWidth) / 2;
       const yPosition = (pdfHeight - imgHeight) / 2;
 

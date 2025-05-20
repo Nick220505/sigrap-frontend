@@ -326,7 +326,6 @@ interface ChartTooltipContext {
         }
       </p-card>
 
-      <!-- Hidden container for PDF export -->
       <div class="p-4" id="exportContent" style="display: none;">
         <h2 class="text-2xl font-bold mb-4">Rendimiento de Empleados</h2>
 
@@ -872,19 +871,16 @@ export class EmployeesReportComponent implements OnInit {
         },
       });
 
-      // Clean up the clone
       document.body.removeChild(clone);
 
-      // Create PDF with proper dimensions
-      const imgWidth = 208; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm
+      const imgWidth = 208;
+      const pageHeight = 295;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
 
       const pdf = new jsPDF('p', 'mm');
       let position = 0;
 
-      // Add first page
       pdf.addImage(
         canvas.toDataURL('image/png', 1.0),
         'PNG',
@@ -897,7 +893,6 @@ export class EmployeesReportComponent implements OnInit {
       );
       heightLeft -= pageHeight;
 
-      // Add subsequent pages if content is longer than one page
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
@@ -914,7 +909,6 @@ export class EmployeesReportComponent implements OnInit {
         heightLeft -= pageHeight;
       }
 
-      // Save the PDF
       pdf.save('reporte-empleados.pdf');
     } catch (error) {
       console.error('Error al exportar el PDF:', error);

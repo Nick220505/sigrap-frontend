@@ -188,7 +188,6 @@ describe('SupplierStore', () => {
 
       supplierService.delete.and.returnValue(throwError(() => errorResponse));
 
-      // Set up the entities for the test
       store.findAll();
 
       store.delete(1);
@@ -229,7 +228,6 @@ describe('SupplierStore', () => {
         throwError(() => errorResponse),
       );
 
-      // Set up the entities for the test
       store.findAll();
 
       store.deleteAllById([1, 2]);

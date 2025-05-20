@@ -297,7 +297,6 @@ describe('SupplierDialogComponent', () => {
       (supplierStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      // Set valid form values
       component.supplierForm.patchValue({
         name: 'Valid Supplier',
       });

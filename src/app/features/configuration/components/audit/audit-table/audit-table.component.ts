@@ -300,7 +300,6 @@ export class AuditTableComponent {
     try {
       this.isExporting.set(true);
 
-      // Get data from the table
       const originalTable = document.querySelector('.p-datatable');
       if (!originalTable) {
         console.error('Table element not found');
@@ -308,20 +307,17 @@ export class AuditTableComponent {
         return;
       }
 
-      // Extract data from the table
       const rows = Array.from(originalTable.querySelectorAll('tbody tr'));
       const headers = Array.from(
         originalTable.querySelectorAll('thead th'),
       ).map((th) => (th.textContent ?? '').trim());
 
-      // Create direct jsPDF instance
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4',
       });
 
-      // Add title
       pdf.setFontSize(16);
       pdf.setTextColor(0, 0, 0);
       pdf.text(
@@ -331,38 +327,32 @@ export class AuditTableComponent {
         { align: 'center' },
       );
 
-      // Define table starting position
       const startY = 25;
 
-      // Define column widths - distribute evenly across page width with margins
       const pageWidth = pdf.internal.pageSize.getWidth();
       const margin = 10;
       const tableWidth = pageWidth - 2 * margin;
       const colWidths = headers.map((_, i) => {
-        // Make date column slightly wider, entity column wider, action narrower
-        if (i === 0) return tableWidth * 0.25; // Date
-        if (i === 1) return tableWidth * 0.25; // User
-        if (i === 2) return tableWidth * 0.2; // Action
-        return tableWidth * 0.3; // Entity
+        if (i === 0) return tableWidth * 0.25;
+        if (i === 1) return tableWidth * 0.25;
+        if (i === 2) return tableWidth * 0.2;
+        return tableWidth * 0.3;
       });
 
-      // Define colors for action types
       const actionColors = {
-        CREATE: { fill: [220, 252, 231], text: [22, 101, 52] }, // green
-        UPDATE: { fill: [254, 249, 195], text: [133, 77, 14] }, // yellow
-        DELETE: { fill: [254, 226, 226], text: [153, 27, 27] }, // red
-        VIEW: { fill: [219, 234, 254], text: [30, 64, 175] }, // blue
+        CREATE: { fill: [220, 252, 231], text: [22, 101, 52] },
+        UPDATE: { fill: [254, 249, 195], text: [133, 77, 14] },
+        DELETE: { fill: [254, 226, 226], text: [153, 27, 27] },
+        VIEW: { fill: [219, 234, 254], text: [30, 64, 175] },
       };
 
-      // Helper function to determine color for action
       const getActionColor = (action: string) => {
         for (const [key, value] of Object.entries(actionColors)) {
           if (action.includes(key)) return value;
         }
-        return { fill: [243, 244, 246], text: [0, 0, 0] }; // default gray
+        return { fill: [243, 244, 246], text: [0, 0, 0] };
       };
 
-      // Draw header
       pdf.setFillColor(242, 242, 242);
       pdf.rect(margin, startY, tableWidth, 8, 'F');
       pdf.setTextColor(0, 0, 0);
@@ -375,17 +365,14 @@ export class AuditTableComponent {
         currentX += colWidths[i];
       });
 
-      // Process rows in chunks to prevent canvas size issues
       const ROWS_PER_PAGE = 20;
       let currentY = startY + 8;
       let currentPage = 1;
 
-      // Function to add a new page
       const addNewPage = () => {
         pdf.addPage();
         currentPage++;
 
-        // Add header to new page
         pdf.setFillColor(242, 242, 242);
         pdf.rect(margin, startY, tableWidth, 8, 'F');
         pdf.setTextColor(0, 0, 0);
@@ -398,16 +385,13 @@ export class AuditTableComponent {
           currentX += colWidths[i];
         });
 
-        // Reset Y position for data rows
         currentY = startY + 8;
       };
 
-      // Process rows
       pdf.setFont('helvetica', 'normal');
       let isEvenRow = true;
 
       for (let i = 0; i < rows.length; i++) {
-        // Check if we need a new page
         if (i > 0 && i % ROWS_PER_PAGE === 0) {
           addNewPage();
         }
@@ -416,7 +400,6 @@ export class AuditTableComponent {
         const cells = Array.from(row.querySelectorAll('td'));
         const rowHeight = 8;
 
-        // Add alternating row background
         pdf.setFillColor(
           isEvenRow ? 255 : 249,
           isEvenRow ? 255 : 249,
@@ -424,17 +407,13 @@ export class AuditTableComponent {
         );
         pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
 
-        // Add cell content
         currentX = margin;
         cells.forEach((cell, j) => {
           const text = (cell.textContent ?? '').trim();
 
-          // Special formatting for action column
           if (j === 2) {
-            // Action column
             const actionColor = getActionColor(text);
 
-            // Draw colored background for action cells
             pdf.setFillColor(
               actionColor.fill[0],
               actionColor.fill[1],
@@ -442,36 +421,29 @@ export class AuditTableComponent {
             );
             pdf.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
 
-            // Set text color for action
             pdf.setTextColor(
               actionColor.text[0],
               actionColor.text[1],
               actionColor.text[2],
             );
           } else if (j === 3) {
-            // Entity column
-            // Gray background for entity
             pdf.setFillColor(243, 244, 246);
             pdf.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
             pdf.setTextColor(0, 0, 0);
           } else {
-            // Reset text color for other columns
             pdf.setTextColor(0, 0, 0);
           }
 
-          // Add text with proper wrapping
           const maxWidth = colWidths[j] - 4;
           pdf.text(text, currentX + 2, currentY + 5, { maxWidth });
 
           currentX += colWidths[j];
         });
 
-        // Move to next row
         currentY += rowHeight;
         isEvenRow = !isEvenRow;
       }
 
-      // Add page count at the bottom
       for (let i = 0; i < currentPage; i++) {
         pdf.setPage(i + 1);
         pdf.setFontSize(8);
@@ -484,7 +456,6 @@ export class AuditTableComponent {
         );
       }
 
-      // Save the PDF
       pdf.save('auditoria.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);

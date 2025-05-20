@@ -1278,7 +1278,6 @@ export class FinancialReportComponent implements OnInit {
       );
       heightLeft -= pageHeight;
 
-      // Add subsequent pages if content is longer than one page
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
@@ -1295,7 +1294,6 @@ export class FinancialReportComponent implements OnInit {
         heightLeft -= pageHeight;
       }
 
-      // Save the PDF
       pdf.save('reporte-financiero.pdf');
     } catch (error) {
       console.error('Error al exportar el PDF:', error);
