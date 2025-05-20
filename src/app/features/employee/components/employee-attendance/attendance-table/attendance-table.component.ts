@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -26,6 +26,7 @@ import { TooltipModule } from 'primeng/tooltip';
     InputTextModule,
     FormsModule,
     DatePipe,
+    DecimalPipe,
     IconFieldModule,
     InputIconModule,
     TooltipModule,
@@ -38,6 +39,7 @@ import { TooltipModule } from 'primeng/tooltip';
         { field: 'date', header: 'Fecha' },
         { field: 'clockInTime', header: 'Hora Entrada' },
         { field: 'clockOutTime', header: 'Hora Salida' },
+        { field: 'totalHours', header: 'Horas Trabajadas' },
         { field: 'status', header: 'Estado' },
       ];
 
@@ -56,6 +58,7 @@ import { TooltipModule } from 'primeng/tooltip';
         'date',
         'clockInTime',
         'clockOutTime',
+        'totalHours',
         'status',
       ]"
       [tableStyle]="{ 'min-width': '75rem' }"
@@ -178,14 +181,20 @@ import { TooltipModule } from 'primeng/tooltip';
               } @else if (column.field === 'date') {
                 {{ attendance.date | date: 'dd/MM/yyyy' }}
               } @else if (column.field === 'clockInTime') {
-                {{
-                  attendance.clockInTime | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5'
-                }}
+                {{ attendance.clockInTime | date: 'hh:mm a' : 'UTC-5' }}
               } @else if (column.field === 'clockOutTime') {
                 {{
-                  (attendance.clockOutTime
-                    | date: 'dd/MM/yyyy hh:mm a' : 'UTC-5') || '-'
+                  (attendance.clockOutTime | date: 'hh:mm a' : 'UTC-5') || '-'
                 }}
+              } @else if (column.field === 'totalHours') {
+                @if (
+                  attendance.totalHours !== null &&
+                  attendance.totalHours !== undefined
+                ) {
+                  {{ attendance.totalHours | number: '1.2-2' }} h
+                } @else {
+                  -
+                }
               } @else {
                 {{ attendance[column.field] }}
               }
@@ -203,7 +212,9 @@ import { TooltipModule } from 'primeng/tooltip';
               pTooltip="Registrar salida"
               tooltipPosition="top"
               [disabled]="
-                !!attendance.clockOutTime || attendanceStore.loading()
+                !!attendance.clockOutTime ||
+                attendanceStore.loading() ||
+                !attendance.clockInTime
               "
             />
 

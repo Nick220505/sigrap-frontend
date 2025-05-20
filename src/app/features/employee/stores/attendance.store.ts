@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -100,13 +101,29 @@ export const AttendanceStore = signalStore(
                 });
                 patchState(store, { clockInDialogVisible: false });
               },
-              error: ({ message: error }: Error) => {
-                patchState(store, { error });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al registrar entrada',
+              error: ({ error, message }: HttpErrorResponse) => {
+                patchState(store, {
+                  error: message ?? 'Error desconocido',
                 });
+
+                if (
+                  error?.message?.includes(
+                    'User already has an attendance record for today',
+                  )
+                ) {
+                  messageService.add({
+                    severity: 'warn',
+                    summary: 'Registro duplicado',
+                    detail:
+                      'El empleado ya tiene un registro de asistencia para hoy',
+                  });
+                } else {
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al registrar entrada',
+                  });
+                }
               },
               finalize: () => patchState(store, { loading: false }),
             }),
