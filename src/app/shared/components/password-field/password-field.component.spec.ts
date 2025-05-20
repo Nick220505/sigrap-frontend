@@ -23,7 +23,6 @@ import { PasswordFieldComponent } from './password-field.component';
     ></app-password-field>
   `,
   imports: [PasswordFieldComponent, ReactiveFormsModule],
-  standalone: true,
 })
 class TestHostComponent {
   passwordControl = new FormControl('', [

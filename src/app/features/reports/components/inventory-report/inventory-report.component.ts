@@ -60,7 +60,6 @@ interface ChartTooltipContext {
 
 @Component({
   selector: 'app-inventory-report',
-  standalone: true,
   imports: [
     ChartModule,
     CardModule,

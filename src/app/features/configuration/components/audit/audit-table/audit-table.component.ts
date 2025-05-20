@@ -17,7 +17,6 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
 
 @Component({
   selector: 'app-audit-table',
-  standalone: true,
   imports: [
     NgClass,
     FormsModule,

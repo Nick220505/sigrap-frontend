@@ -47,7 +47,6 @@ interface ProductWithStock {
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     ChartModule,
     CardModule,

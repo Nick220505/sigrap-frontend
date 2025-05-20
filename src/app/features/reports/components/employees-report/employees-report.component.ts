@@ -57,7 +57,6 @@ interface ChartTooltipContext {
 
 @Component({
   selector: 'app-employees-report',
-  standalone: true,
   imports: [
     ChartModule,
     CardModule,
