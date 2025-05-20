@@ -226,12 +226,9 @@ export class AuditTableComponent {
     this.searchValue.set(value);
 
     if (value) {
-      // Determine what type of search to perform based on the input
       if (value.includes('@')) {
-        // Looks like an email/username
         this.auditLogStore.findByUsername({ username: value });
       } else if (value.match(/^[0-9]+$/)) {
-        // Looks like an ID
         this.auditLogStore.findByEntityId({ entityId: value });
       } else if (
         value.toUpperCase() === 'CREATE' ||
@@ -239,14 +236,11 @@ export class AuditTableComponent {
         value.toUpperCase() === 'DELETE' ||
         value.toUpperCase() === 'VIEW'
       ) {
-        // Looks like an action
         this.auditLogStore.findByAction({ action: value.toUpperCase() });
       } else {
-        // Try as entity name
         this.auditLogStore.findByEntityName({ entityName: value });
       }
     } else {
-      // Empty search - reset to all
       this.auditLogStore.findAll({});
     }
   }
@@ -260,7 +254,6 @@ export class AuditTableComponent {
         endDate: endDateStr,
       });
     } else {
-      // To show a message, you should integrate with a notification service
       console.warn('Debe seleccionar ambas fechas');
     }
   }
@@ -277,23 +270,16 @@ export class AuditTableComponent {
 
   private applyCompatibleStyles(element: HTMLElement): void {
     const applyToElement = (el: HTMLElement) => {
-      // Get all computed styles
       const styles = window.getComputedStyle(el);
-
-      // Apply the background color with proper opacity
       if (
         styles.backgroundColor &&
         styles.backgroundColor !== 'rgba(0, 0, 0, 0)'
       ) {
         el.style.backgroundColor = this.convertToRGB(styles.backgroundColor);
       }
-
-      // Apply specific styles needed for PDF rendering
       el.style.color = styles.color;
       el.style.fontFamily = styles.fontFamily;
       el.style.fontSize = styles.fontSize;
-
-      // Apply to all children recursively
       Array.from(el.children).forEach((child) => {
         applyToElement(child as HTMLElement);
       });
@@ -303,7 +289,6 @@ export class AuditTableComponent {
   }
 
   private convertToRGB(color: string): string {
-    // Simple conversion to ensure proper color format for PDF
     if (color.startsWith('rgba')) {
       return color.replace('rgba', 'rgb').replace(/,[^,]*\)$/, ')');
     }
@@ -321,22 +306,15 @@ export class AuditTableComponent {
         return;
       }
 
-      // Clone the table to avoid modifying the original
       const clonedTable = table.cloneNode(true) as HTMLElement;
       document.body.appendChild(clonedTable);
-
-      // Apply styles to ensure proper PDF rendering
       this.applyCompatibleStyles(clonedTable);
-
-      // Ensure visible
       clonedTable.style.position = 'absolute';
       clonedTable.style.top = '-9999px';
       clonedTable.style.left = '-9999px';
       clonedTable.style.opacity = '1';
       clonedTable.style.transform = 'none';
       clonedTable.style.width = `${table.offsetWidth}px`;
-
-      // Generate the PDF
       const canvas = await html2canvas(clonedTable);
       document.body.removeChild(clonedTable);
 
@@ -359,7 +337,6 @@ export class AuditTableComponent {
       const marginX = (pdfWidth - canvasWidth) / 2;
       const marginY = 20;
 
-      // Add title
       pdf.setFontSize(16);
       pdf.text('Registro de Auditoría', pdfWidth / 2, marginY - 5, {
         align: 'center',
