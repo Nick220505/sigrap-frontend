@@ -12,15 +12,18 @@ import {
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
-import { map, pipe, switchMap, tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { AuditLogInfo } from '../models/audit-log.model';
-import { AuditLogService } from '../services/audit-log.service';
+import { AuditLogService, PageResponse } from '../services/audit-log.service';
 
 export interface AuditLogState {
   loading: boolean;
   error: string | null;
   selectedAuditLog: AuditLogInfo | null;
   dialogVisible: boolean;
+  totalRecords: number;
+  currentPage: number;
+  pageSize: number;
 }
 
 export const AuditLogStore = signalStore(
@@ -31,6 +34,9 @@ export const AuditLogStore = signalStore(
     error: null,
     selectedAuditLog: null,
     dialogVisible: false,
+    totalRecords: 0,
+    currentPage: 0,
+    pageSize: 10,
   }),
   withComputed(({ entities }) => ({
     auditLogsCount: computed(() => entities().length),
@@ -40,15 +46,19 @@ export const AuditLogStore = signalStore(
     messageService: inject(MessageService),
   })),
   withMethods(({ auditLogService, messageService, ...store }) => ({
-    findAll: rxMethod<void>(
-      pipe(
+    findAll: rxMethod<{ page?: number; size?: number }>((params$) =>
+      params$.pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap(() =>
-          auditLogService.findAll().pipe(
-            map((auditLogs) => auditLogs || []),
+        switchMap(({ page = 0, size = 10 }) =>
+          auditLogService.findAll(page, size).pipe(
             tapResponse({
-              next: (auditLogs) => {
-                patchState(store, setAllEntities(auditLogs));
+              next: (response: PageResponse<AuditLogInfo>) => {
+                patchState(store, setAllEntities(response.content));
+                patchState(store, {
+                  totalRecords: response.totalElements,
+                  currentPage: response.number,
+                  pageSize: response.size,
+                });
               },
               error: (error: Error) => {
                 patchState(store, { error: error.message });
@@ -64,15 +74,23 @@ export const AuditLogStore = signalStore(
         ),
       ),
     ),
-    findByUserId: rxMethod<number>(
-      pipe(
+    findByUsername: rxMethod<{
+      username: string;
+      page?: number;
+      size?: number;
+    }>((params$) =>
+      params$.pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((userId) =>
-          auditLogService.findByUserId(userId).pipe(
-            map((auditLogs) => auditLogs || []),
+        switchMap(({ username, page = 0, size = 10 }) =>
+          auditLogService.findByUsername(username, page, size).pipe(
             tapResponse({
-              next: (auditLogs) => {
-                patchState(store, setAllEntities(auditLogs));
+              next: (response: PageResponse<AuditLogInfo>) => {
+                patchState(store, setAllEntities(response.content));
+                patchState(store, {
+                  totalRecords: response.totalElements,
+                  currentPage: response.number,
+                  pageSize: response.size,
+                });
               },
               error: (error: Error) => {
                 patchState(store, { error: error.message });
@@ -88,15 +106,23 @@ export const AuditLogStore = signalStore(
         ),
       ),
     ),
-    findByEntityName: rxMethod<string>(
-      pipe(
+    findByEntityName: rxMethod<{
+      entityName: string;
+      page?: number;
+      size?: number;
+    }>((params$) =>
+      params$.pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((entityName) =>
-          auditLogService.findByEntityName(entityName).pipe(
-            map((auditLogs) => auditLogs || []),
+        switchMap(({ entityName, page = 0, size = 10 }) =>
+          auditLogService.findByEntityName(entityName, page, size).pipe(
             tapResponse({
-              next: (auditLogs) => {
-                patchState(store, setAllEntities(auditLogs));
+              next: (response: PageResponse<AuditLogInfo>) => {
+                patchState(store, setAllEntities(response.content));
+                patchState(store, {
+                  totalRecords: response.totalElements,
+                  currentPage: response.number,
+                  pageSize: response.size,
+                });
               },
               error: (error: Error) => {
                 patchState(store, { error: error.message });
@@ -113,39 +139,53 @@ export const AuditLogStore = signalStore(
         ),
       ),
     ),
-    findByAction: rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, { loading: true, error: null })),
-        switchMap((action) =>
-          auditLogService.findByAction(action).pipe(
-            map((auditLogs) => auditLogs || []),
-            tapResponse({
-              next: (auditLogs) => {
-                patchState(store, setAllEntities(auditLogs));
-              },
-              error: (error: Error) => {
-                patchState(store, { error: error.message });
-                messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al cargar registros de auditoría por acción',
-                });
-              },
-              finalize: () => patchState(store, { loading: false }),
-            }),
+    findByAction: rxMethod<{ action: string; page?: number; size?: number }>(
+      (params$) =>
+        params$.pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap(({ action, page = 0, size = 10 }) =>
+            auditLogService.findByAction(action, page, size).pipe(
+              tapResponse({
+                next: (response: PageResponse<AuditLogInfo>) => {
+                  patchState(store, setAllEntities(response.content));
+                  patchState(store, {
+                    totalRecords: response.totalElements,
+                    currentPage: response.number,
+                    pageSize: response.size,
+                  });
+                },
+                error: (error: Error) => {
+                  patchState(store, { error: error.message });
+                  messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al cargar registros de auditoría por acción',
+                  });
+                },
+                finalize: () => patchState(store, { loading: false }),
+              }),
+            ),
           ),
         ),
-      ),
     ),
-    findByDateRange: rxMethod<{ startDate: string; endDate: string }>(
-      pipe(
+    findByDateRange: rxMethod<{
+      startDate: string;
+      endDate: string;
+      page?: number;
+      size?: number;
+    }>((params$) =>
+      params$.pipe(
         tap(() => patchState(store, { loading: true, error: null })),
-        switchMap(({ startDate, endDate }) =>
-          auditLogService.findByDateRange(startDate, endDate).pipe(
-            map((auditLogs) => auditLogs || []),
+        switchMap(({ startDate, endDate, page = 0, size = 10 }) =>
+          auditLogService.findByDateRange(startDate, endDate, page, size).pipe(
             tapResponse({
-              next: (auditLogs) => {
-                patchState(store, setAllEntities(auditLogs));
+              next: (response: PageResponse<AuditLogInfo>) => {
+                patchState(store, setAllEntities(response.content));
+                patchState(store, {
+                  totalRecords: response.totalElements,
+                  currentPage: response.number,
+                  pageSize: response.size,
+                });
               },
               error: (error: Error) => {
                 patchState(store, { error: error.message });
@@ -154,6 +194,67 @@ export const AuditLogStore = signalStore(
                   summary: 'Error',
                   detail:
                     'Error al cargar registros de auditoría por rango de fechas',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+    findByEntityId: rxMethod<{
+      entityId: string;
+      page?: number;
+      size?: number;
+    }>((params$) =>
+      params$.pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap(({ entityId, page = 0, size = 10 }) =>
+          auditLogService.findByEntityId(entityId, page, size).pipe(
+            tapResponse({
+              next: (response: PageResponse<AuditLogInfo>) => {
+                patchState(store, setAllEntities(response.content));
+                patchState(store, {
+                  totalRecords: response.totalElements,
+                  currentPage: response.number,
+                  pageSize: response.size,
+                });
+              },
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail:
+                    'Error al cargar registros de auditoría por ID de entidad',
+                });
+              },
+              finalize: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
+    findErrors: rxMethod<{ page?: number; size?: number }>((params$) =>
+      params$.pipe(
+        tap(() => patchState(store, { loading: true, error: null })),
+        switchMap(({ page = 0, size = 10 }) =>
+          auditLogService.findErrors(page, size).pipe(
+            tapResponse({
+              next: (response: PageResponse<AuditLogInfo>) => {
+                patchState(store, setAllEntities(response.content));
+                patchState(store, {
+                  totalRecords: response.totalElements,
+                  currentPage: response.number,
+                  pageSize: response.size,
+                });
+              },
+              error: (error: Error) => {
+                patchState(store, { error: error.message });
+                messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al cargar registros de auditoría con errores',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -177,7 +278,7 @@ export const AuditLogStore = signalStore(
   })),
   withHooks({
     onInit({ findAll }) {
-      findAll();
+      findAll({});
     },
   }),
 );

@@ -18,7 +18,7 @@ import { AuditTableComponent } from '../audit-table/audit-table.component';
           class="mr-2"
           pTooltip="Actualizar registros"
           tooltipPosition="top"
-          (onClick)="auditLogStore.findAll()"
+          (onClick)="auditLogStore.findAll({})"
           [loading]="auditLogStore.loading()"
         />
       </ng-template>

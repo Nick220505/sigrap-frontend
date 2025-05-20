@@ -1,63 +1,69 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { DialogModule } from 'primeng/dialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { Table, TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { AuditLogStore } from '../../../stores/audit-log.store';
 
 @Component({
   selector: 'app-audit-table',
+  standalone: true,
   imports: [
+    NgClass,
+    FormsModule,
     TableModule,
     ButtonModule,
     InputTextModule,
-    IconFieldModule,
-    InputIconModule,
+    DialogModule,
     TooltipModule,
-    MessageModule,
-    FormsModule,
+    CalendarModule,
+    ToastModule,
     DatePipe,
+    PaginatorModule,
+    InputIconModule,
+    MessageModule,
+    IconFieldModule,
   ],
   template: `
     @let columns =
       [
-        { field: 'entityName', header: 'Entidad' },
-        { field: 'action', header: 'Acción' },
+        { field: 'timestamp', header: 'Fecha' },
         { field: 'username', header: 'Usuario' },
-        { field: 'timestamp', header: 'Fecha y Hora' },
+        { field: 'action', header: 'Acción' },
+        { field: 'entityName', header: 'Entidad' },
       ];
 
     <p-table
       #dt
       [value]="auditLogStore.entities()"
       [loading]="auditLogStore.loading()"
-      [rows]="10"
-      [columns]="columns"
-      paginator
-      [rowsPerPageOptions]="[10, 25, 50]"
-      showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-      [globalFilterFields]="['entityName', 'action', 'username']"
-      [tableStyle]="{ 'min-width': '70rem' }"
-      rowHover
+      [tableStyle]="{ 'min-width': '85rem' }"
+      [sortField]="'timestamp'"
+      [sortOrder]="-1"
       dataKey="id"
+      [globalFilterFields]="['username', 'action', 'entityName']"
+      rowHover
     >
-      <ng-template #caption>
+      <ng-template pTemplate="caption">
         <div
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Registros de Auditoría</h5>
+            <h5 class="m-0 text-left">Registro de Auditoría</h5>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center w-full sm:w-auto">
             <p-iconfield class="w-full">
               <p-inputicon>
                 <i class="pi pi-search"></i>
@@ -65,7 +71,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
               <input
                 pInputText
                 type="text"
-                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                (input)="applyFilter($event)"
                 [(ngModel)]="searchValue"
                 placeholder="Buscar..."
                 class="w-full"
@@ -75,7 +81,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
         </div>
       </ng-template>
 
-      <ng-template #header>
+      <ng-template pTemplate="header">
         <tr>
           @for (column of columns; track column.field) {
             <th pSortableColumn="{{ column.field }}">
@@ -97,24 +103,44 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
         </tr>
       </ng-template>
 
-      <ng-template #body let-auditLog let-columns="columns">
+      <ng-template pTemplate="body" let-audit>
         <tr>
-          @for (column of columns; track column.field) {
-            <td>
-              @if (column.field === 'timestamp') {
-                {{
-                  auditLog[column.field]
-                    | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
-                }}
-              } @else {
-                {{ auditLog[column.field] }}
-              }
-            </td>
-          }
+          <td>
+            {{ audit.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}
+          </td>
+          <td>
+            {{ audit.username }}
+          </td>
+          <td>
+            <span
+              class="inline-flex p-1 px-2 rounded-md text-xs font-medium"
+              [ngClass]="{
+                'bg-blue-100 text-blue-800': audit.action.includes('VIEW'),
+                'bg-green-100 text-green-800': audit.action.includes('CREATE'),
+                'bg-yellow-100 text-yellow-800':
+                  audit.action.includes('UPDATE'),
+                'bg-red-100 text-red-800': audit.action.includes('DELETE'),
+                'bg-purple-100 text-purple-800':
+                  !audit.action.includes('VIEW') &&
+                  !audit.action.includes('CREATE') &&
+                  !audit.action.includes('UPDATE') &&
+                  !audit.action.includes('DELETE'),
+              }"
+            >
+              {{ audit.action }}
+            </span>
+          </td>
+          <td>
+            <span
+              class="inline-flex p-1 px-2 bg-gray-100 rounded-md text-xs font-medium"
+            >
+              {{ audit.entityName }}
+            </span>
+          </td>
         </tr>
       </ng-template>
 
-      <ng-template #emptymessage>
+      <ng-template pTemplate="emptymessage">
         <tr>
           <td [attr.colspan]="columns.length" class="text-center py-4">
             @if (auditLogStore.error(); as error) {
@@ -126,7 +152,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
                     <div class="flex justify-center">
                       <p-button
                         label="Reintentar"
-                        (onClick)="auditLogStore.findAll()"
+                        (onClick)="auditLogStore.findAll({})"
                         styleClass="p-button-sm"
                         [loading]="auditLogStore.loading()"
                       />
@@ -135,55 +161,27 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron registros de auditoría.</p>
+              <div class="flex flex-col items-center">
+                <i class="pi pi-info-circle text-3xl text-gray-400 mb-2"></i>
+                <span class="text-gray-400"
+                  >No se encontraron registros de auditoría.</span
+                >
+              </div>
             }
           </td>
         </tr>
       </ng-template>
     </p-table>
 
-    <!-- Hidden container for PDF export -->
-    <div id="exportContent" style="display: none;">
-      <h2 class="text-2xl font-bold mb-4">Registros de Auditoría</h2>
-      <table
-        style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;"
-      >
-        <thead>
-          <tr>
-            <th style="border: 1px solid #dee2e6; padding: 0.75rem;">
-              Entidad
-            </th>
-            <th style="border: 1px solid #dee2e6; padding: 0.75rem;">Acción</th>
-            <th style="border: 1px solid #dee2e6; padding: 0.75rem;">
-              Usuario
-            </th>
-            <th style="border: 1px solid #dee2e6; padding: 0.75rem;">
-              Fecha y Hora
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (log of auditLogStore.entities(); track log.id) {
-            <tr>
-              <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
-                {{ log.entityName }}
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
-                {{ log.action }}
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
-                {{ log.username }}
-              </td>
-              <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
-                {{
-                  log.timestamp | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
-                }}
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <p-paginator
+      [rows]="auditLogStore.pageSize()"
+      [totalRecords]="auditLogStore.totalRecords()"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      showCurrentPageReport
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+      (onPageChange)="onPageChange($event)"
+      styleClass="mt-3"
+    ></p-paginator>
   `,
 })
 export class AuditTableComponent {
@@ -193,50 +191,121 @@ export class AuditTableComponent {
   readonly searchValue = signal('');
   readonly isExporting = signal(false);
 
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+
   clearAllFilters(): void {
     this.searchValue.set('');
-    this.dt().clear();
+    if (this.dt()) {
+      this.dt().clear();
+    }
+    this.auditLogStore.findAll({
+      page: 0,
+      size: this.auditLogStore.pageSize(),
+    });
   }
 
-  private applyCompatibleStyles(element: HTMLElement): void {
-    // Convert oklch colors to RGB
-    const applyToElement = (el: HTMLElement) => {
-      const style = window.getComputedStyle(el);
-      const color = style.getPropertyValue('color');
-      const backgroundColor = style.getPropertyValue('background-color');
-      const borderColor = style.getPropertyValue('border-color');
+  clearFiltersAndReload(): void {
+    this.clearAllFilters();
+    this.auditLogStore.findAll({
+      page: 0,
+      size: this.auditLogStore.pageSize(),
+    });
+  }
 
-      // Only convert if the color is in oklch format
-      if (color.includes('oklch')) {
-        el.style.color = this.convertToRGB(color);
-      }
-      if (backgroundColor.includes('oklch')) {
-        el.style.backgroundColor = this.convertToRGB(backgroundColor);
-      }
-      if (borderColor.includes('oklch')) {
-        el.style.borderColor = this.convertToRGB(borderColor);
-      }
+  onPageChange(event: PaginatorState): void {
+    this.auditLogStore.findAll({
+      page: event.page || 0,
+      size: event.rows || 10,
+    });
+  }
 
-      // Ensure PrimeNG component backgrounds are set
-      if (el.classList.contains('p-card')) {
-        el.style.backgroundColor = '#ffffff';
+  applyFilter(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value;
+    this.searchValue.set(value);
+
+    if (value) {
+      // Determine what type of search to perform based on the input
+      if (value.includes('@')) {
+        // Looks like an email/username
+        this.auditLogStore.findByUsername({ username: value });
+      } else if (value.match(/^[0-9]+$/)) {
+        // Looks like an ID
+        this.auditLogStore.findByEntityId({ entityId: value });
+      } else if (
+        value.toUpperCase() === 'CREATE' ||
+        value.toUpperCase() === 'UPDATE' ||
+        value.toUpperCase() === 'DELETE' ||
+        value.toUpperCase() === 'VIEW'
+      ) {
+        // Looks like an action
+        this.auditLogStore.findByAction({ action: value.toUpperCase() });
+      } else {
+        // Try as entity name
+        this.auditLogStore.findByEntityName({ entityName: value });
       }
-    };
-
-    // Apply to main element
-    applyToElement(element);
-
-    // Apply to all child elements
-    const allElements = element.getElementsByTagName('*');
-    for (const el of Array.from(allElements)) {
-      applyToElement(el as HTMLElement);
+    } else {
+      // Empty search - reset to all
+      this.auditLogStore.findAll({});
     }
   }
 
+  searchByDateRange(): void {
+    if (this.startDate && this.endDate) {
+      const startDateStr = this.startDate.toISOString();
+      const endDateStr = this.endDate.toISOString();
+      this.auditLogStore.findByDateRange({
+        startDate: startDateStr,
+        endDate: endDateStr,
+      });
+    } else {
+      // To show a message, you should integrate with a notification service
+      console.warn('Debe seleccionar ambas fechas');
+    }
+  }
+
+  formatDetails(details: string | null): string {
+    if (!details) return '-';
+    try {
+      const json = JSON.parse(details);
+      return JSON.stringify(json, null, 2);
+    } catch {
+      return details;
+    }
+  }
+
+  private applyCompatibleStyles(element: HTMLElement): void {
+    const applyToElement = (el: HTMLElement) => {
+      // Get all computed styles
+      const styles = window.getComputedStyle(el);
+
+      // Apply the background color with proper opacity
+      if (
+        styles.backgroundColor &&
+        styles.backgroundColor !== 'rgba(0, 0, 0, 0)'
+      ) {
+        el.style.backgroundColor = this.convertToRGB(styles.backgroundColor);
+      }
+
+      // Apply specific styles needed for PDF rendering
+      el.style.color = styles.color;
+      el.style.fontFamily = styles.fontFamily;
+      el.style.fontSize = styles.fontSize;
+
+      // Apply to all children recursively
+      Array.from(el.children).forEach((child) => {
+        applyToElement(child as HTMLElement);
+      });
+    };
+
+    applyToElement(element);
+  }
+
   private convertToRGB(color: string): string {
-    // Simple conversion for oklch colors
-    if (color.includes('oklch')) {
-      return '#000000'; // Default to black if oklch
+    // Simple conversion to ensure proper color format for PDF
+    if (color.startsWith('rgba')) {
+      return color.replace('rgba', 'rgb').replace(/,[^,]*\)$/, ')');
     }
     return color;
   }
@@ -244,87 +313,62 @@ export class AuditTableComponent {
   async exportToPDF() {
     try {
       this.isExporting.set(true);
-      const exportContent = document.getElementById('exportContent');
+      const table = document.querySelector('.p-datatable') as HTMLElement;
 
-      if (!exportContent) {
-        throw new Error('Export content element not found');
+      if (!table) {
+        console.error('Table element not found');
+        this.isExporting.set(false);
+        return;
       }
 
-      // Create a clone and prepare it for PDF export
-      const clone = exportContent.cloneNode(true) as HTMLElement;
-      clone.style.display = 'block';
-      clone.style.position = 'absolute';
-      clone.style.left = '-9999px';
-      clone.style.width = '1024px'; // Set fixed width for consistent rendering
-      clone.style.backgroundColor = '#ffffff';
-      document.body.appendChild(clone);
+      // Clone the table to avoid modifying the original
+      const clonedTable = table.cloneNode(true) as HTMLElement;
+      document.body.appendChild(clonedTable);
 
-      // Apply compatible styles
-      this.applyCompatibleStyles(clone);
+      // Apply styles to ensure proper PDF rendering
+      this.applyCompatibleStyles(clonedTable);
 
-      // Wait for styles and images to load
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Capture the content with specific dimensions
-      const canvas = await html2canvas(clone, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: 1024,
-        height: clone.offsetHeight,
-        onclone: (clonedDoc: Document) => {
-          const clonedElement = clonedDoc.getElementById('exportContent');
-          if (clonedElement) {
-            clonedElement.style.width = '1024px';
-          }
-        },
+      // Ensure visible
+      clonedTable.style.position = 'absolute';
+      clonedTable.style.top = '-9999px';
+      clonedTable.style.left = '-9999px';
+      clonedTable.style.opacity = '1';
+      clonedTable.style.transform = 'none';
+      clonedTable.style.width = `${table.offsetWidth}px`;
+
+      // Generate the PDF
+      const canvas = await html2canvas(clonedTable);
+      document.body.removeChild(clonedTable);
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+        unit: 'px',
       });
 
-      // Clean up the clone
-      document.body.removeChild(clone);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      // Create PDF with proper dimensions
-      const imgWidth = 208; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
+      const widthRatio = pdfWidth / canvas.width;
+      const heightRatio = pdfHeight / canvas.height;
+      const ratio = Math.min(widthRatio, heightRatio);
 
-      const pdf = new jsPDF('p', 'mm');
-      let position = 0;
+      const canvasWidth = canvas.width * ratio;
+      const canvasHeight = canvas.height * ratio;
 
-      // Add first page
-      pdf.addImage(
-        canvas.toDataURL('image/png', 1.0),
-        'PNG',
-        0,
-        position,
-        imgWidth,
-        imgHeight,
-        '',
-        'FAST',
-      );
-      heightLeft -= pageHeight;
+      const marginX = (pdfWidth - canvasWidth) / 2;
+      const marginY = 20;
 
-      // Add subsequent pages if content is longer than one page
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(
-          canvas.toDataURL('image/png', 1.0),
-          'PNG',
-          0,
-          position,
-          imgWidth,
-          imgHeight,
-          '',
-          'FAST',
-        );
-        heightLeft -= pageHeight;
-      }
+      // Add title
+      pdf.setFontSize(16);
+      pdf.text('Registro de Auditoría', pdfWidth / 2, marginY - 5, {
+        align: 'center',
+      });
 
-      // Save the PDF
-      pdf.save('registros-auditoria.pdf');
+      pdf.addImage(imgData, 'PNG', marginX, marginY, canvasWidth, canvasHeight);
+      pdf.save('auditoria.pdf');
     } catch (error) {
-      console.error('Error al exportar el PDF:', error);
+      console.error('Error generating PDF:', error);
     } finally {
       this.isExporting.set(false);
     }
