@@ -708,8 +708,8 @@ export class SalesReportComponent implements OnInit {
   }
 
   private getFirstDayOfWeek(date: Date): Date {
-    const day = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust to get Monday
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
     return new Date(date.getFullYear(), date.getMonth(), diff);
   }
 
