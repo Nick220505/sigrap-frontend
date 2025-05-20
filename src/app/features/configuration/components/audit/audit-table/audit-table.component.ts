@@ -275,41 +275,6 @@ export class AuditTableComponent {
     }
   }
 
-  private applyCompatibleStyles(element: HTMLElement): void {
-    const applyToElement = (el: HTMLElement) => {
-      // Get all computed styles
-      const styles = window.getComputedStyle(el);
-
-      // Apply the background color with proper opacity
-      if (
-        styles.backgroundColor &&
-        styles.backgroundColor !== 'rgba(0, 0, 0, 0)'
-      ) {
-        el.style.backgroundColor = this.convertToRGB(styles.backgroundColor);
-      }
-
-      // Apply specific styles needed for PDF rendering
-      el.style.color = styles.color;
-      el.style.fontFamily = styles.fontFamily;
-      el.style.fontSize = styles.fontSize;
-
-      // Apply to all children recursively
-      Array.from(el.children).forEach((child) => {
-        applyToElement(child as HTMLElement);
-      });
-    };
-
-    applyToElement(element);
-  }
-
-  private convertToRGB(color: string): string {
-    // Simple conversion to ensure proper color format for PDF
-    if (color.startsWith('rgba')) {
-      return color.replace('rgba', 'rgb').replace(/,[^,]*\)$/, ')');
-    }
-    return color;
-  }
-
   async exportToPDF() {
     try {
       this.isExporting.set(true);
@@ -325,19 +290,34 @@ export class AuditTableComponent {
       const clonedTable = table.cloneNode(true) as HTMLElement;
       document.body.appendChild(clonedTable);
 
-      // Apply styles to ensure proper PDF rendering
-      this.applyCompatibleStyles(clonedTable);
-
-      // Ensure visible
+      // Apply basic styles needed for PDF rendering
       clonedTable.style.position = 'absolute';
       clonedTable.style.top = '-9999px';
       clonedTable.style.left = '-9999px';
-      clonedTable.style.opacity = '1';
-      clonedTable.style.transform = 'none';
       clonedTable.style.width = `${table.offsetWidth}px`;
 
+      // Force safe colors by overriding all styles that could use oklch
+      this.removeUnsupportedColors(clonedTable);
+
       // Generate the PDF
-      const canvas = await html2canvas(clonedTable);
+      const canvas = await html2canvas(clonedTable, {
+        backgroundColor: null,
+        logging: false,
+        removeContainer: true,
+        scale: 1.5, // Higher quality
+        allowTaint: true,
+        useCORS: true,
+        onclone: (document) => {
+          // Additional processing on the cloned document if needed
+          const clonedElement = document.querySelector(
+            '.p-datatable',
+          ) as HTMLElement;
+          if (clonedElement) {
+            this.removeUnsupportedColors(clonedElement);
+          }
+        },
+      });
+
       document.body.removeChild(clonedTable);
 
       const imgData = canvas.toDataURL('image/png');
@@ -372,5 +352,61 @@ export class AuditTableComponent {
     } finally {
       this.isExporting.set(false);
     }
+  }
+
+  // New simpler method to remove unsupported colors
+  private removeUnsupportedColors(element: HTMLElement): void {
+    // Override problematic styles with inline styles
+    const elementsWithClasses = element.querySelectorAll('*');
+    elementsWithClasses.forEach((el) => {
+      if (el instanceof HTMLElement) {
+        // Override background colors
+        el.style.backgroundColor = this.getSafeColor(
+          window.getComputedStyle(el).backgroundColor,
+        );
+
+        // Override text colors
+        el.style.color = this.getSafeColor(window.getComputedStyle(el).color);
+
+        // Override border colors
+        el.style.borderColor = this.getSafeColor(
+          window.getComputedStyle(el).borderColor,
+        );
+
+        // Remove box shadows and gradients that might use oklch
+        el.style.boxShadow = 'none';
+
+        // If it has a background image or gradient, simplify it
+        const background = window.getComputedStyle(el).background;
+        if (
+          background &&
+          (background.includes('gradient') || background.includes('oklch'))
+        ) {
+          el.style.background = 'none';
+        }
+      }
+    });
+  }
+
+  // Simple helper to get a safe color
+  private getSafeColor(color: string): string {
+    if (!color) return 'black';
+
+    // Return safe default colors for unsupported formats
+    if (
+      color.includes('oklch') ||
+      color.includes('lab') ||
+      color.includes('lch') ||
+      color.includes('hwb')
+    ) {
+      return 'rgb(128, 128, 128)';
+    }
+
+    // Handle rgba by converting to rgb
+    if (color.startsWith('rgba')) {
+      return color.replace('rgba', 'rgb').replace(/,[^,]*\)$/, ')');
+    }
+
+    return color;
   }
 }
