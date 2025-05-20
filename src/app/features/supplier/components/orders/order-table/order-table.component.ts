@@ -233,10 +233,10 @@ export class OrderTableComponent {
     this.dt().clear();
   }
 
-  deleteOrder({ id, orderNumber }: PurchaseOrderInfo): void {
+  deleteOrder({ id }: PurchaseOrderInfo): void {
     this.confirmationService.confirm({
       header: 'Eliminar pedido',
-      message: `¿Está seguro de que desea eliminar el pedido <b>${orderNumber}</b>?`,
+      message: `¿Está seguro de que desea eliminar el pedido <b>#${id}</b>?`,
       accept: () => this.purchaseOrderStore.delete(id),
     });
   }
