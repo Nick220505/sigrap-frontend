@@ -109,7 +109,7 @@ import { AuthStore } from '../../stores/auth.store';
                 loginForm.get('password')?.touched;
 
               <div
-                class="flex flex-col gap-2 mt-4"
+                class="flex flex-col gap-2 mt-6"
                 [class.p-invalid]="passwordControlInvalid"
               >
                 <label
@@ -144,27 +144,21 @@ import { AuthStore } from '../../stores/auth.store';
                 }
               </div>
 
-              <div class="flex justify-end mt-2 mb-8">
-                <span
-                  class="font-medium text-right no-underline cursor-pointer text-primary"
-                >
-                  ¿Olvidó su contraseña?
-                </span>
+              <div class="mt-8">
+                <p-button
+                  label="Ingresar"
+                  type="button"
+                  styleClass="w-full"
+                  [loading]="authStore.loading()"
+                  (onClick)="
+                    loginForm.valid
+                      ? authStore.login(loginForm.value)
+                      : loginForm.markAllAsTouched()
+                  "
+                />
               </div>
 
-              <p-button
-                label="Ingresar"
-                type="button"
-                styleClass="w-full mb-8"
-                [loading]="authStore.loading()"
-                (onClick)="
-                  loginForm.valid
-                    ? authStore.login(loginForm.value)
-                    : loginForm.markAllAsTouched()
-                "
-              />
-
-              <div class="mt-6 text-center">
+              <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
                   ¿No tiene una cuenta?
                 </span>

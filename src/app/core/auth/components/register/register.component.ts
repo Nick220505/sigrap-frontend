@@ -104,7 +104,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 registerForm.get('email')?.touched;
 
               <div
-                class="flex flex-col gap-2 mt-4"
+                class="flex flex-col gap-2 mt-6"
                 [class.p-invalid]="emailControlInvalid"
               >
                 <label
@@ -143,7 +143,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 }
               </div>
 
-              <div class="mt-4">
+              <div class="mt-6">
                 <app-password-field
                   id="password"
                   [control]="$any(registerForm.get('password'))"
@@ -152,7 +152,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 />
               </div>
 
-              <div class="mt-4">
+              <div class="mt-6">
                 <app-password-field
                   id="confirmPassword"
                   [control]="$any(registerForm.get('confirmPassword'))"
@@ -171,11 +171,11 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 }
               </div>
 
-              <div class="mt-6">
+              <div class="mt-8">
                 <p-button
                   label="Registrarse"
                   type="button"
-                  styleClass="w-full mb-8"
+                  styleClass="w-full"
                   [loading]="authStore.loading()"
                   (onClick)="
                     registerForm.valid
@@ -185,7 +185,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 />
               </div>
 
-              <div class="mt-6 text-center">
+              <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
                   ¿Ya tienes una cuenta?
                 </span>
