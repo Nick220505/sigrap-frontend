@@ -11,7 +11,6 @@ import { ScheduleStore } from '../../../stores/schedule.store';
 import { ScheduleTableComponent } from '../schedule-table/schedule-table.component';
 import { ScheduleToolbarComponent } from './schedule-toolbar.component';
 
-// Create a mock table component with the needed methods
 class MockScheduleTable {
   isExporting = signal(false);
   selectedSchedules = signal([]);
@@ -22,7 +21,6 @@ class MockScheduleTable {
   });
 }
 
-// Create a test host component that provides the input
 @Component({
   selector: 'app-test-host',
   template: `<app-schedule-toolbar [scheduleTable]="mockTableComponent" />`,
@@ -41,7 +39,7 @@ describe('ScheduleToolbarComponent', () => {
 
   beforeEach(async () => {
     const mockStore = {
-      entities: signal([{ id: 1 }]), // Non-empty array so buttons aren't disabled
+      entities: signal([{ id: 1 }]),
       loading: signal(false),
       error: signal(null),
       findAll: jasmine.createSpy('findAll'),
@@ -90,12 +88,10 @@ describe('ScheduleToolbarComponent', () => {
   });
 
   it('should call openScheduleDialog on addNew', () => {
-    // Find the button by its label
     const addButton = fixture.debugElement.query(
       By.css('p-button[label="Nuevo"]'),
     );
     if (addButton) {
-      // Trigger onClick event handler directly
       const component = addButton.componentInstance;
       component.onClick.emit();
 
@@ -106,12 +102,10 @@ describe('ScheduleToolbarComponent', () => {
   });
 
   it('should call exportToCSV on the table when CSV button is clicked', () => {
-    // Find export button (has label "Exportar")
     const exportButton = fixture.debugElement.query(
       By.css('p-button[label="Exportar"]'),
     );
     if (exportButton) {
-      // Trigger onClick event handler directly
       const component = exportButton.componentInstance;
       component.onClick.emit();
 

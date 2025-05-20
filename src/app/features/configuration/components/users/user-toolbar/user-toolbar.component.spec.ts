@@ -11,7 +11,6 @@ import { UserStore } from '../../../stores/user.store';
 import { UserTableComponent } from '../user-table/user-table.component';
 import { UserToolbarComponent } from './user-toolbar.component';
 
-// Create a mock table component with the needed methods
 class MockUserTable {
   isExporting = signal(false);
   selectedUsers = signal([]);
@@ -22,7 +21,6 @@ class MockUserTable {
   });
 }
 
-// Create a test host component that provides the input
 @Component({
   selector: 'app-test-host',
   template: `<app-user-toolbar [userTable]="mockTableComponent" />`,
@@ -40,7 +38,7 @@ describe('UserToolbarComponent', () => {
 
   beforeEach(async () => {
     const mockStore = {
-      entities: signal([{ id: 1 }]), // Non-empty array
+      entities: signal([{ id: 1 }]),
       loading: signal(false),
       error: signal(null),
       usersCount: signal(10),
@@ -90,12 +88,10 @@ describe('UserToolbarComponent', () => {
   });
 
   it('should call openUserDialog on addNew', () => {
-    // Find the new button by its label
     const addButton = fixture.debugElement.query(
       By.css('p-button[label="Nuevo"]'),
     );
     if (addButton) {
-      // Trigger onClick event handler directly
       const component = addButton.componentInstance;
       component.onClick.emit();
 
@@ -104,12 +100,10 @@ describe('UserToolbarComponent', () => {
   });
 
   it('should call exportToCSV on the table when CSV button is clicked', () => {
-    // Find export button (has label "Exportar")
     const exportButton = fixture.debugElement.query(
       By.css('p-button[label="Exportar"]'),
     );
     if (exportButton) {
-      // Trigger onClick event handler directly
       const component = exportButton.componentInstance;
       component.onClick.emit();
 

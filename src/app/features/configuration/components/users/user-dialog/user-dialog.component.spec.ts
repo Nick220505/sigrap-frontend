@@ -93,19 +93,15 @@ describe('UserDialogComponent', () => {
   it('should validate name and email fields', () => {
     const form = component.userForm;
 
-    // Form should start with most fields invalid (except role which has default value)
-    expect(form.get('name')?.valid).toBeFalse(); // Required and empty
-    expect(form.get('email')?.valid).toBeFalse(); // Required and empty
+    expect(form.get('name')?.valid).toBeFalse();
+    expect(form.get('email')?.valid).toBeFalse();
 
-    // Role field should exist
     expect(form.get('role')).toBeTruthy();
 
-    // Fill in required fields
     form.get('name')?.setValue('Test User');
     form.get('email')?.setValue('test@example.com');
     form.get('role')?.setValue(UserRole.EMPLOYEE);
 
-    // Now these fields should be valid
     expect(form.get('name')?.valid).toBeTrue();
     expect(form.get('email')?.valid).toBeTrue();
     expect(form.get('role')?.valid).toBeTrue();
@@ -113,28 +109,23 @@ describe('UserDialogComponent', () => {
   });
 
   it('should call closeUserDialog when cancel button is clicked', () => {
-    // Make dialog visible to render the footer
     userStoreMock.dialogVisible.set(true);
     fixture.detectChanges();
 
-    // Find the cancel button
     const cancelButton = fixture.debugElement.nativeElement.querySelector(
       'p-button[label="Cancelar"]',
     );
 
     if (cancelButton) {
-      // Click the button
       cancelButton.click();
       expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
     }
   });
 
   it('should create new user when form is valid and save button is clicked', () => {
-    // Make dialog visible
     userStoreMock.dialogVisible.set(true);
     fixture.detectChanges();
 
-    // Setup form with valid data
     component.userForm.setValue({
       name: 'Test User',
       email: 'test@example.com',
@@ -144,10 +135,8 @@ describe('UserDialogComponent', () => {
       password: 'Password123!',
     });
 
-    // Simulate save method call directly
     component.saveUser();
 
-    // Verify the correct method is called with the right data
     expect(userStoreMock.create).toHaveBeenCalledWith({
       name: 'Test User',
       email: 'test@example.com',
@@ -157,12 +146,10 @@ describe('UserDialogComponent', () => {
       password: 'Password123!',
     });
 
-    // And dialog should be closed
     expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
   });
 
   it('should update existing user when form is valid, id exists, and save button is clicked', () => {
-    // Mock selected user with ID
     userStoreMock.selectedUser.set({
       id: 1,
       name: 'Existing User',
@@ -170,11 +157,9 @@ describe('UserDialogComponent', () => {
       role: UserRole.EMPLOYEE,
     });
 
-    // Make dialog visible
     userStoreMock.dialogVisible.set(true);
     fixture.detectChanges();
 
-    // Update some fields
     component.userForm.patchValue({
       name: 'Updated User',
       email: 'updated@example.com',
@@ -184,10 +169,8 @@ describe('UserDialogComponent', () => {
       role: UserRole.EMPLOYEE,
     });
 
-    // Simulate save method call directly
     component.saveUser();
 
-    // Verify the update method is called with the actual form values
     expect(userStoreMock.update).toHaveBeenCalledWith({
       id: 1,
       userData: {
@@ -200,7 +183,6 @@ describe('UserDialogComponent', () => {
       },
     });
 
-    // And dialog should be closed
     expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
   });
 });
