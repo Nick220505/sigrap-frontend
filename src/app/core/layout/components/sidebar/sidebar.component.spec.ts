@@ -13,10 +13,8 @@ describe('SidebarComponent', () => {
   let originalMatchMedia: typeof window.matchMedia;
 
   beforeEach(async () => {
-    // Store original matchMedia
     originalMatchMedia = window.matchMedia;
 
-    // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: jasmine.createSpy('matchMedia').and.returnValue({
@@ -42,7 +40,6 @@ describe('SidebarComponent', () => {
   });
 
   afterEach(() => {
-    // Restore original matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: originalMatchMedia,

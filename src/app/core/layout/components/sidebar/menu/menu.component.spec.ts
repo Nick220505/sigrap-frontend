@@ -25,10 +25,8 @@ describe('MenuComponent', () => {
   };
 
   beforeEach(async () => {
-    // Store original matchMedia
     originalMatchMedia = window.matchMedia;
 
-    // Mock matchMedia
     try {
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
@@ -44,7 +42,6 @@ describe('MenuComponent', () => {
         }),
       });
     } catch (e) {
-      // If already spied upon, ignore the error
       const error = e as Error;
       if (!error.message?.includes('already been spied upon')) {
         throw error;
@@ -69,7 +66,6 @@ describe('MenuComponent', () => {
   });
 
   afterEach(() => {
-    // Restore original matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: originalMatchMedia,
