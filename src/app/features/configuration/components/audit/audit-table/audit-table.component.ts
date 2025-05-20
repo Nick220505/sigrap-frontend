@@ -114,12 +114,15 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
             <span
               class="inline-flex p-1 px-2 rounded-md text-xs font-medium"
               [ngClass]="{
-                'bg-blue-100 text-blue-800': audit.action.includes('VIEW'),
-                'bg-green-100 text-green-800': audit.action.includes('CREATE'),
-                'bg-yellow-100 text-yellow-800':
+                'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100':
+                  audit.action.includes('VIEW'),
+                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100':
+                  audit.action.includes('CREATE'),
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100':
                   audit.action.includes('UPDATE'),
-                'bg-red-100 text-red-800': audit.action.includes('DELETE'),
-                'bg-purple-100 text-purple-800':
+                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100':
+                  audit.action.includes('DELETE'),
+                'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100':
                   !audit.action.includes('VIEW') &&
                   !audit.action.includes('CREATE') &&
                   !audit.action.includes('UPDATE') &&
@@ -131,7 +134,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
           </td>
           <td>
             <span
-              class="inline-flex p-1 px-2 bg-gray-100 rounded-md text-xs font-medium"
+              class="inline-flex p-1 px-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-md text-xs font-medium"
             >
               {{ audit.entityName }}
             </span>
@@ -161,8 +164,10 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
               </div>
             } @else {
               <div class="flex flex-col items-center">
-                <i class="pi pi-info-circle text-3xl text-gray-400 mb-2"></i>
-                <span class="text-gray-400"
+                <i
+                  class="pi pi-info-circle text-3xl text-gray-400 dark:text-gray-500 mb-2"
+                ></i>
+                <span class="text-gray-400 dark:text-gray-500"
                   >No se encontraron registros de auditoría.</span
                 >
               </div>
