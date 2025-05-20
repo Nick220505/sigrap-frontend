@@ -50,7 +50,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
       [sortField]="'timestamp'"
       [sortOrder]="-1"
       dataKey="id"
-      [globalFilterFields]="['username', 'action', 'entityName']"
+      [globalFilterFields]="['username', 'action', 'entityName', 'timestamp']"
       rowHover
     >
       <ng-template pTemplate="caption">
@@ -69,7 +69,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
               <input
                 pInputText
                 type="text"
-                (input)="applyFilter($event)"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
                 placeholder="Buscar..."
                 class="w-full"
@@ -221,31 +221,6 @@ export class AuditTableComponent {
       page: event.page || 0,
       size: event.rows || 10,
     });
-  }
-
-  applyFilter(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const value = inputElement.value;
-    this.searchValue.set(value);
-
-    if (value) {
-      if (value.includes('@')) {
-        this.auditLogStore.findByUsername({ username: value });
-      } else if (value.match(/^[0-9]+$/)) {
-        this.auditLogStore.findByEntityId({ entityId: value });
-      } else if (
-        value.toUpperCase() === 'CREATE' ||
-        value.toUpperCase() === 'UPDATE' ||
-        value.toUpperCase() === 'DELETE' ||
-        value.toUpperCase() === 'VIEW'
-      ) {
-        this.auditLogStore.findByAction({ action: value.toUpperCase() });
-      } else {
-        this.auditLogStore.findByEntityName({ entityName: value });
-      }
-    } else {
-      this.auditLogStore.findAll({});
-    }
   }
 
   searchByDateRange(): void {
