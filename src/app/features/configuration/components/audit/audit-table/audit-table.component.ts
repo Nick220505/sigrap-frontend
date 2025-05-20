@@ -2,7 +2,6 @@ import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable'; // Import for autoTable functionality
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
@@ -15,13 +14,6 @@ import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { AuditLogStore } from '../../../stores/audit-log.store';
-
-// Add jsPDF augmentation for TypeScript
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
-}
 
 @Component({
   selector: 'app-audit-table',
@@ -278,170 +270,198 @@ export class AuditTableComponent {
   async exportToPDF() {
     try {
       this.isExporting.set(true);
-      const table = document.querySelector('.p-datatable') as HTMLElement;
 
-      if (!table) {
+      // Get data from the table
+      const originalTable = document.querySelector('.p-datatable');
+      if (!originalTable) {
         console.error('Table element not found');
         this.isExporting.set(false);
         return;
       }
 
-      // Clone the table to avoid modifying the original
-      const clonedTable = table.cloneNode(true) as HTMLElement;
+      // Extract data from the table
+      const rows = Array.from(originalTable.querySelectorAll('tbody tr'));
+      const headers = Array.from(
+        originalTable.querySelectorAll('thead th'),
+      ).map((th) => (th.textContent || '').trim());
 
-      // Create a container for the PDF content with better styling
-      const container = document.createElement('div');
-      container.style.padding = '20px';
-      container.style.fontFamily = 'Helvetica, Arial, sans-serif';
-
-      // Add a title
-      const title = document.createElement('h1');
-      title.textContent = 'Registro de Auditoría';
-      title.style.fontSize = '18px';
-      title.style.fontWeight = 'bold';
-      title.style.marginBottom = '15px';
-      title.style.textAlign = 'center';
-
-      container.appendChild(title);
-      container.appendChild(clonedTable);
-
-      // Set container to be invisible on the page but valid for PDF generation
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      document.body.appendChild(container);
-
-      // Fix styling issues for PDF rendering
-      const allElements = container.querySelectorAll('*');
-      allElements.forEach((el) => {
-        if (el instanceof HTMLElement) {
-          // Replace unsupported colors
-          if (window.getComputedStyle(el).color?.includes('oklch')) {
-            el.style.color = 'rgb(0, 0, 0)';
-          }
-          if (window.getComputedStyle(el).backgroundColor?.includes('oklch')) {
-            el.style.backgroundColor = 'rgb(255, 255, 255)';
-          }
-
-          // Ensure text is visible in PDF
-          if (el.classList.contains('bg-blue-100'))
-            el.style.backgroundColor = '#dbeafe';
-          if (el.classList.contains('text-blue-800'))
-            el.style.color = '#1e40af';
-
-          if (el.classList.contains('bg-green-100'))
-            el.style.backgroundColor = '#dcfce7';
-          if (el.classList.contains('text-green-800'))
-            el.style.color = '#166534';
-
-          if (el.classList.contains('bg-yellow-100'))
-            el.style.backgroundColor = '#fef9c3';
-          if (el.classList.contains('text-yellow-800'))
-            el.style.color = '#854d0e';
-
-          if (el.classList.contains('bg-red-100'))
-            el.style.backgroundColor = '#fee2e2';
-          if (el.classList.contains('text-red-800')) el.style.color = '#991b1b';
-
-          if (el.classList.contains('bg-purple-100'))
-            el.style.backgroundColor = '#f3e8ff';
-          if (el.classList.contains('text-purple-800'))
-            el.style.color = '#6b21a8';
-
-          if (el.classList.contains('bg-gray-100'))
-            el.style.backgroundColor = '#f3f4f6';
-
-          // Ensure borders are visible
-          if (el.tagName === 'TD' || el.tagName === 'TH') {
-            el.style.borderBottom = '1px solid #e5e7eb';
-            el.style.padding = '8px';
-          }
-        }
-      });
-
-      // Create jsPDF instance
+      // Create direct jsPDF instance
       const pdf = new jsPDF({
         orientation: 'landscape',
-        unit: 'pt',
+        unit: 'mm',
+        format: 'a4',
       });
-
-      // Add the content to the PDF
-      await pdf.html(container, {
-        callback: function (pdf) {
-          pdf.save('auditoria.pdf');
-          // Clean up
-          document.body.removeChild(container);
-        },
-        html2canvas: {
-          scale: 0.7,
-          useCORS: true,
-          allowTaint: true,
-        },
-        margin: [40, 40, 40, 40],
-        autoPaging: 'text',
-        x: 0,
-        y: 0,
-        width: pdf.internal.pageSize.getWidth() - 80,
-        windowWidth: clonedTable.offsetWidth,
-      });
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      // If there's an error with the direct HTML approach, fall back to the original method
-      this.fallbackPDFExport();
-    } finally {
-      this.isExporting.set(false);
-    }
-  }
-
-  // Fallback method in case the direct HTML approach fails
-  private fallbackPDFExport(): void {
-    try {
-      const table = document.querySelector('.p-datatable') as HTMLElement;
-      if (!table) return;
-
-      const pdf = new jsPDF('landscape', 'pt');
 
       // Add title
-      pdf.setFontSize(18);
+      pdf.setFontSize(16);
+      pdf.setTextColor(0, 0, 0);
       pdf.text(
         'Registro de Auditoría',
         pdf.internal.pageSize.getWidth() / 2,
-        40,
+        15,
         { align: 'center' },
       );
 
-      // Convert all rows to data
-      const rows = Array.from(table.querySelectorAll('tbody tr'));
-      const headers = Array.from(table.querySelectorAll('thead th')).map((th) =>
-        (th.textContent || '').trim(),
-      );
+      // Define table starting position
+      const startY = 25;
 
-      const data = rows.map((row) => {
-        return Array.from(row.querySelectorAll('td')).map((cell) =>
-          (cell.textContent || '').trim(),
+      // Define column widths - distribute evenly across page width with margins
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 10;
+      const tableWidth = pageWidth - 2 * margin;
+      const colWidths = headers.map((_, i) => {
+        // Make date column slightly wider, entity column wider, action narrower
+        if (i === 0) return tableWidth * 0.25; // Date
+        if (i === 1) return tableWidth * 0.25; // User
+        if (i === 2) return tableWidth * 0.2; // Action
+        return tableWidth * 0.3; // Entity
+      });
+
+      // Define colors for action types
+      const actionColors = {
+        CREATE: { fill: [220, 252, 231], text: [22, 101, 52] }, // green
+        UPDATE: { fill: [254, 249, 195], text: [133, 77, 14] }, // yellow
+        DELETE: { fill: [254, 226, 226], text: [153, 27, 27] }, // red
+        VIEW: { fill: [219, 234, 254], text: [30, 64, 175] }, // blue
+      };
+
+      // Helper function to determine color for action
+      const getActionColor = (action: string) => {
+        for (const [key, value] of Object.entries(actionColors)) {
+          if (action.includes(key)) return value;
+        }
+        return { fill: [243, 244, 246], text: [0, 0, 0] }; // default gray
+      };
+
+      // Draw header
+      pdf.setFillColor(242, 242, 242);
+      pdf.rect(margin, startY, tableWidth, 8, 'F');
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(10);
+
+      let currentX = margin;
+      headers.forEach((header, i) => {
+        pdf.text(header, currentX + 2, startY + 5);
+        currentX += colWidths[i];
+      });
+
+      // Process rows in chunks to prevent canvas size issues
+      const ROWS_PER_PAGE = 20;
+      let currentY = startY + 8;
+      let currentPage = 1;
+
+      // Function to add a new page
+      const addNewPage = () => {
+        pdf.addPage();
+        currentPage++;
+
+        // Add header to new page
+        pdf.setFillColor(242, 242, 242);
+        pdf.rect(margin, startY, tableWidth, 8, 'F');
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(10);
+
+        currentX = margin;
+        headers.forEach((header, i) => {
+          pdf.text(header, currentX + 2, startY + 5);
+          currentX += colWidths[i];
+        });
+
+        // Reset Y position for data rows
+        currentY = startY + 8;
+      };
+
+      // Process rows
+      pdf.setFont('helvetica', 'normal');
+      let isEvenRow = true;
+
+      for (let i = 0; i < rows.length; i++) {
+        // Check if we need a new page
+        if (i > 0 && i % ROWS_PER_PAGE === 0) {
+          addNewPage();
+        }
+
+        const row = rows[i];
+        const cells = Array.from(row.querySelectorAll('td'));
+        const rowHeight = 8;
+
+        // Add alternating row background
+        pdf.setFillColor(
+          isEvenRow ? 255 : 249,
+          isEvenRow ? 255 : 249,
+          isEvenRow ? 255 : 249,
         );
-      });
+        pdf.rect(margin, currentY, tableWidth, rowHeight, 'F');
 
-      // Generate table in PDF
-      pdf.autoTable({
-        head: [headers],
-        body: data,
-        startY: 60,
-        styles: {
-          fontSize: 10,
-          cellPadding: 5,
-          lineColor: [200, 200, 200],
-          lineWidth: 0.1,
-        },
-        headStyles: {
-          fillColor: [240, 240, 240],
-          textColor: [0, 0, 0],
-          fontStyle: 'bold',
-        },
-      });
+        // Add cell content
+        currentX = margin;
+        cells.forEach((cell, j) => {
+          const text = (cell.textContent || '').trim();
 
+          // Special formatting for action column
+          if (j === 2) {
+            // Action column
+            const actionColor = getActionColor(text);
+
+            // Draw colored background for action cells
+            pdf.setFillColor(
+              actionColor.fill[0],
+              actionColor.fill[1],
+              actionColor.fill[2],
+            );
+            pdf.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
+
+            // Set text color for action
+            pdf.setTextColor(
+              actionColor.text[0],
+              actionColor.text[1],
+              actionColor.text[2],
+            );
+          } else if (j === 3) {
+            // Entity column
+            // Gray background for entity
+            pdf.setFillColor(243, 244, 246);
+            pdf.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
+            pdf.setTextColor(0, 0, 0);
+          } else {
+            // Reset text color for other columns
+            pdf.setTextColor(0, 0, 0);
+          }
+
+          // Add text with proper wrapping
+          const maxWidth = colWidths[j] - 4;
+          pdf.text(text, currentX + 2, currentY + 5, { maxWidth });
+
+          currentX += colWidths[j];
+        });
+
+        // Move to next row
+        currentY += rowHeight;
+        isEvenRow = !isEvenRow;
+      }
+
+      // Add page count at the bottom
+      for (let i = 0; i < currentPage; i++) {
+        pdf.setPage(i + 1);
+        pdf.setFontSize(8);
+        pdf.setTextColor(128, 128, 128);
+        pdf.text(
+          `Página ${i + 1} de ${currentPage}`,
+          pdf.internal.pageSize.getWidth() / 2,
+          pdf.internal.pageSize.getHeight() - 10,
+          { align: 'center' },
+        );
+      }
+
+      // Save the PDF
       pdf.save('auditoria.pdf');
     } catch (error) {
-      console.error('Error in fallback PDF export:', error);
+      console.error('Error generating PDF:', error);
+      alert('Hubo un error al generar el PDF. Por favor, inténtelo de nuevo.');
+    } finally {
+      this.isExporting.set(false);
     }
   }
 }
