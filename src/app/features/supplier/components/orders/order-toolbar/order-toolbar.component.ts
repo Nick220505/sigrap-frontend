@@ -73,7 +73,7 @@ export class OrderToolbarComponent {
       message: `
           ¿Está seguro de que desea eliminar los ${orders.length} pedidos seleccionados?
           <ul class='mt-2 mb-0'>
-            ${orders.map(({ orderNumber }) => `<li>• <b>${orderNumber}</b></li>`).join('')}
+            ${orders.map(({ id }) => `<li>• <b>Pedido #${id}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {
