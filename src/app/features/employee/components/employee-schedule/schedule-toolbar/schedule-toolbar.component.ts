@@ -65,7 +65,7 @@ export class ScheduleToolbarComponent {
           ${schedules
             .map(
               ({ userName, day }: ScheduleInfo) =>
-                `<li>• <b>${userName}</b> - ${this.getDayOfWeekLabel(day)}</li>`,
+                `<li>• <b>${userName}</b> - ${day}</li>`,
             )
             .join('')}
         </ul>
@@ -75,20 +75,5 @@ export class ScheduleToolbarComponent {
         this.scheduleStore.deleteAllById(ids);
       },
     });
-  }
-
-  private getDayOfWeekLabel(day: string | undefined): string {
-    if (!day) return 'No especificado';
-
-    const days: Record<string, string> = {
-      MONDAY: 'Lunes',
-      TUESDAY: 'Martes',
-      WEDNESDAY: 'Miércoles',
-      THURSDAY: 'Jueves',
-      FRIDAY: 'Viernes',
-      SATURDAY: 'Sábado',
-      SUNDAY: 'Domingo',
-    };
-    return days[day] || day;
   }
 }

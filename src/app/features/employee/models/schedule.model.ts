@@ -2,13 +2,13 @@ export interface ScheduleInfo {
   id: number;
   userId: number;
   userName: string;
-  day?: string;
+  day: string;
   startTime: string;
   endTime: string;
-  type?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  type: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ScheduleData {
@@ -16,6 +16,6 @@ export interface ScheduleData {
   day: string;
   startTime: string;
   endTime: string;
-  type?: string;
-  isActive?: boolean;
+  type: string;
+  isActive: boolean;
 }

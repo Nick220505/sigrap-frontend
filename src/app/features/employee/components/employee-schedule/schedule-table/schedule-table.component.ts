@@ -148,26 +148,23 @@ import { ScheduleStore } from '../../../stores/schedule.store';
                       : ''
                   }}
                 }
-                @case ('day') {
-                  {{ schedule.day ?? 'No especificado' }}
-                }
                 @case ('type') {
                   @switch (schedule.type) {
-                    @case ('REGULAR') {
+                    @case ('Regular') {
                       <span
                         class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
                       >
                         Regular
                       </span>
                     }
-                    @case ('OVERTIME') {
+                    @case ('Horas Extra') {
                       <span
                         class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
                       >
                         Horas Extra
                       </span>
                     }
-                    @case ('HOLIDAY') {
+                    @case ('Festivo') {
                       <span
                         class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
                       >
@@ -176,9 +173,9 @@ import { ScheduleStore } from '../../../stores/schedule.store';
                     }
                     @default {
                       <span
-                        class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                        class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
                       >
-                        Regular
+                        {{ schedule.type }}
                       </span>
                     }
                   }
