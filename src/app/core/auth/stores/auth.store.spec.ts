@@ -113,6 +113,54 @@ describe('AuthStore', () => {
       });
     });
 
+    it('should handle 401 Unauthorized status with appropriate message', () => {
+      const httpError = {
+        status: 401,
+      };
+      authService.login.and.returnValue(throwError(() => httpError));
+
+      store.login(credentials);
+
+      expect(store.error()).toBe('Credenciales inválidas');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Credenciales inválidas',
+      });
+    });
+
+    it('should handle 403 Forbidden status with appropriate message', () => {
+      const httpError = {
+        status: 403,
+      };
+      authService.login.and.returnValue(throwError(() => httpError));
+
+      store.login(credentials);
+
+      expect(store.error()).toBe('Credenciales inválidas');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Credenciales inválidas',
+      });
+    });
+
+    it('should handle error with "Invalid credentials" message', () => {
+      const error = {
+        error: { message: 'Invalid credentials' },
+      };
+      authService.login.and.returnValue(throwError(() => error));
+
+      store.login(credentials);
+
+      expect(store.error()).toBe('Credenciales inválidas');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Credenciales inválidas',
+      });
+    });
+
     it('should set loading state during login', () => {
       store.login(credentials);
       expect(store.loading()).toBeFalse();
@@ -165,6 +213,54 @@ describe('AuthStore', () => {
         summary: 'Error',
         detail:
           'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+      });
+    });
+
+    it('should handle conflict status (409) with email exists message', () => {
+      const httpError = {
+        status: 409,
+      };
+      authService.register.and.returnValue(throwError(() => httpError));
+
+      store.register(registerData);
+
+      expect(store.error()).toBe('El correo electrónico ya está registrado');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'El correo electrónico ya está registrado',
+      });
+    });
+
+    it('should handle error with "Email already exists" message', () => {
+      const error = {
+        error: { message: 'Email already exists' },
+      };
+      authService.register.and.returnValue(throwError(() => error));
+
+      store.register(registerData);
+
+      expect(store.error()).toBe('El correo electrónico ya está registrado');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'El correo electrónico ya está registrado',
+      });
+    });
+
+    it('should handle custom error messages during registration', () => {
+      const error = {
+        error: { message: 'Custom error message' },
+      };
+      authService.register.and.returnValue(throwError(() => error));
+
+      store.register(registerData);
+
+      expect(store.error()).toBe('Custom error message');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Custom error message',
       });
     });
 
@@ -231,6 +327,26 @@ describe('AuthStore', () => {
       expect(store.user()).toBeNull();
       expect(store.token()).toBeNull();
       expect(store.loggedIn()).toBeFalse();
+    });
+  });
+
+  describe('getToken', () => {
+    it('should return token from store if available', () => {
+      store.login({
+        email: 'test@example.com',
+        password: 'password123',
+      });
+      expect(store.getToken()).toBe('test-token');
+    });
+
+    it('should return token from localStorage if store token is null', () => {
+      localStorage.setItem('auth_token', 'storage-token');
+      expect(store.getToken()).toBe('storage-token');
+    });
+
+    it('should return null if no token exists', () => {
+      localStorage.removeItem('auth_token');
+      expect(store.getToken()).toBeNull();
     });
   });
 });
