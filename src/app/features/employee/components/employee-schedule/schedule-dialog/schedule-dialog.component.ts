@@ -93,7 +93,15 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               <p-select
                 id="day"
                 formControlName="day"
-                [options]="daysOfWeek"
+                [options]="[
+                  { label: 'Lunes', value: 'Lunes' },
+                  { label: 'Martes', value: 'Martes' },
+                  { label: 'Miércoles', value: 'Miércoles' },
+                  { label: 'Jueves', value: 'Jueves' },
+                  { label: 'Viernes', value: 'Viernes' },
+                  { label: 'Sábado', value: 'Sábado' },
+                  { label: 'Domingo', value: 'Domingo' },
+                ]"
                 optionLabel="label"
                 optionValue="value"
                 placeholder="Seleccione un día"
@@ -127,7 +135,11 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               <p-select
                 id="type"
                 formControlName="type"
-                [options]="scheduleTypes"
+                [options]="[
+                  { label: 'Regular', value: 'Regular' },
+                  { label: 'Horas Extra', value: 'Horas Extra' },
+                  { label: 'Festivo', value: 'Festivo' },
+                ]"
                 optionLabel="label"
                 optionValue="value"
                 placeholder="Seleccione un tipo"
@@ -233,28 +245,12 @@ export class ScheduleDialogComponent {
   readonly scheduleStore = inject(ScheduleStore);
   readonly userStore = inject(UserStore);
 
-  readonly daysOfWeek = [
-    { label: 'Lunes', value: 'MONDAY' },
-    { label: 'Martes', value: 'TUESDAY' },
-    { label: 'Miércoles', value: 'WEDNESDAY' },
-    { label: 'Jueves', value: 'THURSDAY' },
-    { label: 'Viernes', value: 'FRIDAY' },
-    { label: 'Sábado', value: 'SATURDAY' },
-    { label: 'Domingo', value: 'SUNDAY' },
-  ];
-
-  readonly scheduleTypes = [
-    { label: 'Regular', value: 'REGULAR' },
-    { label: 'Horas Extra', value: 'OVERTIME' },
-    { label: 'Festivo', value: 'HOLIDAY' },
-  ];
-
   readonly scheduleForm: FormGroup = this.fb.group({
     userId: [null, [Validators.required]],
     day: ['', [Validators.required]],
     startTime: ['', [Validators.required]],
     endTime: ['', [Validators.required]],
-    type: ['REGULAR', [Validators.required]],
+    type: ['', [Validators.required]],
   });
 
   constructor() {
@@ -290,13 +286,7 @@ export class ScheduleDialogComponent {
           };
           this.scheduleForm.patchValue(patchData);
         } else {
-          this.scheduleForm.reset({
-            type: 'REGULAR',
-            userId: null,
-            day: '',
-            startTime: '',
-            endTime: '',
-          });
+          this.scheduleForm.reset();
         }
       });
     });
@@ -307,10 +297,7 @@ export class ScheduleDialogComponent {
     const id = this.scheduleStore.selectedSchedule()?.id;
 
     if (id) {
-      this.scheduleStore.update({
-        id,
-        scheduleData,
-      });
+      this.scheduleStore.update({ id, scheduleData });
     } else {
       this.scheduleStore.create(scheduleData);
     }
