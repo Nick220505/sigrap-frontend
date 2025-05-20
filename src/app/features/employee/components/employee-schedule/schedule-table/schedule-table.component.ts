@@ -18,17 +18,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ScheduleInfo } from '../../../models/schedule.model';
 import { ScheduleStore } from '../../../stores/schedule.store';
 
-type DayOfWeek =
-  | 'MONDAY'
-  | 'TUESDAY'
-  | 'WEDNESDAY'
-  | 'THURSDAY'
-  | 'FRIDAY'
-  | 'SATURDAY'
-  | 'SUNDAY';
-
-type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
-
 @Component({
   selector: 'app-schedule-table',
   imports: [
@@ -144,7 +133,34 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
 
           <td>{{ schedule.userName }}</td>
 
-          <td>{{ getDayOfWeekLabel(schedule.day) }}</td>
+          <td>
+            @switch (schedule.day) {
+              @case ('MONDAY') {
+                Lunes
+              }
+              @case ('TUESDAY') {
+                Martes
+              }
+              @case ('WEDNESDAY') {
+                Miércoles
+              }
+              @case ('THURSDAY') {
+                Jueves
+              }
+              @case ('FRIDAY') {
+                Viernes
+              }
+              @case ('SATURDAY') {
+                Sábado
+              }
+              @case ('SUNDAY') {
+                Domingo
+              }
+              @default {
+                No especificado
+              }
+            }
+          </td>
 
           <td>
             {{
@@ -163,15 +179,35 @@ type ScheduleType = 'REGULAR' | 'OVERTIME' | 'HOLIDAY';
           </td>
 
           <td>
-            @if (schedule.type) {
-              <span [class]="getScheduleTypeClass(schedule.type)">
-                {{ getScheduleTypeLabel(schedule.type) }}
-              </span>
-            } @else {
-              <span
-                class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                >Regular</span
-              >
+            @switch (schedule.type) {
+              @case ('REGULAR') {
+                <span
+                  class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                >
+                  Regular
+                </span>
+              }
+              @case ('OVERTIME') {
+                <span
+                  class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
+                >
+                  Horas Extra
+                </span>
+              }
+              @case ('HOLIDAY') {
+                <span
+                  class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+                >
+                  Festivo
+                </span>
+              }
+              @default {
+                <span
+                  class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                >
+                  Regular
+                </span>
+              }
             }
           </td>
 
@@ -256,38 +292,5 @@ export class ScheduleTableComponent {
       message: `¿Está seguro de que desea eliminar el horario de <b>${schedule.userName}</b>?`,
       accept: () => this.scheduleStore.delete(schedule.id),
     });
-  }
-
-  getDayOfWeekLabel(day: string | undefined): string {
-    if (!day) return 'No especificado';
-
-    const days: Record<DayOfWeek, string> = {
-      MONDAY: 'Lunes',
-      TUESDAY: 'Martes',
-      WEDNESDAY: 'Miércoles',
-      THURSDAY: 'Jueves',
-      FRIDAY: 'Viernes',
-      SATURDAY: 'Sábado',
-      SUNDAY: 'Domingo',
-    };
-    return days[day as DayOfWeek] || day;
-  }
-
-  getScheduleTypeClass(type: string): string {
-    const classes: Record<ScheduleType, string> = {
-      REGULAR: 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm',
-      OVERTIME: 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm',
-      HOLIDAY: 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm',
-    };
-    return classes[type as ScheduleType] || classes.REGULAR;
-  }
-
-  getScheduleTypeLabel(type: string): string {
-    const labels: Record<ScheduleType, string> = {
-      REGULAR: 'Regular',
-      OVERTIME: 'Horas Extra',
-      HOLIDAY: 'Festivo',
-    };
-    return labels[type as ScheduleType] || 'Regular';
   }
 }
