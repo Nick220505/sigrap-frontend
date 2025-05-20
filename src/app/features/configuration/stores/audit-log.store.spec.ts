@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { AuditLogInfo } from '../models/audit-log.model';
-import { AuditLogService } from '../services/audit-log.service';
+import { AuditLogService, PageResponse } from '../services/audit-log.service';
 import { AuditLogStore } from './audit-log.store';
 
 describe('AuditLogStore', () => {
@@ -13,44 +13,87 @@ describe('AuditLogStore', () => {
     {
       id: 1,
       entityName: 'User',
-      entityId: 1,
+      entityId: '1',
       action: 'UPDATE',
       username: 'admin',
       timestamp: new Date().toISOString(),
+      sourceIp: null,
+      userAgent: null,
+      details: null,
+      status: 'SUCCESS',
+      durationMs: null,
       oldValue: {},
       newValue: { id: 1, name: 'Test User' },
     },
     {
       id: 2,
       entityName: 'Product',
-      entityId: 2,
+      entityId: '2',
       action: 'UPDATE',
       username: 'admin',
       timestamp: new Date().toISOString(),
+      sourceIp: null,
+      userAgent: null,
+      details: null,
+      status: 'SUCCESS',
+      durationMs: null,
       oldValue: { stock: 10 },
       newValue: { stock: 5 },
     },
   ];
 
-  function createStore(findAllReturnValue = of(mockAuditLogs)) {
+  const mockPageResponse: PageResponse<AuditLogInfo> = {
+    content: mockAuditLogs,
+    totalElements: mockAuditLogs.length,
+    totalPages: 1,
+    size: 10,
+    number: 0,
+    first: true,
+    last: true,
+    empty: false,
+  };
+
+  const emptyPageResponse: PageResponse<AuditLogInfo> = {
+    content: [],
+    totalElements: 0,
+    totalPages: 0,
+    size: 10,
+    number: 0,
+    first: true,
+    last: true,
+    empty: true,
+  };
+
+  function createStore(findAllReturnValue = of(mockPageResponse)) {
     TestBed.resetTestingModule();
 
     auditLogService = jasmine.createSpyObj('AuditLogService', [
       'findAll',
       'findById',
-      'findByUserId',
+      'findByUsername',
       'findByEntityName',
       'findByAction',
+      'findByEntityId',
+      'findByEntityNameAndId',
       'findByDateRange',
+      'findBySourceIp',
+      'findErrors',
+      'findByEntityAndDateRange',
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
     auditLogService.findAll.and.returnValue(findAllReturnValue);
-
-    auditLogService.findByUserId.and.returnValue(of(mockAuditLogs));
-    auditLogService.findByEntityName.and.returnValue(of(mockAuditLogs));
-    auditLogService.findByAction.and.returnValue(of(mockAuditLogs));
-    auditLogService.findByDateRange.and.returnValue(of(mockAuditLogs));
+    auditLogService.findByUsername.and.returnValue(of(mockPageResponse));
+    auditLogService.findByEntityName.and.returnValue(of(mockPageResponse));
+    auditLogService.findByAction.and.returnValue(of(mockPageResponse));
+    auditLogService.findByDateRange.and.returnValue(of(mockPageResponse));
+    auditLogService.findByEntityId.and.returnValue(of(mockPageResponse));
+    auditLogService.findByEntityNameAndId.and.returnValue(of(mockPageResponse));
+    auditLogService.findBySourceIp.and.returnValue(of(mockPageResponse));
+    auditLogService.findErrors.and.returnValue(of(mockPageResponse));
+    auditLogService.findByEntityAndDateRange.and.returnValue(
+      of(mockPageResponse),
+    );
 
     TestBed.configureTestingModule({
       providers: [
@@ -71,7 +114,7 @@ describe('AuditLogStore', () => {
   describe('findAll', () => {
     it('should update state with audit logs', () => {
       const store = createStore();
-      store.findAll();
+      store.findAll({});
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -82,7 +125,7 @@ describe('AuditLogStore', () => {
       const errorMessage = 'Failed to fetch audit logs';
       const errorStore = createStore(throwError(() => new Error(errorMessage)));
 
-      errorStore.findAll();
+      errorStore.findAll({});
 
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
@@ -95,12 +138,12 @@ describe('AuditLogStore', () => {
     });
   });
 
-  describe('findByUserId', () => {
+  describe('findByUsername', () => {
     it('should update state with user audit logs', () => {
       const store = createStore();
-      auditLogService.findByUserId.and.returnValue(of(mockAuditLogs));
+      auditLogService.findByUsername.and.returnValue(of(mockPageResponse));
 
-      store.findByUserId(1);
+      store.findByUsername({ username: 'admin' });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -110,13 +153,18 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by user fails', () => {
       const errorMessage = 'Failed to fetch user audit logs';
 
-      const errorStore = createStore(of([]));
-      auditLogService.findByUserId.and.returnValue(
+      // Create a store with empty initial state
+      const errorStore = createStore(of(emptyPageResponse));
+
+      // Set up the error for findByUsername
+      auditLogService.findByUsername.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
 
-      errorStore.findByUserId(1);
+      // Call the method that should handle the error
+      errorStore.findByUsername({ username: 'admin' });
 
+      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);
@@ -131,9 +179,9 @@ describe('AuditLogStore', () => {
   describe('findByEntityName', () => {
     it('should update state with entity audit logs', () => {
       const store = createStore();
-      auditLogService.findByEntityName.and.returnValue(of(mockAuditLogs));
+      auditLogService.findByEntityName.and.returnValue(of(mockPageResponse));
 
-      store.findByEntityName('User');
+      store.findByEntityName({ entityName: 'User' });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -143,13 +191,18 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by entity fails', () => {
       const errorMessage = 'Failed to fetch entity audit logs';
 
-      const errorStore = createStore(of([]));
+      // Create a store with empty initial state
+      const errorStore = createStore(of(emptyPageResponse));
+
+      // Set up the error for findByEntityName
       auditLogService.findByEntityName.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
 
-      errorStore.findByEntityName('User');
+      // Call the method that should handle the error
+      errorStore.findByEntityName({ entityName: 'User' });
 
+      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);
@@ -164,9 +217,9 @@ describe('AuditLogStore', () => {
   describe('findByAction', () => {
     it('should update state with action audit logs', () => {
       const store = createStore();
-      auditLogService.findByAction.and.returnValue(of(mockAuditLogs));
+      auditLogService.findByAction.and.returnValue(of(mockPageResponse));
 
-      store.findByAction('UPDATE');
+      store.findByAction({ action: 'UPDATE' });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -176,13 +229,18 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by action fails', () => {
       const errorMessage = 'Failed to fetch action audit logs';
 
-      const errorStore = createStore(of([]));
+      // Create a store with empty initial state
+      const errorStore = createStore(of(emptyPageResponse));
+
+      // Set up the error for findByAction
       auditLogService.findByAction.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
 
-      errorStore.findByAction('UPDATE');
+      // Call the method that should handle the error
+      errorStore.findByAction({ action: 'UPDATE' });
 
+      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);
@@ -197,11 +255,12 @@ describe('AuditLogStore', () => {
   describe('findByDateRange', () => {
     it('should update state with date range audit logs', () => {
       const store = createStore();
-      auditLogService.findByDateRange.and.returnValue(of(mockAuditLogs));
+      auditLogService.findByDateRange.and.returnValue(of(mockPageResponse));
 
-      const startDate = new Date().toISOString();
-      const endDate = new Date().toISOString();
-      store.findByDateRange({ startDate, endDate });
+      store.findByDateRange({
+        startDate: '2023-01-01',
+        endDate: '2023-01-31',
+      });
 
       expect(store.loading()).toBeFalse();
       expect(store.error()).toBeNull();
@@ -211,15 +270,21 @@ describe('AuditLogStore', () => {
     it('should handle error when finding audit logs by date range fails', () => {
       const errorMessage = 'Failed to fetch date range audit logs';
 
-      const errorStore = createStore(of([]));
+      // Create a store with empty initial state
+      const errorStore = createStore(of(emptyPageResponse));
+
+      // Set up the error for findByDateRange
       auditLogService.findByDateRange.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
 
-      const startDate = new Date().toISOString();
-      const endDate = new Date().toISOString();
-      errorStore.findByDateRange({ startDate, endDate });
+      // Call the method that should handle the error
+      errorStore.findByDateRange({
+        startDate: '2023-01-01',
+        endDate: '2023-01-31',
+      });
 
+      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);

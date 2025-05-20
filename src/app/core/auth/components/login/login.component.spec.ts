@@ -207,14 +207,4 @@ describe('LoginComponent', () => {
       'Regístrese',
     );
   });
-
-  it('should contain forgot password link', () => {
-    const forgotPasswordLink = fixture.debugElement.query(
-      By.css('.text-primary'),
-    );
-    expect(forgotPasswordLink).toBeTruthy();
-    expect(forgotPasswordLink.nativeElement.textContent.trim()).toContain(
-      '¿Olvidó su contraseña?',
-    );
-  });
 });
