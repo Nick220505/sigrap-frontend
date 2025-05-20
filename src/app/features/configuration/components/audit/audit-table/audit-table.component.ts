@@ -218,8 +218,8 @@ export class AuditTableComponent {
 
   onPageChange(event: PaginatorState): void {
     this.auditLogStore.findAll({
-      page: event.page || 0,
-      size: event.rows || 10,
+      page: event.page ?? 0,
+      size: event.rows ?? 10,
     });
   }
 
@@ -262,7 +262,7 @@ export class AuditTableComponent {
       const rows = Array.from(originalTable.querySelectorAll('tbody tr'));
       const headers = Array.from(
         originalTable.querySelectorAll('thead th'),
-      ).map((th) => (th.textContent || '').trim());
+      ).map((th) => (th.textContent ?? '').trim());
 
       // Create direct jsPDF instance
       const pdf = new jsPDF({
@@ -377,7 +377,7 @@ export class AuditTableComponent {
         // Add cell content
         currentX = margin;
         cells.forEach((cell, j) => {
-          const text = (cell.textContent || '').trim();
+          const text = (cell.textContent ?? '').trim();
 
           // Special formatting for action column
           if (j === 2) {
