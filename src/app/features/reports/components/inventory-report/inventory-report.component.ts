@@ -611,7 +611,6 @@ export class InventoryReportComponent implements OnInit {
   }
 
   filterByCategory() {
-    // When a category is selected, reset the view to 'all'
     this.selectedStockView.set('all');
   }
 
