@@ -25,7 +25,6 @@ export interface PurchaseOrderItemInfo {
 
 export interface PurchaseOrderInfo {
   id: number;
-  orderNumber: string;
   supplier: SupplierInfo;
   deliveryDate?: string;
   status: string;

@@ -292,8 +292,8 @@ export class OrderDialogComponent {
     const selectedOrder = this.purchaseOrderStore.selectedOrder();
     if (selectedOrder) {
       return this.viewMode()
-        ? `Ver Pedido #${selectedOrder.orderNumber}`
-        : `Editar Pedido #${selectedOrder.orderNumber}`;
+        ? `Ver Pedido #${selectedOrder.id}`
+        : `Editar Pedido #${selectedOrder.id}`;
     }
     return 'Registrar Nuevo Pedido';
   });
@@ -469,7 +469,8 @@ export class OrderDialogComponent {
     let total = 0;
     for (let i = 0; i < this.itemsArray.length; i++) {
       const itemGroup = this.itemsArray.at(i);
-      total += itemGroup.get('subtotal')?.value ?? 0;
+      const subtotal = itemGroup.get('subtotal')?.value ?? 0;
+      total += subtotal;
     }
 
     this.orderForm.get('totalAmount')?.setValue(total);
