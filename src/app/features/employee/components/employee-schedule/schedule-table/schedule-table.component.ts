@@ -125,91 +125,70 @@ import { ScheduleStore } from '../../../stores/schedule.store';
         </tr>
       </ng-template>
 
-      <ng-template #body let-schedule>
+      <ng-template #body let-schedule let-columns="columns">
         <tr>
           <td style="width: 3rem">
             <p-tableCheckbox [value]="schedule" />
           </td>
 
-          <td>{{ schedule.userName }}</td>
-
-          <td>
-            @switch (schedule.day) {
-              @case ('MONDAY') {
-                Lunes
+          @for (column of columns; track column.field) {
+            <td>
+              @switch (column.field) {
+                @case ('startTime') {
+                  {{
+                    schedule.startTime
+                      ? ('1970-01-01T' + schedule.startTime | date: 'hh:mm a')
+                      : ''
+                  }}
+                }
+                @case ('endTime') {
+                  {{
+                    schedule.endTime
+                      ? ('1970-01-01T' + schedule.endTime | date: 'hh:mm a')
+                      : ''
+                  }}
+                }
+                @case ('day') {
+                  {{ schedule.day ?? 'No especificado' }}
+                }
+                @case ('type') {
+                  @switch (schedule.type) {
+                    @case ('REGULAR') {
+                      <span
+                        class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                      >
+                        Regular
+                      </span>
+                    }
+                    @case ('OVERTIME') {
+                      <span
+                        class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
+                      >
+                        Horas Extra
+                      </span>
+                    }
+                    @case ('HOLIDAY') {
+                      <span
+                        class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+                      >
+                        Festivo
+                      </span>
+                    }
+                    @default {
+                      <span
+                        class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                      >
+                        Regular
+                      </span>
+                    }
+                  }
+                }
+                @default {
+                  {{ schedule[column.field] }}
+                }
               }
-              @case ('TUESDAY') {
-                Martes
-              }
-              @case ('WEDNESDAY') {
-                Miércoles
-              }
-              @case ('THURSDAY') {
-                Jueves
-              }
-              @case ('FRIDAY') {
-                Viernes
-              }
-              @case ('SATURDAY') {
-                Sábado
-              }
-              @case ('SUNDAY') {
-                Domingo
-              }
-              @default {
-                No especificado
-              }
-            }
-          </td>
-
-          <td>
-            {{
-              schedule.startTime
-                ? ('1970-01-01T' + schedule.startTime | date: 'hh:mm a')
-                : ''
-            }}
-          </td>
-
-          <td>
-            {{
-              schedule.endTime
-                ? ('1970-01-01T' + schedule.endTime | date: 'hh:mm a')
-                : ''
-            }}
-          </td>
-
-          <td>
-            @switch (schedule.type) {
-              @case ('REGULAR') {
-                <span
-                  class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                >
-                  Regular
-                </span>
-              }
-              @case ('OVERTIME') {
-                <span
-                  class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
-                >
-                  Horas Extra
-                </span>
-              }
-              @case ('HOLIDAY') {
-                <span
-                  class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-                >
-                  Festivo
-                </span>
-              }
-              @default {
-                <span
-                  class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                >
-                  Regular
-                </span>
-              }
-            }
-          </td>
+            </td>
+          }
 
           <td>
             <p-button
