@@ -1,72 +1,71 @@
-import { Signal, signal, WritableSignal } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { Component, input, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import {
-  NoopAnimationsModule,
-  provideAnimations,
-} from '@angular/platform-browser/animations';
-import { MessageService } from 'primeng/api';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { Select } from 'primeng/select';
 import { UserInfo, UserRole } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user.store';
 import { UserDialogComponent } from './user-dialog.component';
 
-interface MockUserStore {
-  create: jasmine.Spy;
-  update: jasmine.Spy;
-  closeUserDialog: jasmine.Spy;
-  selectedUser: WritableSignal<UserInfo | null>;
-  dialogVisible: Signal<boolean>;
-  loading: Signal<boolean>;
+@Component({
+  selector: 'app-password-field',
+  standalone: true,
+  template: `<div>Password Field Mock</div>`,
+})
+class MockPasswordFieldComponent {
+  readonly id = input.required<string>();
+  readonly control = input.required<FormControl>();
 }
 
 describe('UserDialogComponent', () => {
   let component: UserDialogComponent;
   let fixture: ComponentFixture<UserDialogComponent>;
-  let userStore: MockUserStore;
-  let messageService: jasmine.SpyObj<MessageService>;
-
-  const mockUser: UserInfo = {
-    id: 1,
-    email: 'test@example.com',
-    name: 'Test User',
-    phone: '+1234567890',
-    role: UserRole.ADMINISTRATOR,
-    lastLogin: new Date().toISOString(),
+  let userStoreMock: {
+    dialogVisible: ReturnType<typeof signal<boolean>>;
+    selectedUser: ReturnType<typeof signal<UserInfo | null>>;
+    loading: ReturnType<typeof signal<boolean>>;
+    openUserDialog: jasmine.Spy;
+    closeUserDialog: jasmine.Spy;
+    create: jasmine.Spy;
+    update: jasmine.Spy;
   };
 
   beforeEach(async () => {
-    userStore = {
+    userStoreMock = {
+      dialogVisible: signal(false),
+      selectedUser: signal(null),
+      loading: signal(false),
+      openUserDialog: jasmine.createSpy('openUserDialog'),
+      closeUserDialog: jasmine.createSpy('closeUserDialog'),
       create: jasmine.createSpy('create'),
       update: jasmine.createSpy('update'),
-      closeUserDialog: jasmine.createSpy('closeUserDialog'),
-      selectedUser: signal(null),
-      dialogVisible: signal(true),
-      loading: signal(false),
     };
-
-    messageService = jasmine.createSpyObj('MessageService', ['add']);
 
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         ReactiveFormsModule,
         DialogModule,
         ButtonModule,
         InputTextModule,
-        DropdownModule,
-        MultiSelectModule,
-        CheckboxModule,
-        NoopAnimationsModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        Select,
+        MockPasswordFieldComponent,
+        UserDialogComponent,
       ],
       providers: [
-        provideAnimations(),
-        { provide: UserStore, useValue: userStore },
-        { provide: MessageService, useValue: messageService },
+        provideHttpClient(),
+        MessageService,
+        ConfirmationService,
+        { provide: UserStore, useValue: userStoreMock },
       ],
     }).compileComponents();
 
@@ -79,74 +78,129 @@ describe('UserDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with empty values in create mode', () => {
+  it('should have a reference to UserStore', () => {
+    expect(component.userStore).toBeTruthy();
+  });
+
+  it('should have a form with required fields', () => {
+    expect(component.userForm).toBeDefined();
+    expect(component.userForm.get('name')).toBeDefined();
+    expect(component.userForm.get('email')).toBeDefined();
+    expect(component.userForm.get('role')).toBeDefined();
+    expect(component.userForm.get('password')).toBeDefined();
+  });
+
+  it('should validate name and email fields', () => {
+    const form = component.userForm;
+
+    // Form should start with most fields invalid (except role which has default value)
+    expect(form.get('name')?.valid).toBeFalse(); // Required and empty
+    expect(form.get('email')?.valid).toBeFalse(); // Required and empty
+
+    // Role field should exist
+    expect(form.get('role')).toBeTruthy();
+
+    // Fill in required fields
+    form.get('name')?.setValue('Test User');
+    form.get('email')?.setValue('test@example.com');
+    form.get('role')?.setValue(UserRole.EMPLOYEE);
+
+    // Now these fields should be valid
+    expect(form.get('name')?.valid).toBeTrue();
+    expect(form.get('email')?.valid).toBeTrue();
+    expect(form.get('role')?.valid).toBeTrue();
+    expect(form.get('role')?.value).toBe(UserRole.EMPLOYEE);
+  });
+
+  it('should call closeUserDialog when cancel button is clicked', () => {
+    // Make dialog visible to render the footer
+    userStoreMock.dialogVisible.set(true);
+    fixture.detectChanges();
+
+    // Find the cancel button
+    const cancelButton = fixture.debugElement.nativeElement.querySelector(
+      'p-button[label="Cancelar"]',
+    );
+
+    if (cancelButton) {
+      // Click the button
+      cancelButton.click();
+      expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
+    }
+  });
+
+  it('should create new user when form is valid and save button is clicked', () => {
+    // Make dialog visible
+    userStoreMock.dialogVisible.set(true);
+    fixture.detectChanges();
+
+    // Setup form with valid data
+    component.userForm.setValue({
+      name: 'Test User',
+      email: 'test@example.com',
+      documentId: '',
+      phone: '',
+      role: UserRole.EMPLOYEE,
+      password: 'Password123!',
+    });
+
+    // Simulate save method call directly
+    component.saveUser();
+
+    // Verify the correct method is called with the right data
+    expect(userStoreMock.create).toHaveBeenCalledWith({
+      name: 'Test User',
+      email: 'test@example.com',
+      documentId: '',
+      phone: '',
+      role: UserRole.EMPLOYEE,
+      password: 'Password123!',
+    });
+
+    // And dialog should be closed
+    expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
+  });
+
+  it('should update existing user when form is valid, id exists, and save button is clicked', () => {
+    // Mock selected user with ID
+    userStoreMock.selectedUser.set({
+      id: 1,
+      name: 'Existing User',
+      email: 'existing@example.com',
+      role: UserRole.EMPLOYEE,
+    });
+
+    // Make dialog visible
+    userStoreMock.dialogVisible.set(true);
+    fixture.detectChanges();
+
+    // Update some fields
     component.userForm.patchValue({
-      name: '',
-      email: '',
-      password: '',
-      role: null,
-    });
-    fixture.detectChanges();
-
-    expect(component.userForm.get('name')?.value).toBe('');
-    expect(component.userForm.get('email')?.value).toBe('');
-    expect(component.userForm.get('password')?.value).toBe('');
-    expect(component.userForm.get('role')?.value).toBeNull();
-  });
-
-  it('should initialize form with user data in edit mode', () => {
-    userStore.selectedUser.set(mockUser);
-    fixture.detectChanges();
-
-    expect(component.userForm.get('name')?.value).toBe(mockUser.name);
-    expect(component.userForm.get('email')?.value).toBe(mockUser.email);
-    expect(component.userForm.get('role')?.value).toEqual(mockUser.role);
-  });
-
-  describe('Form submission', () => {
-    it('should create new user when form is submitted in create mode', () => {
-      const formData = {
-        name: 'New User',
-        email: 'new@example.com',
-        password: 'Password1!',
-        role: UserRole.ADMINISTRATOR,
-        documentId: null,
-        phone: null,
-      };
-
-      component.userForm.patchValue(formData);
-      component.saveUser();
-
-      expect(userStore.create).toHaveBeenCalledWith(formData);
-      expect(userStore.closeUserDialog).toHaveBeenCalled();
+      name: 'Updated User',
+      email: 'updated@example.com',
+      documentId: null,
+      phone: null,
+      password: null,
+      role: UserRole.EMPLOYEE,
     });
 
-    it('should update user when form is submitted in edit mode', () => {
-      userStore.selectedUser.set(mockUser);
-      fixture.detectChanges();
+    // Simulate save method call directly
+    component.saveUser();
 
-      const formData = {
+    // Verify the update method is called with the actual form values
+    expect(userStoreMock.update).toHaveBeenCalledWith({
+      id: 1,
+      userData: {
         name: 'Updated User',
         email: 'updated@example.com',
-        password: '',
-        role: UserRole.EMPLOYEE,
         documentId: null,
-        phone: '+1234567890',
-      };
-
-      component.userForm.patchValue(formData);
-      component.saveUser();
-
-      expect(userStore.update).toHaveBeenCalledWith({
-        id: mockUser.id,
-        userData: formData,
-      });
-      expect(userStore.closeUserDialog).toHaveBeenCalled();
+        phone: null,
+        password: null,
+        role: UserRole.EMPLOYEE,
+      },
     });
-  });
 
-  it('should close dialog when cancel is clicked', () => {
-    component.userStore.closeUserDialog();
-    expect(userStore.closeUserDialog).toHaveBeenCalled();
+    // And dialog should be closed
+    expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
   });
 });

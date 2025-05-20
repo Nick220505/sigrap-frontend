@@ -152,19 +152,11 @@ describe('AuditLogStore', () => {
 
     it('should handle error when finding audit logs by user fails', () => {
       const errorMessage = 'Failed to fetch user audit logs';
-
-      // Create a store with empty initial state
       const errorStore = createStore(of(emptyPageResponse));
-
-      // Set up the error for findByUsername
       auditLogService.findByUsername.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
-
-      // Call the method that should handle the error
       errorStore.findByUsername({ username: 'admin' });
-
-      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);
@@ -190,19 +182,11 @@ describe('AuditLogStore', () => {
 
     it('should handle error when finding audit logs by entity fails', () => {
       const errorMessage = 'Failed to fetch entity audit logs';
-
-      // Create a store with empty initial state
       const errorStore = createStore(of(emptyPageResponse));
-
-      // Set up the error for findByEntityName
       auditLogService.findByEntityName.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
-
-      // Call the method that should handle the error
       errorStore.findByEntityName({ entityName: 'User' });
-
-      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);
@@ -228,19 +212,11 @@ describe('AuditLogStore', () => {
 
     it('should handle error when finding audit logs by action fails', () => {
       const errorMessage = 'Failed to fetch action audit logs';
-
-      // Create a store with empty initial state
       const errorStore = createStore(of(emptyPageResponse));
-
-      // Set up the error for findByAction
       auditLogService.findByAction.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
-
-      // Call the method that should handle the error
       errorStore.findByAction({ action: 'UPDATE' });
-
-      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);
@@ -269,22 +245,14 @@ describe('AuditLogStore', () => {
 
     it('should handle error when finding audit logs by date range fails', () => {
       const errorMessage = 'Failed to fetch date range audit logs';
-
-      // Create a store with empty initial state
       const errorStore = createStore(of(emptyPageResponse));
-
-      // Set up the error for findByDateRange
       auditLogService.findByDateRange.and.returnValue(
         throwError(() => new Error(errorMessage)),
       );
-
-      // Call the method that should handle the error
       errorStore.findByDateRange({
         startDate: '2023-01-01',
         endDate: '2023-01-31',
       });
-
-      // Verify error handling
       expect(errorStore.loading()).toBeFalse();
       expect(errorStore.error()).toBe(errorMessage);
       expect(errorStore.entities()).toEqual([]);

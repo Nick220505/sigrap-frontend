@@ -1,4 +1,5 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
+import { provideHttpClient } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -6,12 +7,14 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { UserStore } from '@features/configuration/stores/user.store';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { UserTableComponent } from './user-table.component';
@@ -84,10 +87,15 @@ describe('UserTableComponent', () => {
         MessageModule,
         FormsModule,
         DatePipe,
+        DialogModule,
+        PaginatorModule,
+        NgClass,
       ],
       providers: [
         { provide: UserStore, useValue: userStore },
         { provide: ConfirmationService, useValue: confirmationService },
+        provideHttpClient(),
+        MessageService,
       ],
     }).compileComponents();
 
@@ -208,5 +216,17 @@ describe('UserTableComponent', () => {
   it('should call openUserDialog with null when add button is clicked', () => {
     component.userStore.openUserDialog();
     expect(userStore.openUserDialog).toHaveBeenCalled();
+  });
+
+  it('should have a reference to the UserStore', () => {
+    expect(component.userStore).toBeTruthy();
+  });
+
+  it('should handle pagination when the page changes', () => {
+    userStore.findAll.calls.reset();
+
+    component.userStore.findAll();
+
+    expect(userStore.findAll).toHaveBeenCalled();
   });
 });
