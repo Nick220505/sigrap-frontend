@@ -96,6 +96,10 @@ describe('PurchaseOrderStore', () => {
       'update',
       'submitOrder',
       'delete',
+      'confirmOrder',
+      'markAsShipped',
+      'markAsDelivered',
+      'cancelOrder',
     ]);
     messageService = jasmine.createSpyObj('MessageService', ['add']);
 
@@ -108,6 +112,10 @@ describe('PurchaseOrderStore', () => {
     purchaseOrderService.create.and.returnValue(of(mockPurchaseOrder));
     purchaseOrderService.update.and.returnValue(of(mockPurchaseOrder));
     purchaseOrderService.submitOrder.and.returnValue(of(mockPurchaseOrder));
+    purchaseOrderService.confirmOrder.and.returnValue(of(mockPurchaseOrder));
+    purchaseOrderService.markAsShipped.and.returnValue(of(mockPurchaseOrder));
+    purchaseOrderService.markAsDelivered.and.returnValue(of(mockPurchaseOrder));
+    purchaseOrderService.cancelOrder.and.returnValue(of(mockPurchaseOrder));
     purchaseOrderService.delete.and.returnValue(of(void 0));
 
     TestBed.configureTestingModule({
@@ -312,6 +320,153 @@ describe('PurchaseOrderStore', () => {
     });
   });
 
+  describe('deleteAllById', () => {
+    it('should delete multiple purchase orders', () => {
+      const ids = [1, 2, 3];
+      store.deleteAllById(ids);
+
+      expect(purchaseOrderService.delete).toHaveBeenCalledTimes(3);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Órdenes eliminadas',
+        detail: 'Las órdenes seleccionadas han sido eliminadas correctamente',
+      });
+    });
+
+    it('should handle empty array of IDs', () => {
+      store.deleteAllById([]);
+
+      expect(purchaseOrderService.delete).not.toHaveBeenCalled();
+    });
+
+    it('should handle error when deleting multiple orders fails', () => {
+      purchaseOrderService.delete.and.returnValue(
+        throwError(() => new Error('Error deleting orders')),
+      );
+
+      store.deleteAllById([1, 2]);
+
+      expect(store.error()).toBe('Error deleting orders');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al eliminar órdenes',
+      });
+    });
+  });
+
+  describe('confirmOrder', () => {
+    it('should confirm a purchase order', () => {
+      store.confirmOrder(1);
+
+      expect(purchaseOrderService.confirmOrder).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Orden confirmada',
+        detail: `La orden #${mockPurchaseOrder.id} ha sido confirmada correctamente`,
+      });
+    });
+
+    it('should handle error when confirming an order fails', () => {
+      purchaseOrderService.confirmOrder.and.returnValue(
+        throwError(() => new Error('Error confirming order')),
+      );
+
+      store.confirmOrder(1);
+
+      expect(store.error()).toBe('Error confirming order');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al confirmar orden de compra',
+      });
+    });
+  });
+
+  describe('markAsShipped', () => {
+    it('should mark a purchase order as shipped', () => {
+      store.markAsShipped(1);
+
+      expect(purchaseOrderService.markAsShipped).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Orden enviada',
+        detail: `La orden #${mockPurchaseOrder.id} ha sido marcada como enviada`,
+      });
+    });
+
+    it('should handle error when marking an order as shipped fails', () => {
+      purchaseOrderService.markAsShipped.and.returnValue(
+        throwError(() => new Error('Error marking as shipped')),
+      );
+
+      store.markAsShipped(1);
+
+      expect(store.error()).toBe('Error marking as shipped');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al marcar orden como enviada',
+      });
+    });
+  });
+
+  describe('markAsDelivered', () => {
+    it('should mark a purchase order as delivered', () => {
+      const deliveryDate = '2023-02-01';
+      store.markAsDelivered({ id: 1, actualDeliveryDate: deliveryDate });
+
+      expect(purchaseOrderService.markAsDelivered).toHaveBeenCalledWith(
+        1,
+        deliveryDate,
+      );
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Orden entregada',
+        detail: `La orden #${mockPurchaseOrder.id} ha sido marcada como entregada`,
+      });
+    });
+
+    it('should handle error when marking an order as delivered fails', () => {
+      purchaseOrderService.markAsDelivered.and.returnValue(
+        throwError(() => new Error('Error marking as delivered')),
+      );
+
+      store.markAsDelivered({ id: 1, actualDeliveryDate: '2023-02-01' });
+
+      expect(store.error()).toBe('Error marking as delivered');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al marcar orden como entregada',
+      });
+    });
+  });
+
+  describe('cancelOrder', () => {
+    it('should cancel a purchase order', () => {
+      store.cancelOrder(1);
+      expect(purchaseOrderService.cancelOrder).toHaveBeenCalledWith(1);
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'success',
+        summary: 'Orden cancelada',
+        detail: `La orden #${mockPurchaseOrder.id} ha sido cancelada correctamente`,
+      });
+    });
+    it('should handle error when canceling an order fails', () => {
+      purchaseOrderService.cancelOrder.and.returnValue(
+        throwError(() => new Error('Error canceling order')),
+      );
+      store.cancelOrder(1);
+      expect(store.error()).toBe('Error canceling order');
+      expect(messageService.add).toHaveBeenCalledWith({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al cancelar orden de compra',
+      });
+    });
+  });
+
   describe('computed properties', () => {
     it('should compute ordersCount', () => {
       store.findAll();
@@ -334,11 +489,26 @@ describe('PurchaseOrderStore', () => {
       expect(store.dialogVisible()).toBeTrue();
     });
 
+    it('should open order dialog in view mode', () => {
+      store.openOrderDialog(mockPurchaseOrder, true);
+
+      expect(store.selectedOrder()).toBe(mockPurchaseOrder);
+      expect(store.dialogVisible()).toBeTrue();
+      expect(store.viewOnly()).toBeTrue();
+    });
+
     it('should close order dialog', () => {
       store.openOrderDialog(mockPurchaseOrder);
       store.closeOrderDialog();
 
       expect(store.dialogVisible()).toBeFalse();
+    });
+
+    it('should clear selected order', () => {
+      store.openOrderDialog(mockPurchaseOrder);
+      store.clearSelectedOrder();
+
+      expect(store.selectedOrder()).toBeNull();
     });
   });
 });
