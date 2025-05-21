@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
 import { SaleReturnStore } from '@features/sales/stores/sale-return.store';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
@@ -52,7 +52,6 @@ import { SalesReturnsTableComponent } from '../sales-returns-table/sales-returns
 export class SalesReturnsToolbarComponent {
   readonly saleReturnStore = inject(SaleReturnStore);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
 
   readonly salesReturnsTable = input.required<SalesReturnsTableComponent>();
 

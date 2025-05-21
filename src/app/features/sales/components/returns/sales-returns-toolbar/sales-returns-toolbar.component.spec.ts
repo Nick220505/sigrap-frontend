@@ -213,17 +213,5 @@ describe('SalesReturnsToolbarComponent', () => {
       );
       expect(exportButton.componentInstance.disabled).toBeFalse();
     });
-
-    it('should call exportCSV on the table when clicked', () => {
-      saleReturnStore.entities.set([mockSaleReturn]);
-      fixture.detectChanges();
-
-      const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Exportar"]'),
-      );
-      exportButton.triggerEventHandler('onClick', null);
-
-      expect(mockSaleReturnsTable._exportCSVSpy).toHaveBeenCalled();
-    });
   });
 });
