@@ -1,59 +1,136 @@
-# SigrapFrontend
+# SIGRAP Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+A comprehensive business management system built with Angular, designed to streamline business operations and enhance productivity.
 
-## Development server
+![SIGRAP Logo](/public/logo.png)
 
-To start a local development server, run:
+## Overview
 
+SIGRAP Frontend is an enterprise-grade application that provides a modern and intuitive interface for managing various aspects of business operations. Built with the latest Angular framework, it offers a robust solution for businesses looking to digitize and optimize their processes.
+
+## Key Features
+
+- **Dashboard**: Real-time visualization of business metrics and KPIs
+- **Customer Management**: Complete CRM functionality
+- **Inventory Control**: Advanced inventory tracking and management
+- **Sales Operations**: Streamlined sales process and order management
+- **Employee Management**: HR tools and employee data management
+- **Supplier Portal**: Supplier relationship and procurement management
+- **Reporting & Analytics**: Comprehensive business reporting
+- **Audit System**: Detailed activity tracking and compliance
+- **User Management**: Role-based access control and user administration
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm (Latest version)
+- Angular CLI v19.2.8
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+The application will be available at `http://localhost:4200/`. The development server includes hot-reload functionality for an optimized development experience.
 
-## Code scaffolding
+## Project Structure
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+src/
+├── app/
+│   ├── core/           # Core functionality
+│   │   ├── auth/       # Authentication & authorization
+│   │   └── layout/     # Main layout components
+│   ├── features/       # Feature modules
+│   │   ├── configuration/
+│   │   ├── customer/
+│   │   ├── dashboard/
+│   │   ├── employee/
+│   │   ├── inventory/
+│   │   ├── reports/
+│   │   ├── sales/
+│   │   └── supplier/
+│   └── shared/         # Shared components and utilities
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Development Tools
+
+### Code Generation
+
+Angular CLI provides powerful code generation tools. Common commands:
 
 ```bash
-ng generate --help
+# Generate a new component
+ng generate component features/my-feature
+
+# Generate a new service
+ng generate service features/my-feature/services/my-service
+
+# Generate a new store
+ng generate service features/my-feature/stores/my-store
 ```
 
-## Building
+## Available Scripts
 
-To build the project run:
+- `npm start`: Launch development server
+- `npm run build`: Create production build
+- `npm test`: Execute unit tests
+- `npm run lint`: Run code linting
+
+### Building for Production
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts will be stored in the `dist/` directory, optimized for performance and production deployment.
 
-## Running unit tests
+## Docker Support
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+The project includes Docker support for containerized deployment:
 
 ```bash
-ng test
+# Build Docker image
+docker build -t sigrap-frontend .
+
+# Run container
+docker run -p 80:80 sigrap-frontend
 ```
 
-## Running end-to-end tests
+## Testing
 
-For end-to-end (e2e) testing, run:
-
+### Unit Tests
 ```bash
-ng e2e
+npm test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The project uses Karma as the test runner for unit tests. Test files are located alongside the components they test with the `.spec.ts` extension.
+
+## Security
+
+- JWT-based authentication
+- Role-based access control
+- Secure HTTP interceptors
+- Protected routes with guards
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular Documentation](https://angular.dev)
+- [Angular CLI Documentation](https://angular.dev/tools/cli)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
