@@ -20,7 +20,6 @@ import { UserStore } from '@features/configuration/stores/user.store';
 import { CustomerStore } from '@features/customer/stores/customer.store';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -41,7 +40,6 @@ import { SaleStore } from '../../../stores/sale.store';
     InputTextModule,
     InputNumberModule,
     SelectModule,
-    CalendarModule,
     TableModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -157,7 +155,7 @@ import { SaleStore } from '../../../stores/sale.store';
                         [min]="1"
                         [showButtons]="true"
                         buttonLayout="horizontal"
-                        step="1"
+                        [step]="1"
                         (onInput)="updateItemSubtotal(row.formGroupIndex)"
                         fluid
                         [style]="{ minWidth: '130px' }"
@@ -274,7 +272,7 @@ import { SaleStore } from '../../../stores/sale.store';
                                   [max]="100"
                                   showButtons
                                   buttonLayout="horizontal"
-                                  step="1"
+                                  [step]="1"
                                   (onInput)="updateDiscountFromPercentage()"
                                   styleClass="w-full"
                                   fluid

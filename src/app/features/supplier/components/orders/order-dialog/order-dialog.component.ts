@@ -178,7 +178,7 @@ import { TooltipModule } from 'primeng/tooltip';
                         [min]="1"
                         [showButtons]="true"
                         buttonLayout="horizontal"
-                        step="1"
+                        [step]="1"
                         (onInput)="updateItemSubtotal(row.formGroupIndex)"
                         fluid
                         [style]="{ minWidth: '130px' }"

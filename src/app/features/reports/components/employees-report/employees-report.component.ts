@@ -15,7 +15,6 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { DatePickerModule } from 'primeng/datepicker';
-import { DropdownModule } from 'primeng/dropdown';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -70,7 +69,6 @@ interface ChartTooltipContext {
     SkeletonModule,
     TooltipModule,
     ToolbarModule,
-    DropdownModule,
   ],
   template: `
     <div class="p-4">

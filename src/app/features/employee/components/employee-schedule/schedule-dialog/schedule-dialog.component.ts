@@ -7,7 +7,6 @@ import {
 } from '@angular/forms';
 import { UserStore } from '@features/configuration/stores/user.store';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -23,7 +22,6 @@ import { ScheduleStore } from '../../../stores/schedule.store';
     ButtonModule,
     InputTextModule,
     Select,
-    CalendarModule,
     InputGroupModule,
     InputGroupAddonModule,
   ],

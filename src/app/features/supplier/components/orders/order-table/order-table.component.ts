@@ -154,10 +154,10 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p-tag severity="info" value="Confirmed" />
                   }
                   @case ('DRAFT') {
-                    <p-tag severity="warning" value="Draft" />
+                    <p-tag severity="warn" value="Draft" />
                   }
                   @case ('SUBMITTED') {
-                    <p-tag severity="warning" value="Submitted" />
+                    <p-tag severity="warn" value="Submitted" />
                   }
                   @case ('CANCELLED') {
                     <p-tag severity="danger" value="Cancelled" />

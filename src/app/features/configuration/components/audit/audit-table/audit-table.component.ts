@@ -3,7 +3,6 @@ import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { jsPDF } from 'jspdf';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -25,7 +24,6 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
     InputTextModule,
     DialogModule,
     TooltipModule,
-    CalendarModule,
     ToastModule,
     DatePipe,
     PaginatorModule,
