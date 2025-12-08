@@ -3,7 +3,7 @@ import { authGuard } from '../../core/auth/guards/auth.guard';
 
 export const salesRoutes: Routes = [
   {
-    path: 'registrar',
+    path: 'register',
     loadComponent: () =>
       import('./components/sales/sales.component').then(
         (m) => m.SalesComponent,
@@ -11,7 +11,7 @@ export const salesRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'devoluciones',
+    path: 'returns',
     loadComponent: () =>
       import('./components/returns/sales-returns.component').then(
         (m) => m.SalesReturnsComponent,
@@ -21,10 +21,10 @@ export const salesRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'registrar',
+    redirectTo: 'register',
   },
   {
     path: '**',
-    redirectTo: '/no-encontrado',
+    redirectTo: '/not-found',
   },
 ];

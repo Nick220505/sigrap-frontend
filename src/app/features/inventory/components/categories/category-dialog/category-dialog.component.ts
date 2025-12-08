@@ -36,8 +36,8 @@ import { TextareaModule } from 'primeng/textarea';
       [style]="{ width: '450px' }"
       [header]="
         categoryStore.selectedCategory()
-          ? 'Editar Categoría'
-          : 'Crear Categoría'
+          ? 'Edit Category'
+          : 'Create Category'
       "
       modal
     >
@@ -47,7 +47,7 @@ import { TextareaModule } from 'primeng/textarea';
           categoryForm.get('name')?.touched;
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
-          <label for="name" class="font-bold">Nombre</label>
+          <label for="name" class="font-bold">Name</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-tag"></i>
@@ -57,7 +57,7 @@ import { TextareaModule } from 'primeng/textarea';
               pInputText
               id="name"
               formControlName="name"
-              placeholder="Ingrese el nombre de la categoría"
+              placeholder="Enter category name"
               [class.ng-dirty]="nameControlInvalid"
               [class.ng-invalid]="nameControlInvalid"
               required
@@ -66,12 +66,12 @@ import { TextareaModule } from 'primeng/textarea';
           </p-inputgroup>
 
           @if (nameControlInvalid) {
-            <small class="text-red-500">El nombre es obligatorio.</small>
+            <small class="text-red-500">Name is required.</small>
           }
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="description" class="font-bold">Descripción</label>
+          <label for="description" class="font-bold">Description</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-align-left"></i>
@@ -81,7 +81,7 @@ import { TextareaModule } from 'primeng/textarea';
               pTextarea
               id="description"
               formControlName="description"
-              placeholder="Ingrese una descripción (opcional)"
+              placeholder="Enter a description (optional)"
               class="w-full"
               fluid
             ></textarea>
@@ -91,14 +91,14 @@ import { TextareaModule } from 'primeng/textarea';
 
       <ng-template #footer>
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           text
           (click)="categoryStore.closeCategoryDialog()"
         />
 
         <p-button
-          label="Guardar"
+          label="Save"
           icon="pi pi-check"
           (click)="
             categoryForm.valid

@@ -52,12 +52,12 @@ describe('UserTableComponent', () => {
   ];
 
   const expectedColumns = [
-    { field: 'name', header: 'Nombre' },
+    { field: 'name', header: 'Name' },
     { field: 'email', header: 'Email' },
-    { field: 'phone', header: 'Teléfono' },
-    { field: 'documentId', header: 'Número de Identificación' },
-    { field: 'lastLogin', header: 'Último Acceso' },
-    { field: 'role', header: 'Rol' },
+    { field: 'phone', header: 'Phone' },
+    { field: 'documentId', header: 'ID Number' },
+    { field: 'lastLogin', header: 'Last Login' },
+    { field: 'role', header: 'Role' },
   ];
 
   beforeEach(async () => {

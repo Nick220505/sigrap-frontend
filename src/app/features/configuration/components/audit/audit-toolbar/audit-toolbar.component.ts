@@ -12,11 +12,11 @@ import { AuditTableComponent } from '../audit-table/audit-table.component';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="Actualizar"
+          label="Refresh"
           icon="pi pi-refresh"
           outlined
           class="mr-2"
-          pTooltip="Actualizar registros"
+          pTooltip="Refresh records"
           tooltipPosition="top"
           (onClick)="auditLogStore.findAll({})"
           [loading]="auditLogStore.loading()"
@@ -25,20 +25,20 @@ import { AuditTableComponent } from '../audit-table/audit-table.component';
 
       <ng-template #end>
         <p-button
-          label="Exportar PDF"
+          label="Export PDF"
           icon="pi pi-file-pdf"
           styleClass="p-button-help mr-2"
           [loading]="auditTable().isExporting()"
           [disabled]="auditLogStore.entities().length === 0"
-          pTooltip="Exportar registros en PDF"
+          pTooltip="Export records to PDF"
           tooltipPosition="top"
           (onClick)="auditTable().exportToPDF()"
         />
         <p-button
-          label="Exportar CSV"
+          label="Export CSV"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar registros a CSV"
+          pTooltip="Export records to CSV"
           tooltipPosition="top"
           (onClick)="auditTable().exportToCSV()"
           [disabled]="auditLogStore.auditLogsCount() === 0"

@@ -167,8 +167,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Categoría creada',
-        detail: 'La categoría New Category ha sido creada correctamente',
+        summary: 'Category created',
+        detail: 'Category New Category has been created successfully',
       }),
     );
   }));
@@ -220,9 +220,9 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Categoría actualizada',
+        summary: 'Category updated',
         detail:
-          'La categoría Updated Category 1 ha sido actualizada correctamente',
+          'Category Updated Category 1 has been updated successfully',
       }),
     );
   }));
@@ -251,8 +251,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Categoría eliminada',
-        detail: 'La categoría ha sido eliminada correctamente',
+        summary: 'Category deleted',
+        detail: 'The category has been deleted successfully',
       }),
     );
   }));
@@ -291,9 +291,9 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Categorías eliminadas',
+        summary: 'Categories deleted',
         detail:
-          'Las categorías seleccionadas han sido eliminadas correctamente',
+          'The selected categories have been deleted successfully',
       }),
     );
   }));
@@ -326,7 +326,7 @@ describe('Categories Feature Integration', () => {
       jasmine.objectContaining({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear categoría',
+        detail: 'Error creating category',
       }),
     );
 

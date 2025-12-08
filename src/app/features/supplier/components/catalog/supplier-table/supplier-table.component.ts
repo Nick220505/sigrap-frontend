@@ -32,10 +32,10 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Nombre' },
-        { field: 'contactPerson', header: 'Contacto' },
+        { field: 'name', header: 'Name' },
+        { field: 'contactPerson', header: 'Contact' },
         { field: 'email', header: 'Email' },
-        { field: 'phone', header: 'Teléfono' },
+        { field: 'phone', header: 'Phone' },
       ];
 
     <p-table
@@ -47,7 +47,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} proveedores"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} suppliers"
       [globalFilterFields]="['name', 'contactPerson', 'email', 'phone']"
       [tableStyle]="{ 'min-width': '60rem' }"
       rowHover
@@ -59,7 +59,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Administrar Proveedores</h5>
+            <h5 class="m-0 text-left">Manage Suppliers</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -72,7 +72,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -96,8 +96,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -106,16 +106,16 @@ import { TooltipModule } from 'primeng/tooltip';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -142,7 +142,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 rounded
                 outlined
                 (onClick)="supplierStore.openSupplierDialog(supplier)"
-                pTooltip="Editar proveedor"
+                pTooltip="Edit supplier"
                 tooltipPosition="top"
                 [disabled]="supplierStore.loading()"
               />
@@ -153,7 +153,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 rounded
                 outlined
                 (onClick)="deleteSupplier(supplier)"
-                pTooltip="Eliminar proveedor"
+                pTooltip="Delete supplier"
                 tooltipPosition="top"
                 [disabled]="supplierStore.loading()"
               />
@@ -169,11 +169,11 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar proveedores:</strong>
+                    <strong>Error loading suppliers:</strong>
                     <p>{{ supplierStore.error() }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="supplierStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="supplierStore.loading()"
@@ -183,7 +183,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron proveedores.</p>
+              <p>No suppliers found.</p>
             }
           </td>
         </tr>
@@ -213,8 +213,8 @@ export class SupplierTableComponent {
 
   deleteSupplier(supplier: SupplierInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar proveedor',
-      message: `¿Está seguro de que desea eliminar el proveedor <b>${supplier.name}</b>?`,
+      header: 'Delete supplier',
+      message: `Are you sure you want to delete the supplier <b>${supplier.name}</b>?`,
       accept: () => this.supplierStore.delete(supplier.id),
     });
   }

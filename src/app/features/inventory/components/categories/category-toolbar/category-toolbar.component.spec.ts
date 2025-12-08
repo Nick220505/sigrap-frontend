@@ -88,7 +88,7 @@ describe('CategoryToolbarComponent', () => {
 
   it('should call openCategoryDialog when new button is clicked', () => {
     const newButton = fixture.debugElement.query(
-      By.css('p-button[label="Nueva"]'),
+      By.css('p-button[label="New"]'),
     );
     newButton.triggerEventHandler('onClick', null);
 
@@ -100,7 +100,7 @@ describe('CategoryToolbarComponent', () => {
     fixture.detectChanges();
 
     const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Eliminar"]'),
+      By.css('p-button[label="Delete"]'),
     );
     expect(deleteButton.componentInstance.disabled).toBeTrue();
   });
@@ -110,7 +110,7 @@ describe('CategoryToolbarComponent', () => {
     fixture.detectChanges();
 
     const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Eliminar"]'),
+      By.css('p-button[label="Delete"]'),
     );
     expect(deleteButton.componentInstance.disabled).toBeFalse();
   });
@@ -120,7 +120,7 @@ describe('CategoryToolbarComponent', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     expect(exportButton.componentInstance.disabled).toBeTrue();
   });
@@ -130,7 +130,7 @@ describe('CategoryToolbarComponent', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     expect(exportButton.componentInstance.disabled).toBeFalse();
   });
@@ -140,7 +140,7 @@ describe('CategoryToolbarComponent', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     exportButton.triggerEventHandler('onClick', null);
 
@@ -153,7 +153,7 @@ describe('CategoryToolbarComponent', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       deleteButton.triggerEventHandler('onClick', null);
 
@@ -161,9 +161,9 @@ describe('CategoryToolbarComponent', () => {
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
 
-      expect(confirmOptions.header).toBe('Eliminar categorías');
+      expect(confirmOptions.header).toBe('Delete categories');
       expect(confirmOptions.message).toContain(
-        '¿Está seguro de que desea eliminar las 1 categorías seleccionadas?',
+        'Are you sure you want to delete the 1 selected categories?',
       );
       expect(confirmOptions.message).toContain('<b>Category 1</b>');
     });
@@ -204,7 +204,7 @@ describe('CategoryToolbarComponent', () => {
 
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.message).toContain('2 categorías seleccionadas');
+      expect(confirmOptions.message).toContain('2 selected categories');
       expect(confirmOptions.message).toContain('<b>Category 1</b>');
       expect(confirmOptions.message).toContain('<b>Category 2</b>');
     });

@@ -95,8 +95,8 @@ export const CustomerStore = signalStore(
                 patchState(store, addEntity(createdCustomer));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Cliente creado',
-                  detail: `El cliente ${createdCustomer.fullName} ha sido creado correctamente`,
+                  summary: 'Customer created',
+                  detail: `Customer ${createdCustomer.fullName} has been created successfully`,
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -105,7 +105,7 @@ export const CustomerStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al crear el cliente',
+                  detail: 'Error creating customer',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -131,8 +131,8 @@ export const CustomerStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Cliente actualizado',
-                  detail: `El cliente ${updatedCustomer.fullName} ha sido actualizado correctamente`,
+                  summary: 'Customer updated',
+                  detail: `Customer ${updatedCustomer.fullName} has been updated successfully`,
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -141,7 +141,7 @@ export const CustomerStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar el cliente',
+                  detail: 'Error updating customer',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -161,8 +161,8 @@ export const CustomerStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Cliente eliminado',
-                  detail: 'El cliente ha sido eliminado correctamente',
+                  summary: 'Customer deleted',
+                  detail: 'The customer has been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -170,7 +170,7 @@ export const CustomerStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar el cliente',
+                  detail: 'Error deleting customer',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -190,9 +190,9 @@ export const CustomerStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Clientes eliminados',
+                  summary: 'Customers deleted',
                   detail:
-                    'Los clientes seleccionados han sido eliminados correctamente',
+                    'The selected customers have been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -200,7 +200,7 @@ export const CustomerStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar clientes',
+                  detail: 'Error deleting customers',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

@@ -34,13 +34,13 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Nombre' },
-        { field: 'description', header: 'Descripción' },
-        { field: 'costPrice', header: 'Precio Costo' },
-        { field: 'salePrice', header: 'Precio Venta' },
+        { field: 'name', header: 'Name' },
+        { field: 'description', header: 'Description' },
+        { field: 'costPrice', header: 'Cost Price' },
+        { field: 'salePrice', header: 'Sale Price' },
         { field: 'stock', header: 'Stock' },
-        { field: 'minimumStockThreshold', header: 'Stock Mínimo' },
-        { field: 'category.name', header: 'Categoría' },
+        { field: 'minimumStockThreshold', header: 'Minimum Stock' },
+        { field: 'category.name', header: 'Category' },
       ];
 
     <p-table
@@ -52,7 +52,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
       [globalFilterFields]="['name', 'description', 'category.name', 'stock']"
       [tableStyle]="{ 'min-width': '85rem' }"
       rowHover
@@ -64,7 +64,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Administrar Productos</h5>
+            <h5 class="m-0 text-left">Manage Products</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -77,7 +77,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -101,8 +101,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -111,16 +111,16 @@ import { TooltipModule } from 'primeng/tooltip';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -145,9 +145,9 @@ import { TooltipModule } from 'primeng/tooltip';
               ) {
                 {{ product[column.field] }}
               } @else if (column.field === 'category.name') {
-                {{ product.category?.name || 'Sin categoría' }}
+                {{ product.category?.name || 'No category' }}
               } @else if (column.field === 'description') {
-                {{ product[column.field] || 'Sin descripción' }}
+                {{ product[column.field] || 'No description' }}
               } @else {
                 {{ product[column.field] }}
               }
@@ -161,7 +161,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="productStore.openProductDialog(product)"
-              pTooltip="Editar producto"
+              pTooltip="Edit product"
               tooltipPosition="top"
               [disabled]="productStore.loading()"
             />
@@ -172,7 +172,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="deleteProduct(product)"
-              pTooltip="Eliminar producto"
+              pTooltip="Delete product"
               tooltipPosition="top"
               [disabled]="productStore.loading()"
             />
@@ -187,11 +187,11 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar productos:</strong>
+                    <strong>Error loading products:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="productStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="productStore.loading()"
@@ -201,7 +201,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron productos.</p>
+              <p>No products found.</p>
             }
           </td>
         </tr>
@@ -231,8 +231,8 @@ export class ProductTableComponent {
 
   deleteProduct({ id, name }: ProductInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar producto',
-      message: `¿Está seguro de que desea eliminar el producto <b>${name}</b>?`,
+      header: 'Delete product',
+      message: `Are you sure you want to delete the product <b>${name}</b>?`,
       accept: () => this.productStore.delete(id),
     });
   }

@@ -120,7 +120,7 @@ describe('SupplierDialogComponent', () => {
       expect(dialog.componentInstance.visible).toBeTrue();
     });
 
-    it('should show "Nuevo Proveedor" header when no supplier is selected', () => {
+    it('should show "New Supplier" header when no supplier is selected', () => {
       (supplierStore.dialogVisible as WritableSignal<boolean>).set(true);
       (
         supplierStore.selectedSupplier as WritableSignal<SupplierInfo | null>
@@ -131,11 +131,11 @@ describe('SupplierDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Nuevo Proveedor',
+        'New Supplier',
       );
     });
 
-    it('should show "Editar Proveedor" header when a supplier is selected', () => {
+    it('should show "Edit Supplier" header when a supplier is selected', () => {
       (supplierStore.dialogVisible as WritableSignal<boolean>).set(true);
       (
         supplierStore.selectedSupplier as WritableSignal<SupplierInfo | null>
@@ -146,7 +146,7 @@ describe('SupplierDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Editar Proveedor',
+        'Edit Supplier',
       );
     });
   });
@@ -259,7 +259,7 @@ describe('SupplierDialogComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El nombre es requerido',
+        'Name is required',
       );
     });
 
@@ -275,7 +275,7 @@ describe('SupplierDialogComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Email inválido',
+        'Invalid email',
       );
     });
   });
@@ -286,7 +286,7 @@ describe('SupplierDialogComponent', () => {
       fixture.detectChanges();
 
       const cancelButton = fixture.debugElement.query(
-        By.css('p-button[label="Cancelar"]'),
+        By.css('p-button[label="Cancel"]'),
       );
       cancelButton.triggerEventHandler('onClick', null);
 
@@ -302,7 +302,7 @@ describe('SupplierDialogComponent', () => {
       });
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Guardar"]'),
+        By.css('p-button[label="Save"]'),
       );
       saveButton.triggerEventHandler('onClick', null);
 

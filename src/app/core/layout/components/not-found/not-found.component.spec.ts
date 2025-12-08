@@ -51,7 +51,7 @@ describe('NotFoundComponent', () => {
       const heading = fixture.debugElement.query(By.css('h1'));
       expect(heading).toBeTruthy();
       expect(heading.nativeElement.textContent.trim()).toBe(
-        'Página no encontrada',
+        'Page not found',
       );
     });
 
@@ -61,7 +61,7 @@ describe('NotFoundComponent', () => {
       );
       expect(description).toBeTruthy();
       expect(description.nativeElement.textContent.trim()).toContain(
-        'El recurso solicitado no existe',
+        'The requested resource does not exist',
       );
     });
 
@@ -73,24 +73,24 @@ describe('NotFoundComponent', () => {
   });
 
   describe('Navigation links', () => {
-    it('should have link to Inventario General', () => {
-      const inventarioLink = fixture.debugElement.query(
-        By.css('a[routerLink="/inventario/productos"]'),
+    it('should have link to General Inventory', () => {
+      const inventoryLink = fixture.debugElement.query(
+        By.css('a[routerLink="/inventory/products"]'),
       );
-      expect(inventarioLink).toBeTruthy();
+      expect(inventoryLink).toBeTruthy();
 
-      const linkTitle = inventarioLink.query(
+      const linkTitle = inventoryLink.query(
         By.css('.text-surface-900.dark\\:text-surface-0'),
       );
       expect(linkTitle.nativeElement.textContent.trim()).toBe(
-        'Inventario General',
+        'General Inventory',
       );
 
-      const linkIcon = inventarioLink.query(By.css('.pi-database'));
+      const linkIcon = inventoryLink.query(By.css('.pi-database'));
       expect(linkIcon).toBeTruthy();
     });
 
-    it('should have link to Gestión de Entradas', () => {
+    it('should have link to Entry Management', () => {
       const entradasLink = fixture.debugElement.queryAll(
         By.css('a[routerLink="/"]'),
       )[0];
@@ -100,14 +100,14 @@ describe('NotFoundComponent', () => {
         By.css('.text-surface-900.dark\\:text-surface-0'),
       );
       expect(linkTitle.nativeElement.textContent.trim()).toBe(
-        'Gestión de Entradas',
+        'Entry Management',
       );
 
       const linkIcon = entradasLink.query(By.css('.pi-box'));
       expect(linkIcon).toBeTruthy();
     });
 
-    it('should have link to Gestión de Salidas', () => {
+    it('should have link to Exit Management', () => {
       const salidasLink = fixture.debugElement.queryAll(
         By.css('a[routerLink="/"]'),
       )[1];
@@ -117,7 +117,7 @@ describe('NotFoundComponent', () => {
         By.css('.text-surface-900.dark\\:text-surface-0'),
       );
       expect(linkTitle.nativeElement.textContent.trim()).toBe(
-        'Gestión de Salidas',
+        'Exit Management',
       );
 
       const linkIcon = salidasLink.query(By.css('.pi-truck'));
@@ -131,7 +131,7 @@ describe('NotFoundComponent', () => {
       expect(mainPanelButton).toBeTruthy();
 
       const buttonLabel = mainPanelButton.attributes['label'];
-      expect(buttonLabel).toBe('Ir al Panel Principal');
+      expect(buttonLabel).toBe('Go to Main Panel');
     });
   });
 });

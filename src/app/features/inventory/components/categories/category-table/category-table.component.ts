@@ -32,8 +32,8 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Nombre' },
-        { field: 'description', header: 'Descripción' },
+        { field: 'name', header: 'Name' },
+        { field: 'description', header: 'Description' },
       ];
 
     <p-table
@@ -45,7 +45,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} categorías"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} categories"
       [globalFilterFields]="['name', 'description']"
       [tableStyle]="{ 'min-width': '50rem' }"
       rowHover
@@ -57,7 +57,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Administrar Categorías</h5>
+            <h5 class="m-0 text-left">Manage Categories</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -70,7 +70,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -94,8 +94,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -104,16 +104,16 @@ import { TooltipModule } from 'primeng/tooltip';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -137,7 +137,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="categoryStore.openCategoryDialog(category)"
-              pTooltip="Editar categoría"
+              pTooltip="Edit category"
               tooltipPosition="top"
               [disabled]="categoryStore.loading()"
             />
@@ -148,7 +148,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="deleteCategory(category)"
-              pTooltip="Eliminar categoría"
+              pTooltip="Delete category"
               tooltipPosition="top"
               [disabled]="categoryStore.loading()"
             />
@@ -163,11 +163,11 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar categorías:</strong>
+                    <strong>Error loading categories:</strong>
                     <p>{{ categoryStore.error() }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="categoryStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="categoryStore.loading()"
@@ -177,7 +177,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron categorías.</p>
+              <p>No categories found.</p>
             }
           </td>
         </tr>
@@ -207,8 +207,8 @@ export class CategoryTableComponent {
 
   deleteCategory({ id, name }: CategoryInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar categoría',
-      message: `¿Está seguro de que desea eliminar la categoría <b>${name}</b>?`,
+      header: 'Delete category',
+      message: `Are you sure you want to delete category <b>${name}</b>?`,
       accept: () => this.categoryStore.delete(id),
     });
   }

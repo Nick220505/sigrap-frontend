@@ -34,7 +34,7 @@ import { CustomerStore } from '../../../stores/customer.store';
       "
       [style]="{ width: '90vw', maxWidth: '800px' }"
       [header]="
-        customerStore.selectedCustomer() ? 'Editar Cliente' : 'Nuevo Cliente'
+        customerStore.selectedCustomer() ? 'Edit Customer' : 'New Customer'
       "
       modal
     >
@@ -49,7 +49,7 @@ import { CustomerStore } from '../../../stores/customer.store';
               class="flex flex-col gap-2"
               [class.p-invalid]="fullNameControlInvalid"
             >
-              <label for="fullName" class="font-bold">Nombre completo</label>
+              <label for="fullName" class="font-bold">Full Name</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user"></i>
@@ -59,7 +59,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                   pInputText
                   id="fullName"
                   formControlName="fullName"
-                  placeholder="Ingrese el nombre completo"
+                  placeholder="Enter full name"
                   [class.ng-dirty]="fullNameControlInvalid"
                   [class.ng-invalid]="fullNameControlInvalid"
                   required
@@ -69,7 +69,7 @@ import { CustomerStore } from '../../../stores/customer.store';
 
               @if (fullNameControlInvalid) {
                 <small class="text-red-500"
-                  >El nombre completo es obligatorio.</small
+                  >Full name is required.</small
                 >
               }
             </div>
@@ -84,7 +84,7 @@ import { CustomerStore } from '../../../stores/customer.store';
               class="flex flex-col gap-2"
               [class.p-invalid]="documentIdControlInvalid"
             >
-              <label for="documentId" class="font-bold">Documento</label>
+              <label for="documentId" class="font-bold">Document</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-id-card"></i>
@@ -94,7 +94,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                   pInputText
                   id="documentId"
                   formControlName="documentId"
-                  placeholder="Ingrese el número de documento"
+                  placeholder="Enter document number"
                   [class.ng-dirty]="documentIdControlInvalid"
                   [class.ng-invalid]="documentIdControlInvalid"
                   required
@@ -103,14 +103,14 @@ import { CustomerStore } from '../../../stores/customer.store';
               </p-inputgroup>
 
               @if (documentIdControlInvalid) {
-                <small class="text-red-500">El documento es obligatorio.</small>
+                <small class="text-red-500">Document is required.</small>
               }
             </div>
           </div>
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="phoneNumber" class="font-bold">Teléfono</label>
+              <label for="phoneNumber" class="font-bold">Phone</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-phone"></i>
@@ -120,7 +120,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                   pInputText
                   id="phoneNumber"
                   formControlName="phoneNumber"
-                  placeholder="Ingrese el número de teléfono (opcional)"
+                  placeholder="Enter phone number (optional)"
                   fluid
                 />
               </p-inputgroup>
@@ -146,7 +146,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                   pInputText
                   id="email"
                   formControlName="email"
-                  placeholder="Ingrese el email"
+                  placeholder="Enter email"
                   [class.ng-dirty]="emailControlInvalid"
                   [class.ng-invalid]="emailControlInvalid"
                   required
@@ -156,9 +156,9 @@ import { CustomerStore } from '../../../stores/customer.store';
 
               @if (emailControlInvalid) {
                 @if (customerForm.get('email')?.errors?.['required']) {
-                  <small class="text-red-500">El email es obligatorio.</small>
+                  <small class="text-red-500">Email is required.</small>
                 } @else if (customerForm.get('email')?.errors?.['email']) {
-                  <small class="text-red-500">Ingrese un email válido.</small>
+                  <small class="text-red-500">Enter a valid email.</small>
                 }
               }
             </div>
@@ -173,7 +173,7 @@ import { CustomerStore } from '../../../stores/customer.store';
               class="flex flex-col gap-2"
               [class.p-invalid]="addressControlInvalid"
             >
-              <label for="address" class="font-bold">Dirección</label>
+              <label for="address" class="font-bold">Address</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-map-marker"></i>
@@ -183,7 +183,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                   pInputText
                   id="address"
                   formControlName="address"
-                  placeholder="Ingrese la dirección"
+                  placeholder="Enter address"
                   [class.ng-dirty]="addressControlInvalid"
                   [class.ng-invalid]="addressControlInvalid"
                   required
@@ -192,7 +192,7 @@ import { CustomerStore } from '../../../stores/customer.store';
               </p-inputgroup>
 
               @if (addressControlInvalid) {
-                <small class="text-red-500">La dirección es obligatoria.</small>
+                <small class="text-red-500">Address is required.</small>
               }
             </div>
           </div>
@@ -201,14 +201,14 @@ import { CustomerStore } from '../../../stores/customer.store';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           text
           (click)="customerStore.closeCustomerDialog()"
         />
 
         <p-button
-          label="Guardar"
+          label="Save"
           icon="pi pi-check"
           (click)="
             customerForm.valid

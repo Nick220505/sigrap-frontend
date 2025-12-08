@@ -68,14 +68,14 @@ interface PieChartTooltipContext {
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Ranking de Clientes Frecuentes</h2>
+      <h2 class="text-2xl font-bold mb-4">Frequent Customer Ranking</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Inicial:</span
+                >Start Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -90,7 +90,7 @@ interface PieChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Final:</span
+                >End Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -105,7 +105,7 @@ interface PieChartTooltipContext {
 
             <div class="flex items-center gap-2 ml-3">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Mostrar:</span
+                >Show:</span
               >
               <p-select
                 [options]="limitOptions"
@@ -122,20 +122,20 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
-              label="Aplicar"
+              label="Apply"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Aplicar filtro de fechas"
+              pTooltip="Apply date filter"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Limpiar"
+              label="Clear"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Limpiar todos los filtros"
+              pTooltip="Clear all filters"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -143,7 +143,7 @@ interface PieChartTooltipContext {
       </p-toolbar>
 
       <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <p-card styleClass="h-full" header="Total de Ventas por Cliente">
+        <p-card styleClass="h-full" header="Total Sales by Customer">
           @if (saleStore.loading() || customerStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -162,7 +162,7 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Frecuencia de Compras por Cliente">
+        <p-card styleClass="h-full" header="Purchase Frequency by Customer">
           @if (saleStore.loading() || customerStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -182,7 +182,7 @@ interface PieChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Distribución de Ventas" styleClass="mb-6">
+      <p-card header="Sales Distribution" styleClass="mb-6">
         @if (saleStore.loading() || customerStore.loading()) {
           <div class="flex justify-center py-8">
             <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -213,7 +213,7 @@ interface PieChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Ranking de Clientes">
+      <p-card header="Customer Ranking">
         @if (saleStore.loading() || customerStore.loading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -232,11 +232,11 @@ interface PieChartTooltipContext {
           >
             <ng-template pTemplate="header">
               <tr>
-                <th style="width: 5%">Posición</th>
-                <th style="width: 30%">Cliente</th>
-                <th style="width: 25%">Total Compras</th>
-                <th style="width: 25%">Monto Total</th>
-                <th style="width: 15%">Última Compra</th>
+                <th style="width: 5%">Position</th>
+                <th style="width: 30%">Customer</th>
+                <th style="width: 25%">Total Purchases</th>
+                <th style="width: 25%">Total Amount</th>
+                <th style="width: 15%">Last Purchase</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-customer let-i="rowIndex">
@@ -270,8 +270,7 @@ interface PieChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="5" class="text-center p-4">
-                  No se encontraron clientes con compras en el período
-                  seleccionado.
+                  No customers with purchases found for the selected period.
                 </td>
               </tr>
             </ng-template>
@@ -296,7 +295,7 @@ export class CustomersReportComponent implements OnInit {
     { label: 'Top 10', value: 10 },
     { label: 'Top 15', value: 15 },
     { label: 'Top 20', value: 20 },
-    { label: 'Todos', value: 999 },
+    { label: 'All', value: 999 },
   ];
 
   customerLimitSignal = signal<number>(10);
@@ -347,7 +346,7 @@ export class CustomersReportComponent implements OnInit {
       labels: ranking.map((item) => this.truncateName(item.customer.fullName)),
       datasets: [
         {
-          label: 'Número de Compras',
+          label: 'Number of Purchases',
           data: ranking.map((item) => item.purchaseCount),
           backgroundColor: [
             '#42A5F5',
@@ -373,7 +372,7 @@ export class CustomersReportComponent implements OnInit {
       labels: ranking.map((item) => this.truncateName(item.customer.fullName)),
       datasets: [
         {
-          label: 'Monto Total ($)',
+          label: 'Total Amount ($)',
           data: ranking.map((item) => item.totalAmount),
           backgroundColor: [
             '#26A69A',
@@ -399,7 +398,7 @@ export class CustomersReportComponent implements OnInit {
       labels: ranking.map((item) => this.truncateName(item.customer.fullName)),
       datasets: [
         {
-          label: 'Ventas por Cliente',
+          label: 'Sales by Customer',
           data: ranking.map((item) => item.totalAmount),
           backgroundColor: [
             '#FF6384',
@@ -469,7 +468,7 @@ export class CustomersReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Frecuencia de Compras',
+        text: 'Purchase Frequency',
         font: {
           size: 16,
         },
@@ -477,7 +476,7 @@ export class CustomersReportComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.parsed.y} compras`;
+            return `${context.parsed.y} purchases`;
           },
         },
       },
@@ -489,7 +488,7 @@ export class CustomersReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Número de Compras',
+          text: 'Number of Purchases',
         },
       },
     },
@@ -502,7 +501,7 @@ export class CustomersReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Total de Ventas',
+        text: 'Total Sales',
         font: {
           size: 16,
         },
@@ -522,7 +521,7 @@ export class CustomersReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto Total ($)',
+          text: 'Total Amount ($)',
         },
       },
     },
@@ -535,7 +534,7 @@ export class CustomersReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Distribución de Ventas por Cliente (Top 5)',
+        text: 'Sales Distribution by Customer (Top 5)',
         font: {
           size: 16,
         },
@@ -563,7 +562,7 @@ export class CustomersReportComponent implements OnInit {
     plugins: {
       title: {
         display: true,
-        text: 'Evolución de Ventas (Top 3 Clientes)',
+        text: 'Sales Evolution (Top 3 Customers)',
         font: {
           size: 16,
         },
@@ -576,7 +575,7 @@ export class CustomersReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto de Ventas (COP)',
+          text: 'Sales Amount (COP)',
         },
       },
     },
@@ -712,6 +711,6 @@ export class CustomersReportComponent implements OnInit {
       month: 'short',
       year: 'numeric',
     };
-    return date.toLocaleDateString('es-ES', options);
+    return date.toLocaleDateString('en-US', options);
   }
 }

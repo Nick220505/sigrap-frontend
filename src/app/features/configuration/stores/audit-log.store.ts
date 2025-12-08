@@ -65,7 +65,7 @@ export const AuditLogStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar registros de auditoría',
+                  detail: 'Error loading audit logs',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -97,7 +97,7 @@ export const AuditLogStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar registros de auditoría del usuario',
+                  detail: 'Error loading user audit logs',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -130,7 +130,7 @@ export const AuditLogStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail:
-                    'Error al cargar registros de auditoría de la entidad',
+                    'Error loading entity audit logs',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -159,7 +159,7 @@ export const AuditLogStore = signalStore(
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al cargar registros de auditoría por acción',
+                    detail: 'Error loading audit logs by action',
                   });
                 },
                 finalize: () => patchState(store, { loading: false }),
@@ -193,7 +193,7 @@ export const AuditLogStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail:
-                    'Error al cargar registros de auditoría por rango de fechas',
+                    'Error loading audit logs by date range',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -226,7 +226,7 @@ export const AuditLogStore = signalStore(
                   severity: 'error',
                   summary: 'Error',
                   detail:
-                    'Error al cargar registros de auditoría por ID de entidad',
+                    'Error loading audit logs by entity ID',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -254,7 +254,7 @@ export const AuditLogStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar registros de auditoría con errores',
+                  detail: 'Error loading audit logs with errors',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

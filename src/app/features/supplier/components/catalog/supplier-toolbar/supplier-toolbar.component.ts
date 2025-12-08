@@ -13,21 +13,21 @@ import { SupplierTableComponent } from '../supplier-table/supplier-table.compone
     <p-toolbar styleClass="mb-6">
       <ng-template pTemplate="start">
         <p-button
-          label="Nuevo"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nuevo proveedor"
+          pTooltip="Create new supplier"
           tooltipPosition="top"
           (onClick)="supplierStore.openSupplierDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar proveedores seleccionados"
+          pTooltip="Delete selected suppliers"
           tooltipPosition="top"
           (onClick)="deleteSelectedSuppliers()"
           [disabled]="supplierTable().selectedSuppliers().length === 0"
@@ -36,10 +36,10 @@ import { SupplierTableComponent } from '../supplier-table/supplier-table.compone
 
       <ng-template pTemplate="end">
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar proveedores a CSV"
+          pTooltip="Export suppliers to CSV"
           tooltipPosition="top"
           (onClick)="supplierTable().dt().exportCSV()"
           [disabled]="supplierStore.suppliersCount() === 0"
@@ -57,9 +57,9 @@ export class SupplierToolbarComponent {
   deleteSelectedSuppliers(): void {
     const suppliers = this.supplierTable().selectedSuppliers();
     this.confirmationService.confirm({
-      header: 'Eliminar proveedores',
+      header: 'Delete suppliers',
       message: `
-      ¿Está seguro de que desea eliminar los ${suppliers.length} proveedores seleccionados?
+      Are you sure you want to delete the ${suppliers.length} selected suppliers?
       <ul class='mt-2 mb-0'>
           ${suppliers.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
       </ul>

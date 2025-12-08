@@ -60,7 +60,7 @@ import { SaleStore } from '../../../stores/sale.store';
       <form [formGroup]="saleForm" class="flex flex-col gap-4 pt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
-            <label for="customerId" class="font-bold">Cliente</label>
+            <label for="customerId" class="font-bold">Customer</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-users"></i>
@@ -71,7 +71,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 [options]="this.customerStore.entities()"
                 optionLabel="fullName"
                 optionValue="id"
-                placeholder="Seleccionar Cliente"
+                placeholder="Select Customer"
                 [filter]="true"
                 filterBy="fullName"
                 styleClass="w-full"
@@ -81,7 +81,7 @@ import { SaleStore } from '../../../stores/sale.store';
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="employeeId" class="font-bold">Empleado</label>
+            <label for="employeeId" class="font-bold">Employee</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-user"></i>
@@ -92,7 +92,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 [options]="this.userStore.entities()"
                 optionLabel="name"
                 optionValue="id"
-                placeholder="Seleccionar Empleado"
+                placeholder="Select Employee"
                 [filter]="true"
                 filterBy="name"
                 styleClass="w-full"
@@ -104,10 +104,10 @@ import { SaleStore } from '../../../stores/sale.store';
 
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <h3 class="font-bold text-lg m-0">Productos</h3>
+            <h3 class="font-bold text-lg m-0">Products</h3>
             @if (!viewMode()) {
               <p-button
-                label="Agregar Producto"
+                label="Add Product"
                 icon="pi pi-plus"
                 (click)="addItem()"
                 [disabled]="viewMode()"
@@ -123,12 +123,12 @@ import { SaleStore } from '../../../stores/sale.store';
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="w-1/3">Producto</th>
-                  <th class="w-1/8">Cantidad</th>
-                  <th class="w-1/8">Precio Unitario</th>
+                  <th class="w-1/3">Product</th>
+                  <th class="w-1/8">Quantity</th>
+                  <th class="w-1/8">Unit Price</th>
                   <th class="w-1/4">Subtotal</th>
                   @if (!viewMode()) {
-                    <th class="w-12 text-center">Acciones</th>
+                    <th class="w-12 text-center">Actions</th>
                   }
                 </tr>
               </ng-template>
@@ -141,7 +141,7 @@ import { SaleStore } from '../../../stores/sale.store';
                         [options]="this.productStore.entities()"
                         optionLabel="name"
                         optionValue="id"
-                        placeholder="Seleccionar Producto"
+                        placeholder="Select Product"
                         [filter]="true"
                         filterBy="name"
                         (onChange)="
@@ -234,7 +234,7 @@ import { SaleStore } from '../../../stores/sale.store';
                     @case ('tax') {
                       <tr>
                         <td colspan="3" class="p-2 text-right font-bold">
-                          Impuesto (19% IVA):
+                          Tax (19% VAT):
                         </td>
                         <td class="p-2">
                           <p-inputNumber
@@ -257,13 +257,13 @@ import { SaleStore } from '../../../stores/sale.store';
                     @case ('combinedDiscount') {
                       <tr>
                         <td colspan="3" class="p-2 text-right font-bold">
-                          Descuento:
+                          Discount:
                         </td>
                         <td class="p-2">
                           <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                             <div class="flex flex-col">
                               <label for="discountPercent" class="text-xs mb-1"
-                                >Porcentaje</label
+                                >Percentage</label
                               >
                               @if (!viewMode()) {
                                 <p-inputNumber
@@ -296,7 +296,7 @@ import { SaleStore } from '../../../stores/sale.store';
                             </div>
                             <div class="flex flex-col">
                               <label for="discountAmount" class="text-xs mb-1"
-                                >Monto</label
+                                >Amount</label
                               >
                               <p-inputNumber
                                 id="discountAmount"
@@ -327,7 +327,7 @@ import { SaleStore } from '../../../stores/sale.store';
                           colspan="3"
                           class="p-2 text-right font-bold text-lg"
                         >
-                          Total Final:
+                          Final Total:
                         </td>
                         <td class="p-2">
                           <p-inputNumber
@@ -358,14 +358,14 @@ import { SaleStore } from '../../../stores/sale.store';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           styleClass="p-button-text"
           (click)="saleStore.closeSaleDialog()"
         />
         @if (!viewMode()) {
           <p-button
-            label="Guardar"
+            label="Save"
             icon="pi pi-check"
             [disabled]="saleForm.invalid || saleForm.pristine"
             (click)="saveSale()"
@@ -393,9 +393,9 @@ export class SalesDialogComponent {
   readonly dialogHeader = computed(() => {
     const selectedSale = this.saleStore.selectedSale();
     if (selectedSale) {
-      return `Venta #${selectedSale.id}`;
+      return `Sale #${selectedSale.id}`;
     }
-    return 'Registrar Nueva Venta';
+    return 'Register New Sale';
   });
 
   readonly tableRows = computed(() => {

@@ -36,8 +36,8 @@ describe('CategoryTableComponent', () => {
   ];
 
   const expectedColumns = [
-    { field: 'name', header: 'Nombre' },
-    { field: 'description', header: 'Descripción' },
+    { field: 'name', header: 'Name' },
+    { field: 'description', header: 'Description' },
   ];
 
   beforeEach(async () => {
@@ -242,7 +242,7 @@ describe('CategoryTableComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.header).toBe('Eliminar categoría');
+      expect(confirmOptions.header).toBe('Delete category');
       expect(confirmOptions.message).toContain(categoryToDelete.name);
     });
 
@@ -322,7 +322,7 @@ describe('CategoryTableComponent', () => {
 
       const emptyMessage = fixture.debugElement.query(By.css('tbody tr td'));
       expect(emptyMessage.nativeElement.textContent).toContain(
-        'No se encontraron categorías.',
+        'No categories found.',
       );
     });
   });

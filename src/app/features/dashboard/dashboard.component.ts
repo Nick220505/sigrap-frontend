@@ -59,10 +59,10 @@ interface ProductWithStock {
   template: `
     <div class="p-4">
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold">Panel de Control</h1>
+        <h1 class="text-3xl font-bold">Dashboard</h1>
         <div class="flex gap-2">
           <p-button
-            label="Actualizar Datos"
+            label="Refresh Data"
             icon="pi pi-refresh"
             (onClick)="refreshData()"
             [loading]="isLoading()"
@@ -76,7 +76,7 @@ interface ProductWithStock {
             <span
               class="text-blue-600 dark:text-blue-300 text-sm font-medium mb-1"
             >
-              VENTAS DEL MES
+              SALES THIS MONTH
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -86,8 +86,8 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ salesTrend() >= 0 ? '+' : '' }}{{ salesTrend() }}% vs mes
-              anterior
+              {{ salesTrend() >= 0 ? '+' : '' }}{{ salesTrend() }}% vs last
+              month
             </div>
           </div>
         </p-card>
@@ -97,7 +97,7 @@ interface ProductWithStock {
             <span
               class="text-green-600 dark:text-green-300 text-sm font-medium mb-1"
             >
-              PRODUCTOS DISPONIBLES
+              AVAILABLE PRODUCTS
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -107,7 +107,7 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ productWithLowStock() }} con stock bajo
+              {{ productWithLowStock() }} with low stock
             </div>
           </div>
         </p-card>
@@ -117,7 +117,7 @@ interface ProductWithStock {
             <span
               class="text-amber-600 dark:text-amber-300 text-sm font-medium mb-1"
             >
-              ÓRDENES PENDIENTES
+              PENDING ORDERS
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -127,7 +127,7 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Valor:
+              Value:
               {{ pendingOrdersValue() | currency: 'COP' : '$' : '1.0-0' }}
             </div>
           </div>
@@ -138,7 +138,7 @@ interface ProductWithStock {
             <span
               class="text-indigo-600 dark:text-indigo-300 text-sm font-medium mb-1"
             >
-              CLIENTES ACTIVOS
+              ACTIVE CUSTOMERS
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -148,14 +148,14 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ newCustomers() }} nuevo(s) este mes
+              {{ newCustomers() }} new this month
             </div>
           </div>
         </p-card>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <p-card header="Ventas vs Ganancias" styleClass="h-full">
+        <p-card header="Sales vs Profit" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -171,7 +171,7 @@ interface ProductWithStock {
           }
         </p-card>
 
-        <p-card header="Productos Más Vendidos" styleClass="h-full">
+        <p-card header="Top Selling Products" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -190,7 +190,7 @@ interface ProductWithStock {
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <p-card
-          header="Niveles de Inventario por Categoría"
+          header="Inventory Levels by Category"
           styleClass="h-full"
         >
           @if (isLoading()) {
@@ -208,7 +208,7 @@ interface ProductWithStock {
           }
         </p-card>
 
-        <p-card header="Ventas por Cliente" styleClass="h-full">
+        <p-card header="Sales by Customer" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -226,7 +226,7 @@ interface ProductWithStock {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <p-card header="Productos con Stock Crítico" styleClass="h-full">
+        <p-card header="Products with Critical Stock" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex flex-col gap-2 py-2">
               <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
@@ -243,10 +243,10 @@ interface ProductWithStock {
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Producto</th>
-                  <th>Categoría</th>
-                  <th>Stock Actual</th>
-                  <th>Nivel de Stock</th>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Current Stock</th>
+                  <th>Stock Level</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-product>
@@ -266,14 +266,14 @@ interface ProductWithStock {
               <ng-template pTemplate="emptymessage">
                 <tr>
                   <td colspan="4" class="text-center p-4">
-                    No hay productos con stock crítico.
+                    No products with critical stock.
                   </td>
                 </tr>
               </ng-template>
             </p-table>
             <div class="flex justify-end mt-4">
               <p-button
-                label="Ver Reporte de Inventario"
+                label="View Inventory Report"
                 styleClass="p-button-sm p-button-outlined"
                 (onClick)="navigateToReport('inventory')"
               ></p-button>
@@ -281,7 +281,7 @@ interface ProductWithStock {
           }
         </p-card>
 
-        <p-card header="Ventas Recientes" styleClass="h-full">
+        <p-card header="Recent Sales" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex flex-col gap-2 py-2">
               <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
@@ -298,16 +298,16 @@ interface ProductWithStock {
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Fecha</th>
-                  <th>Cliente</th>
-                  <th>Productos</th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Items</th>
                   <th>Total</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-sale>
                 <tr>
                   <td>{{ formatDateString(sale.createdAt) }}</td>
-                  <td>{{ sale.customer?.fullName || 'Venta Directa' }}</td>
+                  <td>{{ sale.customer?.fullName || 'Direct Sale' }}</td>
                   <td>{{ sale.items.length }}</td>
                   <td>
                     {{ sale.finalAmount | currency: 'COP' : '$' : '1.0-0' }}
@@ -317,14 +317,14 @@ interface ProductWithStock {
               <ng-template pTemplate="emptymessage">
                 <tr>
                   <td colspan="4" class="text-center p-4">
-                    No hay ventas recientes.
+                    No recent sales.
                   </td>
                 </tr>
               </ng-template>
             </p-table>
             <div class="flex justify-end mt-4">
               <p-button
-                label="Ver Reporte de Ventas"
+                label="View Sales Report"
                 styleClass="p-button-sm p-button-outlined"
                 (onClick)="navigateToReport('sales')"
               ></p-button>
@@ -335,31 +335,31 @@ interface ProductWithStock {
 
       <div class="flex flex-wrap justify-center gap-4 mt-8">
         <p-button
-          label="Reporte de Ventas"
+          label="Sales Report"
           icon="pi pi-chart-line"
           (onClick)="navigateToReport('sales')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Reporte de Inventario"
+          label="Inventory Report"
           icon="pi pi-box"
           (onClick)="navigateToReport('inventory')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Reporte Financiero"
+          label="Financial Report"
           icon="pi pi-dollar"
           (onClick)="navigateToReport('financial')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Reporte de Empleados"
+          label="Employees Report"
           icon="pi pi-users"
           (onClick)="navigateToReport('employees')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Reporte de Clientes"
+          label="Customers Report"
           icon="pi pi-user"
           (onClick)="navigateToReport('customers')"
           styleClass="p-button-outlined"
@@ -570,7 +570,7 @@ export class DashboardComponent implements OnInit {
       ),
       datasets: [
         {
-          label: 'Unidades Vendidas',
+          label: 'Units Sold',
           data: topProducts.map((product) => product.quantity),
           backgroundColor: [
             '#FF6384',
@@ -593,7 +593,7 @@ export class DashboardComponent implements OnInit {
       const date = new Date();
       date.setMonth(date.getMonth() - i);
 
-      const monthYear = date.toLocaleDateString('es-ES', {
+      const monthYear = date.toLocaleDateString('en-US', {
         month: 'short',
         year: 'numeric',
       });
@@ -619,7 +619,7 @@ export class DashboardComponent implements OnInit {
       labels,
       datasets: [
         {
-          label: 'Ventas',
+          label: 'Sales',
           data: salesData,
           borderColor: '#42A5F5',
           backgroundColor: 'rgba(66, 165, 245, 0.2)',
@@ -627,7 +627,7 @@ export class DashboardComponent implements OnInit {
           tension: 0.4,
         },
         {
-          label: 'Ganancias',
+          label: 'Profit',
           data: profitData,
           borderColor: '#66BB6A',
           backgroundColor: 'rgba(102, 187, 106, 0.2)',
@@ -665,7 +665,7 @@ export class DashboardComponent implements OnInit {
       labels: categories.map((cat) => this.truncateText(cat.name, 15)),
       datasets: [
         {
-          label: 'Unidades en Stock',
+          label: 'Units in Stock',
           data: categories.map((cat) => cat.totalStock),
           backgroundColor: '#26C6DA',
         },
@@ -715,7 +715,7 @@ export class DashboardComponent implements OnInit {
     const data = [...topCustomers.map((c) => c.totalAmount)];
 
     if (othersTotal > 0) {
-      labels.push('Otros');
+      labels.push('Others');
       data.push(othersTotal);
     }
 
@@ -723,7 +723,7 @@ export class DashboardComponent implements OnInit {
       labels,
       datasets: [
         {
-          label: 'Ventas por Cliente',
+          label: 'Sales by Customer',
           data,
           backgroundColor: [
             '#FF7043',
@@ -751,7 +751,7 @@ export class DashboardComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto ($)',
+          text: 'Amount ($)',
         },
       },
     },
@@ -780,7 +780,7 @@ export class DashboardComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Unidades',
+          text: 'Units',
         },
       },
     },
@@ -812,19 +812,19 @@ export class DashboardComponent implements OnInit {
   navigateToReport(reportType: string) {
     switch (reportType) {
       case 'sales':
-        this.router.navigate(['/reportes/ventas']);
+        this.router.navigate(['/reports/sales']);
         break;
       case 'inventory':
-        this.router.navigate(['/reportes/inventario']);
+        this.router.navigate(['/reports/inventory']);
         break;
       case 'financial':
-        this.router.navigate(['/reportes/financieros']);
+        this.router.navigate(['/reports/financial']);
         break;
       case 'employees':
-        this.router.navigate(['/reportes/empleados']);
+        this.router.navigate(['/reports/employees']);
         break;
       case 'customers':
-        this.router.navigate(['/reportes/clientes']);
+        this.router.navigate(['/reports/customers']);
         break;
     }
   }

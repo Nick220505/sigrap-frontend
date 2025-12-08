@@ -13,21 +13,21 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="Nueva"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nueva categoría"
+          pTooltip="Create new category"
           tooltipPosition="top"
           (onClick)="categoryStore.openCategoryDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar categorías seleccionadas"
+          pTooltip="Delete selected categories"
           tooltipPosition="top"
           (onClick)="deleteSelectedCategories()"
           [disabled]="categoryTable().selectedCategories().length === 0"
@@ -36,10 +36,10 @@ import { CategoryTableComponent } from '../category-table/category-table.compone
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar categorías a CSV"
+          pTooltip="Export categories to CSV"
           tooltipPosition="top"
           (onClick)="categoryTable().dt().exportCSV()"
           [disabled]="categoryStore.categoriesCount() === 0"
@@ -57,9 +57,9 @@ export class CategoryToolbarComponent {
   deleteSelectedCategories(): void {
     const categories = this.categoryTable().selectedCategories();
     this.confirmationService.confirm({
-      header: 'Eliminar categorías',
+      header: 'Delete categories',
       message: `
-      ¿Está seguro de que desea eliminar las ${categories.length} categorías seleccionadas?
+      Are you sure you want to delete the ${categories.length} selected categories?
       <ul class='mt-2 mb-0'>
           ${categories.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
       </ul>

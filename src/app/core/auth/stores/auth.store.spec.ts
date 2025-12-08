@@ -103,13 +103,13 @@ describe('AuthStore', () => {
       store.login(credentials);
 
       expect(store.error()).toBe(
-        'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+        'An error occurred. Please try again later.',
       );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
         detail:
-          'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+          'An error occurred. Please try again later.',
       });
     });
 
@@ -121,11 +121,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('Credenciales inválidas');
+      expect(store.error()).toBe('Invalid credentials');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Credenciales inválidas',
+        detail: 'Invalid credentials',
       });
     });
 
@@ -137,11 +137,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('Credenciales inválidas');
+      expect(store.error()).toBe('Invalid credentials');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Credenciales inválidas',
+        detail: 'Invalid credentials',
       });
     });
 
@@ -153,11 +153,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('Credenciales inválidas');
+      expect(store.error()).toBe('Invalid credentials');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Credenciales inválidas',
+        detail: 'Invalid credentials',
       });
     });
 
@@ -222,13 +222,13 @@ describe('AuthStore', () => {
       store.register(registerData);
 
       expect(store.error()).toBe(
-        'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+        'An error occurred. Please try again later.',
       );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
         detail:
-          'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.',
+          'An error occurred. Please try again later.',
       });
     });
 
@@ -240,11 +240,11 @@ describe('AuthStore', () => {
 
       store.register(registerData);
 
-      expect(store.error()).toBe('El correo electrónico ya está registrado');
+      expect(store.error()).toBe('Email is already registered');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'El correo electrónico ya está registrado',
+        detail: 'Email is already registered',
       });
     });
 
@@ -256,11 +256,11 @@ describe('AuthStore', () => {
 
       store.register(registerData);
 
-      expect(store.error()).toBe('El correo electrónico ya está registrado');
+      expect(store.error()).toBe('Email is already registered');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'El correo electrónico ya está registrado',
+        detail: 'Email is already registered',
       });
     });
 
@@ -301,7 +301,7 @@ describe('AuthStore', () => {
       expect(store.user()).toBeNull();
       expect(store.token()).toBeNull();
       expect(store.loggedIn()).toBeFalse();
-      expect(router.navigate).toHaveBeenCalledWith(['/iniciar-sesion']);
+      expect(router.navigate).toHaveBeenCalledWith(['/login']);
       expect(localStorage.getItem('auth_token')).toBeNull();
       expect(localStorage.getItem('user_data')).toBeNull();
     });

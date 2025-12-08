@@ -89,7 +89,7 @@ describe('ScheduleToolbarComponent', () => {
 
   it('should call openScheduleDialog on addNew', () => {
     const addButton = fixture.debugElement.query(
-      By.css('p-button[label="Nuevo"]'),
+      By.css('p-button[label="New"]'),
     );
     if (addButton) {
       const component = addButton.componentInstance;
@@ -103,7 +103,7 @@ describe('ScheduleToolbarComponent', () => {
 
   it('should call exportToCSV on the table when CSV button is clicked', () => {
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     if (exportButton) {
       const component = exportButton.componentInstance;

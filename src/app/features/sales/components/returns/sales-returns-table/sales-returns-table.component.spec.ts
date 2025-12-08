@@ -217,7 +217,7 @@ describe('SalesReturnsTableComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.header).toBe('Eliminar devolución');
+      expect(confirmOptions.header).toBe('Delete return');
       expect(confirmOptions.message).toContain(
         `#<b>${mockSaleReturns[0].id}</b>`,
       );
@@ -303,7 +303,7 @@ describe('SalesReturnsTableComponent', () => {
 
       const emptyMessage = fixture.debugElement.query(By.css('tbody tr td'));
       expect(emptyMessage.nativeElement.textContent).toContain(
-        'No se encontraron devoluciones.',
+        'No returns found.',
       );
     });
   });

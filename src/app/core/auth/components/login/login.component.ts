@@ -51,11 +51,11 @@ import { AuthStore } from '../../stores/auth.store';
               <div
                 class="mb-4 text-3xl font-medium text-surface-900 dark:text-surface-0"
               >
-                Iniciar Sesión
+                Sign In
               </div>
 
               <span class="font-medium text-muted-color">
-                Ingrese sus datos para continuar
+                Enter your credentials to continue
               </span>
             </div>
 
@@ -83,7 +83,7 @@ import { AuthStore } from '../../stores/auth.store';
                       id="email"
                       type="text"
                       formControlName="email"
-                      placeholder="Ingrese su correo electrónico"
+                      placeholder="Enter your email"
                       [class.ng-dirty]="emailControlInvalid"
                       [class.ng-invalid]="emailControlInvalid"
                       fluid
@@ -94,11 +94,11 @@ import { AuthStore } from '../../stores/auth.store';
                 @if (emailControlInvalid) {
                   @if (loginForm.get('email')?.hasError('required')) {
                     <small class="text-red-500"
-                      >El correo electrónico es obligatorio.</small
+                      >Email is required.</small
                     >
                   } @else if (loginForm.get('email')?.hasError('email')) {
                     <small class="text-red-500"
-                      >Ingrese un correo electrónico válido.</small
+                      >Enter a valid email address.</small
                     >
                   }
                 }
@@ -116,7 +116,7 @@ import { AuthStore } from '../../stores/auth.store';
                   for="password"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
                 >
-                  Contraseña
+                  Password
                 </label>
 
                 <div class="w-full md:w-[30rem] mb-2 relative">
@@ -126,7 +126,7 @@ import { AuthStore } from '../../stores/auth.store';
                   <p-password
                     id="password"
                     formControlName="password"
-                    placeholder="Ingrese su contraseña"
+                    placeholder="Enter your password"
                     toggleMask
                     styleClass="w-full"
                     inputStyleClass="pl-10 w-full"
@@ -139,14 +139,14 @@ import { AuthStore } from '../../stores/auth.store';
 
                 @if (passwordControlInvalid) {
                   <small class="text-red-500"
-                    >La contraseña es obligatoria.</small
+                    >Password is required.</small
                   >
                 }
               </div>
 
               <div class="mt-8">
                 <p-button
-                  label="Ingresar"
+                  label="Sign In"
                   type="button"
                   styleClass="w-full"
                   [loading]="authStore.loading()"
@@ -160,14 +160,14 @@ import { AuthStore } from '../../stores/auth.store';
 
               <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
-                  ¿No tiene una cuenta?
+                  Don’t have an account?
                 </span>
 
                 <a
-                  routerLink="/registro"
+                  routerLink="/register"
                   class="ml-2 font-medium text-primary cursor-pointer"
                 >
-                  Regístrese
+                  Register
                 </a>
               </div>
             </form>

@@ -127,8 +127,8 @@ export const ScheduleStore = signalStore(
                 patchState(store, addEntity(createdSchedule));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Horario creado',
-                  detail: `El horario ha sido creado correctamente`,
+                  summary: 'Schedule created',
+                  detail: `The schedule has been created successfully`,
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -137,7 +137,7 @@ export const ScheduleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al crear horario',
+                  detail: 'Error creating schedule',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -163,8 +163,8 @@ export const ScheduleStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Horario actualizado',
-                  detail: `El horario ha sido actualizado correctamente`,
+                  summary: 'Schedule updated',
+                  detail: `The schedule has been updated successfully`,
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -173,7 +173,7 @@ export const ScheduleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar horario',
+                  detail: 'Error updating schedule',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -193,8 +193,8 @@ export const ScheduleStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Horario eliminado',
-                  detail: 'El horario ha sido eliminado correctamente',
+                  summary: 'Schedule deleted',
+                  detail: 'The schedule has been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -202,7 +202,7 @@ export const ScheduleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar horario',
+                  detail: 'Error deleting schedule',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -222,9 +222,9 @@ export const ScheduleStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Horarios eliminados',
+                  summary: 'Schedules deleted',
                   detail:
-                    'Los horarios seleccionados han sido eliminados correctamente',
+                    'The selected schedules have been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -232,7 +232,7 @@ export const ScheduleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar horarios',
+                  detail: 'Error deleting schedules',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

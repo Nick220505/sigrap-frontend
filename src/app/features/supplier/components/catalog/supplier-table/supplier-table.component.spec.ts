@@ -231,9 +231,9 @@ describe('SupplierTableComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.header).toBe('Eliminar proveedor');
+      expect(confirmOptions.header).toBe('Delete supplier');
       expect(confirmOptions.message).toBe(
-        '¿Está seguro de que desea eliminar el proveedor <b>Supplier 1</b>?',
+        'Are you sure you want to delete the supplier <b>Supplier 1</b>?',
       );
     });
 
@@ -313,7 +313,7 @@ describe('SupplierTableComponent', () => {
 
       const emptyMessage = fixture.debugElement.query(By.css('tbody tr td'));
       expect(emptyMessage.nativeElement.textContent).toContain(
-        'No se encontraron proveedores.',
+        'No suppliers found.',
       );
     });
   });

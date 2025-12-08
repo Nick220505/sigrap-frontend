@@ -34,11 +34,11 @@ import { TooltipModule } from 'primeng/tooltip';
     @let columns =
       [
         { field: 'id', header: 'ID' },
-        { field: 'createdAt', header: 'Fecha Creación' },
-        { field: 'deliveryDate', header: 'Fecha Entrega' },
-        { field: 'supplier.name', header: 'Proveedor' },
+        { field: 'createdAt', header: 'Created Date' },
+        { field: 'deliveryDate', header: 'Delivery Date' },
+        { field: 'supplier.name', header: 'Supplier' },
         { field: 'totalAmount', header: 'Total' },
-        { field: 'status', header: 'Estado' },
+        { field: 'status', header: 'Status' },
       ];
 
     <p-table
@@ -50,7 +50,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pedidos"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orders"
       [globalFilterFields]="['id', 'supplier.name', 'status']"
       [tableStyle]="{ 'min-width': '70rem' }"
       rowHover
@@ -63,7 +63,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Pedidos a Proveedores</h5>
+            <h5 class="m-0 text-left">Purchase Orders</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -76,7 +76,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -100,8 +100,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -110,16 +110,16 @@ import { TooltipModule } from 'primeng/tooltip';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -137,7 +137,7 @@ import { TooltipModule } from 'primeng/tooltip';
               @if (column.field === 'totalAmount') {
                 {{ order[column.field] | currency: 'COP' : '$' : '1.0-0' }}
               } @else if (column.field === 'supplier.name') {
-                {{ order.supplier?.name || 'Sin proveedor' }}
+                {{ order.supplier?.name || 'No supplier' }}
               } @else if (column.field === 'createdAt') {
                 {{ order[column.field] | date: 'dd/MM/yyyy' }}
               } @else if (column.field === 'deliveryDate') {
@@ -145,22 +145,22 @@ import { TooltipModule } from 'primeng/tooltip';
               } @else if (column.field === 'status') {
                 @switch (order[column.field]) {
                   @case ('DELIVERED') {
-                    <p-tag severity="success" value="Entregado" />
+                    <p-tag severity="success" value="Delivered" />
                   }
                   @case ('SHIPPED') {
-                    <p-tag severity="info" value="Enviado" />
+                    <p-tag severity="info" value="Shipped" />
                   }
                   @case ('CONFIRMED') {
-                    <p-tag severity="info" value="Confirmado" />
+                    <p-tag severity="info" value="Confirmed" />
                   }
                   @case ('DRAFT') {
-                    <p-tag severity="warning" value="Borrador" />
+                    <p-tag severity="warning" value="Draft" />
                   }
                   @case ('SUBMITTED') {
-                    <p-tag severity="warning" value="Enviado" />
+                    <p-tag severity="warning" value="Submitted" />
                   }
                   @case ('CANCELLED') {
-                    <p-tag severity="danger" value="Cancelado" />
+                    <p-tag severity="danger" value="Cancelled" />
                   }
                   @default {
                     <p-tag severity="info" value="{{ order[column.field] }}" />
@@ -179,7 +179,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               class="mr-2"
-              pTooltip="Ver detalles"
+              pTooltip="View details"
               tooltipPosition="top"
               (click)="purchaseOrderStore.openOrderDialog(order, true)"
               [disabled]="purchaseOrderStore.loading()"
@@ -189,7 +189,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               class="mr-2"
-              pTooltip="Editar pedido"
+              pTooltip="Edit order"
               tooltipPosition="top"
               (click)="purchaseOrderStore.openOrderDialog(order, false)"
               [disabled]="purchaseOrderStore.loading()"
@@ -199,7 +199,7 @@ import { TooltipModule } from 'primeng/tooltip';
               severity="danger"
               rounded
               outlined
-              pTooltip="Eliminar pedido"
+              pTooltip="Delete order"
               tooltipPosition="top"
               (click)="deleteOrder(order)"
               [disabled]="
@@ -217,11 +217,11 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar pedidos:</strong>
+                    <strong>Error loading orders:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="purchaseOrderStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="purchaseOrderStore.loading()"
@@ -231,7 +231,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron pedidos.</p>
+              <p>No orders found.</p>
             }
           </td>
         </tr>
@@ -254,8 +254,8 @@ export class OrderTableComponent {
 
   deleteOrder({ id }: PurchaseOrderInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar pedido',
-      message: `¿Está seguro de que desea eliminar el pedido <b>#${id}</b>?`,
+      header: 'Delete Order',
+      message: `Are you sure you want to delete order <b>#${id}</b>?`,
       accept: () => this.purchaseOrderStore.delete(id),
     });
   }

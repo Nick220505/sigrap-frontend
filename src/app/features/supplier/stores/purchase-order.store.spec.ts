@@ -212,8 +212,8 @@ describe('PurchaseOrderStore', () => {
       );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden creada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido creada correctamente`,
+        summary: 'Order created',
+        detail: `Order #${mockPurchaseOrder.id} has been created successfully`,
       });
     });
 
@@ -228,7 +228,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear orden de compra',
+        detail: 'Error creating purchase order',
       });
     });
   });
@@ -243,8 +243,8 @@ describe('PurchaseOrderStore', () => {
       );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden actualizada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido actualizada correctamente`,
+        summary: 'Order updated',
+        detail: `Order #${mockPurchaseOrder.id} has been updated successfully`,
       });
     });
 
@@ -259,7 +259,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar orden de compra',
+        detail: 'Error updating purchase order',
       });
     });
   });
@@ -271,8 +271,8 @@ describe('PurchaseOrderStore', () => {
       expect(purchaseOrderService.submitOrder).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden enviada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido enviada correctamente`,
+        summary: 'Order submitted',
+        detail: `Order #${mockPurchaseOrder.id} has been submitted successfully`,
       });
     });
 
@@ -287,7 +287,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al enviar orden de compra',
+        detail: 'Error submitting purchase order',
       });
     });
   });
@@ -299,8 +299,8 @@ describe('PurchaseOrderStore', () => {
       expect(purchaseOrderService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden eliminada',
-        detail: 'La orden de compra ha sido eliminada correctamente',
+        summary: 'Order deleted',
+        detail: 'The purchase order has been deleted successfully',
       });
     });
 
@@ -315,7 +315,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar orden de compra',
+        detail: 'Error deleting purchase order',
       });
     });
   });
@@ -328,8 +328,8 @@ describe('PurchaseOrderStore', () => {
       expect(purchaseOrderService.delete).toHaveBeenCalledTimes(3);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Órdenes eliminadas',
-        detail: 'Las órdenes seleccionadas han sido eliminadas correctamente',
+        summary: 'Orders deleted',
+        detail: 'The selected orders have been deleted successfully',
       });
     });
 
@@ -350,7 +350,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar órdenes',
+        detail: 'Error deleting orders',
       });
     });
   });
@@ -362,8 +362,8 @@ describe('PurchaseOrderStore', () => {
       expect(purchaseOrderService.confirmOrder).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden confirmada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido confirmada correctamente`,
+        summary: 'Order confirmed',
+        detail: `Order #${mockPurchaseOrder.id} has been confirmed successfully`,
       });
     });
 
@@ -378,7 +378,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al confirmar orden de compra',
+        detail: 'Error confirming purchase order',
       });
     });
   });
@@ -390,8 +390,8 @@ describe('PurchaseOrderStore', () => {
       expect(purchaseOrderService.markAsShipped).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden enviada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido marcada como enviada`,
+        summary: 'Order shipped',
+        detail: `Order #${mockPurchaseOrder.id} has been marked as shipped`,
       });
     });
 
@@ -406,7 +406,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al marcar orden como enviada',
+        detail: 'Error marking order as shipped',
       });
     });
   });
@@ -422,8 +422,8 @@ describe('PurchaseOrderStore', () => {
       );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden entregada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido marcada como entregada`,
+        summary: 'Order delivered',
+        detail: `Order #${mockPurchaseOrder.id} has been marked as delivered`,
       });
     });
 
@@ -438,7 +438,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al marcar orden como entregada',
+        detail: 'Error marking order as delivered',
       });
     });
   });
@@ -449,8 +449,8 @@ describe('PurchaseOrderStore', () => {
       expect(purchaseOrderService.cancelOrder).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Orden cancelada',
-        detail: `La orden #${mockPurchaseOrder.id} ha sido cancelada correctamente`,
+        summary: 'Order cancelled',
+        detail: `Order #${mockPurchaseOrder.id} has been cancelled successfully`,
       });
     });
     it('should handle error when canceling an order fails', () => {
@@ -462,7 +462,7 @@ describe('PurchaseOrderStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cancelar orden de compra',
+        detail: 'Error cancelling purchase order',
       });
     });
   });

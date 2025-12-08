@@ -54,11 +54,11 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
               <div
                 class="mb-4 text-3xl font-medium text-surface-900 dark:text-surface-0"
               >
-                Crear Cuenta
+                Create Account
               </div>
 
               <span class="font-medium text-muted-color">
-                Registra tus datos para comenzar
+                Enter your details to get started
               </span>
             </div>
 
@@ -75,7 +75,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                   for="name"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
                 >
-                  Nombre
+                  Full Name
                 </label>
 
                 <div class="w-full md:w-[30rem] mb-2">
@@ -86,7 +86,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                       id="name"
                       type="text"
                       formControlName="name"
-                      placeholder="Ingrese su nombre completo"
+                      placeholder="Enter your full name"
                       [class.ng-dirty]="nameControlInvalid"
                       [class.ng-invalid]="nameControlInvalid"
                       fluid
@@ -95,7 +95,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 </div>
 
                 @if (nameControlInvalid) {
-                  <small class="text-red-500">El nombre es obligatorio.</small>
+                  <small class="text-red-500">Name is required.</small>
                 }
               </div>
 
@@ -122,7 +122,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                       id="email"
                       type="text"
                       formControlName="email"
-                      placeholder="Ingrese su correo electrónico"
+                      placeholder="Enter your email"
                       [class.ng-dirty]="emailControlInvalid"
                       [class.ng-invalid]="emailControlInvalid"
                       fluid
@@ -133,11 +133,11 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 @if (emailControlInvalid) {
                   @if (registerForm.get('email')?.hasError('required')) {
                     <small class="text-red-500"
-                      >El correo electrónico es obligatorio.</small
+                      >Email is required.</small
                     >
                   } @else if (registerForm.get('email')?.hasError('email')) {
                     <small class="text-red-500"
-                      >Ingrese un correo electrónico válido.</small
+                      >Enter a valid email address.</small
                     >
                   }
                 }
@@ -147,8 +147,8 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 <app-password-field
                   id="password"
                   [control]="$any(registerForm.get('password'))"
-                  label="Contraseña"
-                  placeholder="Elija una contraseña"
+                  label="Password"
+                  placeholder="Choose a password"
                 />
               </div>
 
@@ -156,8 +156,8 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 <app-password-field
                   id="confirmPassword"
                   [control]="$any(registerForm.get('confirmPassword'))"
-                  label="Confirmar Contraseña"
-                  placeholder="Confirme su contraseña"
+                  label="Confirm Password"
+                  placeholder="Confirm your password"
                   [feedback]="false"
                 />
 
@@ -166,14 +166,14 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                   registerForm.get('confirmPassword')?.touched
                 ) {
                   <small class="text-red-500 mt-2 block"
-                    >Las contraseñas no coinciden.</small
+                    >Passwords do not match.</small
                   >
                 }
               </div>
 
               <div class="mt-8">
                 <p-button
-                  label="Registrarse"
+                  label="Sign Up"
                   type="button"
                   styleClass="w-full"
                   [loading]="authStore.loading()"
@@ -187,14 +187,14 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
 
               <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
-                  ¿Ya tienes una cuenta?
+                  Already have an account?
                 </span>
 
                 <a
                   routerLink="/iniciar-sesion"
                   class="ml-2 font-medium text-primary cursor-pointer"
                 >
-                  Inicia sesión
+                  Log in
                 </a>
               </div>
             </form>

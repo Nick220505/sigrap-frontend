@@ -14,21 +14,21 @@ import { CustomerTableComponent } from '../customer-table/customer-table.compone
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
         <p-button
-          label="Nuevo"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nuevo cliente"
+          pTooltip="Create new customer"
           tooltipPosition="top"
           (onClick)="customerStore.openCustomerDialog()"
         />
 
         <p-button
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           severity="danger"
           outlined
-          pTooltip="Eliminar clientes seleccionados"
+          pTooltip="Delete selected customers"
           tooltipPosition="top"
           [disabled]="customerTable().selectedCustomers().length === 0"
           (onClick)="deleteSelectedCustomers()"
@@ -38,12 +38,12 @@ import { CustomerTableComponent } from '../customer-table/customer-table.compone
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
           (onClick)="customerTable().dt().exportCSV()"
           [disabled]="customerStore.entities().length === 0"
-          pTooltip="Exportar clientes a CSV"
+          pTooltip="Export customers to CSV"
           tooltipPosition="top"
         />
       </ng-template>
@@ -58,9 +58,9 @@ export class CustomerToolbarComponent {
   deleteSelectedCustomers(): void {
     const customers = this.customerTable().selectedCustomers();
     this.confirmationService.confirm({
-      header: 'Eliminar clientes',
+      header: 'Delete Customers',
       message: `
-        ¿Está seguro de que desea eliminar los ${customers.length} clientes seleccionados?
+        Are you sure you want to delete the ${customers.length} selected customers?
         <ul class='mt-2 mb-0'>
           ${customers
             .map(

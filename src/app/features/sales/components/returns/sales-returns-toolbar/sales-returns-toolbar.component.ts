@@ -14,21 +14,21 @@ import { SalesReturnsTableComponent } from '../sales-returns-table/sales-returns
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="Nueva"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Registrar nueva devolución"
+          pTooltip="Register new return"
           tooltipPosition="top"
           (onClick)="saleReturnStore.openReturnDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar devoluciones seleccionadas"
+          pTooltip="Delete selected returns"
           tooltipPosition="top"
           (onClick)="deleteSelectedSaleReturns()"
           [disabled]="salesReturnsTable().selectedSaleReturns().length === 0"
@@ -37,10 +37,10 @@ import { SalesReturnsTableComponent } from '../sales-returns-table/sales-returns
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar devoluciones a CSV"
+          pTooltip="Export returns to CSV"
           tooltipPosition="top"
           (onClick)="exportCSV()"
           [disabled]="saleReturnStore.entities().length === 0"
@@ -62,11 +62,11 @@ export class SalesReturnsToolbarComponent {
     }
 
     this.confirmationService.confirm({
-      header: 'Eliminar devoluciones',
+      header: 'Delete returns',
       message: `
-          ¿Está seguro de que desea eliminar las ${selection.length} devoluciones seleccionadas?
+          Are you sure you want to delete the ${selection.length} selected returns?
           <ul class='mt-2 mb-0'>
-            ${selection.map((item) => `<li>• <b>Devolución #${item.id}</b></li>`).join('')}
+            ${selection.map((item) => `<li>• <b>Return #${item.id}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {
@@ -79,12 +79,12 @@ export class SalesReturnsToolbarComponent {
   exportCSV(): void {
     const headers = [
       'ID',
-      'Venta Original',
-      'Cliente',
-      'Empleado',
-      'Monto',
-      'Razón',
-      'Fecha',
+      'Original Sale',
+      'Customer',
+      'Employee',
+      'Amount',
+      'Reason',
+      'Date',
     ];
 
     const csvData = this.saleReturnStore
@@ -96,7 +96,7 @@ export class SalesReturnsToolbarComponent {
         item.employee?.name || 'N/A',
         item.totalReturnAmount,
         item.reason,
-        new Date(item.createdAt).toLocaleDateString('es-CO'),
+        new Date(item.createdAt).toLocaleDateString('en-US'),
       ]);
 
     const csvContent = [
@@ -117,7 +117,7 @@ export class SalesReturnsToolbarComponent {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', 'devoluciones.csv');
+    link.setAttribute('download', 'returns.csv');
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();

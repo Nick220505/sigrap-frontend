@@ -58,11 +58,11 @@ describe('ProductTableComponent', () => {
   ];
 
   const expectedColumns = [
-    { field: 'name', header: 'Nombre' },
-    { field: 'description', header: 'Descripción' },
-    { field: 'costPrice', header: 'Precio Costo' },
-    { field: 'salePrice', header: 'Precio Venta' },
-    { field: 'category.name', header: 'Categoría' },
+    { field: 'name', header: 'Name' },
+    { field: 'description', header: 'Description' },
+    { field: 'costPrice', header: 'Cost Price' },
+    { field: 'salePrice', header: 'Sale Price' },
+    { field: 'category.name', header: 'Category' },
   ];
 
   beforeEach(async () => {
@@ -300,9 +300,9 @@ describe('ProductTableComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.header).toBe('Eliminar producto');
+      expect(confirmOptions.header).toBe('Delete product');
       expect(confirmOptions.message).toBe(
-        '¿Está seguro de que desea eliminar el producto <b>Product 1</b>?',
+        'Are you sure you want to delete the product <b>Product 1</b>?',
       );
     });
 
@@ -382,7 +382,7 @@ describe('ProductTableComponent', () => {
 
       const emptyMessage = fixture.debugElement.query(By.css('tbody tr td'));
       expect(emptyMessage.nativeElement.textContent).toContain(
-        'No se encontraron productos.',
+        'No products found.',
       );
     });
   });

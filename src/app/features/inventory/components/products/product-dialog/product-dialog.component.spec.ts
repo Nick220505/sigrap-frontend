@@ -194,7 +194,7 @@ describe('ProductDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Crear Producto',
+        'Create Product',
       );
     });
 
@@ -216,7 +216,7 @@ describe('ProductDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Editar Producto',
+        'Edit Product',
       );
     });
 
@@ -502,7 +502,7 @@ describe('ProductDialogComponent', () => {
       });
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Guardar"]'),
+        By.css('p-button[label="Save"]'),
       );
       saveButton.triggerEventHandler('click', null);
 
@@ -523,7 +523,7 @@ describe('ProductDialogComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El nombre es obligatorio',
+        'Name is required',
       );
     });
 
@@ -539,7 +539,7 @@ describe('ProductDialogComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El precio de costo es obligatorio',
+        'Cost price is required',
       );
     });
 
@@ -555,7 +555,7 @@ describe('ProductDialogComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El precio de venta es obligatorio',
+        'Sale price is required',
       );
     });
 
@@ -594,7 +594,7 @@ describe('ProductDialogComponent', () => {
       fixture.detectChanges();
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Guardar"]'),
+        By.css('p-button[label="Save"]'),
       );
       expect(saveButton.componentInstance.disabled).toBeTrue();
     });
@@ -606,7 +606,7 @@ describe('ProductDialogComponent', () => {
       fixture.detectChanges();
 
       const cancelButton = fixture.debugElement.query(
-        By.css('p-button[label="Cancelar"]'),
+        By.css('p-button[label="Cancel"]'),
       );
       cancelButton.triggerEventHandler('click', null);
 
@@ -622,7 +622,7 @@ describe('ProductDialogComponent', () => {
       spyOn(component.productForm, 'markAllAsTouched');
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Guardar"]'),
+        By.css('p-button[label="Save"]'),
       );
       saveButton.triggerEventHandler('click', null);
 

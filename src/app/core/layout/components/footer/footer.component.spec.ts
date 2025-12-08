@@ -25,9 +25,8 @@ describe('FooterComponent', () => {
     const spanElement = footerElement.query(By.css('span'));
 
     expect(footerElement).toBeTruthy();
-    expect(spanElement.nativeElement.textContent).toContain('SIGRAP');
     expect(spanElement.nativeElement.textContent).toContain(
-      'Sistema Integrado de Gestión y Registro de Artículos de Papelería',
+      'Integrated Stationery Article Management and Registration System',
     );
   });
 

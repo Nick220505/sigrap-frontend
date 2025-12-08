@@ -40,12 +40,12 @@ import { SaleStore } from '../../../stores/sale.store';
     @let columns =
       [
         { field: 'id', header: 'ID' },
-        { field: 'customer', header: 'Cliente' },
-        { field: 'totalAmount', header: 'Total Base' },
-        { field: 'discountAmount', header: 'Descuento' },
-        { field: 'taxAmount', header: 'Impuesto' },
-        { field: 'finalAmount', header: 'Monto Final' },
-        { field: 'createdAt', header: 'Fecha' },
+        { field: 'customer', header: 'Customer' },
+        { field: 'totalAmount', header: 'Base Total' },
+        { field: 'discountAmount', header: 'Discount' },
+        { field: 'taxAmount', header: 'Tax' },
+        { field: 'finalAmount', header: 'Final Amount' },
+        { field: 'createdAt', header: 'Date' },
       ];
 
     <p-table
@@ -57,7 +57,7 @@ import { SaleStore } from '../../../stores/sale.store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} ventas"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} sales"
       [globalFilterFields]="[
         'customer.fullName',
         'totalAmount',
@@ -76,7 +76,7 @@ import { SaleStore } from '../../../stores/sale.store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Registro de Ventas</h5>
+            <h5 class="m-0 text-left">Sales Registry</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -89,7 +89,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -113,8 +113,8 @@ import { SaleStore } from '../../../stores/sale.store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -123,16 +123,16 @@ import { SaleStore } from '../../../stores/sale.store';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -152,7 +152,7 @@ import { SaleStore } from '../../../stores/sale.store';
                   {{
                     sale.customer
                       ? sale.customer.fullName
-                      : 'Cliente no registrado'
+                      : 'Unregistered customer'
                   }}
                 }
                 @case ('totalAmount') {
@@ -185,7 +185,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 rounded
                 outlined
                 (click)="saleStore.openSaleDialog(sale)"
-                pTooltip="Ver detalles"
+                pTooltip="View details"
                 tooltipPosition="top"
               />
 
@@ -196,7 +196,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 outlined
                 [loading]="isExporting() && currentExportId() === sale.id"
                 (click)="exportSaleToPDF(sale)"
-                pTooltip="Exportar a PDF"
+                pTooltip="Export to PDF"
                 tooltipPosition="top"
               />
 
@@ -206,7 +206,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 rounded
                 outlined
                 (click)="deleteSale(sale)"
-                pTooltip="Eliminar venta"
+                pTooltip="Delete sale"
                 tooltipPosition="top"
                 [disabled]="saleStore.loading()"
               />
@@ -222,11 +222,11 @@ import { SaleStore } from '../../../stores/sale.store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar ventas:</strong>
+                    <strong>Error loading sales:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="saleStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="saleStore.loading()"
@@ -236,7 +236,7 @@ import { SaleStore } from '../../../stores/sale.store';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron ventas.</p>
+              <p>No sales found.</p>
             }
           </td>
         </tr>
@@ -271,8 +271,8 @@ export class SalesTableComponent {
 
   deleteSale(sale: SaleInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar venta',
-      message: `¿Está seguro de que desea eliminar la venta #<b>${sale.id}</b>?`,
+      header: 'Delete Sale',
+      message: `Are you sure you want to delete sale #<b>${sale.id}</b>?`,
       accept: () => this.saleStore.delete(sale.id),
     });
   }
@@ -284,16 +284,16 @@ export class SalesTableComponent {
     container.innerHTML = `
       <div style="padding: 1rem;">
         <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center;">
-          Detalle de Venta #${sale.id}
+          Sale Detail #${sale.id}
         </h2>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
           <div>
-            <p style="font-size: 1.1rem; font-weight: bold;">Cliente:</p>
-            <p style="font-size: 1.1rem;">${sale.customer?.fullName || 'Cliente no registrado'}</p>
+            <p style="font-size: 1.1rem; font-weight: bold;">Customer:</p>
+            <p style="font-size: 1.1rem;">${sale.customer?.fullName || 'Unregistered customer'}</p>
           </div>
           <div>
-            <p style="font-size: 1.1rem; font-weight: bold;">Fecha:</p>
+            <p style="font-size: 1.1rem; font-weight: bold;">Date:</p>
             <p style="font-size: 1.1rem;">${this.datePipe.transform(sale.createdAt, 'dd/MM/yyyy HH:mm', 'UTC-5')}</p>
           </div>
         </div>
@@ -301,9 +301,9 @@ export class SalesTableComponent {
         <table style="width: 100%; margin-bottom: 2rem; border-collapse: collapse;">
           <thead>
             <tr style="background-color: #f8f9fa;">
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Producto</th>
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Cantidad</th>
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Precio Unitario</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Product</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Quantity</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Unit Price</th>
               <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Subtotal</th>
             </tr>
           </thead>
@@ -338,7 +338,7 @@ export class SalesTableComponent {
           <tfoot>
             <tr>
               <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
-                <strong>Total Base:</strong>
+                <strong>Base Total:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
                 ${this.currencyPipe.transform(sale.totalAmount, 'COP', '$', '1.0-0')}
@@ -346,7 +346,7 @@ export class SalesTableComponent {
             </tr>
             <tr>
               <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
-                <strong>Descuento:</strong>
+                <strong>Discount:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
                 ${this.currencyPipe.transform(sale.discountAmount, 'COP', '$', '1.0-0')}
@@ -354,7 +354,7 @@ export class SalesTableComponent {
             </tr>
             <tr>
               <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
-                <strong>Impuesto (19% IVA):</strong>
+                <strong>Tax (19% VAT):</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
                 ${this.currencyPipe.transform(sale.taxAmount, 'COP', '$', '1.0-0')}
@@ -362,7 +362,7 @@ export class SalesTableComponent {
             </tr>
             <tr style="background-color: #f8f9fa;">
               <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
-                <strong>Total Final:</strong>
+                <strong>Final Total:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
                 <strong>${this.currencyPipe.transform(sale.finalAmount, 'COP', '$', '1.0-0')}</strong>
@@ -418,7 +418,7 @@ export class SalesTableComponent {
       const yPosition = (pdfHeight - imgHeight) / 2;
 
       doc.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, imgHeight);
-      doc.save(`venta_${sale.id}.pdf`);
+      doc.save(`sale_${sale.id}.pdf`);
     } catch (error) {
       console.error('Error exporting sale to PDF:', error);
     } finally {

@@ -131,7 +131,7 @@ describe('CategoryDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Crear Categoría',
+        'Create Category',
       );
     });
 
@@ -150,7 +150,7 @@ describe('CategoryDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Editar Categoría',
+        'Edit Category',
       );
     });
 
@@ -385,7 +385,7 @@ describe('CategoryDialogComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El nombre es obligatorio',
+        'Name is required',
       );
     });
 

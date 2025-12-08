@@ -89,11 +89,11 @@ describe('RegisterComponent', () => {
                 [class.ng-invalid]="control().touched && control().invalid"
               />
               @if (control().touched && control().hasError('required')) {
-                <small class="text-red-500">La contraseña es obligatoria.</small>
+                <small class="text-red-500">Password is required.</small>
               } @else if (control().touched && control().hasError('pattern')) {
                 <small class="text-red-500">
-                  La contraseña debe contener al menos una mayúscula, una minúscula,
-                  un número y un carácter especial.
+                  Password must contain at least one uppercase, one lowercase,
+                  a number and a special character.
                 </small>
               }
             </div>
@@ -141,7 +141,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El nombre es obligatorio',
+        'Name is required',
       );
     });
   });
@@ -179,7 +179,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'El correo electrónico es obligatorio',
+        'Email is required',
       );
     });
 
@@ -193,7 +193,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Ingrese un correo electrónico válido',
+        'Enter a valid email',
       );
     });
   });
@@ -234,7 +234,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'La contraseña es obligatoria',
+        'Password is required',
       );
     });
 
@@ -248,7 +248,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
+        'Password must contain at least one uppercase, one lowercase, a number and a special character',
       );
     });
   });
@@ -291,7 +291,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'La contraseña es obligatoria',
+        'Password is required',
       );
     });
 
@@ -308,7 +308,7 @@ describe('RegisterComponent', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Las contraseñas no coinciden',
+        'Passwords do not match',
       );
     });
   });
@@ -364,7 +364,7 @@ describe('RegisterComponent', () => {
         By.css('a[routerLink="/iniciar-sesion"]'),
       );
       expect(loginLink).toBeTruthy();
-      expect(loginLink.nativeElement.textContent.trim()).toBe('Inicia sesión');
+      expect(loginLink.nativeElement.textContent.trim()).toBe('Log in');
     });
   });
 });

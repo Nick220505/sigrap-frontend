@@ -68,8 +68,8 @@ export const SaleStore = signalStore(
                 patchState(store, { exportFilePath: filePath });
                 messageService.add({
                   severity: 'success',
-                  summary: 'Éxito',
-                  detail: 'Reporte de ventas diarias generado correctamente',
+                  summary: 'Success',
+                  detail: 'Daily sales report generated successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -77,7 +77,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al generar el reporte de ventas diarias',
+                  detail: 'Error generating daily sales report',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -101,7 +101,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar ventas',
+                  detail: 'Error loading sales',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -135,8 +135,8 @@ export const SaleStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Venta registrada',
-                  detail: `La venta #${createdSale.id} ha sido registrada correctamente`,
+                  summary: 'Sale registered',
+                  detail: `Sale #${createdSale.id} has been registered successfully`,
                 });
               },
               error: (error: HttpErrorResponse) => {
@@ -145,15 +145,15 @@ export const SaleStore = signalStore(
                 if (error.error?.message) {
                   errorMessage = error.error.message.replace(
                     /Insufficient stock for product: (.*)/,
-                    'Stock insuficiente para el producto: $1',
+                    'Insufficient stock for product: $1',
                   );
                 } else if (error.message) {
                   errorMessage = error.message.replace(
                     /Insufficient stock for product: (.*)/,
-                    'Stock insuficiente para el producto: $1',
+                    'Insufficient stock for product: $1',
                   );
                 } else {
-                  errorMessage = 'Error al registrar venta';
+                  errorMessage = 'Error registering sale';
                 }
 
                 patchState(store, {
@@ -170,7 +170,7 @@ export const SaleStore = signalStore(
                 ) {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error de inventario',
+                    summary: 'Inventory error',
                     detail: errorMessage,
                   });
                 } else {
@@ -216,8 +216,8 @@ export const SaleStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Venta actualizada',
-                  detail: `La venta #${updatedSale.id} ha sido actualizada correctamente`,
+                  summary: 'Sale updated',
+                  detail: `Sale #${updatedSale.id} has been updated successfully`,
                 });
               },
               error: (error: HttpErrorResponse) => {
@@ -226,15 +226,15 @@ export const SaleStore = signalStore(
                 if (error.error?.message) {
                   errorMessage = error.error.message.replace(
                     /Insufficient stock for product: (.*)/,
-                    'Stock insuficiente para el producto: $1',
+                    'Insufficient stock for product: $1',
                   );
                 } else if (error.message) {
                   errorMessage = error.message.replace(
                     /Insufficient stock for product: (.*)/,
-                    'Stock insuficiente para el producto: $1',
+                    'Insufficient stock for product: $1',
                   );
                 } else {
-                  errorMessage = 'Error al actualizar venta';
+                  errorMessage = 'Error updating sale';
                 }
 
                 patchState(store, {
@@ -251,7 +251,7 @@ export const SaleStore = signalStore(
                 ) {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error de inventario',
+                    summary: 'Inventory Error',
                     detail: errorMessage,
                   });
                 } else {
@@ -283,8 +283,8 @@ export const SaleStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Venta eliminada',
-                  detail: 'La venta ha sido eliminada correctamente',
+                  summary: 'Sale deleted',
+                  detail: 'The sale has been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -292,7 +292,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar venta',
+                  detail: 'Error deleting sale',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -312,9 +312,9 @@ export const SaleStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Ventas eliminadas',
+                  summary: 'Sales deleted',
                   detail:
-                    'Las ventas seleccionadas han sido eliminadas correctamente',
+                    'The selected sales have been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -322,7 +322,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar ventas',
+                  detail: 'Error deleting sales',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -346,7 +346,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar ventas del cliente',
+                  detail: 'Error loading customer sales',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -370,7 +370,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar ventas del empleado',
+                  detail: 'Error loading employee sales',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -394,7 +394,7 @@ export const SaleStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar ventas por rango de fechas',
+                  detail: 'Error loading sales by date range',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

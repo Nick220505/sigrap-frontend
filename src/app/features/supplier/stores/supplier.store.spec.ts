@@ -115,8 +115,8 @@ describe('SupplierStore', () => {
       expect(supplierService.create).toHaveBeenCalledWith(mockSupplierData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Proveedor creado',
-        detail: `El proveedor ${mockSupplier.name} ha sido creado correctamente`,
+        summary: 'Supplier created',
+        detail: `The supplier ${mockSupplier.name} has been created successfully`,
       });
     });
 
@@ -131,7 +131,7 @@ describe('SupplierStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear proveedor',
+        detail: 'Error creating supplier',
       });
     });
   });
@@ -143,8 +143,8 @@ describe('SupplierStore', () => {
       expect(supplierService.update).toHaveBeenCalledWith(1, mockSupplierData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Proveedor actualizado',
-        detail: `El proveedor ${mockSupplier.name} ha sido actualizado correctamente`,
+        summary: 'Supplier updated',
+        detail: `The supplier ${mockSupplier.name} has been updated successfully`,
       });
     });
 
@@ -159,7 +159,7 @@ describe('SupplierStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar proveedor',
+        detail: 'Error updating supplier',
       });
     });
   });
@@ -171,8 +171,8 @@ describe('SupplierStore', () => {
       expect(supplierService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Proveedor eliminado',
-        detail: 'El proveedor ha sido eliminado correctamente',
+        summary: 'Supplier deleted',
+        detail: 'The supplier has been deleted successfully',
       });
     });
 
@@ -196,7 +196,7 @@ describe('SupplierStore', () => {
         severity: 'error',
         summary: 'Error',
         detail:
-          'No se puede eliminar el proveedor "Test Supplier" porque está siendo utilizado.',
+          'Cannot delete supplier "Test Supplier" because it is being used.',
       });
     });
   });
@@ -208,9 +208,9 @@ describe('SupplierStore', () => {
       expect(supplierService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Proveedores eliminados',
+        summary: 'Suppliers deleted',
         detail:
-          'Los proveedores seleccionados han sido eliminados correctamente',
+          'The selected suppliers have been deleted successfully',
       });
     });
 
@@ -236,7 +236,7 @@ describe('SupplierStore', () => {
         severity: 'error',
         summary: 'Error',
         detail:
-          'No se puede eliminar el proveedor "Test Supplier" porque está siendo utilizado.',
+          'Cannot delete supplier "Test Supplier" because it is being used.',
       });
     });
   });

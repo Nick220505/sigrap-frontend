@@ -86,9 +86,9 @@ describe('SupplierToolbarComponent', () => {
   });
 
   describe('Create button', () => {
-    it('should call openSupplierDialog when "Nuevo" button is clicked', () => {
+    it('should call openSupplierDialog when "New" button is clicked', () => {
       const newButton = fixture.debugElement.query(
-        By.css('p-button[label="Nuevo"]'),
+        By.css('p-button[label="New"]'),
       );
       newButton.triggerEventHandler('onClick', null);
 
@@ -102,7 +102,7 @@ describe('SupplierToolbarComponent', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       expect(deleteButton.componentInstance.disabled).toBeTrue();
     });
@@ -112,7 +112,7 @@ describe('SupplierToolbarComponent', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       expect(deleteButton.componentInstance.disabled).toBeFalse();
     });
@@ -123,7 +123,7 @@ describe('SupplierToolbarComponent', () => {
 
       spyOn(component, 'deleteSelectedSuppliers');
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       deleteButton.triggerEventHandler('onClick', null);
 
@@ -140,9 +140,9 @@ describe('SupplierToolbarComponent', () => {
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
 
-      expect(confirmOptions.header).toBe('Eliminar proveedores');
+      expect(confirmOptions.header).toBe('Delete suppliers');
       expect(confirmOptions.message).toContain(
-        '¿Está seguro de que desea eliminar los 1 proveedores seleccionados?',
+        'Are you sure you want to delete the 1 selected suppliers?',
       );
       expect(confirmOptions.message).toContain('<b>Supplier 1</b>');
     });
@@ -167,7 +167,7 @@ describe('SupplierToolbarComponent', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Exportar"]'),
+        By.css('p-button[label="Export"]'),
       );
       expect(exportButton.componentInstance.disabled).toBeTrue();
     });
@@ -177,7 +177,7 @@ describe('SupplierToolbarComponent', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Exportar"]'),
+        By.css('p-button[label="Export"]'),
       );
       expect(exportButton.componentInstance.disabled).toBeFalse();
     });
@@ -187,7 +187,7 @@ describe('SupplierToolbarComponent', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Exportar"]'),
+        By.css('p-button[label="Export"]'),
       );
       exportButton.triggerEventHandler('onClick', null);
 

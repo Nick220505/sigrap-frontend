@@ -105,7 +105,7 @@ describe('UserStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar usuarios',
+        detail: 'Error loading users',
       });
     });
   });
@@ -127,7 +127,7 @@ describe('UserStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear usuario',
+        detail: 'Error creating user',
       });
     });
   });
@@ -149,7 +149,7 @@ describe('UserStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar usuario',
+        detail: 'Error updating user',
       });
     });
   });
@@ -171,7 +171,7 @@ describe('UserStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar usuario',
+        detail: 'Error deleting user',
       });
     });
   });

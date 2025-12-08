@@ -25,7 +25,7 @@ import { Select } from 'primeng/select';
   ],
   template: `
     <p-dialog
-      header="Registrar Entrada"
+      header="Clock In"
       [visible]="attendanceStore.clockInDialogVisible()"
       (visibleChange)="
         $event
@@ -43,7 +43,7 @@ import { Select } from 'primeng/select';
           class="flex flex-col gap-2"
           [class.p-invalid]="userIdControlInvalid"
         >
-          <label for="userId" class="font-bold">Empleado</label>
+          <label for="userId" class="font-bold">Employee</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
@@ -54,7 +54,7 @@ import { Select } from 'primeng/select';
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
-              placeholder="Seleccione un empleado"
+              placeholder="Select an employee"
               [required]="true"
               [class.ng-dirty]="userIdControlInvalid"
               [class.ng-invalid]="userIdControlInvalid"
@@ -65,20 +65,20 @@ import { Select } from 'primeng/select';
             />
           </p-inputgroup>
           @if (userIdControlInvalid) {
-            <small class="text-red-500">El empleado es obligatorio.</small>
+            <small class="text-red-500">Employee is required.</small>
           }
         </div>
       </form>
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           text
           (onClick)="attendanceStore.closeClockInDialog()"
         />
         <p-button
-          label="Registrar"
+          label="Clock In"
           icon="pi pi-check"
           (onClick)="
             clockInForm.valid

@@ -84,14 +84,14 @@ interface PieChartTooltipContext {
   ],
   template: `
     <div class="p-4" id="reportContent">
-      <h2 class="text-2xl font-bold mb-4">Reportes Financieros</h2>
+      <h2 class="text-2xl font-bold mb-4">Financial Reports</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Inicial:</span
+                >Start Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -106,7 +106,7 @@ interface PieChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Final:</span
+                >End Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -124,29 +124,29 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
-              label="Exportar PDF"
+              label="Export PDF"
               icon="pi pi-file-pdf"
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
               [loading]="isExporting()"
-              pTooltip="Exportar reporte en PDF"
+              pTooltip="Export report to PDF"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Aplicar"
+              label="Apply"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Aplicar filtro de fechas"
+              pTooltip="Apply date filter"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Limpiar"
+              label="Clear"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Limpiar todos los filtros"
+              pTooltip="Clear all filters"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -156,7 +156,7 @@ interface PieChartTooltipContext {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Ingresos Totales</h3>
+            <h3 class="text-xl font-semibold mb-2">Total Revenue</h3>
             @if (isDataLoading()) {
               <p-skeleton
                 height="2rem"
@@ -173,7 +173,7 @@ interface PieChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Gastos Totales</h3>
+            <h3 class="text-xl font-semibold mb-2">Total Expenses</h3>
             @if (isDataLoading()) {
               <p-skeleton
                 height="2rem"
@@ -190,7 +190,7 @@ interface PieChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Utilidad</h3>
+            <h3 class="text-xl font-semibold mb-2">Profit</h3>
             @if (isDataLoading()) {
               <p-skeleton
                 height="2rem"
@@ -222,7 +222,7 @@ interface PieChartTooltipContext {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <p-card styleClass="h-full" header="Tendencia Mensual de Utilidad">
+        <p-card styleClass="h-full" header="Monthly Profit Trend">
           @if (isDataLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -241,7 +241,7 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Comparativa de Ingresos y Gastos">
+        <p-card styleClass="h-full" header="Revenue and Expenses Comparison">
           @if (isDataLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -261,7 +261,7 @@ interface PieChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Distribución Financiera" styleClass="mb-6">
+      <p-card header="Financial Distribution" styleClass="mb-6">
         @if (isDataLoading()) {
           <div class="flex justify-center py-8">
             <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -280,7 +280,7 @@ interface PieChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Resumen Financiero por Periodos">
+      <p-card header="Financial Summary by Period">
         @if (isDataLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -298,12 +298,12 @@ interface PieChartTooltipContext {
           >
             <ng-template pTemplate="header">
               <tr>
-                <th>Periodo</th>
-                <th>Ingresos</th>
-                <th>Gastos</th>
-                <th>Devoluciones</th>
-                <th>Utilidad</th>
-                <th>Margen de Utilidad</th>
+                <th>Period</th>
+                <th>Revenue</th>
+                <th>Expenses</th>
+                <th>Returns</th>
+                <th>Profit</th>
+                <th>Profit Margin</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-summary>
@@ -339,8 +339,7 @@ interface PieChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center p-4">
-                  No hay datos financieros disponibles para el período
-                  seleccionado.
+                  No financial data available for the selected period.
                 </td>
               </tr>
             </ng-template>
@@ -351,7 +350,7 @@ interface PieChartTooltipContext {
 
     <!-- Hidden container for PDF export -->
     <div class="p-4" id="exportContent" style="display: none;">
-      <h2 class="text-2xl font-bold mb-4">Reporte Financiero</h2>
+      <h2 class="text-2xl font-bold mb-4">Financial Report</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div class="p-4 border rounded-lg bg-white">
@@ -365,7 +364,7 @@ interface PieChartTooltipContext {
 
         <div class="p-4 border rounded-lg bg-white">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Gastos Totales</h3>
+            <h3 class="text-xl font-semibold mb-2">Total Expenses</h3>
             <span class="text-3xl font-bold text-red-600">{{
               totalExpenses() | currency: 'COP' : '$' : '1.0-0'
             }}</span>
@@ -374,7 +373,7 @@ interface PieChartTooltipContext {
 
         <div class="p-4 border rounded-lg bg-white">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Utilidad</h3>
+            <h3 class="text-xl font-semibold mb-2">Profit</h3>
             <span
               class="text-3xl font-bold"
               [ngClass]="{
@@ -399,17 +398,17 @@ interface PieChartTooltipContext {
 
       <div class="mt-6 p-4 border rounded-lg bg-white">
         <h3 class="text-xl font-semibold mb-4">
-          Resumen Financiero por Periodos
+          Financial Summary by Period
         </h3>
         <table class="w-full">
           <thead>
             <tr class="border-b">
-              <th class="p-2 text-left">Periodo</th>
-              <th class="p-2 text-right">Ingresos</th>
-              <th class="p-2 text-right">Gastos</th>
-              <th class="p-2 text-right">Devoluciones</th>
-              <th class="p-2 text-right">Utilidad</th>
-              <th class="p-2 text-right">Margen de Utilidad</th>
+              <th class="p-2 text-left">Period</th>
+              <th class="p-2 text-right">Revenue</th>
+              <th class="p-2 text-right">Expenses</th>
+              <th class="p-2 text-right">Returns</th>
+              <th class="p-2 text-right">Profit</th>
+              <th class="p-2 text-right">Profit Margin</th>
             </tr>
           </thead>
           <tbody>
@@ -650,7 +649,7 @@ export class FinancialReportComponent implements OnInit {
     if (!summaries.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Utilidad', data: [] }],
+        datasets: [{ label: 'Profit', data: [] }],
       };
     }
 
@@ -663,7 +662,7 @@ export class FinancialReportComponent implements OnInit {
       datasets: [
         {
           type: 'line',
-          label: 'Utilidad',
+          label: 'Profit',
           data: sortedData.map((item) => item.profit),
           backgroundColor: sortedData.map((item) =>
             item.profit >= 0
@@ -690,7 +689,7 @@ export class FinancialReportComponent implements OnInit {
         },
         {
           type: 'bar',
-          label: 'Devoluciones',
+          label: 'Returns',
           data: sortedData.map((item) => item.returns),
           backgroundColor: '#FF9800',
           stack: 'stack2',
@@ -705,7 +704,7 @@ export class FinancialReportComponent implements OnInit {
     if (!summaries.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Ingresos', data: [] }],
+        datasets: [{ label: 'Revenue', data: [] }],
       };
     }
 
@@ -747,14 +746,14 @@ export class FinancialReportComponent implements OnInit {
 
     return {
       labels: [
-        'Costo de Mercancía',
-        'Gastos Operativos',
-        'Devoluciones',
-        'Utilidad',
+        'Cost of Goods',
+        'Operating Expenses',
+        'Returns',
+        'Profit',
       ],
       datasets: [
         {
-          label: 'Distribución Financiera',
+          label: 'Financial Distribution',
           data: [
             costOfGoods,
             operatingExpenses,
@@ -796,7 +795,7 @@ export class FinancialReportComponent implements OnInit {
       x: {
         title: {
           display: true,
-          text: 'Mes',
+          text: 'Month',
         },
       },
     },
@@ -923,7 +922,7 @@ export class FinancialReportComponent implements OnInit {
   private formatMonthDisplay(monthKey: string): string {
     const [year, month] = monthKey.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('en-US', {
       month: 'long',
       year: 'numeric',
     });
@@ -1126,18 +1125,18 @@ export class FinancialReportComponent implements OnInit {
         0,
       );
 
-      const startStr = currentWeekStart.toLocaleDateString('es-ES', {
+      const startStr = currentWeekStart.toLocaleDateString('en-US', {
         day: '2-digit',
         month: '2-digit',
       });
-      const endStr = currentWeekEnd.toLocaleDateString('es-ES', {
+      const endStr = currentWeekEnd.toLocaleDateString('en-US', {
         day: '2-digit',
         month: '2-digit',
       });
 
       if (weekRevenue > 0 || weekExpenses > 0 || weekReturnsAmount > 0) {
         weeks.push({
-          label: `Sem ${startStr} - ${endStr}`,
+          label: `Week ${startStr} - ${endStr}`,
           revenue: weekRevenue,
           expenses: weekExpenses,
           returns: weekReturnsAmount,
@@ -1161,18 +1160,18 @@ export class FinancialReportComponent implements OnInit {
       return new Date(year, month - 1, day);
     } else {
       const monthNames = [
-        'enero',
-        'febrero',
-        'marzo',
-        'abril',
-        'mayo',
-        'junio',
-        'julio',
-        'agosto',
-        'septiembre',
-        'octubre',
-        'noviembre',
-        'diciembre',
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
       ];
 
       const parts = period.split(' ');
@@ -1294,9 +1293,9 @@ export class FinancialReportComponent implements OnInit {
         heightLeft -= pageHeight;
       }
 
-      pdf.save('reporte-financiero.pdf');
+      pdf.save('financial-report.pdf');
     } catch (error) {
-      console.error('Error al exportar el PDF:', error);
+      console.error('Error exporting PDF:', error);
     } finally {
       this.isExporting.set(false);
     }

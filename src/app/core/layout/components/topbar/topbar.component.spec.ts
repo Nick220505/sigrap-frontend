@@ -151,7 +151,7 @@ describe('TopbarComponent', () => {
     const themeButton = fixture.debugElement.queryAll(By.css('button'))[1];
 
     expect(component.themeMode()).toBe('light');
-    expect(component.getThemeTooltip()).toBe('Modo Claro');
+    expect(component.getThemeTooltip()).toBe('Light Mode');
     let themeIcon = fixture.debugElement.query(By.css('.pi-sun'));
     expect(themeIcon).toBeTruthy();
 
@@ -159,7 +159,7 @@ describe('TopbarComponent', () => {
     fixture.detectChanges();
     expect(layoutService.setThemeMode).toHaveBeenCalledWith('dark');
     expect(component.themeMode()).toBe('dark');
-    expect(component.getThemeTooltip()).toBe('Modo Oscuro');
+    expect(component.getThemeTooltip()).toBe('Dark Mode');
     themeIcon = fixture.debugElement.query(By.css('.pi-moon'));
     expect(themeIcon).toBeTruthy();
 
@@ -167,7 +167,7 @@ describe('TopbarComponent', () => {
     fixture.detectChanges();
     expect(layoutService.setThemeMode).toHaveBeenCalledWith('auto');
     expect(component.themeMode()).toBe('auto');
-    expect(component.getThemeTooltip()).toBe('Automático (Basado en hora)');
+    expect(component.getThemeTooltip()).toBe('Auto (Based on time)');
     themeIcon = fixture.debugElement.query(By.css('.pi-sync'));
     expect(themeIcon).toBeTruthy();
 
@@ -175,7 +175,7 @@ describe('TopbarComponent', () => {
     fixture.detectChanges();
     expect(layoutService.setThemeMode).toHaveBeenCalledWith('system');
     expect(component.themeMode()).toBe('system');
-    expect(component.getThemeTooltip()).toBe('Según preferencia del sistema');
+    expect(component.getThemeTooltip()).toBe('System preference');
     themeIcon = fixture.debugElement.query(By.css('.pi-desktop'));
     expect(themeIcon).toBeTruthy();
 
@@ -183,7 +183,7 @@ describe('TopbarComponent', () => {
     fixture.detectChanges();
     expect(layoutService.setThemeMode).toHaveBeenCalledWith('light');
     expect(component.themeMode()).toBe('light');
-    expect(component.getThemeTooltip()).toBe('Modo Claro');
+    expect(component.getThemeTooltip()).toBe('Light Mode');
     themeIcon = fixture.debugElement.query(By.css('.pi-sun'));
     expect(themeIcon).toBeTruthy();
   });
@@ -191,7 +191,7 @@ describe('TopbarComponent', () => {
   it('should toggle user menu visibility on user button click', fakeAsync(() => {
     expect(component.userMenuVisible()).toBeFalse();
     const userButton = fixture.debugElement.query(
-      By.css('button[pTooltip="Perfil"]'),
+      By.css('button[pTooltip="Profile"]'),
     );
 
     userButton.triggerEventHandler('click', new MouseEvent('click'));

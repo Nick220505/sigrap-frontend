@@ -149,8 +149,8 @@ describe('ScheduleStore', () => {
       expect(scheduleService.create).toHaveBeenCalledWith(mockScheduleData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Horario creado',
-        detail: 'El horario ha sido creado correctamente',
+        summary: 'Schedule created',
+        detail: 'The schedule has been created successfully',
       });
       expect(store.dialogVisible()).toBeFalse();
     });
@@ -166,7 +166,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear horario',
+        detail: 'Error creating schedule',
       });
     });
   });
@@ -178,8 +178,8 @@ describe('ScheduleStore', () => {
       expect(scheduleService.update).toHaveBeenCalledWith(1, mockScheduleData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Horario actualizado',
-        detail: 'El horario ha sido actualizado correctamente',
+        summary: 'Schedule updated',
+        detail: 'The schedule has been updated successfully',
       });
       expect(store.dialogVisible()).toBeFalse();
     });
@@ -195,7 +195,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar horario',
+        detail: 'Error updating schedule',
       });
     });
   });
@@ -207,8 +207,8 @@ describe('ScheduleStore', () => {
       expect(scheduleService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Horario eliminado',
-        detail: 'El horario ha sido eliminado correctamente',
+        summary: 'Schedule deleted',
+        detail: 'The schedule has been deleted successfully',
       });
     });
 
@@ -223,7 +223,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar horario',
+        detail: 'Error deleting schedule',
       });
     });
   });
@@ -235,8 +235,8 @@ describe('ScheduleStore', () => {
       expect(scheduleService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Horarios eliminados',
-        detail: 'Los horarios seleccionados han sido eliminados correctamente',
+        summary: 'Schedules deleted',
+        detail: 'The selected schedules have been deleted successfully',
       });
     });
 
@@ -251,7 +251,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar horarios',
+        detail: 'Error deleting schedules',
       });
     });
   });

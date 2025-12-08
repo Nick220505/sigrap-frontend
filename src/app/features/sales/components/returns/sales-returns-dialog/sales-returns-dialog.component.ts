@@ -66,7 +66,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
     >
       <form [formGroup]="returnForm" class="flex flex-col gap-4 pt-4">
         <div class="flex flex-col gap-2">
-          <label for="originalSaleId" class="font-bold">Venta Original</label>
+          <label for="originalSaleId" class="font-bold">Original Sale</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-shopping-cart"></i>
@@ -77,7 +77,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
               [options]="saleStore.entities()"
               optionLabel="id"
               optionValue="id"
-              placeholder="Seleccionar Venta Original"
+              placeholder="Select Original Sale"
               (onChange)="onOriginalSaleChange($event.value)"
               [filter]="true"
               styleClass="w-full"
@@ -89,7 +89,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
         @if (selectedOriginalSale(); as originalSale) {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
-              <label for="customerName" class="font-bold">Cliente</label>
+              <label for="customerName" class="font-bold">Customer</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user"></i>
@@ -105,7 +105,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
             </div>
             <div class="flex flex-col gap-2">
               <label for="employeeName" class="font-bold"
-                >Empleado (Venta Original)</label
+                >Employee (Original Sale)</label
               >
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -124,7 +124,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
 
           <div class="flex flex-col gap-2">
             <label for="reason" class="font-bold"
-              >Razón de la Devolución <span class="text-red-500">*</span></label
+              >Return Reason <span class="text-red-500">*</span></label
             >
             <p-inputgroup>
               <p-inputgroup-addon>
@@ -141,7 +141,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
                     returnForm.get('reason')?.invalid &&
                     returnForm.get('reason')?.touched,
                 }"
-                placeholder="Ingrese el motivo detallado de la devolución..."
+                placeholder="Enter the detailed reason for the return..."
               ></textarea>
             </p-inputgroup>
             @if (
@@ -150,16 +150,16 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
             ) {
               <small class="p-error">
                 @if (returnForm.get('reason')?.hasError('required')) {
-                  La razón de devolución es obligatoria.
+                  Return reason is required.
                 } @else if (returnForm.get('reason')?.hasError('minlength')) {
-                  La razón debe tener al menos 5 caracteres.
+                  Reason must have at least 5 characters.
                 }
               </small>
             }
           </div>
 
           <div class="flex flex-col gap-2">
-            <h3 class="font-bold text-lg m-0">Productos a Devolver</h3>
+            <h3 class="font-bold text-lg m-0">Products to Return</h3>
             <div formArrayName="items">
               <p-table
                 [value]="returnItemsArray.controls"
@@ -167,11 +167,11 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
               >
                 <ng-template pTemplate="header">
                   <tr>
-                    <th>Producto</th>
-                    <th>Precio Original</th>
-                    <th>Cant. Comprada</th>
-                    <th>Cant. a Devolver</th>
-                    <th>Subtotal Devolución</th>
+                    <th>Product</th>
+                    <th>Original Price</th>
+                    <th>Qty. Purchased</th>
+                    <th>Qty. to Return</th>
+                    <th>Return Subtotal</th>
                   </tr>
                 </ng-template>
                 <ng-template
@@ -224,7 +224,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
                 <ng-template pTemplate="footer">
                   <tr>
                     <td colspan="4" class="text-right font-bold">
-                      Total Devolución:
+                      Total Return:
                     </td>
                     <td class="font-bold text-xl">
                       {{
@@ -242,14 +242,14 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           styleClass="p-button-text"
           (click)="saleReturnStore.closeReturnDialog()"
         />
         @if (!viewMode()) {
           <p-button
-            label="Guardar"
+            label="Save"
             icon="pi pi-check"
             (click)="saveReturn()"
             [disabled]="
@@ -291,7 +291,7 @@ export class SalesReturnsDialogComponent {
     () => this.saleReturnStore.selectedSaleReturn() !== null,
   );
   readonly dialogHeader = computed(() =>
-    this.viewMode() ? 'Detalles de Devolución' : 'Nueva Devolución',
+    this.viewMode() ? 'Return Details' : 'New Return',
   );
 
   constructor() {
@@ -347,7 +347,7 @@ export class SalesReturnsDialogComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: `Venta original con ID ${currentSaleReturn.originalSaleId} no encontrada.`,
+              detail: `Original sale with ID ${currentSaleReturn.originalSaleId} not found.`,
             });
             this.saleReturnStore.closeReturnDialog();
           }
@@ -413,8 +413,8 @@ export class SalesReturnsDialogComponent {
       this.updateTotalReturnAmount();
       this.messageService.add({
         severity: 'warn',
-        summary: 'Advertencia',
-        detail: `Venta original con ID ${saleId} no encontrada en la lista local. Asegúrese que esté cargada.`,
+        summary: 'Warning',
+        detail: `Original sale with ID ${saleId} not found in local list. Make sure it is loaded.`,
       });
     }
   }
@@ -477,7 +477,7 @@ export class SalesReturnsDialogComponent {
   getProductName(productId: number): string {
     return (
       this.productStore.entities().find((p) => p.id === productId)?.name ??
-      'Desconocido'
+      'Unknown'
     );
   }
 
@@ -498,8 +498,8 @@ export class SalesReturnsDialogComponent {
     if (this.returnForm.invalid) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Formulario inválido. Revise los campos.',
+        summary: 'Warning',
+        detail: 'Invalid form. Please check the fields.',
       });
       return;
     }
@@ -509,7 +509,7 @@ export class SalesReturnsDialogComponent {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'No se ha seleccionado una venta original válida.',
+        detail: 'No valid original sale selected.',
       });
       return;
     }
@@ -534,9 +534,9 @@ export class SalesReturnsDialogComponent {
     if (saleReturnData.items.length === 0) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Advertencia',
+        summary: 'Warning',
         detail:
-          'Debe especificar una cantidad mayor a cero para al menos un artículo a devolver.',
+          'You must specify a quantity greater than zero for at least one item to return.',
       });
       return;
     }

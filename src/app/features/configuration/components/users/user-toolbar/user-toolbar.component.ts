@@ -13,21 +13,21 @@ import { UserTableComponent } from '../user-table/user-table.component';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="Nuevo"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nuevo usuario"
+          pTooltip="Create new user"
           tooltipPosition="top"
           (onClick)="userStore.openUserDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar usuarios seleccionados"
+          pTooltip="Delete selected users"
           tooltipPosition="top"
           (onClick)="deleteSelectedUsers()"
           [disabled]="userTable().selectedUsers().length === 0"
@@ -36,10 +36,10 @@ import { UserTableComponent } from '../user-table/user-table.component';
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar usuarios a CSV"
+          pTooltip="Export users to CSV"
           tooltipPosition="top"
           (onClick)="userTable().dt().exportCSV()"
           [disabled]="userStore.usersCount() === 0"
@@ -57,9 +57,9 @@ export class UserToolbarComponent {
   deleteSelectedUsers(): void {
     const users = this.userTable().selectedUsers();
     this.confirmationService.confirm({
-      header: 'Eliminar usuarios',
+      header: 'Delete Users',
       message: `
-          ¿Está seguro de que desea eliminar los ${users.length} usuarios seleccionados?
+          Are you sure you want to delete the ${users.length} selected users?
           <ul class='mt-2 mb-0'>
             ${users.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
           </ul>

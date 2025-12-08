@@ -36,10 +36,10 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
   template: `
     @let columns =
       [
-        { field: 'timestamp', header: 'Fecha' },
-        { field: 'username', header: 'Usuario' },
-        { field: 'action', header: 'Acción' },
-        { field: 'entityName', header: 'Entidad' },
+        { field: 'timestamp', header: 'Date' },
+        { field: 'username', header: 'User' },
+        { field: 'action', header: 'Action' },
+        { field: 'entityName', header: 'Entity' },
       ];
 
     <p-table
@@ -58,7 +58,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Registro de Auditoría</h5>
+            <h5 class="m-0 text-left">Audit Log</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -71,7 +71,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -91,8 +91,8 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -148,11 +148,11 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar registros de auditoría:</strong>
+                    <strong>Error loading audit logs:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="auditLogStore.findAll({})"
                         styleClass="p-button-sm"
                         [loading]="auditLogStore.loading()"
@@ -167,7 +167,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
                   class="pi pi-info-circle text-3xl text-gray-400 dark:text-gray-500 mb-2"
                 ></i>
                 <span class="text-gray-400 dark:text-gray-500"
-                  >No se encontraron registros de auditoría.</span
+                  >No audit logs found.</span
                 >
               </div>
             }
@@ -181,7 +181,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
       [totalRecords]="auditLogStore.totalRecords()"
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
       (onPageChange)="onPageChange($event)"
       styleClass="mt-3"
     ></p-paginator>
@@ -232,7 +232,7 @@ export class AuditTableComponent {
         endDate: endDateStr,
       });
     } else {
-      console.warn('Debe seleccionar ambas fechas');
+      console.warn('You must select both dates');
     }
   }
 
@@ -252,19 +252,19 @@ export class AuditTableComponent {
 
       const data = this.auditLogStore.entities();
       if (!data || data.length === 0) {
-        console.warn('No hay datos para exportar');
+        console.warn('No data to export');
         this.isExporting.set(false);
         return;
       }
 
-      const headers = ['Fecha', 'Usuario', 'Acción', 'Entidad'];
+      const headers = ['Date', 'User', 'Action', 'Entity'];
       let csvContent = headers.join(',') + '\n';
 
       data.forEach((audit) => {
         if (!audit) return;
 
         const timestamp = audit.timestamp
-          ? new Date(audit.timestamp).toLocaleString('es-ES')
+          ? new Date(audit.timestamp).toLocaleString('en-US')
           : '';
 
         const row = [
@@ -287,9 +287,9 @@ export class AuditTableComponent {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('Error al exportar a CSV:', error);
+      console.error('Error exporting to CSV:', error);
       alert(
-        'Hubo un error al exportar el archivo CSV. Por favor, inténtelo de nuevo.',
+        'There was an error exporting the CSV file. Please try again.',
       );
     } finally {
       this.isExporting.set(false);
@@ -321,7 +321,7 @@ export class AuditTableComponent {
       pdf.setFontSize(16);
       pdf.setTextColor(0, 0, 0);
       pdf.text(
-        'Registro de Auditoría',
+        'Audit Log',
         pdf.internal.pageSize.getWidth() / 2,
         15,
         { align: 'center' },
@@ -449,7 +449,7 @@ export class AuditTableComponent {
         pdf.setFontSize(8);
         pdf.setTextColor(128, 128, 128);
         pdf.text(
-          `Página ${i + 1} de ${currentPage}`,
+          `Page ${i + 1} of ${currentPage}`,
           pdf.internal.pageSize.getWidth() / 2,
           pdf.internal.pageSize.getHeight() - 10,
           { align: 'center' },
@@ -459,7 +459,7 @@ export class AuditTableComponent {
       pdf.save('auditoria.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Hubo un error al generar el PDF. Por favor, inténtelo de nuevo.');
+      alert('There was an error generating the PDF. Please try again.');
     } finally {
       this.isExporting.set(false);
     }

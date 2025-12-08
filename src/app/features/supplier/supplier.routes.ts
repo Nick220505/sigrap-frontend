@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 
 export const supplierRoutes: Routes = [
   {
-    path: 'catalogo',
+    path: 'catalog',
     loadComponent: () =>
       import('./components/catalog/catalog.component').then(
         (m) => m.CatalogComponent,
       ),
   },
   {
-    path: 'pedidos',
+    path: 'orders',
     loadComponent: () =>
       import('./components/orders/orders.component').then(
         (m) => m.OrdersComponent,
@@ -18,10 +18,10 @@ export const supplierRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'catalogo',
+    redirectTo: 'catalog',
   },
   {
     path: '**',
-    redirectTo: '/no-encontrado',
+    redirectTo: '/not-found',
   },
 ];

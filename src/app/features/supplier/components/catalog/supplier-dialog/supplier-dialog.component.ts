@@ -35,13 +35,13 @@ import { TextareaModule } from 'primeng/textarea';
       [style]="{ width: '90vw', maxWidth: '800px' }"
       [header]="
         supplierStore.selectedSupplier()
-          ? 'Editar Proveedor'
-          : 'Nuevo Proveedor'
+          ? 'Edit Supplier'
+          : 'New Supplier'
       "
       modal
     >
       <form [formGroup]="supplierForm" class="flex flex-col gap-4 py-4">
-        <h3 class="text-lg font-semibold mb-2">Información Básica</h3>
+        <h3 class="text-lg font-semibold mb-2">Basic Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
             @let nameControlInvalid =
@@ -52,7 +52,7 @@ import { TextareaModule } from 'primeng/textarea';
               class="flex flex-col gap-2"
               [class.p-invalid]="nameControlInvalid"
             >
-              <label for="name" class="font-bold">Nombre*</label>
+              <label for="name" class="font-bold">Name*</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-building"></i>
@@ -62,7 +62,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   formControlName="name"
-                  placeholder="Nombre del proveedor"
+                  placeholder="Supplier name"
                   [class.ng-dirty]="nameControlInvalid"
                   [class.ng-invalid]="nameControlInvalid"
                   required
@@ -70,14 +70,14 @@ import { TextareaModule } from 'primeng/textarea';
                 />
               </p-inputgroup>
               @if (nameControlInvalid) {
-                <small class="text-red-500">El nombre es requerido.</small>
+                <small class="text-red-500">Name is required.</small>
               }
             </div>
           </div>
 
           <div class="col-span-1 md:col-span-2">
             <div class="flex flex-col gap-2">
-              <label for="address" class="font-bold">Dirección</label>
+              <label for="address" class="font-bold">Address</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-map-marker"></i>
@@ -87,7 +87,7 @@ import { TextareaModule } from 'primeng/textarea';
                   pTextarea
                   formControlName="address"
                   [rows]="2"
-                  placeholder="Dirección completa"
+                  placeholder="Full address"
                   class="w-full"
                 ></textarea>
               </p-inputgroup>
@@ -95,12 +95,12 @@ import { TextareaModule } from 'primeng/textarea';
           </div>
         </div>
 
-        <h3 class="text-lg font-semibold mt-4 mb-2">Información de Contacto</h3>
+        <h3 class="text-lg font-semibold mt-4 mb-2">Contact Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
               <label for="contactPerson" class="font-bold"
-                >Persona de contacto</label
+                >Contact Person</label
               >
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -111,7 +111,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   formControlName="contactPerson"
-                  placeholder="Nombre del contacto"
+                  placeholder="Contact name"
                   fluid
                 />
               </p-inputgroup>
@@ -137,21 +137,21 @@ import { TextareaModule } from 'primeng/textarea';
                   type="email"
                   pInputText
                   formControlName="email"
-                  placeholder="correo@ejemplo.com"
+                  placeholder="email@example.com"
                   [class.ng-dirty]="emailControlInvalid"
                   [class.ng-invalid]="emailControlInvalid"
                   fluid
                 />
               </p-inputgroup>
               @if (emailControlInvalid) {
-                <small class="text-red-500">Email inválido.</small>
+                <small class="text-red-500">Invalid email.</small>
               }
             </div>
           </div>
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="phone" class="font-bold">Teléfono</label>
+              <label for="phone" class="font-bold">Phone</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-phone"></i>
@@ -161,7 +161,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   formControlName="phone"
-                  placeholder="Número de teléfono"
+                  placeholder="Phone number"
                   fluid
                 />
               </p-inputgroup>
@@ -171,7 +171,7 @@ import { TextareaModule } from 'primeng/textarea';
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
               <label for="alternativePhone" class="font-bold"
-                >Teléfono alternativo</label
+                >Alternative Phone</label
               >
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -182,7 +182,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   formControlName="alternativePhone"
-                  placeholder="Teléfono alternativo"
+                  placeholder="Alternative phone"
                   fluid
                 />
               </p-inputgroup>
@@ -191,7 +191,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="website" class="font-bold">Sitio web</label>
+              <label for="website" class="font-bold">Website</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-globe"></i>
@@ -201,7 +201,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   formControlName="website"
-                  placeholder="www.ejemplo.com"
+                  placeholder="www.example.com"
                   fluid
                 />
               </p-inputgroup>
@@ -209,12 +209,12 @@ import { TextareaModule } from 'primeng/textarea';
           </div>
         </div>
 
-        <h3 class="text-lg font-semibold mt-4 mb-2">Información Comercial</h3>
+        <h3 class="text-lg font-semibold mt-4 mb-2">Business Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
             <div class="flex flex-col gap-2">
               <label for="productsProvided" class="font-bold"
-                >Productos/Servicios</label
+                >Products/Services</label
               >
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -225,7 +225,7 @@ import { TextareaModule } from 'primeng/textarea';
                   pTextarea
                   formControlName="productsProvided"
                   [rows]="2"
-                  placeholder="Describa los productos o servicios que ofrece"
+                  placeholder="Describe the products or services offered"
                   class="w-full"
                 ></textarea>
               </p-inputgroup>
@@ -235,7 +235,7 @@ import { TextareaModule } from 'primeng/textarea';
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
               <label for="paymentTerms" class="font-bold"
-                >Términos de pago</label
+                >Payment Terms</label
               >
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -246,7 +246,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   formControlName="paymentTerms"
-                  placeholder="Términos de pago"
+                  placeholder="Payment terms"
                   fluid
                 />
               </p-inputgroup>
@@ -256,7 +256,7 @@ import { TextareaModule } from 'primeng/textarea';
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
               <label for="averageDeliveryTime" class="font-bold"
-                >Tiempo de entrega (días)</label
+                >Delivery Time (days)</label
               >
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -268,7 +268,7 @@ import { TextareaModule } from 'primeng/textarea';
                   [showButtons]="true"
                   [min]="1"
                   buttonLayout="horizontal"
-                  placeholder="Días"
+                  placeholder="Days"
                   styleClass="w-full"
                 />
               </p-inputgroup>
@@ -280,13 +280,13 @@ import { TextareaModule } from 'primeng/textarea';
       <ng-template pTemplate="footer">
         <div class="flex justify-end gap-2">
           <p-button
-            label="Cancelar"
+            label="Cancel"
             icon="pi pi-times"
             text
             (onClick)="supplierStore.closeSupplierDialog()"
           />
           <p-button
-            label="Guardar"
+            label="Save"
             icon="pi pi-check"
             [disabled]="supplierForm.invalid"
             (onClick)="saveSupplier()"

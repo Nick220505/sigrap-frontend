@@ -89,7 +89,7 @@ describe('PasswordFieldComponent', () => {
     const errorText = passwordFieldElement.querySelector('.text-red-500');
     expect(errorText).toBeTruthy();
     expect(errorText?.textContent?.trim()).toContain(
-      'La contraseña es obligatoria',
+      'Password is required',
     );
   }));
 
@@ -109,7 +109,7 @@ describe('PasswordFieldComponent', () => {
     const errorText = passwordFieldElement.querySelector('.text-red-500');
     expect(errorText).toBeTruthy();
     expect(errorText?.textContent?.trim()).toContain(
-      'La contraseña debe cumplir todos los requisitos',
+      'Password must meet all requirements',
     );
 
     control.setValue('StrongP@ss123');

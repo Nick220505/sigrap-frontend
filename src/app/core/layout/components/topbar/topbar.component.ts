@@ -136,14 +136,14 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                 type="button"
                 class="layout-topbar-action flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)] max-lg:w-full max-lg:h-auto max-lg:justify-start max-lg:rounded-[var(--content-border-radius)] max-lg:py-2 max-lg:px-4"
                 (click)="toggleUserMenu($event)"
-                pTooltip="Perfil"
+                pTooltip="Profile"
                 tooltipPosition="bottom"
               >
                 <i
                   class="pi pi-user text-[1.25rem] max-lg:text-base max-lg:mr-2"
                 ></i>
                 <span class="hidden max-lg:block max-lg:font-medium"
-                  >Perfil</span
+                  >Profile</span
                 >
               </button>
 
@@ -166,7 +166,7 @@ import { ConfiguratorComponent } from './floating-configurator/configurator/conf
                     class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--surface-hover)] flex items-center gap-2 text-[var(--text-color)]"
                     (click)="confirmLogout()"
                   >
-                    <i class="pi pi-sign-out"></i> Cerrar sesión
+                    <i class="pi pi-sign-out"></i> Sign Out
                   </button>
                 </div>
               }
@@ -207,13 +207,13 @@ export class TopbarComponent {
   getThemeTooltip(): string {
     switch (this.themeMode()) {
       case 'auto':
-        return 'Automático (Basado en hora)';
+        return 'Auto (Based on time)';
       case 'dark':
-        return 'Modo Oscuro';
+        return 'Dark Mode';
       case 'system':
-        return 'Según preferencia del sistema';
+        return 'System preference';
       default:
-        return 'Modo Claro';
+        return 'Light Mode';
     }
   }
 
@@ -240,8 +240,8 @@ export class TopbarComponent {
 
   confirmLogout(): void {
     this.confirmationService.confirm({
-      header: 'Confirmar Cierre de Sesión',
-      message: '¿Está seguro de que desea cerrar sesión?',
+      header: 'Confirm Sign Out',
+      message: 'Are you sure you want to sign out?',
       accept: this.authStore.logout,
     });
   }

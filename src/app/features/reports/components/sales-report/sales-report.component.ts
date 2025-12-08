@@ -89,14 +89,14 @@ interface PieChartTooltipContext {
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Tendencia de Ventas</h2>
+      <h2 class="text-2xl font-bold mb-4">Sales Trend</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Inicial:</span
+                >Start Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -111,7 +111,7 @@ interface PieChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Final:</span
+                >End Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -129,29 +129,29 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
-              label="Exportar PDF"
+              label="Export PDF"
               icon="pi pi-file-pdf"
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
               [loading]="isExporting()"
-              pTooltip="Exportar reporte en PDF"
+              pTooltip="Export report to PDF"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Aplicar"
+              label="Apply"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Aplicar filtro de fechas"
+              pTooltip="Apply date filter"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Limpiar"
+              label="Clear"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Limpiar todos los filtros"
+              pTooltip="Clear all filters"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -159,7 +159,7 @@ interface PieChartTooltipContext {
       </p-toolbar>
 
       <div class="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <p-card styleClass="h-full" header="Ventas Diarias">
+        <p-card styleClass="h-full" header="Daily Sales">
           @if (saleStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -178,7 +178,7 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Ventas Semanales">
+        <p-card styleClass="h-full" header="Weekly Sales">
           @if (saleStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -197,7 +197,7 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Ventas Mensuales">
+        <p-card styleClass="h-full" header="Monthly Sales">
           @if (saleStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -217,7 +217,7 @@ interface PieChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Distribución de Ventas" styleClass="mb-6">
+      <p-card header="Sales Distribution" styleClass="mb-6">
         @if (saleStore.loading()) {
           <div class="flex justify-center py-8">
             <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -249,7 +249,7 @@ interface PieChartTooltipContext {
       </p-card>
 
       <div id="exportContent" style="display: none;">
-        <p-card header="Productos Más Vendidos">
+        <p-card header="Top Selling Products">
           <p-table
             [value]="topProductsData()"
             [tableStyle]="{ 'min-width': '50rem' }"
@@ -257,11 +257,11 @@ interface PieChartTooltipContext {
           >
             <ng-template pTemplate="header">
               <tr>
-                <th style="width: 5%">Posición</th>
-                <th style="width: 40%">Producto</th>
-                <th style="width: 15%">Cantidad Vendida</th>
-                <th style="width: 20%">Monto Total</th>
-                <th style="width: 20%">% del Total</th>
+                <th style="width: 5%">Position</th>
+                <th style="width: 40%">Product</th>
+                <th style="width: 15%">Qty. Sold</th>
+                <th style="width: 20%">Total Amount</th>
+                <th style="width: 20%">% of Total</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product let-i="rowIndex">
@@ -346,7 +346,7 @@ export class SalesReportComponent implements OnInit {
     if (!sales.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Ventas diarias', data: [] }],
+        datasets: [{ label: 'Daily sales', data: [] }],
       };
     }
 
@@ -359,7 +359,7 @@ export class SalesReportComponent implements OnInit {
       labels: sortedData.map((item) => this.formatDate(new Date(item.date))),
       datasets: [
         {
-          label: 'Monto de ventas',
+          label: 'Sales amount',
           data: sortedData.map((item) => item.totalAmount),
           backgroundColor: '#42A5F5',
         },
@@ -372,7 +372,7 @@ export class SalesReportComponent implements OnInit {
     if (!sales.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Ventas semanales', data: [] }],
+        datasets: [{ label: 'Weekly sales', data: [] }],
       };
     }
 
@@ -386,7 +386,7 @@ export class SalesReportComponent implements OnInit {
       labels: sortedData.map((item) => item.displayLabel),
       datasets: [
         {
-          label: 'Monto de ventas',
+          label: 'Sales amount',
           data: sortedData.map((item) => item.totalAmount),
           backgroundColor: '#66BB6A',
         },
@@ -399,7 +399,7 @@ export class SalesReportComponent implements OnInit {
     if (!sales.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Ventas mensuales', data: [] }],
+        datasets: [{ label: 'Monthly sales', data: [] }],
       };
     }
 
@@ -414,7 +414,7 @@ export class SalesReportComponent implements OnInit {
       labels: sortedData.map((item) => this.formatMonthDisplay(item.month)),
       datasets: [
         {
-          label: 'Monto de ventas',
+          label: 'Sales amount',
           data: sortedData.map((item) => item.totalAmount),
           backgroundColor: '#FFA726',
         },
@@ -429,7 +429,7 @@ export class SalesReportComponent implements OnInit {
       labels: topProducts.map((item) => this.truncateName(item.product.name)),
       datasets: [
         {
-          label: 'Distribución por producto',
+          label: 'Distribution by product',
           data: topProducts.map((item) => item.totalAmount),
           backgroundColor: [
             '#FF6384',
@@ -450,7 +450,7 @@ export class SalesReportComponent implements OnInit {
       labels: topProducts.map((item) => this.truncateName(item.product.name)),
       datasets: [
         {
-          label: 'Cantidad vendida',
+          label: 'Qty. sold',
           data: topProducts.map((item) => item.quantity),
           backgroundColor: [
             '#FF6347',
@@ -471,7 +471,7 @@ export class SalesReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Ventas Diarias',
+        text: 'Daily Sales',
         font: {
           size: 16,
         },
@@ -491,13 +491,13 @@ export class SalesReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto ($)',
+          text: 'Amount ($)',
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Fecha',
+          text: 'Date',
         },
       },
     },
@@ -510,7 +510,7 @@ export class SalesReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Ventas Semanales',
+        text: 'Weekly Sales',
         font: {
           size: 16,
         },
@@ -530,13 +530,13 @@ export class SalesReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto ($)',
+          text: 'Amount ($)',
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Semana',
+          text: 'Week',
         },
       },
     },
@@ -549,7 +549,7 @@ export class SalesReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Ventas Mensuales',
+        text: 'Monthly Sales',
         font: {
           size: 16,
         },
@@ -569,13 +569,13 @@ export class SalesReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto ($)',
+          text: 'Amount ($)',
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Mes',
+          text: 'Month',
         },
       },
     },
@@ -588,7 +588,7 @@ export class SalesReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Distribución por Producto (Top 5)',
+        text: 'Distribution by Product (Top 5)',
         font: {
           size: 16,
         },
@@ -619,7 +619,7 @@ export class SalesReportComponent implements OnInit {
       },
       title: {
         display: true,
-        text: 'Cantidad de Productos Vendidos',
+        text: 'Qty. of Products Sold',
         font: {
           size: 16,
         },
@@ -634,7 +634,7 @@ export class SalesReportComponent implements OnInit {
             );
             const percentage =
               total > 0 ? ((value * 100) / total).toFixed(2) : '0';
-            return `${context.label || ''}: ${value} unidades (${percentage}%)`;
+            return `${context.label || ''}: ${value} units (${percentage}%)`;
           },
         },
       },
@@ -685,7 +685,7 @@ export class SalesReportComponent implements OnInit {
   }
 
   private formatDate(date: Date): string {
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('en-US', {
       day: '2-digit',
       month: '2-digit',
     });
@@ -694,7 +694,7 @@ export class SalesReportComponent implements OnInit {
   private formatMonthDisplay(month: string): string {
     const [year, monthNum] = month.split('-');
     const date = new Date(parseInt(year), parseInt(monthNum) - 1, 1);
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('en-US', {
       month: 'short',
       year: 'numeric',
     });
@@ -931,9 +931,9 @@ export class SalesReportComponent implements OnInit {
         heightLeft -= pageHeight;
       }
 
-      pdf.save('reporte-ventas.pdf');
+      pdf.save('sales-report.pdf');
     } catch (error) {
-      console.error('Error al exportar el PDF:', error);
+      console.error('Error exporting PDF:', error);
       throw error;
     } finally {
       this.isExporting.set(false);

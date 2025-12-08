@@ -212,8 +212,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Producto creado',
-        detail: 'El producto New Product ha sido creado correctamente',
+        summary: 'Product created',
+        detail: 'The product New Product has been created successfully',
       }),
     );
   }));
@@ -257,8 +257,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Producto actualizado',
-        detail: 'El producto Updated Product ha sido actualizado correctamente',
+        summary: 'Product updated',
+        detail: 'The product Updated Product has been updated successfully',
       }),
     );
   }));
@@ -287,8 +287,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Producto eliminado',
-        detail: 'El producto ha sido eliminado correctamente',
+        summary: 'Product deleted',
+        detail: 'The product has been deleted successfully',
       }),
     );
   }));
@@ -327,8 +327,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Productos eliminados',
-        detail: 'Los productos seleccionados han sido eliminados correctamente',
+        summary: 'Products deleted',
+        detail: 'The selected products have been deleted successfully',
       }),
     );
   }));
@@ -366,7 +366,7 @@ describe('Products Feature Integration', () => {
       jasmine.objectContaining({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear producto',
+        detail: 'Error creating product',
       }),
     );
 
@@ -419,8 +419,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       jasmine.objectContaining({
         severity: 'success',
-        summary: 'Producto creado',
-        detail: 'El producto Another Product ha sido creado correctamente',
+        summary: 'Product created',
+        detail: 'The product Another Product has been created successfully',
       }),
     );
   }));

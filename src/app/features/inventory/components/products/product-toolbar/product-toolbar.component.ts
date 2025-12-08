@@ -13,21 +13,21 @@ import { ProductTableComponent } from '../product-table/product-table.component'
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="Nuevo"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nuevo producto"
+          pTooltip="Create new product"
           tooltipPosition="top"
           (onClick)="productStore.openProductDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar productos seleccionados"
+          pTooltip="Delete selected products"
           tooltipPosition="top"
           (onClick)="deleteSelectedProducts()"
           [disabled]="productTable().selectedProducts().length === 0"
@@ -36,10 +36,10 @@ import { ProductTableComponent } from '../product-table/product-table.component'
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar productos a CSV"
+          pTooltip="Export products to CSV"
           tooltipPosition="top"
           (onClick)="productTable().dt().exportCSV()"
           [disabled]="productStore.productsCount() === 0"
@@ -57,9 +57,9 @@ export class ProductToolbarComponent {
   deleteSelectedProducts(): void {
     const products = this.productTable().selectedProducts();
     this.confirmationService.confirm({
-      header: 'Eliminar productos',
+      header: 'Delete products',
       message: `
-          ¿Está seguro de que desea eliminar los ${products.length} productos seleccionados?
+          Are you sure you want to delete the ${products.length} selected products?
           <ul class='mt-2 mb-0'>
             ${products.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
           </ul>

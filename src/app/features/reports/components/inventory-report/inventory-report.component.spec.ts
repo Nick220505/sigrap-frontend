@@ -58,7 +58,7 @@ describe('InventoryReportComponent', () => {
     const titleElement = fixture.debugElement.query(By.css('h2'));
     expect(titleElement).toBeTruthy();
     expect(titleElement.nativeElement.textContent).toBe(
-      'Estado del Inventario',
+      'Inventory Status',
     );
   });
 

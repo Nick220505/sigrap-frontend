@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 
 export const employeeRoutes: Routes = [
   {
-    path: 'horarios',
+    path: 'schedules',
     loadComponent: () =>
       import('./components/employee-schedule/employee-schedule.component').then(
         (m) => m.EmployeeScheduleComponent,
       ),
   },
   {
-    path: 'asistencia',
+    path: 'attendance',
     loadComponent: () =>
       import(
         './components/employee-attendance/employee-attendance.component'
@@ -18,10 +18,10 @@ export const employeeRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'horarios',
+    redirectTo: 'schedules',
   },
   {
     path: '**',
-    redirectTo: '/no-encontrado',
+    redirectTo: '/not-found',
   },
 ];

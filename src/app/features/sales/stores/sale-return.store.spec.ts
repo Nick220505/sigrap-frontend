@@ -141,8 +141,8 @@ describe('SaleReturnStore', () => {
       expect(saleReturnService.create).toHaveBeenCalledWith(mockSaleReturnData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Devolución creada correctamente.',
+        summary: 'Success',
+        detail: 'Return created successfully.',
       });
       expect(store.dialogVisible()).toBeFalse();
     });
@@ -175,8 +175,8 @@ describe('SaleReturnStore', () => {
       );
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Devolución actualizada correctamente.',
+        summary: 'Success',
+        detail: 'Return updated successfully.',
       });
       expect(store.dialogVisible()).toBeFalse();
     });
@@ -206,8 +206,8 @@ describe('SaleReturnStore', () => {
       expect(saleReturnService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Devolución eliminada correctamente.',
+        summary: 'Success',
+        detail: 'Return deleted successfully.',
       });
     });
 
@@ -236,8 +236,8 @@ describe('SaleReturnStore', () => {
       expect(saleReturnService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Devoluciones eliminadas correctamente.',
+        summary: 'Success',
+        detail: 'Returns deleted successfully.',
       });
     });
 

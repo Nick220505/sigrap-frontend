@@ -127,7 +127,7 @@ describe('LoginComponent', () => {
     const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
     expect(errorMessage).toBeTruthy();
     expect(errorMessage.nativeElement.textContent).toContain(
-      'El correo electrónico es obligatorio',
+      'Email is required',
     );
   });
 
@@ -141,7 +141,7 @@ describe('LoginComponent', () => {
     const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
     expect(errorMessage).toBeTruthy();
     expect(errorMessage.nativeElement.textContent).toContain(
-      'Ingrese un correo electrónico válido',
+      'Enter a valid email',
     );
   });
 
@@ -155,7 +155,7 @@ describe('LoginComponent', () => {
     const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
     expect(errorMessage).toBeTruthy();
     expect(errorMessage.nativeElement.textContent).toContain(
-      'La contraseña es obligatoria',
+      'Password is required',
     );
   });
 
@@ -200,11 +200,11 @@ describe('LoginComponent', () => {
 
   it('should contain link to registration page', () => {
     const registrationLink = fixture.debugElement.query(
-      By.css('a[routerLink="/registro"]'),
+      By.css('a[routerLink="/register"]'),
     );
     expect(registrationLink).toBeTruthy();
     expect(registrationLink.nativeElement.textContent.trim()).toBe(
-      'Regístrese',
+      'Register',
     );
   });
 });

@@ -75,8 +75,8 @@ export const ProductStore = signalStore(
                 patchState(store, addEntity(createdProduct));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Producto creado',
-                  detail: `El producto ${createdProduct.name} ha sido creado correctamente`,
+                  summary: 'Product created',
+                  detail: `The product ${createdProduct.name} has been created successfully`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -84,7 +84,7 @@ export const ProductStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al crear producto',
+                  detail: 'Error creating product',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -106,8 +106,8 @@ export const ProductStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Producto actualizado',
-                  detail: `El producto ${updatedProduct.name} ha sido actualizado correctamente`,
+                  summary: 'Product updated',
+                  detail: `The product ${updatedProduct.name} has been updated successfully`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -115,7 +115,7 @@ export const ProductStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar producto',
+                  detail: 'Error updating product',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -134,8 +134,8 @@ export const ProductStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Producto eliminado',
-                  detail: 'El producto ha sido eliminado correctamente',
+                  summary: 'Product deleted',
+                  detail: 'The product has been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -143,7 +143,7 @@ export const ProductStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar producto',
+                  detail: 'Error deleting product',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -162,9 +162,8 @@ export const ProductStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Productos eliminados',
-                  detail:
-                    'Los productos seleccionados han sido eliminados correctamente',
+                  summary: 'Products deleted',
+                  detail: 'The selected products have been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -172,7 +171,7 @@ export const ProductStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar productos',
+                  detail: 'Error deleting products',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

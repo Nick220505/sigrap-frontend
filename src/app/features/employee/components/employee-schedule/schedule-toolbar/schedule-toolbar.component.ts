@@ -14,21 +14,21 @@ import { ScheduleTableComponent } from '../schedule-table/schedule-table.compone
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
         <p-button
-          label="Nuevo"
+          label="New"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nuevo horario"
+          pTooltip="Create new schedule"
           tooltipPosition="top"
           (onClick)="scheduleStore.openScheduleDialog()"
         />
 
         <p-button
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           severity="danger"
           outlined
-          pTooltip="Eliminar horarios seleccionados"
+          pTooltip="Delete selected schedules"
           tooltipPosition="top"
           [disabled]="scheduleTable().selectedSchedules().length === 0"
           (onClick)="deleteSelectedSchedules()"
@@ -38,12 +38,12 @@ import { ScheduleTableComponent } from '../schedule-table/schedule-table.compone
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
           (onClick)="scheduleTable().dt().exportCSV()"
           [disabled]="scheduleStore.entities().length === 0"
-          pTooltip="Exportar horarios a CSV"
+          pTooltip="Export schedules to CSV"
           tooltipPosition="top"
         />
       </ng-template>
@@ -58,9 +58,9 @@ export class ScheduleToolbarComponent {
   deleteSelectedSchedules(): void {
     const schedules = this.scheduleTable().selectedSchedules();
     this.confirmationService.confirm({
-      header: 'Eliminar horarios',
+      header: 'Delete Schedules',
       message: `
-        ¿Está seguro de que desea eliminar los ${schedules.length} horarios seleccionados?
+        Are you sure you want to delete the ${schedules.length} selected schedules?
         <ul class='mt-2 mb-0'>
           ${schedules
             .map(

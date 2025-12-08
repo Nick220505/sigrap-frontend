@@ -74,14 +74,14 @@ interface ChartTooltipContext {
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Rendimiento de Empleados</h2>
+      <h2 class="text-2xl font-bold mb-4">Employee Performance</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template pTemplate="start">
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Inicial:</span
+                >Start Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -96,7 +96,7 @@ interface ChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Fecha Final:</span
+                >End Date:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -114,29 +114,29 @@ interface ChartTooltipContext {
         <ng-template pTemplate="end">
           <div class="flex gap-2">
             <p-button
-              label="Exportar PDF"
+              label="Export PDF"
               icon="pi pi-file-pdf"
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
               [loading]="isExporting()"
-              pTooltip="Exportar reporte en PDF"
+              pTooltip="Export report to PDF"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Aplicar"
+              label="Apply"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Aplicar filtro de fechas"
+              pTooltip="Apply date filter"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Limpiar"
+              label="Clear"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Limpiar todos los filtros"
+              pTooltip="Clear all filters"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -146,7 +146,7 @@ interface ChartTooltipContext {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Total de Ventas</h3>
+            <h3 class="text-xl font-semibold mb-2">Total Sales</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -163,7 +163,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Ventas Realizadas</h3>
+            <h3 class="text-xl font-semibold mb-2">Sales Made</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -172,7 +172,7 @@ interface ChartTooltipContext {
               ></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-indigo-600"
-                >{{ totalSalesCount() }} ventas</span
+                >{{ totalSalesCount() }} sales</span
               >
             }
           </div>
@@ -180,7 +180,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Valor Promedio</h3>
+            <h3 class="text-xl font-semibold mb-2">Average Value</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -197,7 +197,7 @@ interface ChartTooltipContext {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <p-card styleClass="h-full" header="Ventas por Empleado">
+        <p-card styleClass="h-full" header="Sales by Employee">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -216,7 +216,7 @@ interface ChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Rendimiento por Empleado">
+        <p-card styleClass="h-full" header="Performance by Employee">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -236,7 +236,7 @@ interface ChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Rendimiento de Empleados">
+      <p-card header="Employee Performance">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -257,25 +257,25 @@ interface ChartTooltipContext {
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="employee.name">
-                  Empleado <p-sortIcon field="employee.name"></p-sortIcon>
+                  Employee <p-sortIcon field="employee.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="salesCount">
-                  Ventas <p-sortIcon field="salesCount"></p-sortIcon>
+                  Sales <p-sortIcon field="salesCount"></p-sortIcon>
                 </th>
                 <th pSortableColumn="totalSalesAmount">
-                  Total Ventas
+                  Total Sales
                   <p-sortIcon field="totalSalesAmount"></p-sortIcon>
                 </th>
                 <th pSortableColumn="averageSaleValue">
-                  Valor Promedio
+                  Average Value
                   <p-sortIcon field="averageSaleValue"></p-sortIcon>
                 </th>
                 <th pSortableColumn="scheduledHours">
-                  Horas Programadas
+                  Scheduled Hours
                   <p-sortIcon field="scheduledHours"></p-sortIcon>
                 </th>
                 <th pSortableColumn="productivityIndex">
-                  Índice de Productividad
+                  Productivity Index
                   <p-sortIcon field="productivityIndex"></p-sortIcon>
                 </th>
               </tr>
@@ -317,8 +317,7 @@ interface ChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center p-4">
-                  No hay datos de empleados disponibles para el período
-                  seleccionado.
+                  No employee data available for the selected period.
                 </td>
               </tr>
             </ng-template>
@@ -327,26 +326,26 @@ interface ChartTooltipContext {
       </p-card>
 
       <div class="p-4" id="exportContent" style="display: none;">
-        <h2 class="text-2xl font-bold mb-4">Rendimiento de Empleados</h2>
+      <h2 class="text-2xl font-bold mb-4">Employee Performance</h2>
 
         <div class="mb-6 border rounded-lg bg-white">
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
             <div class="flex flex-col items-center border rounded-lg p-4">
-              <h3 class="text-xl font-semibold mb-2">Total de Ventas</h3>
+              <h3 class="text-xl font-semibold mb-2">Total Sales</h3>
               <span class="text-3xl font-bold text-blue-600">
                 {{ totalSalesAmount() | currency: 'COP' : '$' : '1.0-0' }}
               </span>
             </div>
 
             <div class="flex flex-col items-center border rounded-lg p-4">
-              <h3 class="text-xl font-semibold mb-2">Ventas Realizadas</h3>
+              <h3 class="text-xl font-semibold mb-2">Sales Made</h3>
               <span class="text-3xl font-bold text-indigo-600">
-                {{ totalSalesCount() }} ventas
+                {{ totalSalesCount() }} sales
               </span>
             </div>
 
             <div class="flex flex-col items-center border rounded-lg p-4">
-              <h3 class="text-xl font-semibold mb-2">Valor Promedio</h3>
+              <h3 class="text-xl font-semibold mb-2">Average Value</h3>
               <span class="text-3xl font-bold text-green-600">
                 {{ averageSaleValue() | currency: 'COP' : '$' : '1.0-0' }}
               </span>
@@ -355,7 +354,7 @@ interface ChartTooltipContext {
         </div>
 
         <div class="border rounded-lg bg-white p-4">
-          <h3 class="text-xl font-semibold mb-4">Rendimiento de Empleados</h3>
+          <h3 class="text-xl font-semibold mb-4">Employee Performance</h3>
           <table
             class="w-full border-collapse"
             style="border: 1px solid #dee2e6;"
@@ -365,32 +364,32 @@ interface ChartTooltipContext {
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Empleado
+                  Employee
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Ventas
+                  Sales
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Total Ventas
+                  Total Sales
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Valor Promedio
+                  Average Value
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Horas Programadas
+                  Scheduled Hours
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Índice de Productividad
+                  Productivity Index
                 </th>
               </tr>
             </thead>
@@ -448,8 +447,7 @@ interface ChartTooltipContext {
                     class="text-center p-4"
                     style="border: 1px solid #dee2e6;"
                   >
-                    No hay datos de empleados disponibles para el período
-                    seleccionado.
+                    No employee data available for the selected period.
                   </td>
                 </tr>
               }
@@ -670,7 +668,7 @@ export class EmployeesReportComponent implements OnInit {
       labels: topEmployees.map((emp) => this.truncateName(emp.employee.name)),
       datasets: [
         {
-          label: 'Total de Ventas',
+          label: 'Total Sales',
           data: topEmployees.map((emp) => emp.totalSalesAmount),
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
         },
@@ -693,7 +691,7 @@ export class EmployeesReportComponent implements OnInit {
     }
 
     return {
-      labels: ['Ventas', 'Total ($)', 'Promedio/Venta', 'Productividad'],
+      labels: ['Sales', 'Total ($)', 'Avg/Sale', 'Productivity'],
       datasets: topEmployees.map((emp, index) => {
         const maxSalesCount = Math.max(
           ...employees.map((e) => e.salesCount),
@@ -764,13 +762,13 @@ export class EmployeesReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto Total de Ventas (COP)',
+          text: 'Total Sales Amount (COP)',
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Empleado',
+          text: 'Employee',
         },
       },
     },
@@ -909,9 +907,9 @@ export class EmployeesReportComponent implements OnInit {
         heightLeft -= pageHeight;
       }
 
-      pdf.save('reporte-empleados.pdf');
+      pdf.save('employees-report.pdf');
     } catch (error) {
-      console.error('Error al exportar el PDF:', error);
+      console.error('Error exporting PDF:', error);
     } finally {
       this.isExporting.set(false);
     }

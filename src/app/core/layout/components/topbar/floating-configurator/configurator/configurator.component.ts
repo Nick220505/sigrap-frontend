@@ -49,7 +49,7 @@ declare interface SurfacesType {
   template: `
     <div class="flex flex-col gap-4">
       <div>
-        <span class="text-sm text-muted-color font-semibold">Primario</span>
+        <span class="text-sm text-muted-color font-semibold">Primary</span>
 
         <div class="pt-2 flex gap-2 flex-wrap justify-start">
           @for (primaryColor of primaryColors(); track primaryColor.name) {
@@ -76,7 +76,7 @@ declare interface SurfacesType {
       </div>
 
       <div>
-        <span class="text-sm text-muted-color font-semibold">Superficie</span>
+        <span class="text-sm text-muted-color font-semibold">Surface</span>
 
         <div class="pt-2 flex gap-2 flex-wrap justify-start">
           @for (surface of surfaces; track surface.name) {
@@ -107,7 +107,7 @@ declare interface SurfacesType {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-sm text-muted-color font-semibold">Preajustes</span>
+        <span class="text-sm text-muted-color font-semibold">Presets</span>
 
         <p-selectbutton
           [options]="presets"
@@ -120,7 +120,7 @@ declare interface SurfacesType {
 
       @if (showMenuModeButton()) {
         <div class="flex flex-col gap-2">
-          <span class="text-sm text-muted-color font-semibold">Modo Menú</span>
+          <span class="text-sm text-muted-color font-semibold">Menu Mode</span>
 
           <p-selectbutton
             [ngModel]="menuMode()"
@@ -154,8 +154,8 @@ export class ConfiguratorComponent implements OnInit {
   readonly showMenuModeButton = signal(!this.router.url.includes('auth'));
 
   readonly menuModeOptions = [
-    { label: 'Estático', value: 'static' },
-    { label: 'Superpuesto', value: 'overlay' },
+    { label: 'Static', value: 'static' },
+    { label: 'Overlay', value: 'overlay' },
   ];
 
   readonly surfaces: SurfacesType[] = [

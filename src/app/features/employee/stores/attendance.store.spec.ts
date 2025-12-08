@@ -127,8 +127,8 @@ describe('AttendanceStore', () => {
       expect(attendanceService.clockIn).toHaveBeenCalledWith(mockClockInData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Entrada registrada',
-        detail: 'La entrada ha sido registrada correctamente',
+        summary: 'Clock-in recorded',
+        detail: 'The clock-in has been recorded successfully',
       });
       expect(store.clockInDialogVisible()).toBeFalse();
     });
@@ -144,7 +144,7 @@ describe('AttendanceStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al registrar entrada',
+        detail: 'Error recording clock-in',
       });
     });
   });
@@ -156,8 +156,8 @@ describe('AttendanceStore', () => {
       expect(attendanceService.clockOut).toHaveBeenCalledWith(mockClockOutData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Salida registrada',
-        detail: 'La salida ha sido registrada correctamente',
+        summary: 'Clock-out recorded',
+        detail: 'The clock-out has been recorded successfully',
       });
     });
 
@@ -172,7 +172,7 @@ describe('AttendanceStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al registrar salida',
+        detail: 'Error recording clock-out',
       });
     });
   });

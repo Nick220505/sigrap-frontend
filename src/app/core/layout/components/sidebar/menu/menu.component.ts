@@ -35,127 +35,127 @@ export class MenuComponent {
 
   readonly allMenuItems = signal<MenuItem[]>([
     {
-      label: 'PRINCIPAL',
+      label: 'MAIN',
       items: [
         {
-          label: 'Panel Principal',
+          label: 'Dashboard',
           icon: 'pi pi-fw pi-home',
           routerLink: ['/'],
         },
       ],
     },
     {
-      label: 'CONFIGURACIÓN',
+      label: 'SETTINGS',
       items: [
         {
-          label: 'Usuarios',
+          label: 'Users',
           icon: 'pi pi-fw pi-users',
-          routerLink: ['/configuracion/usuarios'],
+          routerLink: ['/configuration/users'],
         },
         {
-          label: 'Auditoría',
+          label: 'Audit Logs',
           icon: 'pi pi-fw pi-shield',
-          routerLink: ['/configuracion/auditoria'],
+          routerLink: ['/configuration/audit'],
         },
       ],
     },
     {
-      label: 'EMPLEADOS',
+      label: 'EMPLOYEES',
       items: [
         {
-          label: 'Horarios',
+          label: 'Schedules',
           icon: 'pi pi-fw pi-calendar',
-          routerLink: ['/empleados/horarios'],
+          routerLink: ['/employees/schedules'],
         },
         {
-          label: 'Asistencia',
+          label: 'Attendance',
           icon: 'pi pi-fw pi-eye',
-          routerLink: ['/empleados/asistencia'],
+          routerLink: ['/employees/attendance'],
         },
       ],
     },
     {
-      label: 'PROVEEDORES',
+      label: 'SUPPLIERS',
       items: [
         {
-          label: 'Catálogo',
+          label: 'Catalog',
           icon: 'pi pi-fw pi-book',
-          routerLink: ['/proveedores/catalogo'],
+          routerLink: ['/suppliers/catalog'],
         },
         {
-          label: 'Pedidos',
+          label: 'Purchase Orders',
           icon: 'pi pi-fw pi-send',
-          routerLink: ['/proveedores/pedidos'],
+          routerLink: ['/suppliers/orders'],
         },
       ],
     },
     {
-      label: 'INVENTARIO',
+      label: 'INVENTORY',
       items: [
         {
-          label: 'Categorías',
+          label: 'Categories',
           icon: 'pi pi-fw pi-tags',
-          routerLink: ['/inventario/categorias'],
+          routerLink: ['/inventory/categories'],
         },
         {
-          label: 'Productos',
+          label: 'Products',
           icon: 'pi pi-fw pi-box',
-          routerLink: ['/inventario/productos'],
+          routerLink: ['/inventory/products'],
         },
       ],
     },
     {
-      label: 'CLIENTES',
+      label: 'CUSTOMERS',
       items: [
         {
-          label: 'Registro',
+          label: 'Registry',
           icon: 'pi pi-fw pi-user-plus',
-          routerLink: ['/clientes/registro'],
+          routerLink: ['/customers/register'],
         },
       ],
     },
     {
-      label: 'VENTAS',
+      label: 'SALES',
       items: [
         {
-          label: 'Registrar Venta',
+          label: 'Create Sale',
           icon: 'pi pi-fw pi-shopping-cart',
-          routerLink: ['/ventas/registrar'],
+          routerLink: ['/sales/register'],
         },
         {
-          label: 'Devoluciones',
+          label: 'Returns',
           icon: 'pi pi-fw pi-refresh',
-          routerLink: ['/ventas/devoluciones'],
+          routerLink: ['/sales/returns'],
         },
       ],
     },
     {
-      label: 'REPORTES',
+      label: 'REPORTS',
       items: [
         {
-          label: 'Ventas',
+          label: 'Sales',
           icon: 'pi pi-fw pi-chart-bar',
-          routerLink: ['/reportes/ventas'],
+          routerLink: ['/reports/sales'],
         },
         {
-          label: 'Inventario',
+          label: 'Inventory',
           icon: 'pi pi-fw pi-list',
-          routerLink: ['/reportes/inventario'],
+          routerLink: ['/reports/inventory'],
         },
         {
-          label: 'Clientes',
+          label: 'Customers',
           icon: 'pi pi-fw pi-users',
-          routerLink: ['/reportes/clientes'],
+          routerLink: ['/reports/customers'],
         },
         {
-          label: 'Empleados',
+          label: 'Employees',
           icon: 'pi pi-fw pi-id-card',
-          routerLink: ['/reportes/empleados'],
+          routerLink: ['/reports/employees'],
         },
         {
-          label: 'Financieros',
+          label: 'Financial',
           icon: 'pi pi-fw pi-dollar',
-          routerLink: ['/reportes/financieros'],
+          routerLink: ['/reports/financial'],
         },
       ],
     },
@@ -164,7 +164,7 @@ export class MenuComponent {
   readonly filteredMenuItems = computed(() => {
     const user = this.authStore.user() as UserInfo | null;
     if (user && user.role === UserRole.EMPLOYEE) {
-      const disallowedLabels = ['CONFIGURACIÓN', 'PROVEEDORES'];
+      const disallowedLabels = ['SETTINGS', 'SUPPLIERS'];
       return this.allMenuItems().filter(
         (menuGroup) => !disallowedLabels.includes(menuGroup.label!),
       );

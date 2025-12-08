@@ -123,7 +123,7 @@ describe('SalesReturnsToolbarComponent', () => {
   describe('Create button', () => {
     it('should call openReturnDialog when clicked', () => {
       const createButton = fixture.debugElement.query(
-        By.css('p-button[label="Nueva"]'),
+        By.css('p-button[label="New"]'),
       );
       createButton.triggerEventHandler('onClick', null);
 
@@ -137,7 +137,7 @@ describe('SalesReturnsToolbarComponent', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       expect(deleteButton.componentInstance.disabled).toBeTrue();
     });
@@ -147,7 +147,7 @@ describe('SalesReturnsToolbarComponent', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       expect(deleteButton.componentInstance.disabled).toBeFalse();
     });
@@ -158,7 +158,7 @@ describe('SalesReturnsToolbarComponent', () => {
 
       spyOn(component, 'deleteSelectedSaleReturns');
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       deleteButton.triggerEventHandler('onClick', null);
 
@@ -172,10 +172,10 @@ describe('SalesReturnsToolbarComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.header).toBe('Eliminar devoluciones');
-      expect(confirmOptions.message).toContain('1 devoluciones seleccionadas');
+      expect(confirmOptions.header).toBe('Delete returns');
+      expect(confirmOptions.message).toContain('the 1 selected returns');
       expect(confirmOptions.message).toContain(
-        `<b>Devolución #${mockSaleReturn.id}</b>`,
+        `<b>Return #${mockSaleReturn.id}</b>`,
       );
     });
 
@@ -199,7 +199,7 @@ describe('SalesReturnsToolbarComponent', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Exportar"]'),
+        By.css('p-button[label="Export"]'),
       );
       expect(exportButton.componentInstance.disabled).toBeTrue();
     });
@@ -209,7 +209,7 @@ describe('SalesReturnsToolbarComponent', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Exportar"]'),
+        By.css('p-button[label="Export"]'),
       );
       expect(exportButton.componentInstance.disabled).toBeFalse();
     });

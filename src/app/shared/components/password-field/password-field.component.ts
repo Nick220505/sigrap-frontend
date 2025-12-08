@@ -27,7 +27,7 @@ import { PasswordModule } from 'primeng/password';
       >
         @if (feedback()) {
           <ng-template pTemplate="header">
-            <div class="font-semibold text-xm mb-4">Elija una contraseña</div>
+            <div class="font-semibold text-xm mb-4">Choose a password</div>
           </ng-template>
           <ng-template pTemplate="footer">
             <p-divider />
@@ -40,7 +40,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasMinLength(),
                   }"
                 ></i>
-                Mínimo 8 caracteres
+                Minimum 8 characters
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -50,7 +50,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasLowercase(),
                   }"
                 ></i>
-                Al menos una minúscula
+                At least one lowercase letter
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -60,7 +60,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasUppercase(),
                   }"
                 ></i>
-                Al menos una mayúscula
+                At least one uppercase letter
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -70,7 +70,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasNumber(),
                   }"
                 ></i>
-                Al menos un número
+                At least one number
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -80,7 +80,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasSpecialChar(),
                   }"
                 ></i>
-                Al menos un carácter especial
+                At least one special character
               </li>
             </ul>
           </ng-template>
@@ -90,9 +90,9 @@ import { PasswordModule } from 'primeng/password';
       @if (showError()) {
         <small class="text-red-500">
           @if (control().hasError('required')) {
-            La contraseña es obligatoria.
+            Password is required.
           } @else if (control().hasError('pattern')) {
-            La contraseña debe cumplir todos los requisitos.
+            Password must meet all requirements.
           }
         </small>
       }
@@ -101,8 +101,8 @@ import { PasswordModule } from 'primeng/password';
 })
 export class PasswordFieldComponent {
   readonly id = input.required<string>();
-  readonly label = input<string>('Contraseña');
-  readonly placeholder = input<string>('Ingrese la contraseña');
+  readonly label = input<string>('Password');
+  readonly placeholder = input<string>('Enter password');
   readonly control = input.required<FormControl>();
   readonly feedback = input<boolean>(true);
   readonly required = input<boolean>(true);

@@ -76,8 +76,8 @@ export const CategoryStore = signalStore(
                 patchState(store, addEntity(createdCategory));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Categoría creada',
-                  detail: `La categoría ${createdCategory.name} ha sido creada correctamente`,
+                  summary: 'Category created',
+                  detail: `Category ${createdCategory.name} has been created successfully`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -85,7 +85,7 @@ export const CategoryStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al crear categoría',
+                  detail: 'Error creating category',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -107,8 +107,8 @@ export const CategoryStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Categoría actualizada',
-                  detail: `La categoría ${updatedCategory.name} ha sido actualizada correctamente`,
+                  summary: 'Category updated',
+                  detail: `Category ${updatedCategory.name} has been updated successfully`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -116,7 +116,7 @@ export const CategoryStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar categoría',
+                  detail: 'Error updating category',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -135,8 +135,8 @@ export const CategoryStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Categoría eliminada',
-                  detail: 'La categoría ha sido eliminada correctamente',
+                  summary: 'Category deleted',
+                  detail: 'The category has been deleted successfully',
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -150,13 +150,13 @@ export const CategoryStore = signalStore(
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: `No se puede eliminar la categoría "${category?.name}" porque está siendo utilizada por un producto.`,
+                    detail: `Cannot delete category "${category?.name}" because it is being used by a product.`,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al eliminar categoría',
+                    detail: 'Error deleting category',
                   });
                 }
               },
@@ -176,9 +176,8 @@ export const CategoryStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Categorías eliminadas',
-                  detail:
-                    'Las categorías seleccionadas han sido eliminadas correctamente',
+                  summary: 'Categories deleted',
+                  detail: 'The selected categories have been deleted successfully',
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -202,18 +201,18 @@ export const CategoryStore = signalStore(
                   } else if (categoryId !== undefined) {
                     categoryName = `ID ${categoryId}`;
                   } else {
-                    categoryName = 'desconocida';
+                    categoryName = 'unknown';
                   }
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: `No se puede eliminar la categoría "${categoryName}" porque está siendo utilizada por un producto.`,
+                    detail: `Cannot delete category "${categoryName}" because it is being used by a product.`,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al eliminar categorías',
+                    detail: 'Error deleting categories',
                   });
                 }
               },

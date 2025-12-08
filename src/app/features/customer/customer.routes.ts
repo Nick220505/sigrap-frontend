@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 export const customerRoutes: Routes = [
   {
-    path: 'registro',
+    path: 'register',
     loadComponent: () =>
       import('./components/register/customer-register.component').then(
         (m) => m.CustomerRegisterComponent,
@@ -11,10 +11,10 @@ export const customerRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'registro',
+    redirectTo: 'register',
   },
   {
     path: '**',
-    redirectTo: '/no-encontrado',
+    redirectTo: '/not-found',
   },
 ];

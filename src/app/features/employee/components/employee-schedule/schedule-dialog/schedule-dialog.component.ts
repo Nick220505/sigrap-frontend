@@ -30,7 +30,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
   template: `
     <p-dialog
       [header]="
-        scheduleStore.selectedSchedule() ? 'Editar Horario' : 'Nuevo Horario'
+        scheduleStore.selectedSchedule() ? 'Edit Schedule' : 'New Schedule'
       "
       [visible]="scheduleStore.dialogVisible()"
       (visibleChange)="
@@ -51,7 +51,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
           class="flex flex-col gap-2"
           [class.p-invalid]="userIdControlInvalid"
         >
-          <label for="userId" class="font-bold">Empleado</label>
+          <label for="userId" class="font-bold">Employee</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
@@ -62,7 +62,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
-              placeholder="Seleccione un empleado"
+              placeholder="Select an employee"
               [required]="true"
               [class.ng-dirty]="userIdControlInvalid"
               [class.ng-invalid]="userIdControlInvalid"
@@ -73,7 +73,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             />
           </p-inputgroup>
           @if (userIdControlInvalid) {
-            <small class="text-red-500">El empleado es obligatorio.</small>
+            <small class="text-red-500">Employee is required.</small>
           }
         </div>
 
@@ -85,7 +85,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             class="flex flex-col gap-2"
             [class.p-invalid]="dayControlInvalid"
           >
-            <label for="day" class="font-bold">Día de la Semana</label>
+            <label for="day" class="font-bold">Day of Week</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-calendar"></i>
@@ -94,17 +94,17 @@ import { ScheduleStore } from '../../../stores/schedule.store';
                 id="day"
                 formControlName="day"
                 [options]="[
-                  { label: 'Lunes', value: 'Lunes' },
-                  { label: 'Martes', value: 'Martes' },
-                  { label: 'Miércoles', value: 'Miércoles' },
-                  { label: 'Jueves', value: 'Jueves' },
-                  { label: 'Viernes', value: 'Viernes' },
-                  { label: 'Sábado', value: 'Sábado' },
-                  { label: 'Domingo', value: 'Domingo' },
+                  { label: 'Monday', value: 'Monday' },
+                  { label: 'Tuesday', value: 'Tuesday' },
+                  { label: 'Wednesday', value: 'Wednesday' },
+                  { label: 'Thursday', value: 'Thursday' },
+                  { label: 'Friday', value: 'Friday' },
+                  { label: 'Saturday', value: 'Saturday' },
+                  { label: 'Sunday', value: 'Sunday' },
                 ]"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="Seleccione un día"
+                placeholder="Select a day"
                 [required]="true"
                 [class.ng-dirty]="dayControlInvalid"
                 [class.ng-invalid]="dayControlInvalid"
@@ -115,7 +115,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             </p-inputgroup>
             @if (dayControlInvalid) {
               <small class="text-red-500">
-                El día de la semana es obligatorio.
+                Day of week is required.
               </small>
             }
           </div>
@@ -127,7 +127,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             class="flex flex-col gap-2"
             [class.p-invalid]="typeControlInvalid"
           >
-            <label for="type" class="font-bold">Tipo de Horario</label>
+            <label for="type" class="font-bold">Schedule Type</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-briefcase"></i>
@@ -137,12 +137,12 @@ import { ScheduleStore } from '../../../stores/schedule.store';
                 formControlName="type"
                 [options]="[
                   { label: 'Regular', value: 'Regular' },
-                  { label: 'Horas Extra', value: 'Horas Extra' },
-                  { label: 'Festivo', value: 'Festivo' },
+                  { label: 'Overtime', value: 'Horas Extra' },
+                  { label: 'Holiday', value: 'Festivo' },
                 ]"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="Seleccione un tipo"
+                placeholder="Select a type"
                 [required]="true"
                 [class.ng-dirty]="typeControlInvalid"
                 [class.ng-invalid]="typeControlInvalid"
@@ -152,7 +152,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             </p-inputgroup>
             @if (typeControlInvalid) {
               <small class="text-red-500">
-                El tipo de horario es obligatorio.
+                Schedule type is required.
               </small>
             }
           </div>
@@ -166,7 +166,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             class="flex flex-col gap-2"
             [class.p-invalid]="startTimeControlInvalid"
           >
-            <label for="startTime" class="font-bold">Hora de Inicio</label>
+            <label for="startTime" class="font-bold">Start Time</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-clock"></i>
@@ -184,7 +184,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             </p-inputgroup>
             @if (startTimeControlInvalid) {
               <small class="text-red-500"
-                >La hora de inicio es obligatoria.</small
+                >Start time is required.</small
               >
             }
           </div>
@@ -196,7 +196,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
             class="flex flex-col gap-2"
             [class.p-invalid]="endTimeControlInvalid"
           >
-            <label for="endTime" class="font-bold">Hora de Fin</label>
+            <label for="endTime" class="font-bold">End Time</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-clock"></i>
@@ -213,7 +213,7 @@ import { ScheduleStore } from '../../../stores/schedule.store';
               />
             </p-inputgroup>
             @if (endTimeControlInvalid) {
-              <small class="text-red-500">La hora de fin es obligatoria.</small>
+              <small class="text-red-500">End time is required.</small>
             }
           </div>
         </div>
@@ -221,13 +221,13 @@ import { ScheduleStore } from '../../../stores/schedule.store';
 
       <ng-template #footer>
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           text
           (click)="scheduleStore.closeScheduleDialog()"
         />
         <p-button
-          label="Guardar"
+          label="Save"
           icon="pi pi-check"
           (click)="
             scheduleForm.valid

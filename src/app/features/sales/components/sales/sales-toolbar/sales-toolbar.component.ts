@@ -28,21 +28,21 @@ import { SalesTableComponent } from '../sales-table/sales-table.component';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="Nueva Venta"
+          label="New Sale"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nueva venta"
+          pTooltip="Create new sale"
           tooltipPosition="top"
           (onClick)="openNewSaleDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar ventas seleccionadas"
+          pTooltip="Delete selected sales"
           tooltipPosition="top"
           (onClick)="deleteSelectedSales()"
           [disabled]="salesTable().selectedSales().length === 0"
@@ -53,7 +53,7 @@ import { SalesTableComponent } from '../sales-table/sales-table.component';
         <div class="flex items-center gap-3">
           <div
             class="calendar-wrapper"
-            pTooltip="Seleccione la fecha del reporte"
+            pTooltip="Select report date"
             tooltipPosition="top"
           >
             <p-datePicker
@@ -61,15 +61,15 @@ import { SalesTableComponent } from '../sales-table/sales-table.component';
               [showIcon]="true"
               [maxDate]="today()"
               dateFormat="dd/mm/yy"
-              placeholder="Seleccionar fecha"
+              placeholder="Select date"
             ></p-datePicker>
           </div>
 
           <p-button
-            label="Exportar Ventas"
+            label="Export Sales"
             icon="pi pi-file-export"
             severity="secondary"
-            pTooltip="Exportar ventas diarias (abrirá un diálogo para guardar)"
+            pTooltip="Export daily sales (will open a save dialog)"
             tooltipPosition="top"
             [loading]="exporting()"
             (onClick)="exportDailySales()"
@@ -103,11 +103,11 @@ export class SalesToolbarComponent {
     }
 
     this.confirmationService.confirm({
-      header: 'Eliminar ventas',
+      header: 'Delete Sales',
       message: `
-          ¿Está seguro de que desea eliminar las ${selection.length} ventas seleccionadas?
+          Are you sure you want to delete the ${selection.length} selected sales?
           <ul class='mt-2 mb-0'>
-            ${selection.map((item) => `<li>• <b>Venta #${item.id}</b></li>`).join('')}
+            ${selection.map((item) => `<li>• <b>Sale #${item.id}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {
@@ -126,7 +126,7 @@ export class SalesToolbarComponent {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Por favor, seleccione una fecha para exportar',
+        detail: 'Please select a date to export',
       });
       return;
     }
@@ -138,8 +138,8 @@ export class SalesToolbarComponent {
         next: () => {
           this.messageService.add({
             severity: 'success',
-            summary: 'Reporte generado',
-            detail: 'El archivo se ha descargado correctamente',
+            summary: 'Report Generated',
+            detail: 'File has been downloaded successfully',
           });
           this.exporting.set(false);
         },
@@ -149,8 +149,8 @@ export class SalesToolbarComponent {
             severity: 'error',
             summary: 'Error',
             detail:
-              'Error al generar el reporte: ' +
-              (err.message ?? 'Error desconocido'),
+              'Error generating report: ' +
+              (err.message ?? 'Unknown error'),
           });
           this.exporting.set(false);
         },

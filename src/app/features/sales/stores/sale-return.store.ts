@@ -64,7 +64,7 @@ export const SaleReturnStore = signalStore(
                   patchState(store, setAllEntities(saleReturns)),
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error al cargar devoluciones.';
+                    error.error?.message ?? 'Error loading returns.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
@@ -90,13 +90,13 @@ export const SaleReturnStore = signalStore(
                   });
                   messageService.add({
                     severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Devolución creada correctamente.',
+                    summary: 'Success',
+                    detail: 'Return created successfully.',
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error al crear la devolución.';
+                    error.error?.message ?? 'Error creating return.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
@@ -127,14 +127,14 @@ export const SaleReturnStore = signalStore(
                   );
                   messageService.add({
                     severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Devolución actualizada correctamente.',
+                    summary: 'Success',
+                    detail: 'Return updated successfully.',
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
                     error.error?.message ??
-                    'Error al actualizar la devolución.';
+                    'Error updating return.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
@@ -160,13 +160,13 @@ export const SaleReturnStore = signalStore(
                   });
                   messageService.add({
                     severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Devolución eliminada correctamente.',
+                    summary: 'Success',
+                    detail: 'Return deleted successfully.',
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error al eliminar la devolución.';
+                    error.error?.message ?? 'Error deleting return.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
@@ -192,14 +192,14 @@ export const SaleReturnStore = signalStore(
                   });
                   messageService.add({
                     severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Devoluciones eliminadas correctamente.',
+                    summary: 'Success',
+                    detail: 'Returns deleted successfully.',
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
                     error.error?.message ??
-                    'Error al eliminar las devoluciones.';
+                    'Error deleting returns.';
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',

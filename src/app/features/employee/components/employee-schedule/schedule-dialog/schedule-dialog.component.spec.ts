@@ -86,7 +86,7 @@ describe('ScheduleDialogComponent', () => {
     expect(form.get('endTime')?.valid).toBeFalse();
 
     form.get('userId')?.setValue(1);
-    form.get('day')?.setValue('Lunes');
+    form.get('day')?.setValue('Monday');
     form.get('type')?.setValue('Regular');
     form.get('startTime')?.setValue('09:00');
     form.get('endTime')?.setValue('17:00');

@@ -34,7 +34,7 @@ import { UserStore } from '../../../stores/user.store';
         $event ? userStore.openUserDialog() : userStore.closeUserDialog()
       "
       [style]="{ width: '500px' }"
-      [header]="userStore.selectedUser() ? 'Editar Usuario' : 'Crear Usuario'"
+      [header]="userStore.selectedUser() ? 'Edit User' : 'Create User'"
       modal
     >
       <form [formGroup]="userForm" class="flex flex-col gap-4 pt-4">
@@ -42,7 +42,7 @@ import { UserStore } from '../../../stores/user.store';
           userForm.get('name')?.invalid && userForm.get('name')?.touched;
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
-          <label for="name" class="font-bold">Nombre</label>
+          <label for="name" class="font-bold">Name</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
@@ -52,7 +52,7 @@ import { UserStore } from '../../../stores/user.store';
               pInputText
               id="name"
               formControlName="name"
-              placeholder="Ingrese el nombre del usuario"
+              placeholder="Enter user name"
               [class.ng-dirty]="nameControlInvalid"
               [class.ng-invalid]="nameControlInvalid"
               required
@@ -61,7 +61,7 @@ import { UserStore } from '../../../stores/user.store';
           </p-inputgroup>
 
           @if (nameControlInvalid) {
-            <small class="text-red-500">El nombre es obligatorio.</small>
+            <small class="text-red-500">Name is required.</small>
           }
         </div>
 
@@ -82,7 +82,7 @@ import { UserStore } from '../../../stores/user.store';
               pInputText
               id="email"
               formControlName="email"
-              placeholder="Ingrese el email del usuario"
+              placeholder="Enter user email"
               [class.ng-dirty]="emailControlInvalid"
               [class.ng-invalid]="emailControlInvalid"
               required
@@ -93,9 +93,9 @@ import { UserStore } from '../../../stores/user.store';
           @if (emailControlInvalid) {
             <small class="text-red-500">
               @if (userForm.get('email')?.hasError('required')) {
-                El email es obligatorio.
+                Email is required.
               } @else if (userForm.get('email')?.hasError('email')) {
-                El email no es válido.
+                Email is not valid.
               }
             </small>
           }
@@ -103,7 +103,7 @@ import { UserStore } from '../../../stores/user.store';
 
         <div class="flex flex-col gap-2">
           <label for="documentId" class="font-bold"
-            >Número de Identificación (Opcional)</label
+            >ID Number (Optional)</label
           >
           <p-inputgroup>
             <p-inputgroup-addon>
@@ -114,14 +114,14 @@ import { UserStore } from '../../../stores/user.store';
               pInputText
               id="documentId"
               formControlName="documentId"
-              placeholder="Ingrese el número de identificación"
+              placeholder="Enter ID number"
               fluid
             />
           </p-inputgroup>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="phone" class="font-bold">Teléfono (Opcional)</label>
+          <label for="phone" class="font-bold">Phone (Optional)</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-phone"></i>
@@ -131,7 +131,7 @@ import { UserStore } from '../../../stores/user.store';
               pInputText
               id="phone"
               formControlName="phone"
-              placeholder="Ingrese el número de teléfono"
+              placeholder="Enter phone number"
               fluid
             />
           </p-inputgroup>
@@ -139,13 +139,13 @@ import { UserStore } from '../../../stores/user.store';
 
         <app-password-field
           id="password"
-          [label]="isEditMode() ? 'Contraseña (Opcional)' : 'Contraseña'"
+          [label]="isEditMode() ? 'Password (Optional)' : 'Password'"
           [control]="$any(userForm.get('password'))"
           [required]="!isEditMode()"
         />
 
         <div class="flex flex-col gap-2">
-          <label for="role" class="font-bold">Rol</label>
+          <label for="role" class="font-bold">Role</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-shield"></i>
@@ -156,7 +156,7 @@ import { UserStore } from '../../../stores/user.store';
               [options]="roleOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="Seleccione un rol"
+              placeholder="Select a role"
               appendTo="body"
               styleClass="w-full"
             />
@@ -166,14 +166,14 @@ import { UserStore } from '../../../stores/user.store';
 
       <ng-template #footer>
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           text
           (click)="userStore.closeUserDialog()"
         />
 
         <p-button
-          label="Guardar"
+          label="Save"
           icon="pi pi-check"
           (click)="userForm.valid ? saveUser() : userForm.markAllAsTouched()"
           [disabled]="userStore.loading()"
@@ -187,8 +187,8 @@ export class UserDialogComponent {
   readonly userStore = inject(UserStore);
 
   readonly roleOptions = [
-    { label: 'Administrador', value: UserRole.ADMINISTRATOR },
-    { label: 'Empleado', value: UserRole.EMPLOYEE },
+    { label: 'Administrator', value: UserRole.ADMINISTRATOR },
+    { label: 'Employee', value: UserRole.EMPLOYEE },
   ];
 
   readonly isEditMode = computed(() => !!this.userStore.selectedUser());

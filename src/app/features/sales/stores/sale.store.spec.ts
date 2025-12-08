@@ -163,8 +163,8 @@ describe('SaleStore', () => {
       expect(productStore.findAll).toHaveBeenCalled();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Venta registrada',
-        detail: `La venta #${mockSale.id} ha sido registrada correctamente`,
+        summary: 'Sale registered',
+        detail: `Sale #${mockSale.id} has been registered successfully`,
       });
     });
 
@@ -179,8 +179,8 @@ describe('SaleStore', () => {
 
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error de inventario',
-        detail: 'Stock insuficiente para el producto: Test Product',
+        summary: 'Inventory error',
+        detail: 'Insufficient stock for product: Test Product',
       });
     });
   });
@@ -193,8 +193,8 @@ describe('SaleStore', () => {
       expect(productStore.findAll).toHaveBeenCalled();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Venta actualizada',
-        detail: `La venta #${mockSale.id} ha sido actualizada correctamente`,
+        summary: 'Sale updated',
+        detail: `Sale #${mockSale.id} has been updated successfully`,
       });
     });
   });
@@ -206,8 +206,8 @@ describe('SaleStore', () => {
       expect(saleService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Venta eliminada',
-        detail: 'La venta ha sido eliminada correctamente',
+        summary: 'Sale deleted',
+        detail: 'The sale has been deleted successfully',
       });
     });
   });
@@ -219,8 +219,8 @@ describe('SaleStore', () => {
       expect(saleService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Ventas eliminadas',
-        detail: 'Las ventas seleccionadas han sido eliminadas correctamente',
+        summary: 'Sales deleted',
+        detail: 'The selected sales have been deleted successfully',
       });
     });
   });
@@ -272,8 +272,8 @@ describe('SaleStore', () => {
       expect(store.exportFilePath()).toBe('path/to/report');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Éxito',
-        detail: 'Reporte de ventas diarias generado correctamente',
+        summary: 'Success',
+        detail: 'Daily sales report generated successfully',
       });
     });
   });

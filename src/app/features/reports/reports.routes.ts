@@ -3,7 +3,7 @@ import { authGuard } from '../../core/auth/guards/auth.guard';
 
 export const reportsRoutes: Routes = [
   {
-    path: 'ventas',
+    path: 'sales',
     loadComponent: () =>
       import('./components/sales-report/sales-report.component').then(
         (m) => m.SalesReportComponent,
@@ -11,7 +11,7 @@ export const reportsRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'inventario',
+    path: 'inventory',
     loadComponent: () =>
       import('./components/inventory-report/inventory-report.component').then(
         (m) => m.InventoryReportComponent,
@@ -19,7 +19,7 @@ export const reportsRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'clientes',
+    path: 'customers',
     loadComponent: () =>
       import('./components/customers-report/customers-report.component').then(
         (m) => m.CustomersReportComponent,
@@ -27,7 +27,7 @@ export const reportsRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'financieros',
+    path: 'financial',
     loadComponent: () =>
       import('./components/financial-report/financial-report.component').then(
         (m) => m.FinancialReportComponent,
@@ -35,7 +35,7 @@ export const reportsRoutes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'empleados',
+    path: 'employees',
     loadComponent: () =>
       import('./components/employees-report/employees-report.component').then(
         (m) => m.EmployeesReportComponent,
@@ -45,10 +45,10 @@ export const reportsRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'ventas',
+    redirectTo: 'sales',
   },
   {
     path: '**',
-    redirectTo: '/no-encontrado',
+    redirectTo: '/not-found',
   },
 ];

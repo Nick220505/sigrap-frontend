@@ -142,8 +142,8 @@ describe('ProductStore', () => {
       expect(productService.create).toHaveBeenCalledWith(productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Producto creado',
-        detail: 'El producto Product 3 ha sido creado correctamente',
+        summary: 'Product created',
+        detail: 'The product Product 3 has been created successfully',
       });
     });
 
@@ -169,7 +169,7 @@ describe('ProductStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear producto',
+        detail: 'Error creating product',
       });
     });
   });
@@ -191,8 +191,8 @@ describe('ProductStore', () => {
       expect(productService.update).toHaveBeenCalledWith(1, productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Producto actualizado',
-        detail: 'El producto Updated Product ha sido actualizado correctamente',
+        summary: 'Product updated',
+        detail: 'The product Updated Product has been updated successfully',
       });
     });
 
@@ -218,7 +218,7 @@ describe('ProductStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar producto',
+        detail: 'Error updating product',
       });
     });
   });
@@ -230,8 +230,8 @@ describe('ProductStore', () => {
       expect(productService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Producto eliminado',
-        detail: 'El producto ha sido eliminado correctamente',
+        summary: 'Product deleted',
+        detail: 'The product has been deleted successfully',
       });
     });
 
@@ -251,7 +251,7 @@ describe('ProductStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar producto',
+        detail: 'Error deleting product',
       });
     });
   });
@@ -263,8 +263,8 @@ describe('ProductStore', () => {
       expect(productService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Productos eliminados',
-        detail: 'Los productos seleccionados han sido eliminados correctamente',
+        summary: 'Products deleted',
+        detail: 'The selected products have been deleted successfully',
       });
     });
 
@@ -286,7 +286,7 @@ describe('ProductStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar productos',
+        detail: 'Error deleting products',
       });
     });
   });

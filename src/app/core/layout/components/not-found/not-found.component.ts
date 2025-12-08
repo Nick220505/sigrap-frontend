@@ -29,16 +29,16 @@ import { ButtonModule } from 'primeng/button';
             <h1
               class="text-surface-900 dark:text-surface-0 font-bold text-3xl lg:text-5xl mb-2"
             >
-              Página no encontrada
+              Page not found
             </h1>
 
             <div class="text-surface-600 dark:text-surface-200 mb-8">
-              El recurso solicitado no existe o no está disponible en el sistema
-              de inventario.
+              The requested resource does not exist or is not available in the
+              inventory system.
             </div>
 
             <a
-              routerLink="/inventario/productos"
+              routerLink="/inventory/products"
               class="w-full flex items-center py-8 border-surface-300 dark:border-surface-500 border-b"
             >
               <span
@@ -51,10 +51,10 @@ import { ButtonModule } from 'primeng/button';
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
-                  >Inventario General</span
+                  >General Inventory</span
                 >
                 <span class="text-surface-600 dark:text-surface-200 lg:text-xl"
-                  >Consulta y gestiona los productos registrados.</span
+                  >View and manage registered products.</span
                 >
               </span>
             </a>
@@ -73,10 +73,10 @@ import { ButtonModule } from 'primeng/button';
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
-                  >Gestión de Entradas</span
+                  >Entry Management</span
                 >
                 <span class="text-surface-600 dark:text-surface-200 lg:text-xl"
-                  >Registra nuevas existencias en el inventario.</span
+                  >Register new stock in the inventory.</span
                 >
               </span>
             </a>
@@ -95,15 +95,15 @@ import { ButtonModule } from 'primeng/button';
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
-                  >Gestión de Salidas</span
+                  >Exit Management</span
                 >
                 <span class="text-surface-600 dark:text-surface-200 lg:text-xl"
-                  >Controla y registra las salidas de productos.</span
+                  >Control and register product exits.</span
                 >
               </span>
             </a>
 
-            <p-button label="Ir al Panel Principal" routerLink="/" />
+            <p-button label="Go to Main Panel" routerLink="/" />
           </div>
         </div>
       </div>

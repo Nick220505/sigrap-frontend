@@ -16,7 +16,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'inventario',
+        path: 'inventory',
         loadChildren: () =>
           import('./features/inventory/inventory.routes').then(
             (m) => m.inventoryRoutes,
@@ -24,7 +24,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'proveedores',
+        path: 'suppliers',
         loadChildren: () =>
           import('./features/supplier/supplier.routes').then(
             (m) => m.supplierRoutes,
@@ -32,7 +32,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'empleados',
+        path: 'employees',
         loadChildren: () =>
           import('./features/employee/employee.routes').then(
             (m) => m.employeeRoutes,
@@ -40,7 +40,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'clientes',
+        path: 'customers',
         loadChildren: () =>
           import('./features/customer/customer.routes').then(
             (m) => m.customerRoutes,
@@ -48,7 +48,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'configuracion',
+        path: 'configuration',
         loadChildren: () =>
           import('./features/configuration/configuration.routes').then(
             (m) => m.configurationRoutes,
@@ -56,13 +56,13 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'ventas',
+        path: 'sales',
         loadChildren: () =>
           import('./features/sales/sales.routes').then((m) => m.salesRoutes),
         canActivate: [authGuard],
       },
       {
-        path: 'reportes',
+        path: 'reports',
         loadChildren: () =>
           import('./features/reports/reports.routes').then(
             (m) => m.reportsRoutes,
@@ -77,11 +77,11 @@ export const routes: Routes = [
       import('./core/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
-    path: 'no-encontrado',
+    path: 'not-found',
     loadComponent: () =>
       import('./core/layout/components/not-found/not-found.component').then(
         (m) => m.NotFoundComponent,
       ),
   },
-  { path: '**', redirectTo: '/no-encontrado' },
+  { path: '**', redirectTo: '/not-found' },
 ];

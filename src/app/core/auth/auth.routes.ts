@@ -3,7 +3,7 @@ import { publicGuard } from './guards/public.guard';
 
 export const authRoutes: Routes = [
   {
-    path: 'iniciar-sesion',
+    path: 'login',
     loadComponent: () =>
       import('./components/login/login.component').then(
         (m) => m.LoginComponent,
@@ -11,7 +11,7 @@ export const authRoutes: Routes = [
     canActivate: [publicGuard],
   },
   {
-    path: 'registro',
+    path: 'register',
     loadComponent: () =>
       import('./components/register/register.component').then(
         (m) => m.RegisterComponent,
@@ -21,10 +21,10 @@ export const authRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'iniciar-sesion',
+    redirectTo: 'login',
   },
   {
     path: '**',
-    redirectTo: '/no-encontrado',
+    redirectTo: '/not-found',
   },
 ];

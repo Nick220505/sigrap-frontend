@@ -37,12 +37,12 @@ import { TooltipModule } from 'primeng/tooltip';
     @let columns =
       [
         { field: 'id', header: 'ID' },
-        { field: 'originalSaleId', header: 'Venta Original' },
-        { field: 'customer', header: 'Cliente' },
-        { field: 'employee', header: 'Empleado' },
-        { field: 'totalReturnAmount', header: 'Monto' },
-        { field: 'reason', header: 'Razón' },
-        { field: 'createdAt', header: 'Fecha' },
+        { field: 'originalSaleId', header: 'Original Sale' },
+        { field: 'customer', header: 'Customer' },
+        { field: 'employee', header: 'Employee' },
+        { field: 'totalReturnAmount', header: 'Amount' },
+        { field: 'reason', header: 'Reason' },
+        { field: 'createdAt', header: 'Date' },
       ];
     <p-table
       #dt
@@ -65,7 +65,7 @@ import { TooltipModule } from 'primeng/tooltip';
       [tableStyle]="{ 'min-width': '85rem' }"
       [rowHover]="true"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} devoluciones"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} returns"
       styleClass="p-datatable-sm p-datatable-striped"
       [loading]="saleReturnStore.loading()"
     >
@@ -74,7 +74,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Administrar Devoluciones</h5>
+            <h5 class="m-0 text-left">Manage Returns</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -87,7 +87,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -110,8 +110,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -119,16 +119,16 @@ import { TooltipModule } from 'primeng/tooltip';
           }
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -164,7 +164,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               class="mr-2"
-              pTooltip="Ver Detalles"
+              pTooltip="View Details"
               tooltipPosition="top"
               (onClick)="saleReturnStore.openReturnDialog(saleReturn)"
             />
@@ -173,7 +173,7 @@ import { TooltipModule } from 'primeng/tooltip';
               severity="danger"
               rounded
               outlined
-              pTooltip="Eliminar Devolución"
+              pTooltip="Delete Return"
               tooltipPosition="top"
               (onClick)="deleteSaleReturn(saleReturn)"
               [disabled]="saleReturnStore.loading()"
@@ -188,11 +188,11 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar devoluciones:</strong>
+                    <strong>Error loading returns:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="saleReturnStore.loadAll()"
                         styleClass="p-button-sm"
                         [loading]="saleReturnStore.loading()"
@@ -202,7 +202,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron devoluciones.</p>
+              <p>No returns found.</p>
             }
           </td>
         </tr>
@@ -235,8 +235,8 @@ export class SalesReturnsTableComponent {
 
   deleteSaleReturn(saleReturn: SaleReturnInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar devolución',
-      message: `¿Está seguro de que desea eliminar la devolución #<b>${saleReturn.id}</b>?`,
+      header: 'Delete return',
+      message: `Are you sure you want to delete return #<b>${saleReturn.id}</b>?`,
       accept: () => this.saleReturnStore.deleteById(saleReturn.id),
     });
   }

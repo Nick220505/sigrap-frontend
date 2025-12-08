@@ -13,11 +13,11 @@ import { TooltipModule } from 'primeng/tooltip';
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
         <p-button
-          label="Registrar Entrada"
+          label="Clock In"
           icon="pi pi-clock"
           outlined
           class="mr-2"
-          pTooltip="Registrar entrada de empleado"
+          pTooltip="Register employee clock-in"
           tooltipPosition="top"
           (onClick)="attendanceStore.openClockInDialog()"
         />
@@ -25,12 +25,12 @@ import { TooltipModule } from 'primeng/tooltip';
 
       <ng-template #end>
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
           (onClick)="attendanceTable().dt().exportCSV()"
           [disabled]="attendanceStore.entities().length === 0"
-          pTooltip="Exportar registros a CSV"
+          pTooltip="Export records to CSV"
           tooltipPosition="top"
         />
       </ng-template>

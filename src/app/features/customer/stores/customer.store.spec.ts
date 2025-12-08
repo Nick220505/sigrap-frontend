@@ -113,7 +113,7 @@ describe('CustomerStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear el cliente',
+        detail: 'Error creating customer',
       });
     });
   });
@@ -135,7 +135,7 @@ describe('CustomerStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar el cliente',
+        detail: 'Error updating customer',
       });
     });
   });
@@ -157,7 +157,7 @@ describe('CustomerStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar el cliente',
+        detail: 'Error deleting customer',
       });
     });
   });

@@ -35,12 +35,12 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'userName', header: 'Empleado' },
-        { field: 'date', header: 'Fecha' },
-        { field: 'clockInTime', header: 'Hora Entrada' },
-        { field: 'clockOutTime', header: 'Hora Salida' },
-        { field: 'totalHours', header: 'Horas Trabajadas' },
-        { field: 'status', header: 'Estado' },
+        { field: 'userName', header: 'Employee' },
+        { field: 'date', header: 'Date' },
+        { field: 'clockInTime', header: 'Clock In' },
+        { field: 'clockOutTime', header: 'Clock Out' },
+        { field: 'totalHours', header: 'Hours Worked' },
+        { field: 'status', header: 'Status' },
       ];
 
     <p-table
@@ -52,7 +52,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
       [globalFilterFields]="[
         'userName',
         'date',
@@ -71,7 +71,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Registro de Asistencia de Empleados</h5>
+            <h5 class="m-0 text-left">Employee Attendance Records</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -84,7 +84,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -104,8 +104,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -114,16 +114,16 @@ import { TooltipModule } from 'primeng/tooltip';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -139,31 +139,31 @@ import { TooltipModule } from 'primeng/tooltip';
                   @case ('PRESENT') {
                     <span
                       class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-                      >Presente</span
+                      >Present</span
                     >
                   }
                   @case ('LATE') {
                     <span
                       class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
-                      >Tarde</span
+                      >Late</span
                     >
                   }
                   @case ('ABSENT') {
                     <span
                       class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-                      >Ausente</span
+                      >Absent</span
                     >
                   }
                   @case ('EARLY_DEPARTURE') {
                     <span
                       class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
-                      >Salida temprana</span
+                      >Early Departure</span
                     >
                   }
                   @case ('ON_LEAVE') {
                     <span
                       class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
-                      >Permiso</span
+                      >On Leave</span
                     >
                   }
                   @default {
@@ -201,7 +201,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="clockOut(attendance)"
-              pTooltip="Registrar salida"
+              pTooltip="Clock out"
               tooltipPosition="top"
               [disabled]="
                 !!attendance.clockOutTime ||
@@ -220,11 +220,11 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar registros:</strong>
+                    <strong>Error loading records:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="attendanceStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="attendanceStore.loading()"
@@ -234,7 +234,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron registros de asistencia.</p>
+              <p>No attendance records found.</p>
             }
           </td>
         </tr>
@@ -267,8 +267,8 @@ export class AttendanceTableComponent {
 
   clockOut({ id, userName }: AttendanceInfo): void {
     this.confirmationService.confirm({
-      header: 'Registrar salida',
-      message: `¿Está seguro de que desea registrar la salida de <b>${userName}</b>?`,
+      header: 'Clock Out',
+      message: `Are you sure you want to clock out <b>${userName}</b>?`,
       accept: () => {
         this.attendanceStore.clockOut({
           attendanceId: id,

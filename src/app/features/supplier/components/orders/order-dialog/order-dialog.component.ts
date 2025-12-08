@@ -70,7 +70,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.get('supplierId')?.touched
             "
           >
-            <label for="supplierId" class="font-bold">Proveedor</label>
+            <label for="supplierId" class="font-bold">Supplier</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-building"></i>
@@ -81,7 +81,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 [options]="supplierStore.entities()"
                 optionLabel="name"
                 optionValue="id"
-                placeholder="Seleccione un proveedor"
+                placeholder="Select a supplier"
                 filter
                 filterBy="name"
                 styleClass="w-full"
@@ -92,7 +92,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.get('supplierId')?.invalid &&
               orderForm.get('supplierId')?.touched
             ) {
-              <small class="text-red-500">El proveedor es obligatorio.</small>
+              <small class="text-red-500">Supplier is required.</small>
             }
           </div>
 
@@ -103,7 +103,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.get('deliveryDate')?.touched
             "
           >
-            <label for="deliveryDate" class="font-bold">Fecha de Entrega</label>
+            <label for="deliveryDate" class="font-bold">Delivery Date</label>
             <p-datePicker
               id="deliveryDate"
               inputId="deliveryDate"
@@ -117,7 +117,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.get('deliveryDate')?.touched
             ) {
               <small class="text-red-500"
-                >La fecha de entrega es obligatoria.</small
+                >Delivery date is required.</small
               >
             }
           </div>
@@ -125,10 +125,10 @@ import { TooltipModule } from 'primeng/tooltip';
 
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <h3 class="font-bold text-lg m-0">Productos</h3>
+            <h3 class="font-bold text-lg m-0">Products</h3>
             @if (!viewMode()) {
               <p-button
-                label="Agregar Producto"
+                label="Add Product"
                 icon="pi pi-plus"
                 (onClick)="addItem()"
                 [disabled]="viewMode() || !productStore.entities().length"
@@ -144,12 +144,12 @@ import { TooltipModule } from 'primeng/tooltip';
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="w-1/3">Producto</th>
-                  <th class="w-1/8">Cantidad</th>
-                  <th class="w-1/8">Precio Unitario</th>
+                  <th class="w-1/3">Product</th>
+                  <th class="w-1/8">Quantity</th>
+                  <th class="w-1/8">Unit Price</th>
                   <th class="w-1/8">Subtotal</th>
                   @if (!viewMode()) {
-                    <th class="w-12 text-center">Acciones</th>
+                    <th class="w-12 text-center">Actions</th>
                   }
                 </tr>
               </ng-template>
@@ -162,7 +162,7 @@ import { TooltipModule } from 'primeng/tooltip';
                         [options]="productStore.entities()"
                         optionLabel="name"
                         optionValue="id"
-                        placeholder="Seleccionar Producto"
+                        placeholder="Select Product"
                         [filter]="true"
                         filterBy="name"
                         (onChange)="
@@ -253,7 +253,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
       <ng-template pTemplate="footer">
         <p-button
-          [label]="viewMode() ? 'Cerrar' : 'Cancelar'"
+          [label]="viewMode() ? 'Close' : 'Cancel'"
           icon="pi pi-times"
           styleClass="p-button-text"
           (onClick)="purchaseOrderStore.closeOrderDialog()"
@@ -261,7 +261,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
         @if (!viewMode()) {
           <p-button
-            label="Guardar"
+            label="Save"
             icon="pi pi-check"
             (onClick)="
               orderForm.valid ? saveOrder() : orderForm.markAllAsTouched()
@@ -292,10 +292,10 @@ export class OrderDialogComponent {
     const selectedOrder = this.purchaseOrderStore.selectedOrder();
     if (selectedOrder) {
       return this.viewMode()
-        ? `Ver Pedido #${selectedOrder.id}`
-        : `Editar Pedido #${selectedOrder.id}`;
+        ? `View Order #${selectedOrder.id}`
+        : `Edit Order #${selectedOrder.id}`;
     }
-    return 'Registrar Nuevo Pedido';
+    return 'Register New Order';
   });
 
   readonly itemsCountSignal = signal(0);

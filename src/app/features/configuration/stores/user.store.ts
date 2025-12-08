@@ -61,7 +61,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al cargar usuarios',
+                  detail: 'Error loading users',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -80,8 +80,8 @@ export const UserStore = signalStore(
                 patchState(store, addEntity(createdUser));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Usuario creado',
-                  detail: `El usuario ${createdUser.name} ha sido creado correctamente`,
+                  summary: 'User Created',
+                  detail: `User ${createdUser.name} has been created successfully`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -89,7 +89,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al crear usuario',
+                  detail: 'Error creating user',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -108,8 +108,8 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Usuario actualizado',
-                  detail: `El usuario ${updatedUser.name} ha sido actualizado correctamente`,
+                  summary: 'User Updated',
+                  detail: `User ${updatedUser.name} has been updated successfully`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -117,7 +117,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar usuario',
+                  detail: 'Error updating user',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -136,8 +136,8 @@ export const UserStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Usuario eliminado',
-                  detail: 'El usuario ha sido eliminado correctamente',
+                  summary: 'User Deleted',
+                  detail: 'User has been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -145,7 +145,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar usuario',
+                  detail: 'Error deleting user',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -164,9 +164,9 @@ export const UserStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Usuarios eliminados',
+                  summary: 'Users Deleted',
                   detail:
-                    'Los usuarios seleccionados han sido eliminados correctamente',
+                    'Selected users have been deleted successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -174,7 +174,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al eliminar usuarios',
+                  detail: 'Error deleting users',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -193,8 +193,8 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Perfil actualizado',
-                  detail: 'El perfil ha sido actualizado correctamente',
+                  summary: 'Profile Updated',
+                  detail: 'Profile has been updated successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -202,7 +202,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar perfil',
+                  detail: 'Error updating profile',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -224,8 +224,8 @@ export const UserStore = signalStore(
               next: () => {
                 messageService.add({
                   severity: 'success',
-                  summary: 'Contraseña actualizada',
-                  detail: 'La contraseña ha sido actualizada correctamente',
+                  summary: 'Password Updated',
+                  detail: 'Password has been updated successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -233,7 +233,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar contraseña',
+                  detail: 'Error updating password',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -251,8 +251,8 @@ export const UserStore = signalStore(
               next: () => {
                 messageService.add({
                   severity: 'success',
-                  summary: 'Contraseña restablecida',
-                  detail: 'La contraseña ha sido restablecida correctamente',
+                  summary: 'Password Reset',
+                  detail: 'Password has been reset successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -260,7 +260,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al restablecer contraseña',
+                  detail: 'Error resetting password',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -279,8 +279,8 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Cuenta bloqueada',
-                  detail: `La cuenta del usuario ${updatedUser.name} ha sido bloqueada`,
+                  summary: 'Account Locked',
+                  detail: `User ${updatedUser.name}'s account has been locked`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -288,7 +288,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al bloquear cuenta',
+                  detail: 'Error locking account',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -307,8 +307,8 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Cuenta desbloqueada',
-                  detail: `La cuenta del usuario ${updatedUser.name} ha sido desbloqueada`,
+                  summary: 'Account Unlocked',
+                  detail: `User ${updatedUser.name}'s account has been unlocked`,
                 });
               },
               error: ({ message: error }: Error) => {
@@ -316,7 +316,7 @@ export const UserStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al desbloquear cuenta',
+                  detail: 'Error unlocking account',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

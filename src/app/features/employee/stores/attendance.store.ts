@@ -94,14 +94,14 @@ export const AttendanceStore = signalStore(
                 patchState(store, addEntity(attendance));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Entrada registrada',
-                  detail: `La entrada ha sido registrada correctamente`,
+                  summary: 'Clock-in recorded',
+                  detail: 'The clock-in has been recorded successfully',
                 });
                 patchState(store, { clockInDialogVisible: false });
               },
               error: ({ error, message }: HttpErrorResponse) => {
                 patchState(store, {
-                  error: message ?? 'Error desconocido',
+                  error: message ?? 'Unknown error',
                 });
 
                 if (
@@ -111,15 +111,15 @@ export const AttendanceStore = signalStore(
                 ) {
                   messageService.add({
                     severity: 'warn',
-                    summary: 'Registro duplicado',
+                    summary: 'Duplicate Record',
                     detail:
-                      'El empleado ya tiene un registro de asistencia para hoy',
+                      'Employee already has an attendance record for today',
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al registrar entrada',
+                    detail: 'Error recording clock-in',
                   });
                 }
               },
@@ -145,8 +145,8 @@ export const AttendanceStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Salida registrada',
-                  detail: `La salida ha sido registrada correctamente`,
+                  summary: 'Clock-out recorded',
+                  detail: 'The clock-out has been recorded successfully',
                 });
               },
               error: ({ message: error }: Error) => {
@@ -154,7 +154,7 @@ export const AttendanceStore = signalStore(
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al registrar salida',
+                  detail: 'Error recording clock-out',
                 });
               },
               finalize: () => patchState(store, { loading: false }),

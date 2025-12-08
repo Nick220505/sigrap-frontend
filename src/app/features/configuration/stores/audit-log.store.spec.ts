@@ -133,7 +133,7 @@ describe('AuditLogStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar registros de auditoría',
+        detail: 'Error loading audit logs',
       });
     });
   });
@@ -163,7 +163,7 @@ describe('AuditLogStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar registros de auditoría del usuario',
+        detail: 'Error loading user audit logs',
       });
     });
   });
@@ -193,7 +193,7 @@ describe('AuditLogStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar registros de auditoría de la entidad',
+        detail: 'Error loading entity audit logs',
       });
     });
   });
@@ -223,7 +223,7 @@ describe('AuditLogStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar registros de auditoría por acción',
+        detail: 'Error loading audit logs by action',
       });
     });
   });
@@ -259,7 +259,7 @@ describe('AuditLogStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al cargar registros de auditoría por rango de fechas',
+        detail: 'Error loading audit logs by date range',
       });
     });
   });

@@ -80,7 +80,7 @@ describe('CustomerDialogComponent', () => {
     expect(component.customerForm.get('address')?.value).toBe(null);
   });
 
-  it('should show "Nuevo Cliente" header when no customer is selected', () => {
+  it('should show "New Customer" header when no customer is selected', () => {
     (customerStore.dialogVisible as WritableSignal<boolean>).set(true);
     (customerStore.selectedCustomer as WritableSignal<CustomerInfo | null>).set(
       null,
@@ -88,10 +88,10 @@ describe('CustomerDialogComponent', () => {
     fixture.detectChanges();
 
     const dialogHeader = fixture.debugElement.query(By.css('.p-dialog-title'));
-    expect(dialogHeader.nativeElement.textContent.trim()).toBe('Nuevo Cliente');
+    expect(dialogHeader.nativeElement.textContent.trim()).toBe('New Customer');
   });
 
-  it('should show "Editar Cliente" header when a customer is selected', () => {
+  it('should show "Edit Customer" header when a customer is selected', () => {
     (customerStore.dialogVisible as WritableSignal<boolean>).set(true);
     (customerStore.selectedCustomer as WritableSignal<CustomerInfo | null>).set(
       mockCustomer,
@@ -100,7 +100,7 @@ describe('CustomerDialogComponent', () => {
 
     const dialogHeader = fixture.debugElement.query(By.css('.p-dialog-title'));
     expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-      'Editar Cliente',
+      'Edit Customer',
     );
   });
 

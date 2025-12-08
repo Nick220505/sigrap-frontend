@@ -16,52 +16,52 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
           : auditLogStore.closeAuditLogDialog()
       "
       [style]="{ width: '600px' }"
-      header="Detalles del Registro"
+      header="Record Details"
       modal
     >
       @if (auditLogStore.selectedAuditLog(); as auditLog) {
         <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
-              <span class="font-bold">Entidad</span>
+              <span class="font-bold">Entity</span>
               <p>{{ auditLog.entityName }}</p>
             </div>
 
             <div class="flex flex-col gap-2">
-              <span class="font-bold">ID Entidad</span>
+              <span class="font-bold">Entity ID</span>
               <p>{{ auditLog.entityId }}</p>
             </div>
 
             <div class="flex flex-col gap-2">
-              <span class="font-bold">Acción</span>
+              <span class="font-bold">Action</span>
               <p>{{ auditLog.action }}</p>
             </div>
 
             <div class="flex flex-col gap-2">
-              <span class="font-bold">Usuario</span>
-              <p>{{ auditLog.username || 'Sistema' }}</p>
+              <span class="font-bold">User</span>
+              <p>{{ auditLog.username || 'System' }}</p>
             </div>
 
             <div class="flex flex-col gap-2 col-span-2">
-              <span class="font-bold">Fecha y Hora</span>
+              <span class="font-bold">Date and Time</span>
               <p>
                 {{
                   auditLog.timestamp
-                    | date: 'dd/MM/yyyy hh:mm:ss a' : 'GMT-5' : 'es'
+                    | date: 'MM/dd/yyyy hh:mm:ss a' : 'GMT-5' : 'en'
                 }}
               </p>
             </div>
           </div>
 
           <div class="flex flex-col gap-2">
-            <span class="font-bold">Datos Anteriores</span>
+            <span class="font-bold">Previous Data</span>
             <pre class="bg-gray-100 p-4 rounded overflow-auto max-h-40">{{
               auditLog.oldValue | json
             }}</pre>
           </div>
 
           <div class="flex flex-col gap-2">
-            <span class="font-bold">Datos Nuevos</span>
+            <span class="font-bold">New Data</span>
             <pre class="bg-gray-100 p-4 rounded overflow-auto max-h-40">{{
               auditLog.newValue | json
             }}</pre>
@@ -71,7 +71,7 @@ import { AuditLogStore } from '../../../stores/audit-log.store';
 
       <ng-template #footer>
         <p-button
-          label="Cerrar"
+          label="Close"
           icon="pi pi-times"
           (click)="auditLogStore.closeAuditLogDialog()"
         />

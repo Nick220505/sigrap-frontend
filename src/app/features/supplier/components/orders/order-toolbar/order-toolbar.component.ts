@@ -13,21 +13,21 @@ import { OrderTableComponent } from '../order-table/order-table.component';
     <p-toolbar styleClass="mb-6">
       <ng-template pTemplate="start">
         <p-button
-          label="Nuevo Pedido"
+          label="New Order"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Crear nuevo pedido"
+          pTooltip="Create new order"
           tooltipPosition="top"
           (onClick)="purchaseOrderStore.openOrderDialog()"
         />
 
         <p-button
           severity="danger"
-          label="Eliminar"
+          label="Delete"
           icon="pi pi-trash"
           outlined
-          pTooltip="Eliminar pedidos seleccionados"
+          pTooltip="Delete selected orders"
           tooltipPosition="top"
           (onClick)="deleteSelectedOrders()"
           [disabled]="orderTable().selectedOrders().length === 0"
@@ -36,10 +36,10 @@ import { OrderTableComponent } from '../order-table/order-table.component';
 
       <ng-template pTemplate="end">
         <p-button
-          label="Exportar"
+          label="Export"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Exportar pedidos a CSV"
+          pTooltip="Export orders to CSV"
           tooltipPosition="top"
           (onClick)="orderTable().dt().exportCSV()"
           [disabled]="purchaseOrderStore.ordersCount() === 0"
@@ -60,20 +60,20 @@ export class OrderToolbarComponent {
     const nonDraftOrders = orders.filter((order) => order.status !== 'DRAFT');
     if (nonDraftOrders.length > 0) {
       this.confirmationService.confirm({
-        header: 'Operación no permitida',
-        message: 'Solo se pueden eliminar pedidos en estado Borrador.',
+        header: 'Operation Not Allowed',
+        message: 'Only orders in Draft status can be deleted.',
         acceptVisible: false,
-        rejectLabel: 'Entendido',
+        rejectLabel: 'Understood',
       });
       return;
     }
 
     this.confirmationService.confirm({
-      header: 'Eliminar pedidos',
+      header: 'Delete Orders',
       message: `
-          ¿Está seguro de que desea eliminar los ${orders.length} pedidos seleccionados?
+          Are you sure you want to delete the ${orders.length} selected orders?
           <ul class='mt-2 mb-0'>
-            ${orders.map(({ id }) => `<li>• <b>Pedido #${id}</b></li>`).join('')}
+            ${orders.map(({ id }) => `<li>• <b>Order #${id}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {

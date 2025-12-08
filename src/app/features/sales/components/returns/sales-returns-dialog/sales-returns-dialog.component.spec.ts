@@ -247,7 +247,7 @@ describe('SalesReturnsDialogComponent', () => {
       expect(dialog.componentInstance.visible).toBeTrue();
     });
 
-    it('should have "Nueva Devolución" header when no return is selected', () => {
+    it('should have "New Return" header when no return is selected', () => {
       (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
       (
         saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>
@@ -258,11 +258,11 @@ describe('SalesReturnsDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Nueva Devolución',
+        'New Return',
       );
     });
 
-    it('should have "Detalles de Devolución" header when a return is selected', () => {
+    it('should have "Return Details" header when a return is selected', () => {
       (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
       (
         saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>
@@ -273,7 +273,7 @@ describe('SalesReturnsDialogComponent', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Detalles de Devolución',
+        'Return Details',
       );
     });
   });
@@ -497,7 +497,7 @@ describe('SalesReturnsDialogComponent', () => {
       expect(messageService.add).toHaveBeenCalledWith(
         jasmine.objectContaining({
           severity: 'warn',
-          summary: 'Advertencia',
+          summary: 'Warning',
         }),
       );
       expect(saleReturnStore.create).not.toHaveBeenCalled();

@@ -32,11 +32,11 @@ import { CustomerStore } from '../../../stores/customer.store';
   template: `
     @let columns =
       [
-        { field: 'fullName', header: 'Nombre' },
-        { field: 'documentId', header: 'Documento' },
+        { field: 'fullName', header: 'Name' },
+        { field: 'documentId', header: 'Document' },
         { field: 'email', header: 'Email' },
-        { field: 'phoneNumber', header: 'Teléfono' },
-        { field: 'address', header: 'Dirección' },
+        { field: 'phoneNumber', header: 'Phone' },
+        { field: 'address', header: 'Address' },
       ];
 
     <p-table
@@ -48,7 +48,7 @@ import { CustomerStore } from '../../../stores/customer.store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customers"
       [globalFilterFields]="['fullName', 'documentId', 'email', 'address']"
       [tableStyle]="{ 'min-width': '75rem' }"
       rowHover
@@ -60,7 +60,7 @@ import { CustomerStore } from '../../../stores/customer.store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Administrar Clientes</h5>
+            <h5 class="m-0 text-left">Manage Customers</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -73,7 +73,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -97,8 +97,8 @@ import { CustomerStore } from '../../../stores/customer.store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -107,16 +107,16 @@ import { CustomerStore } from '../../../stores/customer.store';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -132,7 +132,7 @@ import { CustomerStore } from '../../../stores/customer.store';
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'phoneNumber') {
-                {{ customer[column.field] || 'No especificado' }}
+                {{ customer[column.field] || 'Not specified' }}
               } @else {
                 {{ customer[column.field] }}
               }
@@ -146,7 +146,7 @@ import { CustomerStore } from '../../../stores/customer.store';
               rounded
               outlined
               (click)="customerStore.openCustomerDialog(customer)"
-              pTooltip="Editar cliente"
+              pTooltip="Edit customer"
               tooltipPosition="top"
               [disabled]="customerStore.loading()"
             />
@@ -157,7 +157,7 @@ import { CustomerStore } from '../../../stores/customer.store';
               rounded
               outlined
               (click)="deleteCustomer(customer)"
-              pTooltip="Eliminar cliente"
+              pTooltip="Delete customer"
               tooltipPosition="top"
               [disabled]="customerStore.loading()"
             />
@@ -172,11 +172,11 @@ import { CustomerStore } from '../../../stores/customer.store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar clientes:</strong>
+                    <strong>Error loading customers:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="customerStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="customerStore.loading()"
@@ -186,7 +186,7 @@ import { CustomerStore } from '../../../stores/customer.store';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron clientes.</p>
+              <p>No customers found.</p>
             }
           </td>
         </tr>
@@ -216,8 +216,8 @@ export class CustomerTableComponent {
 
   deleteCustomer({ id, fullName }: CustomerInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar cliente',
-      message: `¿Está seguro de que desea eliminar al cliente <b>${fullName}</b>?`,
+      header: 'Delete Customer',
+      message: `Are you sure you want to delete customer <b>${fullName}</b>?`,
       accept: () => this.customerStore.delete(id),
     });
   }

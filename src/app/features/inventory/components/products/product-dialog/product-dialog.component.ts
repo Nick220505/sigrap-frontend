@@ -42,7 +42,7 @@ import { TextareaModule } from 'primeng/textarea';
       "
       [style]="{ width: '500px' }"
       [header]="
-        productStore.selectedProduct() ? 'Editar Producto' : 'Crear Producto'
+        productStore.selectedProduct() ? 'Edit Product' : 'Create Product'
       "
       modal
     >
@@ -51,7 +51,7 @@ import { TextareaModule } from 'primeng/textarea';
           productForm.get('name')?.invalid && productForm.get('name')?.touched;
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
-          <label for="name" class="font-bold">Nombre</label>
+          <label for="name" class="font-bold">Name</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-box"></i>
@@ -61,7 +61,7 @@ import { TextareaModule } from 'primeng/textarea';
               pInputText
               id="name"
               formControlName="name"
-              placeholder="Ingrese el nombre del producto"
+              placeholder="Enter product name"
               [class.ng-dirty]="nameControlInvalid"
               [class.ng-invalid]="nameControlInvalid"
               required
@@ -70,12 +70,12 @@ import { TextareaModule } from 'primeng/textarea';
           </p-inputgroup>
 
           @if (nameControlInvalid) {
-            <small class="text-red-500">El nombre es obligatorio.</small>
+            <small class="text-red-500">Name is required.</small>
           }
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="description" class="font-bold">Descripción</label>
+          <label for="description" class="font-bold">Description</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-align-left"></i>
@@ -85,7 +85,7 @@ import { TextareaModule } from 'primeng/textarea';
               pTextarea
               id="description"
               formControlName="description"
-              placeholder="Ingrese una descripción (opcional)"
+              placeholder="Enter a description (optional)"
               class="w-full"
               fluid
             ></textarea>
@@ -101,7 +101,7 @@ import { TextareaModule } from 'primeng/textarea';
             class="flex flex-col gap-2"
             [class.p-invalid]="costPriceControlInvalid"
           >
-            <label for="costPrice" class="font-bold">Precio de Costo</label>
+            <label for="costPrice" class="font-bold">Cost Price</label>
             <p-inputNumber
               id="costPrice"
               formControlName="costPrice"
@@ -109,7 +109,7 @@ import { TextareaModule } from 'primeng/textarea';
               min="0"
               mode="currency"
               currency="COP"
-              locale="es-CO"
+              locale="en-US"
               maxFractionDigits="0"
               step="50"
               showButtons
@@ -122,7 +122,7 @@ import { TextareaModule } from 'primeng/textarea';
 
             @if (costPriceControlInvalid) {
               <small class="text-red-500">
-                El precio de costo es obligatorio.
+                Cost price is required.
               </small>
             }
           </div>
@@ -135,7 +135,7 @@ import { TextareaModule } from 'primeng/textarea';
             class="flex flex-col gap-2"
             [class.p-invalid]="salePriceControlInvalid"
           >
-            <label for="salePrice" class="font-bold">Precio de Venta</label>
+            <label for="salePrice" class="font-bold">Sale Price</label>
             <p-inputNumber
               id="salePrice"
               formControlName="salePrice"
@@ -143,7 +143,7 @@ import { TextareaModule } from 'primeng/textarea';
               min="0"
               mode="currency"
               currency="COP"
-              locale="es-CO"
+              locale="en-US"
               maxFractionDigits="0"
               step="50"
               showButtons
@@ -156,7 +156,7 @@ import { TextareaModule } from 'primeng/textarea';
 
             @if (salePriceControlInvalid) {
               <small class="text-red-500">
-                El precio de venta es obligatorio.
+                Sale price is required.
               </small>
             }
           </div>
@@ -186,7 +186,7 @@ import { TextareaModule } from 'primeng/textarea';
             />
             @if (stockControlInvalid) {
               <small class="text-red-500">
-                El stock es obligatorio y debe ser un número positivo.
+                Stock is required and must be a positive number.
               </small>
             }
           </div>
@@ -199,7 +199,7 @@ import { TextareaModule } from 'primeng/textarea';
             [class.p-invalid]="minimumStockThresholdControlInvalid"
           >
             <label for="minimumStockThreshold" class="font-bold"
-              >Stock Mínimo</label
+              >Minimum Stock</label
             >
             <p-inputNumber
               id="minimumStockThreshold"
@@ -216,14 +216,14 @@ import { TextareaModule } from 'primeng/textarea';
             />
             @if (minimumStockThresholdControlInvalid) {
               <small class="text-red-500">
-                El stock mínimo es obligatorio y debe ser un número positivo.
+                Minimum stock is required and must be a positive number.
               </small>
             }
           </div>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="category" class="font-bold">Categoría</label>
+          <label for="category" class="font-bold">Category</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-tag"></i>
@@ -234,7 +234,7 @@ import { TextareaModule } from 'primeng/textarea';
               [options]="categoryStore.entities()"
               optionLabel="name"
               optionValue="id"
-              placeholder="Seleccione una categoría"
+              placeholder="Select a category"
               filter
               filterBy="name"
               appendTo="body"
@@ -246,14 +246,14 @@ import { TextareaModule } from 'primeng/textarea';
 
       <ng-template #footer>
         <p-button
-          label="Cancelar"
+          label="Cancel"
           icon="pi pi-times"
           text
           (click)="productStore.closeProductDialog()"
         />
 
         <p-button
-          label="Guardar"
+          label="Save"
           icon="pi pi-check"
           (click)="
             productForm.valid ? saveProduct() : productForm.markAllAsTouched()

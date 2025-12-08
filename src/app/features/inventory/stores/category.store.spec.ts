@@ -98,8 +98,8 @@ describe('CategoryStore', () => {
       expect(categoryService.create).toHaveBeenCalledWith(categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Categoría creada',
-        detail: 'La categoría New Category ha sido creada correctamente',
+        summary: 'Category created',
+        detail: 'Category New Category has been created successfully',
       });
     });
 
@@ -120,7 +120,7 @@ describe('CategoryStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al crear categoría',
+        detail: 'Error creating category',
       });
     });
   });
@@ -137,9 +137,9 @@ describe('CategoryStore', () => {
       expect(categoryService.update).toHaveBeenCalledWith(1, categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Categoría actualizada',
+        summary: 'Category updated',
         detail:
-          'La categoría Updated Category ha sido actualizada correctamente',
+          'Category Updated Category has been updated successfully',
       });
     });
 
@@ -160,7 +160,7 @@ describe('CategoryStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al actualizar categoría',
+        detail: 'Error updating category',
       });
     });
   });
@@ -172,8 +172,8 @@ describe('CategoryStore', () => {
       expect(categoryService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Categoría eliminada',
-        detail: 'La categoría ha sido eliminada correctamente',
+        summary: 'Category deleted',
+        detail: 'The category has been deleted successfully',
       });
     });
 
@@ -198,7 +198,7 @@ describe('CategoryStore', () => {
         severity: 'error',
         summary: 'Error',
         detail:
-          'No se puede eliminar la categoría "Category 1" porque está siendo utilizada por un producto.',
+          'Cannot delete category "Category 1" because it is being used by a product.',
       });
     });
 
@@ -218,7 +218,7 @@ describe('CategoryStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar categoría',
+        detail: 'Error deleting category',
       });
     });
   });
@@ -230,9 +230,9 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Categorías eliminadas',
+        summary: 'Categories deleted',
         detail:
-          'Las categorías seleccionadas han sido eliminadas correctamente',
+          'The selected categories have been deleted successfully',
       });
     });
 
@@ -259,7 +259,7 @@ describe('CategoryStore', () => {
         severity: 'error',
         summary: 'Error',
         detail:
-          'No se puede eliminar la categoría "Category 1" porque está siendo utilizada por un producto.',
+          'Cannot delete category "Category 1" because it is being used by a product.',
       });
     });
 
@@ -286,7 +286,7 @@ describe('CategoryStore', () => {
         severity: 'error',
         summary: 'Error',
         detail:
-          'No se puede eliminar la categoría "ID 3" porque está siendo utilizada por un producto.',
+          'Cannot delete category "ID 3" because it is being used by a product.',
       });
     });
 
@@ -313,7 +313,7 @@ describe('CategoryStore', () => {
         severity: 'error',
         summary: 'Error',
         detail:
-          'No se puede eliminar la categoría "desconocida" porque está siendo utilizada por un producto.',
+          'Cannot delete category "unknown" because it is being used by a product.',
       });
     });
 
@@ -335,7 +335,7 @@ describe('CategoryStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
         summary: 'Error',
-        detail: 'Error al eliminar categorías',
+        detail: 'Error deleting categories',
       });
     });
   });

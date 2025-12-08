@@ -83,7 +83,7 @@ interface ChartTooltipContext {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Productos en Inventario</h3>
+            <h3 class="text-xl font-semibold mb-2">Products in Inventory</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -100,7 +100,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Unidades en Stock</h3>
+            <h3 class="text-xl font-semibold mb-2">Units in Stock</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -117,7 +117,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Productos en Alerta</h3>
+            <h3 class="text-xl font-semibold mb-2">Products on Alert</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -140,7 +140,7 @@ interface ChartTooltipContext {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <p-card styleClass="h-full" header="Distribución por Categoría">
+        <p-card styleClass="h-full" header="Distribution by Category">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -159,7 +159,7 @@ interface ChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Niveles de Stock por Categoría">
+        <p-card styleClass="h-full" header="Stock Levels by Category">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -184,21 +184,21 @@ interface ChartTooltipContext {
           <div class="flex flex-wrap items-center gap-3">
             <div class="flex gap-1">
               <p-button
-                label="Todos"
+                label="All"
                 [outlined]="selectedStockView() !== 'all'"
                 [raised]="selectedStockView() === 'all'"
                 (onClick)="changeView('all')"
                 styleClass="p-button-sm mr-1"
               ></p-button>
               <p-button
-                label="Stock Bajo"
+                label="Low Stock"
                 [outlined]="selectedStockView() !== 'low'"
                 [raised]="selectedStockView() === 'low'"
                 (onClick)="changeView('low')"
                 styleClass="p-button-sm p-button-warning mr-1"
               ></p-button>
               <p-button
-                label="Críticos"
+                label="Critical"
                 [outlined]="selectedStockView() !== 'critical'"
                 [raised]="selectedStockView() === 'critical'"
                 (onClick)="changeView('critical')"
@@ -213,14 +213,14 @@ interface ChartTooltipContext {
             [options]="categoryOptions()"
             [ngModel]="selectedCategory()"
             (ngModelChange)="selectedCategory.set($event); filterByCategory()"
-            placeholder="Todas las Categorías"
+            placeholder="All Categories"
             [showClear]="true"
             class="w-64"
           ></p-select>
         </ng-template>
       </p-toolbar>
 
-      <p-card header="Estado de Inventario por Producto">
+      <p-card header="Inventory Status by Product">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -241,20 +241,20 @@ interface ChartTooltipContext {
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="product.name">
-                  Producto <p-sortIcon field="product.name"></p-sortIcon>
+                  Product <p-sortIcon field="product.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="product.category.name">
-                  Categoría
+                  Category
                   <p-sortIcon field="product.category.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="product.stock">
                   Stock <p-sortIcon field="product.stock"></p-sortIcon>
                 </th>
-                <th style="width: 25%">Nivel de Stock</th>
+                <th style="width: 25%">Stock Level</th>
                 <th pSortableColumn="sales">
-                  Ventas <p-sortIcon field="sales"></p-sortIcon>
+                  Sales <p-sortIcon field="sales"></p-sortIcon>
                 </th>
-                <th>Estado</th>
+                <th>Status</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product>
@@ -296,7 +296,7 @@ interface ChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center p-4">
-                  No hay productos disponibles en el inventario.
+                  No products available in inventory.
                 </td>
               </tr>
             </ng-template>
@@ -304,7 +304,7 @@ interface ChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Estado de Inventario por Categoría" styleClass="mt-6">
+      <p-card header="Inventory Status by Category" styleClass="mt-6">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -319,19 +319,19 @@ interface ChartTooltipContext {
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="category.name">
-                  Categoría <p-sortIcon field="category.name"></p-sortIcon>
+                  Category <p-sortIcon field="category.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="productCount">
-                  Productos <p-sortIcon field="productCount"></p-sortIcon>
+                  Products <p-sortIcon field="productCount"></p-sortIcon>
                 </th>
                 <th pSortableColumn="totalStock">
-                  Stock Total <p-sortIcon field="totalStock"></p-sortIcon>
+                  Total Stock <p-sortIcon field="totalStock"></p-sortIcon>
                 </th>
                 <th pSortableColumn="averageStock">
-                  Promedio <p-sortIcon field="averageStock"></p-sortIcon>
+                  Average <p-sortIcon field="averageStock"></p-sortIcon>
                 </th>
                 <th pSortableColumn="lowStockCount">
-                  En Alerta <p-sortIcon field="lowStockCount"></p-sortIcon>
+                  On Alert <p-sortIcon field="lowStockCount"></p-sortIcon>
                 </th>
               </tr>
             </ng-template>
@@ -363,7 +363,7 @@ interface ChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="5" class="text-center p-4">
-                  No hay categorías disponibles en el inventario.
+                  No categories available in inventory.
                 </td>
               </tr>
             </ng-template>
@@ -379,9 +379,9 @@ export class InventoryReportComponent implements OnInit {
   public saleStore = inject(SaleStore);
 
   stockViewOptions = [
-    { label: 'Todos', value: 'all', id: 1 },
-    { label: 'Stock Bajo', value: 'low', id: 2 },
-    { label: 'Críticos', value: 'critical', id: 3 },
+    { label: 'All', value: 'all', id: 1 },
+    { label: 'Low Stock', value: 'low', id: 2 },
+    { label: 'Critical', value: 'critical', id: 3 },
   ];
 
   selectedStockView = signal('all');
@@ -495,11 +495,11 @@ export class InventoryReportComponent implements OnInit {
   reportTitle = computed(() => {
     switch (this.selectedStockView()) {
       case 'low':
-        return 'Productos con Stock Bajo';
+        return 'Products with Low Stock';
       case 'critical':
-        return 'Productos en Estado Crítico';
+        return 'Products in Critical Status';
       default:
-        return 'Estado del Inventario';
+        return 'Inventory Status';
     }
   });
 
@@ -518,7 +518,7 @@ export class InventoryReportComponent implements OnInit {
       labels: categoryData.map((item) => item.category.name),
       datasets: [
         {
-          label: 'Productos por Categoría',
+          label: 'Products by Category',
           data: categoryData.map((item) => item.productCount),
           backgroundColor: [
             '#FF6384',
@@ -544,12 +544,12 @@ export class InventoryReportComponent implements OnInit {
       labels: categoryData.map((item) => item.category.name),
       datasets: [
         {
-          label: 'Stock Total',
+          label: 'Total Stock',
           data: categoryData.map((item) => item.totalStock),
           backgroundColor: '#42A5F5',
         },
         {
-          label: 'Productos en Alerta',
+          label: 'Products on Alert',
           data: categoryData.map((item) => item.lowStockCount),
           backgroundColor: '#FFA726',
         },
@@ -565,7 +565,7 @@ export class InventoryReportComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.label}: ${context.parsed} productos`;
+            return `${context.label}: ${context.parsed} products`;
           },
         },
       },
@@ -583,9 +583,9 @@ export class InventoryReportComponent implements OnInit {
         callbacks: {
           label: (context: ChartTooltipContext) => {
             if (typeof context.parsed === 'number') {
-              return `${context.dataset.label}: ${context.parsed} unidades`;
+              return `${context.dataset.label}: ${context.parsed} units`;
             }
-            return `${context.dataset.label}: ${context.parsed.y} unidades`;
+            return `${context.dataset.label}: ${context.parsed.y} units`;
           },
         },
       },
@@ -597,7 +597,7 @@ export class InventoryReportComponent implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Unidades',
+          text: 'Units',
         },
       },
     },
@@ -664,9 +664,9 @@ export class InventoryReportComponent implements OnInit {
   getStockStatusLabel(status: 'normal' | 'low' | 'critical'): string {
     switch (status) {
       case 'critical':
-        return 'Crítico';
+        return 'Critical';
       case 'low':
-        return 'Bajo';
+        return 'Low';
       default:
         return 'Normal';
     }

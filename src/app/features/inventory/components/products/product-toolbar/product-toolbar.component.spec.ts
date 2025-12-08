@@ -100,7 +100,7 @@ describe('ProductToolbarComponent', () => {
 
   it('should call openProductDialog when new button is clicked', () => {
     const newButton = fixture.debugElement.query(
-      By.css('p-button[label="Nuevo"]'),
+      By.css('p-button[label="New"]'),
     );
     newButton.triggerEventHandler('onClick', null);
 
@@ -112,7 +112,7 @@ describe('ProductToolbarComponent', () => {
     fixture.detectChanges();
 
     const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Eliminar"]'),
+      By.css('p-button[label="Delete"]'),
     );
     expect(deleteButton.componentInstance.disabled).toBeTrue();
   });
@@ -122,7 +122,7 @@ describe('ProductToolbarComponent', () => {
     fixture.detectChanges();
 
     const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Eliminar"]'),
+      By.css('p-button[label="Delete"]'),
     );
     expect(deleteButton.componentInstance.disabled).toBeFalse();
   });
@@ -132,7 +132,7 @@ describe('ProductToolbarComponent', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     expect(exportButton.componentInstance.disabled).toBeTrue();
   });
@@ -142,7 +142,7 @@ describe('ProductToolbarComponent', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     expect(exportButton.componentInstance.disabled).toBeFalse();
   });
@@ -152,7 +152,7 @@ describe('ProductToolbarComponent', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Exportar"]'),
+      By.css('p-button[label="Export"]'),
     );
     exportButton.triggerEventHandler('onClick', null);
 
@@ -165,7 +165,7 @@ describe('ProductToolbarComponent', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Eliminar"]'),
+        By.css('p-button[label="Delete"]'),
       );
       deleteButton.triggerEventHandler('onClick', null);
 
@@ -173,9 +173,9 @@ describe('ProductToolbarComponent', () => {
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
 
-      expect(confirmOptions.header).toBe('Eliminar productos');
+      expect(confirmOptions.header).toBe('Delete products');
       expect(confirmOptions.message).toContain(
-        '¿Está seguro de que desea eliminar los 1 productos seleccionados?',
+        'Are you sure you want to delete the 1 selected products?',
       );
       expect(confirmOptions.message).toContain('<b>Product 1</b>');
     });
@@ -216,7 +216,7 @@ describe('ProductToolbarComponent', () => {
 
       const confirmOptions =
         confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.message).toContain('2 productos seleccionados');
+      expect(confirmOptions.message).toContain('2 selected products');
       expect(confirmOptions.message).toContain('<b>Product 1</b>');
       expect(confirmOptions.message).toContain('<b>Product 2</b>');
     });

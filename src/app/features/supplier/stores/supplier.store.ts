@@ -76,16 +76,17 @@ export const SupplierStore = signalStore(
                 patchState(store, addEntity(createdSupplier));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Proveedor creado',
-                  detail: `El proveedor ${createdSupplier.name} ha sido creado correctamente`,
+                  summary: 'Supplier created',
+                  detail: `The supplier ${createdSupplier.name} has been created successfully`,
                 });
+                patchState(store, { dialogVisible: false });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al crear proveedor',
+                  detail: 'Error creating supplier',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -107,16 +108,17 @@ export const SupplierStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Proveedor actualizado',
-                  detail: `El proveedor ${updatedSupplier.name} ha sido actualizado correctamente`,
+                  summary: 'Supplier updated',
+                  detail: `The supplier ${updatedSupplier.name} has been updated successfully`,
                 });
+                patchState(store, { dialogVisible: false });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Error al actualizar proveedor',
+                  detail: 'Error updating supplier',
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -135,8 +137,8 @@ export const SupplierStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Proveedor eliminado',
-                  detail: 'El proveedor ha sido eliminado correctamente',
+                  summary: 'Supplier deleted',
+                  detail: 'The supplier has been deleted successfully',
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -150,13 +152,13 @@ export const SupplierStore = signalStore(
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: `No se puede eliminar el proveedor "${supplier?.name}" porque está siendo utilizado.`,
+                    detail: `Cannot delete supplier "${supplier?.name}" because it is being used.`,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al eliminar proveedor',
+                    detail: 'Error deleting supplier',
                   });
                 }
               },
@@ -176,9 +178,9 @@ export const SupplierStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Proveedores eliminados',
+                  summary: 'Suppliers deleted',
                   detail:
-                    'Los proveedores seleccionados han sido eliminados correctamente',
+                    'The selected suppliers have been deleted successfully',
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -202,18 +204,18 @@ export const SupplierStore = signalStore(
                   } else if (supplierId !== undefined) {
                     supplierName = `ID ${supplierId}`;
                   } else {
-                    supplierName = 'desconocido';
+                    supplierName = 'unknown';
                   }
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: `No se puede eliminar el proveedor "${supplierName}" porque está siendo utilizado.`,
+                    detail: `Cannot delete supplier "${supplierName}" because it is being used.`,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Error al eliminar proveedores',
+                    detail: 'Error deleting suppliers',
                   });
                 }
               },
@@ -226,13 +228,16 @@ export const SupplierStore = signalStore(
 
     openSupplierDialog: (supplier?: SupplierInfo) => {
       patchState(store, {
-        selectedSupplier: supplier,
+        selectedSupplier: supplier || null,
         dialogVisible: true,
       });
     },
 
     closeSupplierDialog: () => {
-      patchState(store, { dialogVisible: false });
+      patchState(store, {
+        dialogVisible: false,
+        selectedSupplier: null,
+      });
     },
 
     clearSelectedSupplier: () => {

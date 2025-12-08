@@ -63,22 +63,22 @@ export const AuthStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Inicio de sesión exitoso',
-                  detail: `Bienvenido/a, ${name}`,
+                  summary: 'Login Successful',
+                  detail: `Welcome, ${name}`,
                 });
               },
               error: ({ status, error }: HttpErrorResponse) => {
                 let errorMessage =
-                  'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
+                  'An error occurred. Please try again later.';
 
                 if (
                   status === HttpStatusCode.Unauthorized ||
                   status === HttpStatusCode.Forbidden
                 ) {
-                  errorMessage = 'Credenciales inválidas';
+                  errorMessage = 'Invalid credentials';
                 } else if (error?.message) {
                   if (error.message === 'Invalid credentials') {
-                    errorMessage = 'Credenciales inválidas';
+                    errorMessage = 'Invalid credentials';
                   } else {
                     errorMessage = error.message;
                   }
@@ -116,19 +116,19 @@ export const AuthStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Registro exitoso',
-                  detail: `Cuenta creada correctamente. Bienvenido/a, ${name}!`,
+                  summary: 'Registration Successful',
+                  detail: `Account created successfully. Welcome, ${name}!`,
                 });
               },
               error: ({ status, error }: HttpErrorResponse) => {
                 let errorMessage =
-                  'Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde.';
+                  'An error occurred. Please try again later.';
 
                 if (
                   status === HttpStatusCode.Conflict ||
                   error?.message === 'Email already exists'
                 ) {
-                  errorMessage = 'El correo electrónico ya está registrado';
+                  errorMessage = 'Email is already registered';
                 } else if (error?.message) {
                   errorMessage = error.message;
                 }
@@ -157,12 +157,12 @@ export const AuthStore = signalStore(
         token: null,
       });
 
-      router.navigate(['/iniciar-sesion']);
+      router.navigate(['/login']);
 
       messageService.add({
         severity: 'success',
-        summary: 'Sesión cerrada',
-        detail: 'Ha cerrado sesión exitosamente',
+        summary: 'Session Closed',
+        detail: 'You have successfully logged out',
       });
     },
     getToken: (): string | null => {

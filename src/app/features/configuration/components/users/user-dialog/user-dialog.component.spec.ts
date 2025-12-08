@@ -113,7 +113,7 @@ describe('UserDialogComponent', () => {
     fixture.detectChanges();
 
     const cancelButton = fixture.debugElement.nativeElement.querySelector(
-      'p-button[label="Cancelar"]',
+      'p-button[label="Cancel"]',
     );
 
     if (cancelButton) {

@@ -34,12 +34,12 @@ import { UserStore } from '../../../stores/user.store';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Nombre' },
+        { field: 'name', header: 'Name' },
         { field: 'email', header: 'Email' },
-        { field: 'phone', header: 'Teléfono' },
-        { field: 'documentId', header: 'Número de Identificación' },
-        { field: 'lastLogin', header: 'Último Acceso' },
-        { field: 'role', header: 'Rol' },
+        { field: 'phone', header: 'Phone' },
+        { field: 'documentId', header: 'ID Number' },
+        { field: 'lastLogin', header: 'Last Login' },
+        { field: 'role', header: 'Role' },
       ];
 
     <p-table
@@ -51,7 +51,7 @@ import { UserStore } from '../../../stores/user.store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
       [globalFilterFields]="['name', 'email', 'role', 'phone', 'documentId']"
       [tableStyle]="{ 'min-width': '85rem' }"
       rowHover
@@ -63,7 +63,7 @@ import { UserStore } from '../../../stores/user.store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Administrar Usuarios</h5>
+            <h5 class="m-0 text-left">Manage Users</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -76,7 +76,7 @@ import { UserStore } from '../../../stores/user.store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Buscar..."
+                placeholder="Search..."
                 class="w-full"
               />
             </p-iconfield>
@@ -100,8 +100,8 @@ import { UserStore } from '../../../stores/user.store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filtrar por {{ column.header.toLowerCase() }}"
-                  pTooltip="Filtrar por {{ column.header.toLowerCase() }}"
+                  placeholder="Filter by {{ column.header.toLowerCase() }}"
+                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
                   tooltipPosition="top"
                 />
               </div>
@@ -110,16 +110,16 @@ import { UserStore } from '../../../stores/user.store';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Acciones</span>
+              <span>Actions</span>
               <button
                 type="button"
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Limpiar todos los filtros"
+                pTooltip="Clear all filters"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Limpiar todos los filtros"
+                aria-label="Clear all filters"
               ></button>
             </div>
           </th>
@@ -144,10 +144,10 @@ import { UserStore } from '../../../stores/user.store';
                   >
                     @switch (user.role) {
                       @case (UserRole.ADMINISTRATOR) {
-                        Administrador
+                        Administrator
                       }
                       @case (UserRole.EMPLOYEE) {
-                        Empleado
+                        Employee
                       }
                     }
                   </span>
@@ -166,7 +166,7 @@ import { UserStore } from '../../../stores/user.store';
               rounded
               outlined
               (click)="userStore.openUserDialog(user)"
-              pTooltip="Editar usuario"
+              pTooltip="Edit user"
               tooltipPosition="top"
               [disabled]="userStore.loading()"
             />
@@ -177,7 +177,7 @@ import { UserStore } from '../../../stores/user.store';
               rounded
               outlined
               (click)="deleteUser(user)"
-              pTooltip="Eliminar usuario"
+              pTooltip="Delete user"
               tooltipPosition="top"
               [disabled]="userStore.loading()"
             />
@@ -192,11 +192,11 @@ import { UserStore } from '../../../stores/user.store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error al cargar usuarios:</strong>
+                    <strong>Error loading users:</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Reintentar"
+                        label="Retry"
                         (onClick)="userStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="userStore.loading()"
@@ -206,7 +206,7 @@ import { UserStore } from '../../../stores/user.store';
                 </p-message>
               </div>
             } @else {
-              <p>No se encontraron usuarios.</p>
+              <p>No users found.</p>
             }
           </td>
         </tr>
@@ -237,8 +237,8 @@ export class UserTableComponent {
 
   deleteUser({ id, name }: UserInfo): void {
     this.confirmationService.confirm({
-      header: 'Eliminar usuario',
-      message: `¿Está seguro de que desea eliminar el usuario <b>${name}</b>?`,
+      header: 'Delete User',
+      message: `Are you sure you want to delete user <b>${name}</b>?`,
       accept: () => this.userStore.delete(id),
     });
   }
