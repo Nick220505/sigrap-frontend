@@ -20,8 +20,4 @@ export const supplierRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'catalog',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];

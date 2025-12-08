@@ -191,7 +191,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 </span>
 
                 <a
-                  routerLink="/iniciar-sesion"
+                  routerLink="/login"
                   class="ml-2 font-medium text-primary cursor-pointer"
                 >
                   Log in

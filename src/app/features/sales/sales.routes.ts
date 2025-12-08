@@ -23,8 +23,4 @@ export const salesRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'register',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];

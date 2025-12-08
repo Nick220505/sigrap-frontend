@@ -47,8 +47,4 @@ export const reportsRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'sales',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];

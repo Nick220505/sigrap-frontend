@@ -20,8 +20,4 @@ export const inventoryRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'products',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];

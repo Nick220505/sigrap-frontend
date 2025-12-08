@@ -361,7 +361,7 @@ describe('RegisterComponent', () => {
   describe('UI elements', () => {
     it('should contain link to login page', () => {
       const loginLink = fixture.debugElement.query(
-        By.css('a[routerLink="/iniciar-sesion"]'),
+        By.css('a[routerLink="/login"]'),
       );
       expect(loginLink).toBeTruthy();
       expect(loginLink.nativeElement.textContent.trim()).toBe('Log in');

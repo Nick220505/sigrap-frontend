@@ -23,8 +23,4 @@ export const configurationRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'users',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];

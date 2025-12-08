@@ -20,8 +20,4 @@ export const employeeRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'schedules',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];

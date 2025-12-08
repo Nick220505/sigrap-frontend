@@ -52,6 +52,6 @@ describe('authGuard', () => {
 
     expect(result).toBe(mockUrlTree);
     expect(mockAuthStore.loggedIn).toHaveBeenCalled();
-    expect(router.createUrlTree).toHaveBeenCalledWith(['/iniciar-sesion']);
+    expect(router.createUrlTree).toHaveBeenCalledWith(['/login']);
   });
 });

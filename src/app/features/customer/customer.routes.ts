@@ -13,8 +13,4 @@ export const customerRoutes: Routes = [
     pathMatch: 'full',
     redirectTo: 'register',
   },
-  {
-    path: '**',
-    redirectTo: '/not-found',
-  },
 ];
