@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, effect, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -18,7 +18,6 @@ import { TextareaModule } from 'primeng/textarea';
 @Component({
   selector: 'app-supplier-dialog',
   imports: [
-    CommonModule,
     DialogModule,
     ButtonModule,
     ReactiveFormsModule,
@@ -26,8 +25,8 @@ import { TextareaModule } from 'primeng/textarea';
     InputGroupModule,
     InputGroupAddonModule,
     TextareaModule,
-    InputNumberModule,
-  ],
+    InputNumberModule
+],
   template: `
     <p-dialog
       [visible]="supplierStore.dialogVisible()"
