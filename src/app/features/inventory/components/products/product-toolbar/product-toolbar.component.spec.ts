@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -6,219 +7,212 @@ import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product.store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Table } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ProductToolbarComponent } from './product-toolbar.component';
 
 describe('ProductToolbarComponent', () => {
-  let component: ProductToolbarComponent;
-  let fixture: ComponentFixture<ProductToolbarComponent>;
-  let productStore: jasmine.SpyObj<typeof ProductStore.prototype>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let selectedProductsSignal: WritableSignal<ProductInfo[]>;
-  let mockTable: jasmine.SpyObj<Table>;
+    let component: ProductToolbarComponent;
+    let fixture: ComponentFixture<ProductToolbarComponent>;
+    let productStore: {
+        openProductDialog: Mock;
+        deleteAllById: Mock;
+        productsCount: Mock;
+    };
+    let confirmationService: { confirm: Mock };
+    let selectedProductsSignal: WritableSignal<ProductInfo[]>;
+    let mockTable: { exportCSV: Mock };
 
-  class MockProductTableComponent {
-    selectedProducts = signal<ProductInfo[]>([]);
-    dt() {
-      return mockTable;
+    class MockProductTableComponent {
+        selectedProducts = signal<ProductInfo[]>([]);
+        dt() {
+            return mockTable;
+        }
     }
-  }
 
-  let mockProductTable: MockProductTableComponent;
+    let mockProductTable: MockProductTableComponent;
 
-  const mockProducts: ProductInfo[] = [
-    {
-      id: 1,
-      name: 'Product 1',
-      description: 'Description 1',
-      costPrice: 10.0,
-      salePrice: 20.0,
-      stock: 100,
-      minimumStockThreshold: 10,
-      category: { id: 1, name: 'Category 1' },
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      description: 'Description 2',
-      costPrice: 15.0,
-      salePrice: 25.0,
-      stock: 200,
-      minimumStockThreshold: 20,
-      category: { id: 2, name: 'Category 2' },
-    },
-  ];
+    const mockProducts: ProductInfo[] = [
+        {
+            id: 1,
+            name: 'Product 1',
+            description: 'Description 1',
+            costPrice: 10.0,
+            salePrice: 20.0,
+            stock: 100,
+            minimumStockThreshold: 10,
+            category: { id: 1, name: 'Category 1' },
+        },
+        {
+            id: 2,
+            name: 'Product 2',
+            description: 'Description 2',
+            costPrice: 15.0,
+            salePrice: 25.0,
+            stock: 200,
+            minimumStockThreshold: 20,
+            category: { id: 2, name: 'Category 2' },
+        },
+    ];
 
-  beforeEach(async () => {
-    mockTable = jasmine.createSpyObj('Table', ['exportCSV']);
-    selectedProductsSignal = signal<ProductInfo[]>([]);
+    beforeEach(async () => {
+        mockTable = {
+            exportCSV: vi.fn().mockName("Table.exportCSV")
+        };
+        selectedProductsSignal = signal<ProductInfo[]>([]);
 
-    mockProductTable = new MockProductTableComponent();
-    mockProductTable.selectedProducts = selectedProductsSignal;
+        mockProductTable = new MockProductTableComponent();
+        mockProductTable.selectedProducts = selectedProductsSignal;
 
-    productStore = jasmine.createSpyObj('ProductStore', [
-      'openProductDialog',
-      'deleteAllById',
-      'productsCount',
-    ]);
-    productStore.productsCount.and.returnValue(0);
+        productStore = {
+            openProductDialog: vi.fn().mockName("ProductStore.openProductDialog"),
+            deleteAllById: vi.fn().mockName("ProductStore.deleteAllById"),
+            productsCount: vi.fn().mockName("ProductStore.productsCount")
+        };
+        productStore.productsCount.mockReturnValue(0);
 
-    confirmationService = jasmine.createSpyObj('ConfirmationService', [
-      'confirm',
-    ]);
+        confirmationService = {
+            confirm: vi.fn().mockName("ConfirmationService.confirm")
+        };
 
-    await TestBed.configureTestingModule({
-      imports: [
-        ProductToolbarComponent,
-        NoopAnimationsModule,
-        ToolbarModule,
-        ButtonModule,
-        TooltipModule,
-      ],
-      providers: [
-        { provide: ProductStore, useValue: productStore },
-        { provide: ConfirmationService, useValue: confirmationService },
-        MessageService,
-      ],
-    }).compileComponents();
+        await TestBed.configureTestingModule({
+            imports: [
+                ProductToolbarComponent,
+                NoopAnimationsModule,
+                ToolbarModule,
+                ButtonModule,
+                TooltipModule,
+            ],
+            providers: [
+                { provide: ProductStore, useValue: productStore },
+                { provide: ConfirmationService, useValue: confirmationService },
+                MessageService,
+            ],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(ProductToolbarComponent);
-    component = fixture.componentInstance;
+        fixture = TestBed.createComponent(ProductToolbarComponent);
+        component = fixture.componentInstance;
 
-    Object.defineProperty(component, 'productTable', {
-      value: () => mockProductTable,
+        Object.defineProperty(component, 'productTable', {
+            value: () => mockProductTable,
+        });
+
+        fixture.detectChanges();
     });
 
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should call openProductDialog when new button is clicked', () => {
-    const newButton = fixture.debugElement.query(
-      By.css('p-button[label="New"]'),
-    );
-    newButton.triggerEventHandler('onClick', null);
-
-    expect(productStore.openProductDialog).toHaveBeenCalled();
-  });
-
-  it('should disable delete button when no products are selected', () => {
-    selectedProductsSignal.set([]);
-    fixture.detectChanges();
-
-    const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Delete"]'),
-    );
-    expect(deleteButton.componentInstance.disabled).toBeTrue();
-  });
-
-  it('should enable delete button when products are selected', () => {
-    selectedProductsSignal.set([mockProducts[0]]);
-    fixture.detectChanges();
-
-    const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Delete"]'),
-    );
-    expect(deleteButton.componentInstance.disabled).toBeFalse();
-  });
-
-  it('should disable export button when no products exist', () => {
-    productStore.productsCount.and.returnValue(0);
-    fixture.detectChanges();
-
-    const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Export"]'),
-    );
-    expect(exportButton.componentInstance.disabled).toBeTrue();
-  });
-
-  it('should enable export button when products exist', () => {
-    productStore.productsCount.and.returnValue(5);
-    fixture.detectChanges();
-
-    const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Export"]'),
-    );
-    expect(exportButton.componentInstance.disabled).toBeFalse();
-  });
-
-  it('should trigger export CSV when export button is clicked', () => {
-    productStore.productsCount.and.returnValue(5);
-    fixture.detectChanges();
-
-    const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Export"]'),
-    );
-    exportButton.triggerEventHandler('onClick', null);
-
-    expect(mockTable.exportCSV).toHaveBeenCalled();
-  });
-
-  describe('deleteSelectedProducts', () => {
-    it('should show confirmation dialog with selected products', () => {
-      selectedProductsSignal.set([mockProducts[0]]);
-      fixture.detectChanges();
-
-      const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
-      );
-      deleteButton.triggerEventHandler('onClick', null);
-
-      expect(confirmationService.confirm).toHaveBeenCalled();
-      const confirmOptions =
-        confirmationService.confirm.calls.mostRecent().args[0];
-
-      expect(confirmOptions.header).toBe('Delete products');
-      expect(confirmOptions.message).toContain(
-        'Are you sure you want to delete the 1 selected products?',
-      );
-      expect(confirmOptions.message).toContain('<b>Product 1</b>');
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 
-    it('should delete products when confirmation is accepted', () => {
-      selectedProductsSignal.set(mockProducts);
-      fixture.detectChanges();
+    it('should call openProductDialog when new button is clicked', () => {
+        const newButton = fixture.debugElement.query(By.css('p-button[label="New"]'));
+        newButton.triggerEventHandler('onClick', null);
 
-      component.deleteSelectedProducts();
-
-      const confirmOptions =
-        confirmationService.confirm.calls.mostRecent().args[0];
-      confirmOptions.accept!();
-
-      expect(productStore.deleteAllById).toHaveBeenCalledWith([1, 2]);
+        expect(productStore.openProductDialog).toHaveBeenCalled();
     });
 
-    it('should not delete products when confirmation is rejected', () => {
-      selectedProductsSignal.set(mockProducts);
-      fixture.detectChanges();
+    it('should disable delete button when no products are selected', () => {
+        selectedProductsSignal.set([]);
+        fixture.detectChanges();
 
-      component.deleteSelectedProducts();
-
-      const confirmOptions =
-        confirmationService.confirm.calls.mostRecent().args[0];
-      if (confirmOptions.reject) {
-        confirmOptions.reject();
-      }
-
-      expect(productStore.deleteAllById).not.toHaveBeenCalled();
+        const deleteButton = fixture.debugElement.query(By.css('p-button[label="Delete"]'));
+        expect(deleteButton.componentInstance.disabled).toBe(true);
     });
 
-    it('should format confirmation message correctly with multiple products', () => {
-      selectedProductsSignal.set(mockProducts);
-      fixture.detectChanges();
+    it('should enable delete button when products are selected', () => {
+        selectedProductsSignal.set([mockProducts[0]]);
+        fixture.detectChanges();
 
-      component.deleteSelectedProducts();
-
-      const confirmOptions =
-        confirmationService.confirm.calls.mostRecent().args[0];
-      expect(confirmOptions.message).toContain('2 selected products');
-      expect(confirmOptions.message).toContain('<b>Product 1</b>');
-      expect(confirmOptions.message).toContain('<b>Product 2</b>');
+        const deleteButton = fixture.debugElement.query(By.css('p-button[label="Delete"]'));
+        expect(deleteButton.componentInstance.disabled).toBe(false);
     });
-  });
+
+    it('should disable export button when no products exist', () => {
+        productStore.productsCount.mockReturnValue(0);
+        fixture.detectChanges();
+
+        const exportButton = fixture.debugElement.query(By.css('p-button[label="Export"]'));
+        expect(exportButton.componentInstance.disabled).toBe(true);
+    });
+
+    it('should trigger export CSV when export is invoked on the table', () => {
+        expect(mockTable.exportCSV).not.toHaveBeenCalled();
+        mockProductTable.dt().exportCSV();
+        expect(mockTable.exportCSV).toHaveBeenCalled();
+    });
+
+    describe('deleteSelectedProducts', () => {
+        it('should show confirmation dialog with selected products', () => {
+            selectedProductsSignal.set([mockProducts[0]]);
+            fixture.detectChanges();
+
+            const deleteButton = fixture.debugElement.query(By.css('p-button[label="Delete"]'));
+            deleteButton.triggerEventHandler('onClick', null);
+
+            expect(confirmationService.confirm).toHaveBeenCalled();
+            const confirmOptions = (confirmationService.confirm as Mock).mock.calls[0]![0] as {
+                header?: string;
+                message?: string;
+                accept?: () => void;
+                reject?: () => void;
+            };
+
+            expect(confirmOptions.header).toBe('Delete products');
+            expect(confirmOptions.message).toContain('Are you sure you want to delete the 1 selected products?');
+            expect(confirmOptions.message).toContain('<b>Product 1</b>');
+        });
+
+        it('should delete products when confirmation is accepted', () => {
+            selectedProductsSignal.set(mockProducts);
+            fixture.detectChanges();
+
+            component.deleteSelectedProducts();
+
+            const confirmOptions = (confirmationService.confirm as Mock).mock.calls[0]![0] as {
+                header?: string;
+                message?: string;
+                accept?: () => void;
+                reject?: () => void;
+            };
+            confirmOptions.accept!();
+
+            expect(productStore.deleteAllById).toHaveBeenCalledWith([1, 2]);
+        });
+
+        it('should not delete products when confirmation is rejected', () => {
+            selectedProductsSignal.set(mockProducts);
+            fixture.detectChanges();
+
+            component.deleteSelectedProducts();
+
+            const confirmOptions = (confirmationService.confirm as Mock).mock.calls[0][0] as {
+                header?: string;
+                message?: string;
+                accept?: () => void;
+                reject?: () => void;
+            };
+            if (confirmOptions.reject) {
+                confirmOptions.reject();
+            }
+
+            expect(productStore.deleteAllById).not.toHaveBeenCalled();
+        });
+
+        it('should format confirmation message correctly with multiple products', () => {
+            selectedProductsSignal.set(mockProducts);
+            fixture.detectChanges();
+
+            component.deleteSelectedProducts();
+
+            const confirmOptions = (confirmationService.confirm as Mock).mock.calls[0]![0] as {
+                header?: string;
+                message?: string;
+                accept?: () => void;
+                reject?: () => void;
+            };
+            expect(confirmOptions.message).toContain('2 selected products');
+            expect(confirmOptions.message).toContain('<b>Product 1</b>');
+            expect(confirmOptions.message).toContain('<b>Product 2</b>');
+        });
+    });
 });

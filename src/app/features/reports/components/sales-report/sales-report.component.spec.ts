@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserRole } from '@features/configuration/models/user.model';
@@ -7,66 +8,64 @@ import { of } from 'rxjs';
 import { SalesReportComponent } from './sales-report.component';
 
 describe('SalesReportComponent', () => {
-  let component: SalesReportComponent;
-  let fixture: ComponentFixture<SalesReportComponent>;
+    let component: SalesReportComponent;
+    let fixture: ComponentFixture<SalesReportComponent>;
 
-  beforeEach(async () => {
-    const mockSale = {
-      id: 1,
-      totalAmount: 100,
-      taxAmount: 10,
-      discountAmount: 5,
-      finalAmount: 105,
-      customer: {
-        id: 1,
-        fullName: 'Test Customer',
-        email: 'customer@example.com',
-        address: 'Test Address',
-      },
-      employee: {
-        id: 1,
-        name: 'Test Employee',
-        email: 'employee@example.com',
-        role: UserRole.EMPLOYEE,
-      },
-      items: [],
-      createdAt: '2023-01-01T00:00:00Z',
-      updatedAt: '2023-01-01T00:00:00Z',
-    };
+    beforeEach(async () => {
+        const mockSale = {
+            id: 1,
+            totalAmount: 100,
+            taxAmount: 10,
+            discountAmount: 5,
+            finalAmount: 105,
+            customer: {
+                id: 1,
+                fullName: 'Test Customer',
+                email: 'customer@example.com',
+                address: 'Test Address',
+            },
+            employee: {
+                id: 1,
+                name: 'Test Employee',
+                email: 'employee@example.com',
+                role: UserRole.EMPLOYEE,
+            },
+            items: [],
+            createdAt: '2023-01-01T00:00:00Z',
+            updatedAt: '2023-01-01T00:00:00Z',
+        };
 
-    const productStoreMock = {
-      loading: () => false,
-      products: () => [],
-      loadProducts: jasmine.createSpy('loadProducts'),
-      findAll: jasmine.createSpy('findAll').and.returnValue(of([])),
-    };
+        const productStoreMock = {
+            loading: () => false,
+            products: () => [],
+            loadProducts: vi.fn(),
+            findAll: vi.fn().mockReturnValue(of([])),
+        };
 
-    const mockSales = [mockSale];
-    const saleStoreMock = {
-      loading: () => false,
-      sales: () => mockSales,
-      entities: () => mockSales,
-      findAll: jasmine.createSpy('findAll').and.returnValue(of(mockSales)),
-      findByDateRange: jasmine
-        .createSpy('findByDateRange')
-        .and.returnValue(of(mockSales)),
-    };
+        const mockSales = [mockSale];
+        const saleStoreMock = {
+            loading: () => false,
+            sales: () => mockSales,
+            entities: () => mockSales,
+            findAll: vi.fn().mockReturnValue(of(mockSales)),
+            findByDateRange: vi.fn().mockReturnValue(of(mockSales)),
+        };
 
-    await TestBed.configureTestingModule({
-      imports: [SalesReportComponent],
-      providers: [
-        provideHttpClient(),
-        { provide: ProductStore, useValue: productStoreMock },
-        { provide: SaleStore, useValue: saleStoreMock },
-      ],
-    }).compileComponents();
+        await TestBed.configureTestingModule({
+            imports: [SalesReportComponent],
+            providers: [
+                provideHttpClient(),
+                { provide: ProductStore, useValue: productStoreMock },
+                { provide: SaleStore, useValue: saleStoreMock },
+            ],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(SalesReportComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(SalesReportComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

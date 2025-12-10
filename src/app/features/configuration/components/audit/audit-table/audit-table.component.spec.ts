@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { DatePipe, NgClass } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
@@ -5,93 +6,102 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
-import { DialogModule } from 'primeng/dialog';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import { TooltipModule } from 'primeng/tooltip';
+import { PrimeNG } from 'primeng/config';
 import { AuditLogStore } from '../../../stores/audit-log.store';
 import { AuditTableComponent } from './audit-table.component';
 
+const primengConfigStub: PrimeNG = new Proxy(
+    {
+        pt: () => ({}),
+        csp: () => ({}),
+        unstyled: () => false,
+        theme: () => ({}),
+        ptOptions: () => ({}),
+        translationObserver: {
+            subscribe: () => ({ unsubscribe: () => undefined }),
+        },
+    },
+    {
+        get(target, prop: string | symbol) {
+            if (prop in target) {
+                return target[prop as keyof typeof target];
+            }
+            return () => ({});
+        },
+    }
+) as unknown as PrimeNG;
+
 describe('AuditTableComponent', () => {
-  let component: AuditTableComponent;
-  let fixture: ComponentFixture<AuditTableComponent>;
-  let mockStore: {
-    entities: any;
-    loading: any;
-    error: any;
-    pageSize: any;
-    totalRecords: any;
-    findAll: jasmine.Spy;
-  };
-
-  beforeEach(async () => {
-    mockStore = {
-      entities: signal([]),
-      loading: signal(false),
-      error: signal(null),
-      pageSize: signal(10),
-      totalRecords: signal(0),
-      findAll: jasmine.createSpy('findAll'),
+    let component: AuditTableComponent;
+    let fixture: ComponentFixture<AuditTableComponent>;
+    let mockStore: {
+        entities: unknown;
+        loading: unknown;
+        error: unknown;
+        pageSize: unknown;
+        totalRecords: unknown;
+        findAll: Mock;
     };
 
-    await TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        FormsModule,
-        TableModule,
-        ButtonModule,
-        InputTextModule,
-        DialogModule,
-        TooltipModule,
-        CalendarModule,
-        ToastModule,
-        DatePipe,
-        PaginatorModule,
-        InputIconModule,
-        MessageModule,
-        IconFieldModule,
-        NgClass,
-        AuditTableComponent,
-      ],
-      providers: [
-        provideHttpClient(),
-        MessageService,
-        { provide: AuditLogStore, useValue: mockStore },
-      ],
-    }).compileComponents();
+    beforeEach(async () => {
+        mockStore = {
+            entities: signal([]),
+            loading: signal(false),
+            error: signal(null),
+            pageSize: signal(10),
+            totalRecords: signal(0),
+            findAll: vi.fn(),
+        };
 
-    fixture = TestBed.createComponent(AuditTableComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        await TestBed.configureTestingModule({
+            imports: [
+                NoopAnimationsModule,
+                FormsModule,
+                DatePipe,
+                PaginatorModule,
+                NgClass,
+                AuditTableComponent,
+            ],
+            providers: [
+                provideHttpClient(),
+                MessageService,
+                { provide: AuditLogStore, useValue: mockStore },
+                { provide: PrimeNG, useValue: primengConfigStub },
+            ],
+        })
+            .overrideComponent(AuditTableComponent, {
+                set: {
+                    template: `<div class="audit-table-root"></div>`,
+                },
+            })
+            .compileComponents();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should have a reference to the AuditLogStore', () => {
-    expect(component.auditLogStore).toBeTruthy();
-  });
-
-  it('should handle page change', () => {
-    const mockEvent: PaginatorState = {
-      page: 1,
-      first: 10,
-      rows: 10,
-      pageCount: 5,
-    };
-
-    component.onPageChange(mockEvent);
-    expect(mockStore.findAll).toHaveBeenCalledWith({
-      page: mockEvent.page,
-      size: mockEvent.rows,
+        fixture = TestBed.createComponent(AuditTableComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     });
-  });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should have a reference to the AuditLogStore', () => {
+        expect(component.auditLogStore).toBeTruthy();
+    });
+
+    it('should handle page change', () => {
+        const mockEvent: PaginatorState = {
+            page: 1,
+            first: 10,
+            rows: 10,
+            pageCount: 5,
+        };
+
+        component.onPageChange(mockEvent);
+        expect(mockStore.findAll).toHaveBeenCalledWith({
+            page: mockEvent.page,
+            size: mockEvent.rows,
+        });
+    });
 });

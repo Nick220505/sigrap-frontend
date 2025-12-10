@@ -1,11 +1,7 @@
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { CurrencyPipe } from '@angular/common';
 import { signal, WritableSignal } from '@angular/core';
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -33,489 +29,467 @@ import { TextareaModule } from 'primeng/textarea';
 import { SalesReturnsDialogComponent } from './sales-returns-dialog.component';
 
 describe('SalesReturnsDialogComponent', () => {
-  let component: SalesReturnsDialogComponent;
-  let fixture: ComponentFixture<SalesReturnsDialogComponent>;
-  let saleReturnStore: jasmine.SpyObj<{
-    dialogVisible: WritableSignal<boolean>;
-    selectedSaleReturn: WritableSignal<SaleReturnInfo | null>;
-    closeReturnDialog: jasmine.Spy;
-    create: jasmine.Spy;
-    update: jasmine.Spy;
-  }>;
-  let saleStore: jasmine.SpyObj<{
-    entities: WritableSignal<SaleInfo[]>;
-  }>;
-  let productStore: jasmine.SpyObj<{
-    entities: WritableSignal<ProductInfo[]>;
-  }>;
-  let authStore: jasmine.SpyObj<{
-    user: WritableSignal<{ id: number; email: string; name: string } | null>;
-  }>;
-  let userStore: jasmine.SpyObj<{
-    entities: WritableSignal<UserInfo[]>;
-  }>;
-  let messageService: jasmine.SpyObj<MessageService>;
+    let component: SalesReturnsDialogComponent;
+    let fixture: ComponentFixture<SalesReturnsDialogComponent>;
+    let saleReturnStore: {
+        dialogVisible: WritableSignal<boolean>;
+        selectedSaleReturn: WritableSignal<SaleReturnInfo | null>;
+        closeReturnDialog: Mock;
+        create: Mock;
+        update: Mock;
+    };
+    let saleStore: {
+        entities: WritableSignal<SaleInfo[]>;
+    };
+    let productStore: {
+        entities: WritableSignal<ProductInfo[]>;
+    };
+    let authStore: {
+        user: WritableSignal<{
+            id: number;
+            email: string;
+            name: string;
+        } | null>;
+    };
+    let userStore: {
+        entities: WritableSignal<UserInfo[]>;
+    };
+    let messageService: { add: Mock };
 
-  const mockCategory: CategoryInfo = {
-    id: 1,
-    name: 'Test Category',
-    description: 'Test Category Description',
-  };
-
-  const mockProduct: ProductInfo = {
-    id: 1,
-    name: 'Test Product',
-    description: 'Test Description',
-    costPrice: 20000,
-    salePrice: 25000,
-    stock: 100,
-    minimumStockThreshold: 10,
-    category: mockCategory,
-  };
-
-  const mockCustomer: CustomerInfo = {
-    id: 1,
-    fullName: 'Test Customer',
-    documentId: '1234567890',
-    email: 'customer@test.com',
-    phoneNumber: '1234567890',
-    address: 'Test Address',
-  };
-
-  const mockEmployee: UserInfo = {
-    id: 1,
-    name: 'Test Employee',
-    email: 'employee@test.com',
-    role: UserRole.EMPLOYEE,
-    lastLogin: new Date().toISOString(),
-  };
-
-  const mockSaleItems: SaleItemInfo[] = [
-    {
-      id: 1,
-      product: mockProduct,
-      quantity: 2,
-      unitPrice: 25000,
-      subtotal: 50000,
-    },
-    {
-      id: 2,
-      product: {
-        ...mockProduct,
-        id: 2,
-        name: 'Test Product 2',
-      },
-      quantity: 1,
-      unitPrice: 30000,
-      subtotal: 30000,
-    },
-  ];
-
-  const mockSale: SaleInfo = {
-    id: 100,
-    customer: mockCustomer,
-    employee: mockEmployee,
-    items: mockSaleItems,
-    totalAmount: 80000,
-    taxAmount: 0,
-    discountAmount: 0,
-    finalAmount: 80000,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  const mockSaleReturn: SaleReturnInfo = {
-    id: 1,
-    originalSaleId: 100,
-    customer: mockCustomer,
-    employee: mockEmployee,
-    totalReturnAmount: 50000,
-    reason: 'Test Reason',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    items: [
-      {
+    const mockCategory: CategoryInfo = {
         id: 1,
-        product: mockProduct,
-        quantity: 2,
-        unitPrice: 25000,
-        subtotal: 50000,
-      },
-    ],
-  };
+        name: 'Test Category',
+        description: 'Test Category Description',
+    };
 
-  beforeEach(async () => {
-    const dialogVisibleSignal = signal(false);
-    const selectedSaleReturnSignal = signal<SaleReturnInfo | null>(null);
-    const salesEntitiesSignal = signal<SaleInfo[]>([mockSale]);
-    const productsEntitiesSignal = signal<ProductInfo[]>([
-      mockProduct,
-      {
-        ...mockProduct,
-        id: 2,
-        name: 'Test Product 2',
-      },
-    ]);
-    const userEntitiesSignal = signal<UserInfo[]>([mockEmployee]);
-    const authUserSignal = signal<{
-      id: number;
-      email: string;
-      name: string;
-    } | null>({
-      id: 1,
-      email: 'employee@test.com',
-      name: 'Test Employee',
+    const mockProduct: ProductInfo = {
+        id: 1,
+        name: 'Test Product',
+        description: 'Test Description',
+        costPrice: 20000,
+        salePrice: 25000,
+        stock: 100,
+        minimumStockThreshold: 10,
+        category: mockCategory,
+    };
+
+    const mockCustomer: CustomerInfo = {
+        id: 1,
+        fullName: 'Test Customer',
+        documentId: '1234567890',
+        email: 'customer@test.com',
+        phoneNumber: '1234567890',
+        address: 'Test Address',
+    };
+
+    const mockEmployee: UserInfo = {
+        id: 1,
+        name: 'Test Employee',
+        email: 'employee@test.com',
+        role: UserRole.EMPLOYEE,
+        lastLogin: new Date().toISOString(),
+    };
+
+    const mockSaleItems: SaleItemInfo[] = [
+        {
+            id: 1,
+            product: mockProduct,
+            quantity: 2,
+            unitPrice: 25000,
+            subtotal: 50000,
+        },
+        {
+            id: 2,
+            product: {
+                ...mockProduct,
+                id: 2,
+                name: 'Test Product 2',
+            },
+            quantity: 1,
+            unitPrice: 30000,
+            subtotal: 30000,
+        },
+    ];
+
+    const mockSale: SaleInfo = {
+        id: 100,
+        customer: mockCustomer,
+        employee: mockEmployee,
+        items: mockSaleItems,
+        totalAmount: 80000,
+        taxAmount: 0,
+        discountAmount: 0,
+        finalAmount: 80000,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+
+    const mockSaleReturn: SaleReturnInfo = {
+        id: 1,
+        originalSaleId: 100,
+        customer: mockCustomer,
+        employee: mockEmployee,
+        totalReturnAmount: 50000,
+        reason: 'Test Reason',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        items: [
+            {
+                id: 1,
+                product: mockProduct,
+                quantity: 2,
+                unitPrice: 25000,
+                subtotal: 50000,
+            },
+        ],
+    };
+
+    beforeEach(async () => {
+        const dialogVisibleSignal = signal(false);
+        const selectedSaleReturnSignal = signal<SaleReturnInfo | null>(null);
+        const salesEntitiesSignal = signal<SaleInfo[]>([mockSale]);
+        const productsEntitiesSignal = signal<ProductInfo[]>([
+            mockProduct,
+            {
+                ...mockProduct,
+                id: 2,
+                name: 'Test Product 2',
+            },
+        ]);
+        const userEntitiesSignal = signal<UserInfo[]>([mockEmployee]);
+        const authUserSignal = signal<{
+            id: number;
+            email: string;
+            name: string;
+        } | null>({
+            id: 1,
+            email: 'employee@test.com',
+            name: 'Test Employee',
+        });
+
+        saleReturnStore = {
+            closeReturnDialog: vi.fn().mockName("SaleReturnStore.closeReturnDialog"),
+            create: vi.fn().mockName("SaleReturnStore.create"),
+            update: vi.fn().mockName("SaleReturnStore.update"),
+            dialogVisible: dialogVisibleSignal,
+            selectedSaleReturn: selectedSaleReturnSignal
+        };
+
+        saleStore = {
+            entities: salesEntitiesSignal
+        };
+
+        productStore = {
+            entities: productsEntitiesSignal
+        };
+
+        userStore = {
+            entities: userEntitiesSignal
+        };
+
+        authStore = {
+            user: authUserSignal
+        };
+
+        messageService = {
+            add: vi.fn().mockName("MessageService.add")
+        };
+
+        await TestBed.configureTestingModule({
+            imports: [
+                SalesReturnsDialogComponent,
+                ReactiveFormsModule,
+                FormsModule,
+                NoopAnimationsModule,
+                DialogModule,
+                ButtonModule,
+                InputTextModule,
+                InputNumberModule,
+                SelectModule,
+                TableModule,
+                TextareaModule,
+                CurrencyPipe,
+                InputGroupModule,
+                InputGroupAddonModule,
+            ],
+            providers: [
+                { provide: SaleReturnStore, useValue: saleReturnStore },
+                { provide: SaleStore, useValue: saleStore },
+                { provide: ProductStore, useValue: productStore },
+                { provide: UserStore, useValue: userStore },
+                { provide: AuthStore, useValue: authStore },
+                { provide: MessageService, useValue: messageService },
+            ],
+        }).compileComponents();
+
+        fixture = TestBed.createComponent(SalesReturnsDialogComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     });
 
-    saleReturnStore = jasmine.createSpyObj(
-      'SaleReturnStore',
-      ['closeReturnDialog', 'create', 'update'],
-      {
-        dialogVisible: dialogVisibleSignal,
-        selectedSaleReturn: selectedSaleReturnSignal,
-      },
-    );
-
-    saleStore = jasmine.createSpyObj('SaleStore', [], {
-      entities: salesEntitiesSignal,
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 
-    productStore = jasmine.createSpyObj('ProductStore', [], {
-      entities: productsEntitiesSignal,
+    describe('Dialog initialization', () => {
+        it('should initialize with an empty form', () => {
+            expect(component.returnForm.get('originalSaleId')?.value).toBeNull();
+            expect(component.returnForm.get('reason')?.value).toBe('');
+            expect(component.returnForm.get('totalReturnAmount')?.value).toBe(0);
+            expect(component.returnItemsArray.length).toBe(0);
+        });
+
+        it('should show dialog when dialogVisible is true', () => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            fixture.detectChanges();
+
+            const dialog = fixture.debugElement.query(By.css('p-dialog'));
+            expect(dialog).toBeTruthy();
+            expect(dialog.componentInstance.visible).toBe(true);
+        });
+
+        it('should have "New Return" header when no return is selected', () => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            (saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>).set(null);
+            fixture.detectChanges();
+
+            const dialogHeader = fixture.debugElement.query(By.css('.p-dialog-title'));
+            expect(dialogHeader.nativeElement.textContent.trim()).toBe('New Return');
+        });
+
+        it('should have "Return Details" header when a return is selected', () => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            (saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>).set(mockSaleReturn);
+            fixture.detectChanges();
+
+            const dialogHeader = fixture.debugElement.query(By.css('.p-dialog-title'));
+            expect(dialogHeader.nativeElement.textContent.trim()).toBe('Return Details');
+        });
     });
 
-    userStore = jasmine.createSpyObj('UserStore', [], {
-      entities: userEntitiesSignal,
+    describe('Sale selection', () => {
+        beforeEach(() => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            fixture.detectChanges();
+        });
+
+        it('should populate customer info when original sale is selected', () => {
+            component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+            component.onOriginalSaleChange(mockSale.id);
+            fixture.detectChanges();
+
+            const customerNameInput = fixture.debugElement.query(By.css('input#customerName'));
+            expect(customerNameInput.nativeElement.value).toBe(mockCustomer.fullName);
+        });
+
+        it('should populate items when original sale is selected', () => {
+            component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+            component.onOriginalSaleChange(mockSale.id);
+            fixture.detectChanges();
+
+            expect(component.returnItemsArray.length).toBe(mockSaleItems.length);
+            expect(component.returnItemsArray.at(0).get('productId')?.value).toBe(mockSaleItems[0].product.id);
+            expect(component.returnItemsArray.at(0).get('unitPrice')?.value).toBe(mockSaleItems[0].unitPrice);
+        });
+
+        it('should reset form when sale is deselected', () => {
+            component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+            component.onOriginalSaleChange(mockSale.id);
+            fixture.detectChanges();
+
+            component.returnForm.get('originalSaleId')?.setValue(null);
+            component.onOriginalSaleChange(null);
+            fixture.detectChanges();
+
+            expect(component.selectedOriginalSale()).toBeNull();
+            expect(component.returnForm.get('customerId')?.value).toBeNull();
+            expect(component.returnItemsArray.length).toBe(0);
+        });
     });
 
-    authStore = jasmine.createSpyObj('AuthStore', [], {
-      user: authUserSignal,
+    describe('Return items', () => {
+        beforeEach(() => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+            component.onOriginalSaleChange(mockSale.id);
+            fixture.detectChanges();
+        });
+
+        it('should update subtotal when quantity changes', () => {
+            const itemGroup = component.returnItemsArray.at(0);
+            const originalPrice = itemGroup.get('unitPrice')?.value;
+
+            itemGroup.get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(0);
+            fixture.detectChanges();
+
+            expect(itemGroup.get('subtotal')?.value).toBe(originalPrice);
+            expect(component.returnForm.get('totalReturnAmount')?.value).toBe(originalPrice);
+        });
+
+        it('should update total return amount when subtotals change', () => {
+            component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(0);
+
+            component.returnItemsArray.at(1).get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(1);
+
+            fixture.detectChanges();
+
+            const expectedTotal = component.returnItemsArray.at(0).get('subtotal')?.value +
+                component.returnItemsArray.at(1).get('subtotal')?.value;
+
+            expect(component.returnForm.get('totalReturnAmount')?.value).toBe(expectedTotal);
+        });
+
+        it('should detect when no items are selected for return', () => {
+            component.returnItemsArray.at(0).get('quantity')?.setValue(0);
+            component.returnItemsArray.at(1).get('quantity')?.setValue(0);
+            fixture.detectChanges();
+
+            expect(component.returnHasNoItems()).toBe(true);
+
+            component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+            fixture.detectChanges();
+
+            expect(component.returnHasNoItems()).toBe(false);
+        });
     });
 
-    messageService = jasmine.createSpyObj('MessageService', ['add']);
+    describe('Form validation', () => {
+        beforeEach(() => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+            component.onOriginalSaleChange(mockSale.id);
+            fixture.detectChanges();
+        });
 
-    await TestBed.configureTestingModule({
-      imports: [
-        SalesReturnsDialogComponent,
-        ReactiveFormsModule,
-        FormsModule,
-        NoopAnimationsModule,
-        DialogModule,
-        ButtonModule,
-        InputTextModule,
-        InputNumberModule,
-        SelectModule,
-        TableModule,
-        TextareaModule,
-        CurrencyPipe,
-        InputGroupModule,
-        InputGroupAddonModule,
-      ],
-      providers: [
-        { provide: SaleReturnStore, useValue: saleReturnStore },
-        { provide: SaleStore, useValue: saleStore },
-        { provide: ProductStore, useValue: productStore },
-        { provide: UserStore, useValue: userStore },
-        { provide: AuthStore, useValue: authStore },
-        { provide: MessageService, useValue: messageService },
-      ],
-    }).compileComponents();
+        it('should require reason field', () => {
+            component.returnForm.get('reason')?.setValue('');
+            component.returnForm.get('reason')?.markAsTouched();
+            component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(0);
+            fixture.detectChanges();
 
-    fixture = TestBed.createComponent(SalesReturnsDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+            expect(component.returnForm.get('reason')?.invalid).toBe(true);
+            expect(component.returnForm.get('reason')?.errors?.['required']).toBeTruthy();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+            component.returnForm.get('reason')?.setValue('Valid reason for return');
+            fixture.detectChanges();
 
-  describe('Dialog initialization', () => {
-    it('should initialize with an empty form', () => {
-      expect(component.returnForm.get('originalSaleId')?.value).toBeNull();
-      expect(component.returnForm.get('reason')?.value).toBe('');
-      expect(component.returnForm.get('totalReturnAmount')?.value).toBe(0);
-      expect(component.returnItemsArray.length).toBe(0);
+            expect(component.returnForm.get('reason')?.invalid).toBe(false);
+        });
+
+        it('should enforce minimum length for reason', () => {
+            component.returnForm.get('reason')?.setValue('abc');
+            component.returnForm.get('reason')?.markAsTouched();
+            component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(0);
+            fixture.detectChanges();
+
+            expect(component.returnForm.get('reason')?.invalid).toBe(true);
+            expect(component.returnForm.get('reason')?.errors?.['minlength']).toBeTruthy();
+
+            component.returnForm.get('reason')?.setValue('Valid reason');
+            fixture.detectChanges();
+
+            expect(component.returnForm.get('reason')?.invalid).toBe(false);
+        });
+
+        it('should validate that at least one item has quantity > 0', () => {
+            const reasonControl = component.returnForm.get('reason');
+            reasonControl?.setValue('Valid reason');
+
+            component.returnItemsArray.controls.forEach((control, index) => {
+                control.get('quantity')?.setValue(0);
+                component.updateReturnItemSubtotal(index);
+            });
+
+            fixture.detectChanges();
+
+            expect(component.returnHasNoItems()).toBe(true);
+
+            component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(0);
+            fixture.detectChanges();
+
+            expect(component.returnHasNoItems()).toBe(false);
+        });
     });
 
-    it('should show dialog when dialogVisible is true', () => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      fixture.detectChanges();
+    describe('Save functionality', () => {
+        beforeEach(() => {
+            (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
+            component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+            component.onOriginalSaleChange(mockSale.id);
+            component.returnForm.get('reason')?.setValue('Valid return reason');
+            component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+            component.updateReturnItemSubtotal(0);
+            fixture.detectChanges();
+        });
 
-      const dialog = fixture.debugElement.query(By.css('p-dialog'));
-      expect(dialog).toBeTruthy();
-      expect(dialog.componentInstance.visible).toBeTrue();
+        it('should call create with form data for new return', () => {
+            component.saveReturn();
+
+            expect(saleReturnStore.create).toHaveBeenCalled();
+            const createArgs = (saleReturnStore.create as Mock).mock.calls[0][0] as {
+                originalSaleId: number;
+                customerId: number;
+                reason: string;
+                items: { productId: number }[];
+            };
+
+            expect(createArgs.originalSaleId).toBe(mockSale.id);
+            expect(createArgs.customerId).toBe(mockCustomer.id);
+            expect(createArgs.reason).toBe('Valid return reason');
+            expect(createArgs.items.length).toBe(1);
+            expect(createArgs.items[0].productId).toBe(mockProduct.id);
+        });
+
+        it('should filter out items with quantity = 0', () => {
+            component.returnItemsArray.at(1).get('quantity')?.setValue(0);
+            component.updateReturnItemSubtotal(1);
+            fixture.detectChanges();
+
+            component.saveReturn();
+
+            const createArgs = (saleReturnStore.create as Mock).mock.calls[0][0] as {
+                items: { productId: number }[];
+            };
+            expect(createArgs.items.length).toBe(1);
+            expect(createArgs.items[0].productId).toBe(mockProduct.id);
+        });
+
+        it('should show warning when no items have quantity > 0', () => {
+            component.returnItemsArray.controls.forEach((control, index) => {
+                control.get('quantity')?.setValue(0);
+                component.updateReturnItemSubtotal(index);
+            });
+            fixture.detectChanges();
+
+            component.saveReturn();
+
+            expect(messageService.add).toHaveBeenCalledWith(expect.objectContaining({
+                severity: 'warn',
+                summary: 'Warning',
+            }));
+            expect(saleReturnStore.create).not.toHaveBeenCalled();
+        });
+
+        it('should update existing return when in edit mode', () => {
+            (saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>).set(mockSaleReturn);
+            fixture.detectChanges();
+
+            component.saveReturn();
+
+            expect(saleReturnStore.update).toHaveBeenCalled();
+            const updateArgs = (saleReturnStore.update as Mock).mock.calls[0][0] as {
+                id: number;
+                data: { originalSaleId: number };
+            };
+
+            expect(updateArgs.id).toBe(mockSaleReturn.id);
+            expect(updateArgs.data.originalSaleId).toBe(mockSale.id);
+        });
     });
-
-    it('should have "New Return" header when no return is selected', () => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      (
-        saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>
-      ).set(null);
-      fixture.detectChanges();
-
-      const dialogHeader = fixture.debugElement.query(
-        By.css('.p-dialog-title'),
-      );
-      expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'New Return',
-      );
-    });
-
-    it('should have "Return Details" header when a return is selected', () => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      (
-        saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>
-      ).set(mockSaleReturn);
-      fixture.detectChanges();
-
-      const dialogHeader = fixture.debugElement.query(
-        By.css('.p-dialog-title'),
-      );
-      expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Return Details',
-      );
-    });
-  });
-
-  describe('Sale selection', () => {
-    beforeEach(() => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      fixture.detectChanges();
-    });
-
-    it('should populate customer info when original sale is selected', () => {
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
-      component.onOriginalSaleChange(mockSale.id);
-      fixture.detectChanges();
-
-      const customerNameInput = fixture.debugElement.query(
-        By.css('input#customerName'),
-      );
-      expect(customerNameInput.nativeElement.value).toBe(mockCustomer.fullName);
-    });
-
-    it('should populate items when original sale is selected', () => {
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
-      component.onOriginalSaleChange(mockSale.id);
-      fixture.detectChanges();
-
-      expect(component.returnItemsArray.length).toBe(mockSaleItems.length);
-      expect(component.returnItemsArray.at(0).get('productId')?.value).toBe(
-        mockSaleItems[0].product.id,
-      );
-      expect(component.returnItemsArray.at(0).get('unitPrice')?.value).toBe(
-        mockSaleItems[0].unitPrice,
-      );
-    });
-
-    it('should reset form when sale is deselected', () => {
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
-      component.onOriginalSaleChange(mockSale.id);
-      fixture.detectChanges();
-
-      component.returnForm.get('originalSaleId')?.setValue(null);
-      component.onOriginalSaleChange(null);
-      fixture.detectChanges();
-
-      expect(component.selectedOriginalSale()).toBeNull();
-      expect(component.returnForm.get('customerId')?.value).toBeNull();
-      expect(component.returnItemsArray.length).toBe(0);
-    });
-  });
-
-  describe('Return items', () => {
-    beforeEach(() => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
-      component.onOriginalSaleChange(mockSale.id);
-      fixture.detectChanges();
-    });
-
-    it('should update subtotal when quantity changes', () => {
-      const itemGroup = component.returnItemsArray.at(0);
-      const originalPrice = itemGroup.get('unitPrice')?.value;
-
-      itemGroup.get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(0);
-      fixture.detectChanges();
-
-      expect(itemGroup.get('subtotal')?.value).toBe(originalPrice);
-      expect(component.returnForm.get('totalReturnAmount')?.value).toBe(
-        originalPrice,
-      );
-    });
-
-    it('should update total return amount when subtotals change', () => {
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(0);
-
-      component.returnItemsArray.at(1).get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(1);
-
-      fixture.detectChanges();
-
-      const expectedTotal =
-        component.returnItemsArray.at(0).get('subtotal')?.value +
-        component.returnItemsArray.at(1).get('subtotal')?.value;
-
-      expect(component.returnForm.get('totalReturnAmount')?.value).toBe(
-        expectedTotal,
-      );
-    });
-
-    it('should detect when no items are selected for return', () => {
-      component.returnItemsArray.at(0).get('quantity')?.setValue(0);
-      component.returnItemsArray.at(1).get('quantity')?.setValue(0);
-      fixture.detectChanges();
-
-      expect(component.returnHasNoItems()).toBeTrue();
-
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
-      fixture.detectChanges();
-
-      expect(component.returnHasNoItems()).toBeFalse();
-    });
-  });
-
-  describe('Form validation', () => {
-    beforeEach(() => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
-      component.onOriginalSaleChange(mockSale.id);
-      fixture.detectChanges();
-    });
-
-    it('should require reason field', fakeAsync(() => {
-      component.returnForm.get('reason')?.setValue('');
-      component.returnForm.get('reason')?.markAsTouched();
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(0);
-
-      tick();
-      fixture.detectChanges();
-
-      expect(component.returnForm.get('reason')?.invalid).toBeTrue();
-      expect(
-        component.returnForm.get('reason')?.errors?.['required'],
-      ).toBeTruthy();
-
-      component.returnForm.get('reason')?.setValue('Valid reason for return');
-      tick();
-      fixture.detectChanges();
-
-      expect(component.returnForm.get('reason')?.invalid).toBeFalse();
-    }));
-
-    it('should enforce minimum length for reason', fakeAsync(() => {
-      component.returnForm.get('reason')?.setValue('abc');
-      component.returnForm.get('reason')?.markAsTouched();
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(0);
-
-      tick();
-      fixture.detectChanges();
-
-      expect(component.returnForm.get('reason')?.invalid).toBeTrue();
-      expect(
-        component.returnForm.get('reason')?.errors?.['minlength'],
-      ).toBeTruthy();
-
-      component.returnForm.get('reason')?.setValue('Valid reason');
-      tick();
-      fixture.detectChanges();
-
-      expect(component.returnForm.get('reason')?.invalid).toBeFalse();
-    }));
-
-    it('should validate that at least one item has quantity > 0', () => {
-      const reasonControl = component.returnForm.get('reason');
-      reasonControl?.setValue('Valid reason');
-
-      component.returnItemsArray.controls.forEach((control, index) => {
-        control.get('quantity')?.setValue(0);
-        component.updateReturnItemSubtotal(index);
-      });
-
-      fixture.detectChanges();
-
-      expect(component.returnHasNoItems()).toBeTrue();
-
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(0);
-      fixture.detectChanges();
-
-      expect(component.returnHasNoItems()).toBeFalse();
-    });
-  });
-
-  describe('Save functionality', () => {
-    beforeEach(() => {
-      (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
-      component.onOriginalSaleChange(mockSale.id);
-      component.returnForm.get('reason')?.setValue('Valid return reason');
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
-      component.updateReturnItemSubtotal(0);
-      fixture.detectChanges();
-    });
-
-    it('should call create with form data for new return', () => {
-      component.saveReturn();
-
-      expect(saleReturnStore.create).toHaveBeenCalled();
-      const createArgs = saleReturnStore.create.calls.mostRecent().args[0];
-
-      expect(createArgs.originalSaleId).toBe(mockSale.id);
-      expect(createArgs.customerId).toBe(mockCustomer.id);
-      expect(createArgs.reason).toBe('Valid return reason');
-      expect(createArgs.items.length).toBe(1);
-      expect(createArgs.items[0].productId).toBe(mockProduct.id);
-    });
-
-    it('should filter out items with quantity = 0', () => {
-      component.returnItemsArray.at(1).get('quantity')?.setValue(0);
-      component.updateReturnItemSubtotal(1);
-      fixture.detectChanges();
-
-      component.saveReturn();
-
-      const createArgs = saleReturnStore.create.calls.mostRecent().args[0];
-      expect(createArgs.items.length).toBe(1);
-      expect(createArgs.items[0].productId).toBe(mockProduct.id);
-    });
-
-    it('should show warning when no items have quantity > 0', () => {
-      component.returnItemsArray.controls.forEach((control, index) => {
-        control.get('quantity')?.setValue(0);
-        component.updateReturnItemSubtotal(index);
-      });
-      fixture.detectChanges();
-
-      component.saveReturn();
-
-      expect(messageService.add).toHaveBeenCalledWith(
-        jasmine.objectContaining({
-          severity: 'warn',
-          summary: 'Warning',
-        }),
-      );
-      expect(saleReturnStore.create).not.toHaveBeenCalled();
-    });
-
-    it('should update existing return when in edit mode', () => {
-      (
-        saleReturnStore.selectedSaleReturn as WritableSignal<SaleReturnInfo | null>
-      ).set(mockSaleReturn);
-      fixture.detectChanges();
-
-      component.saveReturn();
-
-      expect(saleReturnStore.update).toHaveBeenCalled();
-      const updateArgs = saleReturnStore.update.calls.mostRecent().args[0];
-
-      expect(updateArgs.id).toBe(mockSaleReturn.id);
-      expect(updateArgs.data.originalSaleId).toBe(mockSale.id);
-    });
-  });
 });

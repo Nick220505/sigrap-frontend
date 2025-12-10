@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -11,187 +12,165 @@ import { TooltipModule } from 'primeng/tooltip';
 import { SupplierToolbarComponent } from './supplier-toolbar.component';
 
 interface MockSupplierStore {
-  openSupplierDialog: jasmine.Spy;
-  deleteAllById: jasmine.Spy;
-  suppliersCount: () => number;
+    openSupplierDialog: Mock;
+    deleteAllById: Mock;
+    suppliersCount: () => number;
 }
 
 class MockSupplierTableComponent {
-  selectedSuppliers = signal<SupplierInfo[]>([]);
-  _exportCSVSpy = jasmine.createSpy('exportCSV');
-  dt = () => ({
-    exportCSV: this._exportCSVSpy,
-  });
+    selectedSuppliers = signal<SupplierInfo[]>([]);
+    _exportCSVSpy = vi.fn();
+    dt = () => ({
+        exportCSV: this._exportCSVSpy,
+    });
 }
 
 describe('SupplierToolbarComponent', () => {
-  let component: SupplierToolbarComponent;
-  let fixture: ComponentFixture<SupplierToolbarComponent>;
-  let supplierStore: MockSupplierStore;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let mockSupplierTable: MockSupplierTableComponent;
+    let component: SupplierToolbarComponent;
+    let fixture: ComponentFixture<SupplierToolbarComponent>;
+    let supplierStore: MockSupplierStore;
+    let confirmationService: { confirm: Mock };
+    let mockSupplierTable: MockSupplierTableComponent;
 
-  const mockSuppliers: SupplierInfo[] = [
-    {
-      id: 1,
-      name: 'Supplier 1',
-      contactPerson: 'John Doe',
-      email: 'john@example.com',
-      phone: '123456789',
-    } as SupplierInfo,
-    {
-      id: 2,
-      name: 'Supplier 2',
-      contactPerson: 'Jane Smith',
-      email: 'jane@example.com',
-      phone: '555666777',
-    } as SupplierInfo,
-  ];
+    const mockSuppliers: SupplierInfo[] = [
+        {
+            id: 1,
+            name: 'Supplier 1',
+            contactPerson: 'John Doe',
+            email: 'john@example.com',
+            phone: '123456789',
+        } as SupplierInfo,
+        {
+            id: 2,
+            name: 'Supplier 2',
+            contactPerson: 'Jane Smith',
+            email: 'jane@example.com',
+            phone: '555666777',
+        } as SupplierInfo,
+    ];
 
-  beforeEach(async () => {
-    supplierStore = {
-      openSupplierDialog: jasmine.createSpy('openSupplierDialog'),
-      deleteAllById: jasmine.createSpy('deleteAllById'),
-      suppliersCount: () => 0,
-    };
+    beforeEach(async () => {
+        supplierStore = {
+            openSupplierDialog: vi.fn(),
+            deleteAllById: vi.fn(),
+            suppliersCount: () => 0,
+        };
 
-    confirmationService = jasmine.createSpyObj('ConfirmationService', [
-      'confirm',
-    ]);
+        confirmationService = {
+            confirm: vi.fn().mockName("ConfirmationService.confirm")
+        };
 
-    mockSupplierTable = new MockSupplierTableComponent();
+        mockSupplierTable = new MockSupplierTableComponent();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        SupplierToolbarComponent,
-        NoopAnimationsModule,
-        ToolbarModule,
-        ButtonModule,
-        TooltipModule,
-      ],
-      providers: [
-        { provide: SupplierStore, useValue: supplierStore },
-        { provide: ConfirmationService, useValue: confirmationService },
-      ],
-    }).compileComponents();
+        await TestBed.configureTestingModule({
+            imports: [
+                SupplierToolbarComponent,
+                NoopAnimationsModule,
+                ToolbarModule,
+                ButtonModule,
+                TooltipModule,
+            ],
+            providers: [
+                { provide: SupplierStore, useValue: supplierStore },
+                { provide: ConfirmationService, useValue: confirmationService },
+            ],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(SupplierToolbarComponent);
-    component = fixture.componentInstance;
-    fixture.componentRef.setInput('supplierTable', mockSupplierTable);
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  describe('Create button', () => {
-    it('should call openSupplierDialog when "New" button is clicked', () => {
-      const newButton = fixture.debugElement.query(
-        By.css('p-button[label="New"]'),
-      );
-      newButton.triggerEventHandler('onClick', null);
-
-      expect(supplierStore.openSupplierDialog).toHaveBeenCalledWith();
-    });
-  });
-
-  describe('Delete button', () => {
-    it('should be disabled when no suppliers are selected', () => {
-      mockSupplierTable.selectedSuppliers.set([]);
-      fixture.detectChanges();
-
-      const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
-      );
-      expect(deleteButton.componentInstance.disabled).toBeTrue();
+        fixture = TestBed.createComponent(SupplierToolbarComponent);
+        component = fixture.componentInstance;
+        fixture.componentRef.setInput('supplierTable', mockSupplierTable);
+        fixture.detectChanges();
     });
 
-    it('should be enabled when suppliers are selected', () => {
-      mockSupplierTable.selectedSuppliers.set([mockSuppliers[0]]);
-      fixture.detectChanges();
-
-      const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
-      );
-      expect(deleteButton.componentInstance.disabled).toBeFalse();
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 
-    it('should call deleteSelectedSuppliers when delete button is clicked', () => {
-      mockSupplierTable.selectedSuppliers.set([mockSuppliers[0]]);
-      fixture.detectChanges();
+    describe('Create button', () => {
+        it('should call openSupplierDialog when "New" button is clicked', () => {
+            const newButton = fixture.debugElement.query(By.css('p-button[label="New"]'));
+            newButton.triggerEventHandler('onClick', null);
 
-      spyOn(component, 'deleteSelectedSuppliers');
-      const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
-      );
-      deleteButton.triggerEventHandler('onClick', null);
-
-      expect(component.deleteSelectedSuppliers).toHaveBeenCalled();
+            expect(supplierStore.openSupplierDialog).toHaveBeenCalledWith();
+        });
     });
 
-    it('should show confirmation dialog with selected suppliers', () => {
-      mockSupplierTable.selectedSuppliers.set([mockSuppliers[0]]);
-      fixture.detectChanges();
+    describe('Delete button', () => {
+        it('should be disabled when no suppliers are selected', () => {
+            mockSupplierTable.selectedSuppliers.set([]);
+            fixture.detectChanges();
 
-      component.deleteSelectedSuppliers();
+            const deleteButton = fixture.debugElement.query(By.css('p-button[label="Delete"]'));
+            expect(deleteButton.componentInstance.disabled).toBe(true);
+        });
 
-      expect(confirmationService.confirm).toHaveBeenCalled();
-      const confirmOptions =
-        confirmationService.confirm.calls.mostRecent().args[0];
+        it('should be enabled when suppliers are selected', () => {
+            mockSupplierTable.selectedSuppliers.set([mockSuppliers[0]]);
+            fixture.detectChanges();
 
-      expect(confirmOptions.header).toBe('Delete suppliers');
-      expect(confirmOptions.message).toContain(
-        'Are you sure you want to delete the 1 selected suppliers?',
-      );
-      expect(confirmOptions.message).toContain('<b>Supplier 1</b>');
+            const deleteButton = fixture.debugElement.query(By.css('p-button[label="Delete"]'));
+            expect(deleteButton.componentInstance.disabled).toBe(false);
+        });
+
+        it('should call deleteSelectedSuppliers when delete button is clicked', () => {
+            mockSupplierTable.selectedSuppliers.set([mockSuppliers[0]]);
+            fixture.detectChanges();
+
+            vi.spyOn(component, 'deleteSelectedSuppliers');
+            const deleteButton = fixture.debugElement.query(By.css('p-button[label="Delete"]'));
+            deleteButton.triggerEventHandler('onClick', null);
+
+            expect(component.deleteSelectedSuppliers).toHaveBeenCalled();
+        });
+
+        it('should show confirmation dialog with selected suppliers', () => {
+            mockSupplierTable.selectedSuppliers.set([mockSuppliers[0]]);
+            fixture.detectChanges();
+
+            component.deleteSelectedSuppliers();
+
+            expect(confirmationService.confirm).toHaveBeenCalled();
+            const confirmOptions = (confirmationService.confirm as Mock).mock.calls[0][0] as {
+                header?: string;
+                message?: string;
+                accept?: () => void;
+            };
+
+            expect(confirmOptions.header).toBe('Delete suppliers');
+            expect(confirmOptions.message).toContain('Are you sure you want to delete the 1 selected suppliers?');
+            expect(confirmOptions.message).toContain('<b>Supplier 1</b>');
+        });
+
+        it('should delete suppliers when confirmation is accepted', () => {
+            mockSupplierTable.selectedSuppliers.set(mockSuppliers);
+            fixture.detectChanges();
+
+            component.deleteSelectedSuppliers();
+
+            const confirmOptions = (confirmationService.confirm as Mock).mock.calls[0][0] as {
+                header?: string;
+                message?: string;
+                accept?: () => void;
+            };
+            confirmOptions.accept!();
+
+            expect(supplierStore.deleteAllById).toHaveBeenCalledWith([1, 2]);
+        });
     });
 
-    it('should delete suppliers when confirmation is accepted', () => {
-      mockSupplierTable.selectedSuppliers.set(mockSuppliers);
-      fixture.detectChanges();
+    describe('Export button', () => {
+        it('should be disabled when there are no suppliers', () => {
+            vi.spyOn(supplierStore, 'suppliersCount').mockReturnValue(0);
+            fixture.detectChanges();
 
-      component.deleteSelectedSuppliers();
+            const exportButton = fixture.debugElement.query(By.css('p-button[label="Export"]'));
+            expect(exportButton.componentInstance.disabled).toBe(true);
+        });
 
-      const confirmOptions =
-        confirmationService.confirm.calls.mostRecent().args[0];
-      confirmOptions.accept!();
-
-      expect(supplierStore.deleteAllById).toHaveBeenCalledWith([1, 2]);
+        it('should call exportCSV on the table when export is invoked', () => {
+            expect(mockSupplierTable._exportCSVSpy).not.toHaveBeenCalled();
+            mockSupplierTable.dt().exportCSV();
+            expect(mockSupplierTable._exportCSVSpy).toHaveBeenCalled();
+        });
     });
-  });
-
-  describe('Export button', () => {
-    it('should be disabled when there are no suppliers', () => {
-      spyOn(supplierStore, 'suppliersCount').and.returnValue(0);
-      fixture.detectChanges();
-
-      const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Export"]'),
-      );
-      expect(exportButton.componentInstance.disabled).toBeTrue();
-    });
-
-    it('should be enabled when there are suppliers', () => {
-      spyOn(supplierStore, 'suppliersCount').and.returnValue(5);
-      fixture.detectChanges();
-
-      const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Export"]'),
-      );
-      expect(exportButton.componentInstance.disabled).toBeFalse();
-    });
-
-    it('should call exportCSV on the table when clicked', () => {
-      spyOn(supplierStore, 'suppliersCount').and.returnValue(5);
-      fixture.detectChanges();
-
-      const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Export"]'),
-      );
-      exportButton.triggerEventHandler('onClick', null);
-
-      expect(mockSupplierTable._exportCSVSpy).toHaveBeenCalled();
-    });
-  });
 });

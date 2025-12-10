@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from "vitest";
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -8,27 +9,27 @@ import { ToastModule } from 'primeng/toast';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
+    let component: AppComponent;
+    let fixture: ComponentFixture<AppComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent, NoopAnimationsModule, ToastModule],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideRouter([]),
-        ConfirmationService,
-        MessageService,
-      ],
-    }).compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [AppComponent, NoopAnimationsModule, ToastModule],
+            providers: [
+                provideHttpClient(),
+                provideHttpClientTesting(),
+                provideRouter([]),
+                ConfirmationService,
+                MessageService,
+            ],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(AppComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(AppComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

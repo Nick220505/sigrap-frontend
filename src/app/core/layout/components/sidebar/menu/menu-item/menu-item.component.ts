@@ -1,10 +1,3 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -87,7 +80,10 @@ import { filter } from 'rxjs/operators';
       }
 
       @if (item().items && item().visible !== false) {
-        <ul [@children]="submenuAnimation">
+        <ul
+          class="overflow-hidden max-h-0 transition-[max-height] duration-[400ms] ease-[cubic-bezier(0.86,0,0.07,1)]"
+          [ngClass]="{ 'max-h-[1000px]': submenuAnimation === 'expanded' }"
+        >
           @for (child of item().items; track child; let i = $index) {
             <li
               app-menuitem
@@ -101,16 +97,6 @@ import { filter } from 'rxjs/operators';
       }
     </ng-container>
   `,
-  animations: [
-    trigger('children', [
-      state('collapsed', style({ height: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'collapsed <=> expanded',
-        animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'),
-      ),
-    ]),
-  ],
 })
 export class MenuItemComponent implements OnInit, OnDestroy {
   readonly router = inject(Router);

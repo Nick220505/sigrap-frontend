@@ -1,10 +1,6 @@
+import { beforeEach, describe, expect, it } from "vitest";
 import { Component } from '@angular/core';
-import {
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,7 +8,7 @@ import { PasswordModule } from 'primeng/password';
 import { PasswordFieldComponent } from './password-field.component';
 
 @Component({
-  template: `
+    template: `
     <app-password-field
       [id]="'test-password'"
       [label]="'Test Password'"
@@ -22,131 +18,117 @@ import { PasswordFieldComponent } from './password-field.component';
       [required]="true"
     ></app-password-field>
   `,
-  imports: [PasswordFieldComponent, ReactiveFormsModule],
+    imports: [PasswordFieldComponent, ReactiveFormsModule],
 })
 class TestHostComponent {
-  passwordControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$'),
-  ]);
+    passwordControl = new FormControl('', [
+        Validators.required,
+        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$'),
+    ]);
 }
 
 describe('PasswordFieldComponent', () => {
-  let hostComponent: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
-  let passwordFieldElement: HTMLElement;
-  let passwordFieldComponent: PasswordFieldComponent;
+    let hostComponent: TestHostComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
+    let passwordFieldElement: HTMLElement;
+    let passwordFieldComponent: PasswordFieldComponent;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        TestHostComponent,
-        PasswordFieldComponent,
-        ReactiveFormsModule,
-        PasswordModule,
-        NoopAnimationsModule,
-      ],
-    }).compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [
+                TestHostComponent,
+                PasswordFieldComponent,
+                ReactiveFormsModule,
+                PasswordModule,
+                NoopAnimationsModule,
+            ],
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(TestHostComponent);
-    hostComponent = fixture.componentInstance;
-    fixture.detectChanges();
-    passwordFieldElement =
-      fixture.nativeElement.querySelector('app-password-field');
-    passwordFieldComponent = fixture.debugElement.query(
-      By.directive(PasswordFieldComponent),
-    ).componentInstance;
-  });
+        fixture = TestBed.createComponent(TestHostComponent);
+        hostComponent = fixture.componentInstance;
+        fixture.detectChanges();
+        passwordFieldElement =
+            fixture.nativeElement.querySelector('app-password-field');
+        passwordFieldComponent = fixture.debugElement.query(By.directive(PasswordFieldComponent)).componentInstance;
+    });
 
-  it('should create', () => {
-    expect(hostComponent).toBeTruthy();
-    expect(passwordFieldElement).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(hostComponent).toBeTruthy();
+        expect(passwordFieldElement).toBeTruthy();
+    });
 
-  it('should display the provided label', () => {
-    const labelElement = passwordFieldElement.querySelector('label');
-    expect(labelElement?.textContent).toBe('Test Password');
-  });
+    it('should display the provided label', () => {
+        const labelElement = passwordFieldElement.querySelector('label');
+        expect(labelElement?.textContent).toBe('Test Password');
+    });
 
-  it('should render the password input with correct attributes', () => {
-    const passwordInput = passwordFieldElement.querySelector('p-password');
-    expect(passwordInput).toBeTruthy();
-    expect(passwordInput?.getAttribute('id')).toBe('test-password');
-  });
+    it('should render the password input with correct attributes', () => {
+        const passwordInput = passwordFieldElement.querySelector('p-password');
+        expect(passwordInput).toBeTruthy();
+        expect(passwordInput?.getAttribute('id')).toBe('test-password');
+    });
 
-  it('should mark field as invalid when empty and touched', fakeAsync(() => {
-    const control = hostComponent.passwordControl;
-    control.setValue('');
-    control.markAsTouched();
+    it('should mark field as invalid when empty and touched', () => {
+        const control = hostComponent.passwordControl;
+        control.setValue('');
+        control.markAsTouched();
 
-    control.updateValueAndValidity();
-    tick();
-    fixture.detectChanges();
+        control.updateValueAndValidity();
+        fixture.detectChanges();
 
-    passwordFieldComponent.showError.set(true);
-    fixture.detectChanges();
+        passwordFieldComponent.showError.set(true);
+        fixture.detectChanges();
 
-    const errorText = passwordFieldElement.querySelector('.text-red-500');
-    expect(errorText).toBeTruthy();
-    expect(errorText?.textContent?.trim()).toContain(
-      'Password is required',
-    );
-  }));
+        const errorText = passwordFieldElement.querySelector('.text-red-500');
+        expect(errorText).toBeTruthy();
+        expect(errorText?.textContent?.trim()).toContain('Password is required');
+    });
 
-  it('should validate complex password pattern', fakeAsync(() => {
-    const control = hostComponent.passwordControl;
+    it('should validate complex password pattern', () => {
+        const control = hostComponent.passwordControl;
 
-    control.setValue('simple');
-    control.markAsTouched();
+        control.setValue('simple');
+        control.markAsTouched();
 
-    control.updateValueAndValidity();
-    tick();
-    fixture.detectChanges();
+        control.updateValueAndValidity();
+        fixture.detectChanges();
 
-    passwordFieldComponent.showError.set(true);
-    fixture.detectChanges();
+        passwordFieldComponent.showError.set(true);
+        fixture.detectChanges();
 
-    const errorText = passwordFieldElement.querySelector('.text-red-500');
-    expect(errorText).toBeTruthy();
-    expect(errorText?.textContent?.trim()).toContain(
-      'Password must meet all requirements',
-    );
+        const errorText = passwordFieldElement.querySelector('.text-red-500');
+        expect(errorText).toBeTruthy();
+        expect(errorText?.textContent?.trim()).toContain('Password must meet all requirements');
 
-    control.setValue('StrongP@ss123');
-    control.markAsTouched();
+        control.setValue('StrongP@ss123');
+        control.markAsTouched();
 
-    control.updateValueAndValidity();
-    tick();
-    fixture.detectChanges();
+        control.updateValueAndValidity();
+        fixture.detectChanges();
 
-    passwordFieldComponent.showError.set(false);
-    fixture.detectChanges();
+        passwordFieldComponent.showError.set(false);
+        fixture.detectChanges();
 
-    const errorTextAfter = passwordFieldElement.querySelector('.text-red-500');
-    expect(errorTextAfter).toBeFalsy();
-  }));
+        const errorTextAfter = passwordFieldElement.querySelector('.text-red-500');
+        expect(errorTextAfter).toBeFalsy();
+    });
 
-  it('should show visual indicators for password requirements', fakeAsync(() => {
-    const control = hostComponent.passwordControl;
-    control.setValue('Test1@');
+    it('should show visual indicators for password requirements', () => {
+        const control = hostComponent.passwordControl;
+        control.setValue('Test1@');
 
-    control.updateValueAndValidity();
-    tick();
+        control.updateValueAndValidity();
+        passwordFieldComponent.hasUppercase.set(true);
+        passwordFieldComponent.hasLowercase.set(true);
+        passwordFieldComponent.hasNumber.set(true);
+        passwordFieldComponent.hasSpecialChar.set(true);
+        passwordFieldComponent.hasMinLength.set(false);
+        fixture.detectChanges();
 
-    passwordFieldComponent.hasUppercase.set(true);
-    passwordFieldComponent.hasLowercase.set(true);
-    passwordFieldComponent.hasNumber.set(true);
-    passwordFieldComponent.hasSpecialChar.set(true);
-    passwordFieldComponent.hasMinLength.set(false);
-    fixture.detectChanges();
-
-    tick(100);
-    fixture.detectChanges();
-
-    expect(passwordFieldComponent.hasUppercase()).toBeTrue();
-    expect(passwordFieldComponent.hasLowercase()).toBeTrue();
-    expect(passwordFieldComponent.hasNumber()).toBeTrue();
-    expect(passwordFieldComponent.hasSpecialChar()).toBeTrue();
-    expect(passwordFieldComponent.hasMinLength()).toBeFalse();
-  }));
+        expect(passwordFieldComponent.hasUppercase()).toBe(true);
+        expect(passwordFieldComponent.hasLowercase()).toBe(true);
+        expect(passwordFieldComponent.hasNumber()).toBe(true);
+        expect(passwordFieldComponent.hasSpecialChar()).toBe(true);
+        expect(passwordFieldComponent.hasMinLength()).toBe(false);
+    });
 });
