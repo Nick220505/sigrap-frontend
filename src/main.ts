@@ -1,5 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
+import { App } from './app/app';
 import { appConfig } from './app/app.config';
 
 declare global {
@@ -9,8 +9,8 @@ declare global {
 }
 
 // Disable Angular dev-mode assertions (including injectorIndex bloom filter checks)
-// so that a suspected framework-level bug does not break PrimeNG BaseComponent in dev.
+// so that a suspected framework-level bug does not break PrimeNG base component logic in dev.
 // This keeps the app running like a production build while still using ng serve.
 window.ngDevMode = false;
 
-bootstrapApplication(AppComponent, appConfig).catch(console.error);
+bootstrapApplication(App, appConfig).catch(console.error);

@@ -4,16 +4,16 @@ export const employeeRoutes: Routes = [
   {
     path: 'schedules',
     loadComponent: () =>
-      import('./components/employee-schedule/employee-schedule.component').then(
-        (m) => m.EmployeeScheduleComponent,
+      import('./components/employee-schedule/employee-schedule').then(
+        (m) => m.EmployeeSchedule,
       ),
   },
   {
     path: 'attendance',
     loadComponent: () =>
-      import(
-        './components/employee-attendance/employee-attendance.component'
-      ).then((m) => m.EmployeeAttendanceComponent),
+      import('./components/employee-attendance/employee-attendance').then(
+        (m) => m.EmployeeAttendance,
+      ),
   },
   {
     path: '',

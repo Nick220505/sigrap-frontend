@@ -4,8 +4,8 @@ export const customerRoutes: Routes = [
   {
     path: 'register',
     loadComponent: () =>
-      import('./components/register/customer-register.component').then(
-        (m) => m.CustomerRegisterComponent,
+      import('./components/register/customer-register').then(
+        (m) => m.CustomerRegister,
       ),
   },
   {

@@ -4,16 +4,12 @@ export const supplierRoutes: Routes = [
   {
     path: 'catalog',
     loadComponent: () =>
-      import('./components/catalog/catalog.component').then(
-        (m) => m.CatalogComponent,
-      ),
+      import('./components/catalog/catalog').then((m) => m.Catalog),
   },
   {
     path: 'orders',
     loadComponent: () =>
-      import('./components/orders/orders.component').then(
-        (m) => m.OrdersComponent,
-      ),
+      import('./components/orders/orders').then((m) => m.Orders),
   },
   {
     path: '',

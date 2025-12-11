@@ -4,16 +4,12 @@ export const inventoryRoutes: Routes = [
   {
     path: 'products',
     loadComponent: () =>
-      import('./components/products/products.component').then(
-        (m) => m.ProductsComponent,
-      ),
+      import('./components/products/products').then((m) => m.Products),
   },
   {
     path: 'categories',
     loadComponent: () =>
-      import('./components/categories/categories.component').then(
-        (m) => m.CategoriesComponent,
-      ),
+      import('./components/categories/categories').then((m) => m.Categories),
   },
   {
     path: '',

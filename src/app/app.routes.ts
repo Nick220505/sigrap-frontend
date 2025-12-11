@@ -1,18 +1,15 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/auth/guards/auth.guard';
+import { authGuard } from './core/auth/guards/auth-guard';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./core/layout/layout.component').then((m) => m.LayoutComponent),
+    loadComponent: () => import('./core/layout/layout').then((m) => m.Layout),
     children: [
       {
         path: '',
         loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent,
-          ),
+          import('./features/dashboard/dashboard').then((m) => m.Dashboard),
         canActivate: [authGuard],
       },
       {
@@ -79,8 +76,8 @@ export const routes: Routes = [
   {
     path: 'not-found',
     loadComponent: () =>
-      import('./core/layout/components/not-found/not-found.component').then(
-        (m) => m.NotFoundComponent,
+      import('./core/layout/components/not-found/not-found').then(
+        (m) => m.NotFound,
       ),
   },
   { path: '**', redirectTo: '/not-found' },

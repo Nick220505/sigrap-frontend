@@ -1,0 +1,131 @@
+import { beforeEach, describe, expect, it } from 'vitest';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule, provideRouter } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+
+import { FloatingConfigurator } from '../topbar/floating-configurator/floating-configurator';
+import { NotFound } from './not-found';
+
+describe('NotFound', () => {
+  let component: NotFound;
+  let fixture: ComponentFixture<NotFound>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [NotFound, RouterModule, ButtonModule, NoopAnimationsModule],
+      providers: [provideRouter([])],
+    })
+      .overrideComponent(FloatingConfigurator, {
+        set: {
+          template: '',
+          imports: [],
+        },
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(NotFound);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  describe('UI elements', () => {
+    it('should display 404 error code', () => {
+      const errorCode = fixture.debugElement.query(
+        By.css('.text-primary.font-bold.text-3xl'),
+      );
+      expect(errorCode).toBeTruthy();
+      expect(errorCode.nativeElement.textContent.trim()).toBe('404');
+    });
+
+    it('should display page not found heading', () => {
+      const heading = fixture.debugElement.query(By.css('h1'));
+      expect(heading).toBeTruthy();
+      expect(heading.nativeElement.textContent.trim()).toBe('Page not found');
+    });
+
+    it('should display error description message', () => {
+      const description = fixture.debugElement.query(
+        By.css('.text-surface-600.dark\\:text-surface-200.mb-8'),
+      );
+      expect(description).toBeTruthy();
+      expect(description.nativeElement.textContent.trim()).toContain(
+        'The requested resource does not exist',
+      );
+    });
+
+    it('should display SIGRAP logo', () => {
+      const logo = fixture.debugElement.query(By.css('img[alt="SIGRAP Logo"]'));
+      expect(logo).toBeTruthy();
+      expect(logo.nativeElement.src).toContain('logo.png');
+    });
+  });
+
+  describe('Navigation links', () => {
+    it('should have link to General Inventory', () => {
+      const inventoryLink = fixture.debugElement.query(
+        By.css('a[routerLink="/inventory/products"]'),
+      );
+      expect(inventoryLink).toBeTruthy();
+
+      const linkTitle = inventoryLink.query(
+        By.css('.text-surface-900.dark\\:text-surface-0'),
+      );
+      expect(linkTitle.nativeElement.textContent.trim()).toBe(
+        'General Inventory',
+      );
+
+      const linkIcon = inventoryLink.query(By.css('.pi-database'));
+      expect(linkIcon).toBeTruthy();
+    });
+
+    it('should have link to Entry Management', () => {
+      const entradasLink = fixture.debugElement.queryAll(
+        By.css('a[routerLink="/"]'),
+      )[0];
+      expect(entradasLink).toBeTruthy();
+
+      const linkTitle = entradasLink.query(
+        By.css('.text-surface-900.dark\\:text-surface-0'),
+      );
+      expect(linkTitle.nativeElement.textContent.trim()).toBe(
+        'Entry Management',
+      );
+
+      const linkIcon = entradasLink.query(By.css('.pi-box'));
+      expect(linkIcon).toBeTruthy();
+    });
+
+    it('should have link to Exit Management', () => {
+      const salidasLink = fixture.debugElement.queryAll(
+        By.css('a[routerLink="/"]'),
+      )[1];
+      expect(salidasLink).toBeTruthy();
+
+      const linkTitle = salidasLink.query(
+        By.css('.text-surface-900.dark\\:text-surface-0'),
+      );
+      expect(linkTitle.nativeElement.textContent.trim()).toBe(
+        'Exit Management',
+      );
+
+      const linkIcon = salidasLink.query(By.css('.pi-truck'));
+      expect(linkIcon).toBeTruthy();
+    });
+
+    it('should have button to go to Panel Principal', () => {
+      const mainPanelButton = fixture.debugElement.query(
+        By.css('p-button[routerLink="/"]'),
+      );
+      expect(mainPanelButton).toBeTruthy();
+
+      const buttonLabel = mainPanelButton.attributes['label'];
+      expect(buttonLabel).toBe('Go to Main Panel');
+    });
+  });
+});

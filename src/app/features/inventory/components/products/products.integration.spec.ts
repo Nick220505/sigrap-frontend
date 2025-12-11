@@ -1,373 +1,408 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting, } from '@angular/common/http/testing';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { environment } from '@env';
 import { CategoryInfo } from '@features/inventory/models/category.model';
-import { ProductData, ProductInfo, } from '@features/inventory/models/product.model';
+import {
+  ProductData,
+  ProductInfo,
+} from '@features/inventory/models/product.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ProductDialogComponent } from './product-dialog/product-dialog.component';
-import { ProductTableComponent } from './product-table/product-table.component';
-import { ProductToolbarComponent } from './product-toolbar/product-toolbar.component';
-import { ProductsComponent } from './products.component';
+import { ProductDialog } from './product-dialog/product-dialog';
+import { ProductTable } from './product-table/product-table';
+import { ProductToolbar } from './product-toolbar/product-toolbar';
+import { Products } from './products';
 
 describe('Products Feature Integration', () => {
-    let component: ProductsComponent;
-    let fixture: ComponentFixture<ProductsComponent>;
-    let httpTestingController: HttpTestingController;
-    let messageService: MessageService;
+  let component: Products;
+  let fixture: ComponentFixture<Products>;
+  let httpTestingController: HttpTestingController;
+  let messageService: MessageService;
 
-    const mockProducts: ProductInfo[] = [
-        {
-            id: 1,
-            name: 'Product 1',
-            description: 'Description 1',
-            costPrice: 10.0,
-            salePrice: 20.0,
-            stock: 100,
-            minimumStockThreshold: 10,
-            category: { id: 1, name: 'Category 1' },
+  const mockProducts: ProductInfo[] = [
+    {
+      id: 1,
+      name: 'Product 1',
+      description: 'Description 1',
+      costPrice: 10.0,
+      salePrice: 20.0,
+      stock: 100,
+      minimumStockThreshold: 10,
+      category: { id: 1, name: 'Category 1' },
+    },
+    {
+      id: 2,
+      name: 'Product 2',
+      description: 'Description 2',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      stock: 200,
+      minimumStockThreshold: 20,
+      category: { id: 2, name: 'Category 2' },
+    },
+    {
+      id: 3,
+      name: 'Product 3',
+      description: 'Description 3',
+      costPrice: 20.0,
+      salePrice: 30.0,
+      stock: 300,
+      minimumStockThreshold: 30,
+      category: { id: 3, name: 'Category 3' },
+    },
+  ];
+
+  const mockCategories: CategoryInfo[] = [];
+  const productsUrl = `${environment.apiUrl}/products`;
+  const categoriesUrl = `${environment.apiUrl}/categories`;
+
+  beforeEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        Products,
+        NoopAnimationsModule,
+        ProductTable,
+        ProductToolbar,
+        ProductDialog,
+      ],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        ConfirmationService,
+        MessageService,
+      ],
+    })
+      .overrideComponent(ProductTable, {
+        set: {
+          template: '<div class="product-table-stub"></div>',
         },
-        {
-            id: 2,
-            name: 'Product 2',
-            description: 'Description 2',
-            costPrice: 15.0,
-            salePrice: 25.0,
-            stock: 200,
-            minimumStockThreshold: 20,
-            category: { id: 2, name: 'Category 2' },
-        },
-        {
-            id: 3,
-            name: 'Product 3',
-            description: 'Description 3',
-            costPrice: 20.0,
-            salePrice: 30.0,
-            stock: 300,
-            minimumStockThreshold: 30,
-            category: { id: 3, name: 'Category 3' },
-        },
-    ];
+      })
+      .compileComponents();
 
-    const mockCategories: CategoryInfo[] = [];
-    const productsUrl = `${environment.apiUrl}/products`;
-    const categoriesUrl = `${environment.apiUrl}/categories`;
+    fixture = TestBed.createComponent(Products);
+    component = fixture.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
+    messageService = TestBed.inject(MessageService);
 
-    beforeEach(() => {
-        TestBed.resetTestingModule();
+    vi.spyOn(messageService, 'add');
+
+    fixture.detectChanges();
+
+    const categoriesReq = httpTestingController.expectOne(categoriesUrl);
+    expect(categoriesReq.request.method).toBe('GET');
+    categoriesReq.flush(mockCategories);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  it('should create the component', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockProducts);
+
+    expect(component).toBeTruthy();
+  });
+
+  it('should load and display products on initialization', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockProducts);
+    fixture.detectChanges();
+
+    const tableElement =
+      fixture.nativeElement.querySelector('app-product-table');
+    expect(tableElement).toBeTruthy();
+
+    expect(component.productStore.entities()).toEqual(mockProducts);
+    expect(component.productStore.productsCount()).toBe(3);
+  });
+
+  it('should handle error when loading products fails', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush('Server error', {
+      status: 500,
+      statusText: 'Internal Server Error',
     });
+    fixture.detectChanges();
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [
-                ProductsComponent,
-                NoopAnimationsModule,
-                ProductTableComponent,
-                ProductToolbarComponent,
-                ProductDialogComponent,
-            ],
-            providers: [
-                provideRouter([]),
-                provideHttpClient(),
-                provideHttpClientTesting(),
-                ConfirmationService,
-                MessageService,
-            ],
-        })
-            .overrideComponent(ProductTableComponent, {
-                set: {
-                    template: '<div class="product-table-stub"></div>',
-                },
-            })
-            .compileComponents();
+    expect(component.productStore.error()).toBeTruthy();
+    expect(component.productStore.loading()).toBe(false);
+  });
 
-        fixture = TestBed.createComponent(ProductsComponent);
-        component = fixture.componentInstance;
-        httpTestingController = TestBed.inject(HttpTestingController);
-        messageService = TestBed.inject(MessageService);
+  it('should open the product dialog when "Create Product" button is clicked', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-        vi.spyOn(messageService, 'add');
+    const createButton = fixture.nativeElement.querySelector(
+      'app-product-toolbar button',
+    );
+    createButton.click();
+    fixture.detectChanges();
 
-        fixture.detectChanges();
+    expect(component.productStore.dialogVisible()).toBe(true);
+    expect(component.productStore.selectedProduct()).toBeUndefined();
 
-        const categoriesReq = httpTestingController.expectOne(categoriesUrl);
-        expect(categoriesReq.request.method).toBe('GET');
-        categoriesReq.flush(mockCategories);
-    });
+    const dialog = fixture.nativeElement.querySelector(
+      'app-product-dialog p-dialog',
+    );
+    expect(dialog).toBeTruthy();
+  });
 
-    afterEach(() => {
-        httpTestingController.verify();
-    });
+  it('should create a new product successfully', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-    it('should create the component', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        expect(req.request.method).toBe('GET');
-        req.flush(mockProducts);
+    const newProduct: ProductData = {
+      name: 'New Product',
+      description: 'New Description',
+      costPrice: 10.0,
+      salePrice: 20.0,
+      categoryId: 1,
+      stock: 100,
+      minimumStockThreshold: 10,
+    };
 
-        expect(component).toBeTruthy();
-    });
+    component.productStore.create(newProduct);
 
-    it('should load and display products on initialization', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        expect(req.request.method).toBe('GET');
+    const createReq = httpTestingController.expectOne(productsUrl);
+    expect(createReq.request.method).toBe('POST');
+    expect(createReq.request.body).toEqual(newProduct);
 
-        req.flush(mockProducts);
-        fixture.detectChanges();
+    const createdProduct: ProductInfo = {
+      id: 4,
+      name: 'New Product',
+      description: 'New Description',
+      costPrice: 10.0,
+      salePrice: 20.0,
+      category: { id: 1, name: 'Category 1' },
+      stock: 100,
+      minimumStockThreshold: 10,
+    };
 
-        const tableElement = fixture.nativeElement.querySelector('app-product-table');
-        expect(tableElement).toBeTruthy();
+    createReq.flush(createdProduct);
+    fixture.detectChanges();
 
-        expect(component.productStore.entities()).toEqual(mockProducts);
-        expect(component.productStore.productsCount()).toBe(3);
-    });
+    expect(component.productStore.entities().length).toBe(4);
+    expect(component.productStore.entities().find((p) => p.id === 4)).toEqual(
+      createdProduct,
+    );
 
-    it('should handle error when loading products fails', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        expect(req.request.method).toBe('GET');
+    expect(messageService.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        summary: 'Product created',
+        detail: 'The product New Product has been created successfully',
+      }),
+    );
+  });
 
-        req.flush('Server error', {
-            status: 500,
-            statusText: 'Internal Server Error',
-        });
-        fixture.detectChanges();
+  it('should update a product successfully', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-        expect(component.productStore.error()).toBeTruthy();
-        expect(component.productStore.loading()).toBe(false);
-    });
+    const updatedProduct: ProductData = {
+      name: 'Updated Product',
+      description: 'Updated Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      categoryId: 2,
+      stock: 150,
+      minimumStockThreshold: 15,
+    };
 
-    it('should open the product dialog when "Create Product" button is clicked', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
+    component.productStore.update({ id: 1, productData: updatedProduct });
 
-        const createButton = fixture.nativeElement.querySelector('app-product-toolbar button');
-        createButton.click();
-        fixture.detectChanges();
+    const updateReq = httpTestingController.expectOne(`${productsUrl}/1`);
+    expect(updateReq.request.method).toBe('PUT');
+    expect(updateReq.request.body).toEqual(updatedProduct);
 
-        expect(component.productStore.dialogVisible()).toBe(true);
-        expect(component.productStore.selectedProduct()).toBeUndefined();
+    const updatedProductInfo: ProductInfo = {
+      ...mockProducts[0],
+      ...updatedProduct,
+    };
 
-        const dialog = fixture.nativeElement.querySelector('app-product-dialog p-dialog');
-        expect(dialog).toBeTruthy();
-    });
+    updateReq.flush(updatedProductInfo);
+    fixture.detectChanges();
 
-    it('should create a new product successfully', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
+    expect(component.productStore.entities().find((p) => p.id === 1)).toEqual(
+      updatedProductInfo,
+    );
 
-        const newProduct: ProductData = {
-            name: 'New Product',
-            description: 'New Description',
-            costPrice: 10.0,
-            salePrice: 20.0,
-            categoryId: 1,
-            stock: 100,
-            minimumStockThreshold: 10,
-        };
+    expect(messageService.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        summary: 'Product updated',
+        detail: 'The product Updated Product has been updated successfully',
+      }),
+    );
+  });
 
-        component.productStore.create(newProduct);
+  it('should delete a product successfully', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-        const createReq = httpTestingController.expectOne(productsUrl);
-        expect(createReq.request.method).toBe('POST');
-        expect(createReq.request.body).toEqual(newProduct);
+    component.productStore.delete(1);
 
-        const createdProduct: ProductInfo = {
-            id: 4,
-            name: 'New Product',
-            description: 'New Description',
-            costPrice: 10.0,
-            salePrice: 20.0,
-            category: { id: 1, name: 'Category 1' },
-            stock: 100,
-            minimumStockThreshold: 10,
-        };
+    const deleteReq = httpTestingController.expectOne(`${productsUrl}/1`);
+    expect(deleteReq.request.method).toBe('DELETE');
 
-        createReq.flush(createdProduct);
-        fixture.detectChanges();
+    deleteReq.flush({});
+    fixture.detectChanges();
 
-        expect(component.productStore.entities().length).toBe(4);
-        expect(component.productStore.entities().find((p) => p.id === 4)).toEqual(createdProduct);
+    expect(component.productStore.entities().length).toBe(2);
+    expect(
+      component.productStore.entities().find((p) => p.id === 1),
+    ).toBeUndefined();
 
-        expect(messageService.add).toHaveBeenCalledWith(
-            expect.objectContaining({
-                severity: 'success',
-                summary: 'Product created',
-                detail: 'The product New Product has been created successfully',
-            }),
-        );
-    });
+    expect(messageService.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        summary: 'Product deleted',
+        detail: 'The product has been deleted successfully',
+      }),
+    );
+  });
 
-    it('should update a product successfully', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
+  it('should delete multiple products successfully', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-        const updatedProduct: ProductData = {
-            name: 'Updated Product',
-            description: 'Updated Description',
-            costPrice: 15.0,
-            salePrice: 25.0,
-            categoryId: 2,
-            stock: 150,
-            minimumStockThreshold: 15,
-        };
+    const idsToDelete = [1, 2];
+    component.productStore.deleteAllById(idsToDelete);
 
-        component.productStore.update({ id: 1, productData: updatedProduct });
+    const deleteReq = httpTestingController.expectOne(
+      `${productsUrl}/delete-many`,
+    );
+    expect(deleteReq.request.method).toBe('DELETE');
+    expect(deleteReq.request.body).toEqual(idsToDelete);
 
-        const updateReq = httpTestingController.expectOne(`${productsUrl}/1`);
-        expect(updateReq.request.method).toBe('PUT');
-        expect(updateReq.request.body).toEqual(updatedProduct);
+    deleteReq.flush({});
+    fixture.detectChanges();
 
-        const updatedProductInfo: ProductInfo = {
-            ...mockProducts[0],
-            ...updatedProduct,
-        };
+    expect(component.productStore.entities().length).toBe(1);
+    expect(
+      component.productStore.entities().find((p) => p.id === 1),
+    ).toBeUndefined();
+    expect(
+      component.productStore.entities().find((p) => p.id === 2),
+    ).toBeUndefined();
+    expect(
+      component.productStore.entities().find((p) => p.id === 3),
+    ).toBeTruthy();
 
-        updateReq.flush(updatedProductInfo);
-        fixture.detectChanges();
+    expect(messageService.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        summary: 'Products deleted',
+        detail: 'The selected products have been deleted successfully',
+      }),
+    );
+  });
 
-        expect(component.productStore.entities().find((p) => p.id === 1)).toEqual(updatedProductInfo);
+  it('should handle error when creating a product fails', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-        expect(messageService.add).toHaveBeenCalledWith(
-            expect.objectContaining({
-                severity: 'success',
-                summary: 'Product updated',
-                detail: 'The product Updated Product has been updated successfully',
-            }),
-        );
-    });
+    const newProduct: ProductData = {
+      name: 'New Product',
+      description: 'New Description',
+      costPrice: 120,
+      salePrice: 150,
+      categoryId: 1,
+      stock: 100,
+      minimumStockThreshold: 10,
+    };
 
-    it('should delete a product successfully', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
+    component.productStore.create(newProduct);
 
-        component.productStore.delete(1);
+    const createReq = httpTestingController.expectOne(productsUrl);
+    expect(createReq.request.method).toBe('POST');
 
-        const deleteReq = httpTestingController.expectOne(`${productsUrl}/1`);
-        expect(deleteReq.request.method).toBe('DELETE');
+    createReq.flush('Bad Request', { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
 
-        deleteReq.flush({});
-        fixture.detectChanges();
+    expect(component.productStore.error()).toBeTruthy();
+    expect(component.productStore.loading()).toBe(false);
 
-        expect(component.productStore.entities().length).toBe(2);
-        expect(component.productStore.entities().find((p) => p.id === 1)).toBeUndefined();
+    expect(messageService.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error creating product',
+      }),
+    );
 
-        expect(messageService.add).toHaveBeenCalledWith(expect.objectContaining({
-            severity: 'success',
-            summary: 'Product deleted',
-            detail: 'The product has been deleted successfully',
-        }));
-    });
+    expect(component.productStore.entities().length).toBe(3);
+  });
 
-    it('should delete multiple products successfully', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
+  it('should create a new product successfully with stock and minimumStockThreshold', () => {
+    const req = httpTestingController.expectOne(productsUrl);
+    req.flush(mockProducts);
+    fixture.detectChanges();
 
-        const idsToDelete = [1, 2];
-        component.productStore.deleteAllById(idsToDelete);
+    const newProduct2: ProductData = {
+      name: 'Another Product',
+      description: 'Another Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      categoryId: 2,
+      stock: 150,
+      minimumStockThreshold: 15,
+    };
 
-        const deleteReq = httpTestingController.expectOne(`${productsUrl}/delete-many`);
-        expect(deleteReq.request.method).toBe('DELETE');
-        expect(deleteReq.request.body).toEqual(idsToDelete);
+    component.productStore.create(newProduct2);
 
-        deleteReq.flush({});
-        fixture.detectChanges();
+    const createReq = httpTestingController.expectOne(productsUrl);
+    expect(createReq.request.method).toBe('POST');
+    expect(createReq.request.body).toEqual(newProduct2);
 
-        expect(component.productStore.entities().length).toBe(1);
-        expect(component.productStore.entities().find((p) => p.id === 1)).toBeUndefined();
-        expect(component.productStore.entities().find((p) => p.id === 2)).toBeUndefined();
-        expect(component.productStore.entities().find((p) => p.id === 3)).toBeTruthy();
+    const createdProduct: ProductInfo = {
+      id: 5,
+      name: 'Another Product',
+      description: 'Another Description',
+      costPrice: 15.0,
+      salePrice: 25.0,
+      category: { id: 2, name: 'Category 2' },
+      stock: 150,
+      minimumStockThreshold: 15,
+    };
 
-        expect(messageService.add).toHaveBeenCalledWith(expect.objectContaining({
-            severity: 'success',
-            summary: 'Products deleted',
-            detail: 'The selected products have been deleted successfully',
-        }));
-    });
+    createReq.flush(createdProduct);
+    fixture.detectChanges();
 
-    it('should handle error when creating a product fails', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
+    expect(component.productStore.entities().length).toBe(4);
+    expect(component.productStore.entities().find((p) => p.id === 5)).toEqual(
+      createdProduct,
+    );
 
-        const newProduct: ProductData = {
-            name: 'New Product',
-            description: 'New Description',
-            costPrice: 120,
-            salePrice: 150,
-            categoryId: 1,
-            stock: 100,
-            minimumStockThreshold: 10,
-        };
-
-        component.productStore.create(newProduct);
-
-        const createReq = httpTestingController.expectOne(productsUrl);
-        expect(createReq.request.method).toBe('POST');
-
-        createReq.flush('Bad Request', { status: 400, statusText: 'Bad Request' });
-        fixture.detectChanges();
-
-        expect(component.productStore.error()).toBeTruthy();
-        expect(component.productStore.loading()).toBe(false);
-
-        expect(messageService.add).toHaveBeenCalledWith(expect.objectContaining({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error creating product',
-        }));
-
-        expect(component.productStore.entities().length).toBe(3);
-    });
-
-    it('should create a new product successfully with stock and minimumStockThreshold', () => {
-        const req = httpTestingController.expectOne(productsUrl);
-        req.flush(mockProducts);
-        fixture.detectChanges();
-
-        const newProduct2: ProductData = {
-            name: 'Another Product',
-            description: 'Another Description',
-            costPrice: 15.0,
-            salePrice: 25.0,
-            categoryId: 2,
-            stock: 150,
-            minimumStockThreshold: 15,
-        };
-
-        component.productStore.create(newProduct2);
-
-        const createReq = httpTestingController.expectOne(productsUrl);
-        expect(createReq.request.method).toBe('POST');
-        expect(createReq.request.body).toEqual(newProduct2);
-
-        const createdProduct: ProductInfo = {
-            id: 5,
-            name: 'Another Product',
-            description: 'Another Description',
-            costPrice: 15.0,
-            salePrice: 25.0,
-            category: { id: 2, name: 'Category 2' },
-            stock: 150,
-            minimumStockThreshold: 15,
-        };
-
-        createReq.flush(createdProduct);
-        fixture.detectChanges();
-
-        expect(component.productStore.entities().length).toBe(4);
-        expect(component.productStore.entities().find((p) => p.id === 5)).toEqual(createdProduct);
-
-        expect(messageService.add).toHaveBeenCalledWith(expect.objectContaining({
-            severity: 'success',
-            summary: 'Product created',
-            detail: 'The product Another Product has been created successfully',
-        }));
-    });
+    expect(messageService.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        summary: 'Product created',
+        detail: 'The product Another Product has been created successfully',
+      }),
+    );
+  });
 });
