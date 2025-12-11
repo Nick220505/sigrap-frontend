@@ -1,13 +1,6 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import {
-  ApplicationConfig,
-  provideZonelessChangeDetection,
-} from '@angular/core';
-import {
-  provideRouter,
-  withInMemoryScrolling,
-  withViewTransitions,
-} from '@angular/router';
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import Aura from '@primeng/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
@@ -16,7 +9,6 @@ import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZonelessChangeDetection(),
     provideRouter(
       routes,
       withInMemoryScrolling({
