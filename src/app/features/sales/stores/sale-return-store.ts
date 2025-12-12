@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -20,7 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { pipe, switchMap, tap } from 'rxjs';
-import { SaleReturnData, SaleReturnInfo } from '../models/sale-return.model';
+import { SaleReturnData, SaleReturnInfo } from '../models/sale-return';
 import { SaleReturnService } from '../services/sale-return';
 
 export interface SaleReturnState {
@@ -233,3 +233,4 @@ export const SaleReturnStore = signalStore(
     },
   }),
 );
+

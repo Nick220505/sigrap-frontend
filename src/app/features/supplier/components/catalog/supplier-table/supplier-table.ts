@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   inject,
   linkedSignal,
@@ -6,7 +6,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SupplierInfo } from '@features/supplier/models/supplier.model';
+import { SupplierInfo } from '@features/supplier/models/supplier';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -219,3 +219,4 @@ export class SupplierTable {
     });
   }
 }
+

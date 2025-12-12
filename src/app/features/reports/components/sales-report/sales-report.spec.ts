@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UserRole } from '@features/configuration/models/user.model';
+import { UserRole } from '@features/configuration/models/user';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { of } from 'rxjs';
@@ -69,3 +69,4 @@ describe('SalesReport', () => {
     expect(component).toBeTruthy();
   });
 });
+

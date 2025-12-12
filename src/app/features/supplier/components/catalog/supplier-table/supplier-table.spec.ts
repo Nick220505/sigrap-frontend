@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { SupplierInfo } from '@features/supplier/models/supplier.model';
+import { SupplierInfo } from '@features/supplier/models/supplier';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ConfirmationService } from 'primeng/api';
 import { SupplierTable } from './supplier-table';
@@ -184,3 +184,4 @@ describe('SupplierTable', () => {
     });
   });
 });
+

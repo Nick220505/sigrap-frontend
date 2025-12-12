@@ -1,4 +1,4 @@
-import { computed, inject } from '@angular/core';
+﻿import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -13,7 +13,7 @@ import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { switchMap, tap } from 'rxjs';
-import { AuditLogInfo } from '../models/audit-log.model';
+import { AuditLogInfo } from '../models/audit-log';
 import { AuditLogService, PageResponse } from '../services/audit-log';
 
 export interface AuditLogState {
@@ -279,3 +279,4 @@ export const AuditLogStore = signalStore(
     },
   }),
 );
+

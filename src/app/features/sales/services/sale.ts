@@ -1,52 +1,50 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+﻿import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable, map, tap } from 'rxjs';
-import { SaleData, SaleInfo } from '../models/sale.model';
+import { SaleData, SaleInfo } from '../models/sale';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SaleService {
   private readonly http = inject(HttpClient);
-  private readonly salesUrl = `${environment.apiUrl}/sales`;
 
   findAll(): Observable<SaleInfo[]> {
-    return this.http.get<SaleInfo[]>(this.salesUrl);
+    return this.http.get<SaleInfo[]>('/sales');
   }
 
   findById(id: number): Observable<SaleInfo> {
-    return this.http.get<SaleInfo>(`${this.salesUrl}/${id}`);
+    return this.http.get<SaleInfo>(`/sales/${id}`);
   }
 
   findByCustomerId(customerId: number): Observable<SaleInfo[]> {
-    return this.http.get<SaleInfo[]>(`${this.salesUrl}/customer/${customerId}`);
+    return this.http.get<SaleInfo[]>(`/sales/customer/${customerId}`);
   }
 
   findByEmployeeId(employeeId: number): Observable<SaleInfo[]> {
-    return this.http.get<SaleInfo[]>(`${this.salesUrl}/employee/${employeeId}`);
+    return this.http.get<SaleInfo[]>(`/sales/employee/${employeeId}`);
   }
 
   findByDateRange(startDate: string, endDate: string): Observable<SaleInfo[]> {
-    return this.http.get<SaleInfo[]>(`${this.salesUrl}/by-date-range`, {
+    return this.http.get<SaleInfo[]>('/sales/by-date-range', {
       params: { startDate, endDate },
     });
   }
 
   create(saleData: SaleData): Observable<SaleInfo> {
-    return this.http.post<SaleInfo>(this.salesUrl, saleData);
+    return this.http.post<SaleInfo>('/sales', saleData);
   }
 
   update(id: number, saleData: Partial<SaleData>): Observable<SaleInfo> {
-    return this.http.put<SaleInfo>(`${this.salesUrl}/${id}`, saleData);
+    return this.http.put<SaleInfo>(`/sales/${id}`, saleData);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.salesUrl}/${id}`);
+    return this.http.delete<void>(`/sales/${id}`);
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.delete<void>(`${this.salesUrl}/delete-many`, {
+    return this.http.delete<void>('/sales/delete-many', {
       body: ids,
     });
   }
@@ -68,7 +66,7 @@ export class SaleService {
 
     if (exportPath === 'AUTO') {
       return this.http
-        .get(`${this.salesUrl}/export/daily`, {
+        .get('/sales/export/daily', {
           params,
           responseType: 'blob',
           observe: 'response',
@@ -105,7 +103,7 @@ export class SaleService {
           map(() => `Downloaded file successfully`),
         );
     } else {
-      return this.http.get<string>(`${this.salesUrl}/export/daily`, { params });
+      return this.http.get<string>('/sales/export/daily', { params });
     }
   }
 }

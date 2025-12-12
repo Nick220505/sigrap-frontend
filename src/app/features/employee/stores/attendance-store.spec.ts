@@ -1,4 +1,4 @@
-import {
+﻿import {
   afterEach,
   beforeEach,
   describe,
@@ -20,7 +20,7 @@ import {
   AttendanceStatus,
   ClockInData,
   ClockOutData,
-} from '../models/attendance.model';
+} from '../models/attendance';
 import { AttendanceService } from '../services/attendance';
 import { AttendanceStore } from './attendance-store';
 
@@ -206,3 +206,4 @@ describe('AttendanceStore', () => {
     });
   });
 });
+

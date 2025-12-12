@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+﻿import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { Field, form, required } from '@angular/forms/signals';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ButtonModule } from 'primeng/button';
@@ -7,7 +7,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ScheduleData } from '../../../models/schedule.model';
+import { ScheduleData } from '../../../models/schedule';
 import { ScheduleStore } from '../../../stores/schedule-store';
 
 @Component({
@@ -337,3 +337,4 @@ export class ScheduleDialog {
     this.scheduleStore.closeScheduleDialog();
   }
 }
+

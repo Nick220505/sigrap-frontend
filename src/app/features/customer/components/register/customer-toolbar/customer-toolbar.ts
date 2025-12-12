@@ -1,9 +1,9 @@
-import { Component, inject, input } from '@angular/core';
+﻿import { Component, inject, input } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { CustomerInfo } from '../../../models/customer.model';
+import { CustomerInfo } from '../../../models/customer';
 import { CustomerStore } from '../../../stores/customer-store';
 import { CustomerTable } from '../customer-table/customer-table';
 
@@ -64,7 +64,7 @@ export class CustomerToolbar {
         <ul class='mt-2 mb-0'>
           ${customers
             .map(
-              ({ fullName }: CustomerInfo) => `<li>• <b>${fullName}</b></li>`,
+              ({ fullName }: CustomerInfo) => `<li>â€¢ <b>${fullName}</b></li>`,
             )
             .join('')}
         </ul>
@@ -76,3 +76,4 @@ export class CustomerToolbar {
     });
   }
 }
+

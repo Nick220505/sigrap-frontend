@@ -1,47 +1,40 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
-import { CategoryData, CategoryInfo } from '../models/category.model';
+import { CategoryData, CategoryInfo } from '../models/category';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
   private readonly http = inject(HttpClient);
-  private readonly categoriesUrl = `${environment.apiUrl}/categories`;
 
   findAll(): Observable<CategoryInfo[]> {
-    return this.http.get<CategoryInfo[]>(this.categoriesUrl);
+    return this.http.get<CategoryInfo[]>('/categories');
   }
 
   findById(id: number): Observable<CategoryInfo> {
-    return this.http.get<CategoryInfo>(`${this.categoriesUrl}/${id}`);
+    return this.http.get<CategoryInfo>(`/categories/${id}`);
   }
 
   create(categoryData: CategoryData): Observable<CategoryInfo> {
-    return this.http.post<CategoryInfo>(this.categoriesUrl, categoryData);
+    return this.http.post<CategoryInfo>('/categories', categoryData);
   }
 
   update(
     id: number,
     categoryData: Partial<CategoryData>,
   ): Observable<CategoryInfo> {
-    return this.http.put<CategoryInfo>(
-      `${this.categoriesUrl}/${id}`,
-      categoryData,
-    );
+    return this.http.put<CategoryInfo>(`/categories/${id}`, categoryData);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.categoriesUrl}/${id}`);
+    return this.http.delete<void>(`/categories/${id}`);
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.request<void>(
-      'delete',
-      `${this.categoriesUrl}/delete-many`,
-      { body: ids },
-    );
+    return this.http.request<void>('delete', '/categories/delete-many', {
+      body: ids,
+    });
   }
 }

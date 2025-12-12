@@ -1,12 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { provideHttpClient } from '@angular/common/http';
+﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { apiBaseUrlInterceptor } from '@core/api/api-base-url.interceptor';
+import { API_BASE_URL } from '@core/api/api-base-url.token';
 import { environment } from '@env';
-import { AuditLogInfo } from '../models/audit-log.model';
+import { AuditLogInfo } from '../models/audit-log';
 import { AuditLogService, PageResponse } from './audit-log';
 
 describe('AuditLogService', () => {
@@ -33,7 +35,14 @@ describe('AuditLogService', () => {
   beforeEach(() => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        {
+          provide: API_BASE_URL,
+          useValue: environment.apiUrl,
+        },
+        provideHttpClient(withInterceptors([apiBaseUrlInterceptor])),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(AuditLogService);
     httpMock = TestBed.inject(HttpTestingController);

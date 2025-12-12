@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+﻿import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -21,7 +21,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import { SupplierData, SupplierInfo } from '../models/supplier.model';
+import { SupplierData, SupplierInfo } from '../models/supplier';
 import { SupplierService } from '../services/supplier';
 
 export interface SupplierState {
@@ -250,3 +250,4 @@ export const SupplierStore = signalStore(
     },
   }),
 );
+

@@ -1,5 +1,5 @@
-import { Component, inject, input } from '@angular/core';
-import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
+﻿import { Component, inject, input } from '@angular/core';
+import { SaleReturnInfo } from '@features/sales/models/sale-return';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -66,7 +66,7 @@ export class SalesReturnsToolbar {
       message: `
           Are you sure you want to delete the ${selection.length} selected returns?
           <ul class='mt-2 mb-0'>
-            ${selection.map((item) => `<li>• <b>Return #${item.id}</b></li>`).join('')}
+            ${selection.map((item) => `<li>â€¢ <b>Return #${item.id}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {
@@ -124,3 +124,4 @@ export class SalesReturnsToolbar {
     document.body.removeChild(link);
   }
 }
+

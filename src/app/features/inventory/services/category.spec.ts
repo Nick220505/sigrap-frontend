@@ -1,12 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { provideHttpClient } from '@angular/common/http';
+﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { apiBaseUrlInterceptor } from '@core/api/api-base-url.interceptor';
+import { API_BASE_URL } from '@core/api/api-base-url.token';
 import { environment } from '@env';
-import { CategoryData, CategoryInfo } from '../models/category.model';
+import { CategoryData, CategoryInfo } from '../models/category';
 import { CategoryService } from './category';
 
 describe('CategoryService', () => {
@@ -26,7 +28,11 @@ describe('CategoryService', () => {
     TestBed.configureTestingModule({
       providers: [
         CategoryService,
-        provideHttpClient(),
+        {
+          provide: API_BASE_URL,
+          useValue: environment.apiUrl,
+        },
+        provideHttpClient(withInterceptors([apiBaseUrlInterceptor])),
         provideHttpClientTesting(),
       ],
     });

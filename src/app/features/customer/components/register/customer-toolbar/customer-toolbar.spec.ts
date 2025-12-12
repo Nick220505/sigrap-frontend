@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CustomerInfo } from '@features/customer/models/customer.model';
+import { CustomerInfo } from '@features/customer/models/customer';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -124,3 +124,4 @@ describe('CustomerToolbar', () => {
     expect(customerStore.deleteAllById).toHaveBeenCalledWith([1, 2]);
   });
 });
+

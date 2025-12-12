@@ -1,14 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { provideHttpClient } from '@angular/common/http';
+﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { apiBaseUrlInterceptor } from '@core/api/api-base-url.interceptor';
+import { API_BASE_URL } from '@core/api/api-base-url.token';
 import { environment } from '@env';
 
-import { LoginRequest } from '../models/login-request.model';
-import { RegisterRequest } from '../models/register-request.model';
+import { LoginRequest } from '../models/login-request';
+import { RegisterRequest } from '../models/register-request';
 import { AuthService } from './auth';
 
 describe('AuthService', () => {
@@ -18,7 +20,14 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        {
+          provide: API_BASE_URL,
+          useValue: environment.apiUrl,
+        },
+        provideHttpClient(withInterceptors([apiBaseUrlInterceptor])),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);

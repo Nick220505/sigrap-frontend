@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+﻿import { CurrencyPipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ProductInfo } from '@features/inventory/models/product.model';
+import { ProductInfo } from '@features/inventory/models/product';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -240,3 +240,4 @@ export class ProductTable {
     });
   }
 }
+

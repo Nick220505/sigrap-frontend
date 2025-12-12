@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+﻿import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -18,7 +18,7 @@ import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { SaleInfo } from '../../../models/sale.model';
+import { SaleInfo } from '../../../models/sale';
 import { SaleStore } from '../../../stores/sale-store';
 
 @Component({
@@ -436,3 +436,4 @@ export class SalesTable {
     }
   }
 }
+

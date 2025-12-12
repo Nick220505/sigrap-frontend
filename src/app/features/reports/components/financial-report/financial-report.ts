@@ -1,11 +1,11 @@
-import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
+﻿import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
-import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleReturnInfo } from '@features/sales/models/sale-return';
+import { SaleInfo } from '@features/sales/models/sale';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
-import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.model';
+import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -1314,3 +1314,4 @@ export class FinancialReport implements OnInit {
     }
   }
 }
+

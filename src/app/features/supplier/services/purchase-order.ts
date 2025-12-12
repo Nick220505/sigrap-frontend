@@ -1,31 +1,26 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
-import {
-  PurchaseOrderData,
-  PurchaseOrderInfo,
-} from '../models/purchase-order.model';
+import { PurchaseOrderData, PurchaseOrderInfo } from '../models/purchase-order';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PurchaseOrderService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/purchase-orders`;
 
   /**
    * Gets all purchase orders
    */
   findAll(): Observable<PurchaseOrderInfo[]> {
-    return this.http.get<PurchaseOrderInfo[]>(this.baseUrl);
+    return this.http.get<PurchaseOrderInfo[]>('/purchase-orders');
   }
 
   /**
    * Gets a purchase order by ID
    */
   findById(id: number): Observable<PurchaseOrderInfo> {
-    return this.http.get<PurchaseOrderInfo>(`${this.baseUrl}/${id}`);
+    return this.http.get<PurchaseOrderInfo>(`/purchase-orders/${id}`);
   }
 
   /**
@@ -33,7 +28,7 @@ export class PurchaseOrderService {
    */
   findBySupplierId(supplierId: number): Observable<PurchaseOrderInfo[]> {
     return this.http.get<PurchaseOrderInfo[]>(
-      `${this.baseUrl}/by-supplier/${supplierId}`,
+      `/purchase-orders/by-supplier/${supplierId}`,
     );
   }
 
@@ -42,7 +37,7 @@ export class PurchaseOrderService {
    */
   findByStatus(status: string): Observable<PurchaseOrderInfo[]> {
     return this.http.get<PurchaseOrderInfo[]>(
-      `${this.baseUrl}/by-status/${status}`,
+      `/purchase-orders/by-status/${status}`,
     );
   }
 
@@ -50,7 +45,10 @@ export class PurchaseOrderService {
    * Creates a new purchase order
    */
   create(purchaseOrderData: PurchaseOrderData): Observable<PurchaseOrderInfo> {
-    return this.http.post<PurchaseOrderInfo>(this.baseUrl, purchaseOrderData);
+    return this.http.post<PurchaseOrderInfo>(
+      '/purchase-orders',
+      purchaseOrderData,
+    );
   }
 
   /**
@@ -61,7 +59,7 @@ export class PurchaseOrderService {
     purchaseOrderData: PurchaseOrderData,
   ): Observable<PurchaseOrderInfo> {
     return this.http.put<PurchaseOrderInfo>(
-      `${this.baseUrl}/${id}`,
+      `/purchase-orders/${id}`,
       purchaseOrderData,
     );
   }
@@ -70,7 +68,7 @@ export class PurchaseOrderService {
    * Deletes a purchase order
    */
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`/purchase-orders/${id}`);
   }
 
   /**
@@ -78,7 +76,7 @@ export class PurchaseOrderService {
    */
   submitOrder(id: number): Observable<PurchaseOrderInfo> {
     return this.http.patch<PurchaseOrderInfo>(
-      `${this.baseUrl}/${id}/submit`,
+      `/purchase-orders/${id}/submit`,
       {},
     );
   }
@@ -88,7 +86,7 @@ export class PurchaseOrderService {
    */
   confirmOrder(id: number): Observable<PurchaseOrderInfo> {
     return this.http.patch<PurchaseOrderInfo>(
-      `${this.baseUrl}/${id}/confirm`,
+      `/purchase-orders/${id}/confirm`,
       {},
     );
   }
@@ -97,7 +95,10 @@ export class PurchaseOrderService {
    * Marks a purchase order as shipped
    */
   markAsShipped(id: number): Observable<PurchaseOrderInfo> {
-    return this.http.patch<PurchaseOrderInfo>(`${this.baseUrl}/${id}/ship`, {});
+    return this.http.patch<PurchaseOrderInfo>(
+      `/purchase-orders/${id}/ship`,
+      {},
+    );
   }
 
   /**
@@ -108,7 +109,7 @@ export class PurchaseOrderService {
     actualDeliveryDate: string,
   ): Observable<PurchaseOrderInfo> {
     return this.http.patch<PurchaseOrderInfo>(
-      `${this.baseUrl}/${id}/deliver`,
+      `/purchase-orders/${id}/deliver`,
       {},
       {
         params: {
@@ -123,7 +124,7 @@ export class PurchaseOrderService {
    */
   cancelOrder(id: number): Observable<PurchaseOrderInfo> {
     return this.http.patch<PurchaseOrderInfo>(
-      `${this.baseUrl}/${id}/cancel`,
+      `/purchase-orders/${id}/cancel`,
       {},
     );
   }
@@ -132,6 +133,6 @@ export class PurchaseOrderService {
    * Marks a purchase order as paid
    */
   markAsPaid(id: number): Observable<PurchaseOrderInfo> {
-    return this.http.patch<PurchaseOrderInfo>(`${this.baseUrl}/${id}/pay`, {});
+    return this.http.patch<PurchaseOrderInfo>(`/purchase-orders/${id}/pay`, {});
   }
 }

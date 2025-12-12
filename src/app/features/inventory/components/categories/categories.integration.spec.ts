@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { provideHttpClient } from '@angular/common/http';
+﻿import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -7,11 +7,13 @@ import {
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
+import { apiBaseUrlInterceptor } from '@core/api/api-base-url.interceptor';
+import { API_BASE_URL } from '@core/api/api-base-url.token';
 import { environment } from '@env';
 import {
   CategoryData,
   CategoryInfo,
-} from '@features/inventory/models/category.model';
+} from '@features/inventory/models/category';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Categories } from './categories';
 import { CategoryDialog } from './category-dialog/category-dialog';
@@ -47,7 +49,11 @@ describe('Categories Feature Integration', () => {
       ],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        {
+          provide: API_BASE_URL,
+          useValue: environment.apiUrl,
+        },
+        provideHttpClient(withInterceptors([apiBaseUrlInterceptor])),
         provideHttpClientTesting(),
         ConfirmationService,
         MessageService,

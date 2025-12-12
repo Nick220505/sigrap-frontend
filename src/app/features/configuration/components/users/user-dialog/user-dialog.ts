@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   computed,
   effect,
@@ -15,7 +15,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { UserData, UserRole } from '../../../models/user.model';
+import { UserData, UserRole } from '../../../models/user';
 import { UserStore } from '../../../stores/user-store';
 
 @Component({
@@ -308,3 +308,4 @@ export class UserDialog {
     this.userStore.closeUserDialog();
   }
 }
+

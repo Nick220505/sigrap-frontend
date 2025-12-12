@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+﻿import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { tapResponse } from '@ngrx/operators';
@@ -13,10 +13,10 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, tap } from 'rxjs';
-import { AuthResponse } from '../models/auth-response.model';
-import { LoginRequest } from '../models/login-request.model';
-import { RegisterRequest } from '../models/register-request.model';
-import { User } from '../models/user.model';
+import { AuthResponse } from '../models/auth-response';
+import { LoginRequest } from '../models/login-request';
+import { RegisterRequest } from '../models/register-request';
+import { User } from '../models/user';
 import { AuthService } from '../services/auth';
 
 export interface AuthState {
@@ -187,3 +187,4 @@ export const AuthStore = signalStore(
     },
   }),
 );
+

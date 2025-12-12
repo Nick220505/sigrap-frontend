@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+﻿import { DatePipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserInfo, UserRole } from '../../../models/user.model';
+import { UserInfo, UserRole } from '../../../models/user';
 import { UserStore } from '../../../stores/user-store';
 
 @Component({
@@ -243,3 +243,4 @@ export class UserTable {
     });
   }
 }
+

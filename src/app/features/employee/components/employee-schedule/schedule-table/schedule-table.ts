@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+﻿import { DatePipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { ScheduleInfo } from '../../../models/schedule.model';
+import { ScheduleInfo } from '../../../models/schedule';
 import { ScheduleStore } from '../../../stores/schedule-store';
 
 @Component({
@@ -270,3 +270,4 @@ export class ScheduleTable {
     });
   }
 }
+

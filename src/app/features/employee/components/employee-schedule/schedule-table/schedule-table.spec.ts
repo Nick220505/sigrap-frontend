@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { DatePipe, NgClass } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Confirmation, ConfirmationService, MessageService } from 'primeng/api';
-import { ScheduleInfo } from '../../../models/schedule.model';
+import { ScheduleInfo } from '../../../models/schedule';
 import { ScheduleStore } from '../../../stores/schedule-store';
 import { ScheduleTable } from './schedule-table';
 
@@ -125,3 +125,4 @@ describe('ScheduleTable', () => {
     expect(scheduleStore.openScheduleDialog).toHaveBeenCalledWith(schedule);
   });
 });
+

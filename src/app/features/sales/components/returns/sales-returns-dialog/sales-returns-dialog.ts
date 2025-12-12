@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+﻿import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -33,8 +33,8 @@ import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 
-import { SaleReturnData } from '@features/sales/models/sale-return.model';
-import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleReturnData } from '@features/sales/models/sale-return';
+import { SaleInfo } from '@features/sales/models/sale';
 
 @Component({
   selector: 'app-sales-returns-dialog',
@@ -596,3 +596,4 @@ export class SalesReturnsDialog {
     }
   }
 }
+

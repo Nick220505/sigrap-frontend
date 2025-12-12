@@ -1,4 +1,4 @@
-import { CategoryInfo } from './category.model';
+﻿import { CategoryInfo } from './category';
 
 export interface ProductInfo {
   id: number;
@@ -22,3 +22,4 @@ export interface ProductData {
   stock: number;
   minimumStockThreshold: number;
 }
+

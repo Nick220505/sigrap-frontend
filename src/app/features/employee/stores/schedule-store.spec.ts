@@ -1,4 +1,4 @@
-import {
+﻿import {
   afterEach,
   beforeEach,
   describe,
@@ -15,7 +15,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { ScheduleData, ScheduleInfo } from '../models/schedule.model';
+import { ScheduleData, ScheduleInfo } from '../models/schedule';
 import { ScheduleService } from '../services/schedule';
 import { ScheduleStore } from './schedule-store';
 
@@ -313,3 +313,4 @@ describe('ScheduleStore', () => {
     });
   });
 });
+

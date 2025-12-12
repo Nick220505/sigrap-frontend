@@ -1,4 +1,4 @@
-import { computed, inject } from '@angular/core';
+﻿import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -20,7 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import { CustomerData, CustomerInfo } from '../models/customer.model';
+import { CustomerData, CustomerInfo } from '../models/customer';
 import { CustomerService } from '../services/customer';
 
 export interface CustomerState {
@@ -230,3 +230,4 @@ export const CustomerStore = signalStore(
     },
   }),
 );
+

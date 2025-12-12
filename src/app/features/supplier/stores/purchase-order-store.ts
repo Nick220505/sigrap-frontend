@@ -1,4 +1,4 @@
-import { computed, inject } from '@angular/core';
+﻿import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -23,7 +23,7 @@ import { concatMap, forkJoin, of, pipe, switchMap, tap } from 'rxjs';
 import {
   PurchaseOrderData,
   PurchaseOrderInfo,
-} from '../models/purchase-order.model';
+} from '../models/purchase-order';
 import { PurchaseOrderService } from '../services/purchase-order';
 
 export interface PurchaseOrderState {
@@ -406,3 +406,4 @@ export const PurchaseOrderStore = signalStore(
     },
   }),
 );
+

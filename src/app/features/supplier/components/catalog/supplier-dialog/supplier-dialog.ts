@@ -1,6 +1,6 @@
-import { Component, effect, inject, signal } from '@angular/core';
+﻿import { Component, effect, inject, signal } from '@angular/core';
 import { Field, email, form, required } from '@angular/forms/signals';
-import { SupplierData } from '@features/supplier/models/supplier.model';
+import { SupplierData } from '@features/supplier/models/supplier';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -380,3 +380,4 @@ export class SupplierDialog {
     this.supplierStore.closeSupplierDialog();
   }
 }
+

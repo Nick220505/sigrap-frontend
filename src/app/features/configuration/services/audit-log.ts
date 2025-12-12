@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
-import { AuditLogInfo } from '../models/audit-log.model';
+import { AuditLogInfo } from '../models/audit-log';
 
 export interface PageResponse<T> {
   content: T[];
@@ -20,10 +19,9 @@ export interface PageResponse<T> {
 })
 export class AuditLogService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/audit`;
 
   findAll(page = 0, size = 10): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(this.apiUrl, {
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit', {
       params: {
         page: page.toString(),
         size: size.toString(),
@@ -32,7 +30,7 @@ export class AuditLogService {
   }
 
   findById(id: number): Observable<AuditLogInfo> {
-    return this.http.get<AuditLogInfo>(`${this.apiUrl}/${id}`);
+    return this.http.get<AuditLogInfo>(`/audit/${id}`);
   }
 
   findByUsername(
@@ -40,7 +38,7 @@ export class AuditLogService {
     page = 0,
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(`${this.apiUrl}/by-user`, {
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/by-user', {
       params: {
         username,
         page: page.toString(),
@@ -54,16 +52,13 @@ export class AuditLogService {
     page = 0,
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(
-      `${this.apiUrl}/by-entity`,
-      {
-        params: {
-          entityName,
-          page: page.toString(),
-          size: size.toString(),
-        },
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/by-entity', {
+      params: {
+        entityName,
+        page: page.toString(),
+        size: size.toString(),
       },
-    );
+    });
   }
 
   findByAction(
@@ -71,16 +66,13 @@ export class AuditLogService {
     page = 0,
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(
-      `${this.apiUrl}/by-action`,
-      {
-        params: {
-          action,
-          page: page.toString(),
-          size: size.toString(),
-        },
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/by-action', {
+      params: {
+        action,
+        page: page.toString(),
+        size: size.toString(),
       },
-    );
+    });
   }
 
   findByEntityId(
@@ -88,16 +80,13 @@ export class AuditLogService {
     page = 0,
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(
-      `${this.apiUrl}/by-entity-id`,
-      {
-        params: {
-          entityId,
-          page: page.toString(),
-          size: size.toString(),
-        },
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/by-entity-id', {
+      params: {
+        entityId,
+        page: page.toString(),
+        size: size.toString(),
       },
-    );
+    });
   }
 
   findByEntityNameAndId(
@@ -107,7 +96,7 @@ export class AuditLogService {
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
     return this.http.get<PageResponse<AuditLogInfo>>(
-      `${this.apiUrl}/by-entity-and-id`,
+      '/audit/by-entity-and-id',
       {
         params: {
           entityName,
@@ -125,17 +114,14 @@ export class AuditLogService {
     page = 0,
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(
-      `${this.apiUrl}/by-date-range`,
-      {
-        params: {
-          startDate,
-          endDate,
-          page: page.toString(),
-          size: size.toString(),
-        },
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/by-date-range', {
+      params: {
+        startDate,
+        endDate,
+        page: page.toString(),
+        size: size.toString(),
       },
-    );
+    });
   }
 
   findBySourceIp(
@@ -143,7 +129,7 @@ export class AuditLogService {
     page = 0,
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(`${this.apiUrl}/by-ip`, {
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/by-ip', {
       params: {
         sourceIp,
         page: page.toString(),
@@ -153,7 +139,7 @@ export class AuditLogService {
   }
 
   findErrors(page = 0, size = 10): Observable<PageResponse<AuditLogInfo>> {
-    return this.http.get<PageResponse<AuditLogInfo>>(`${this.apiUrl}/errors`, {
+    return this.http.get<PageResponse<AuditLogInfo>>('/audit/errors', {
       params: {
         page: page.toString(),
         size: size.toString(),
@@ -169,7 +155,7 @@ export class AuditLogService {
     size = 10,
   ): Observable<PageResponse<AuditLogInfo>> {
     return this.http.get<PageResponse<AuditLogInfo>>(
-      `${this.apiUrl}/by-entity-and-date`,
+      '/audit/by-entity-and-date',
       {
         params: {
           entityName,

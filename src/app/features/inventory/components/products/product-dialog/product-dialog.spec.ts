@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CategoryInfo } from '@features/inventory/models/category.model';
-import { ProductInfo } from '@features/inventory/models/product.model';
+import { CategoryInfo } from '@features/inventory/models/category';
+import { ProductInfo } from '@features/inventory/models/product';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { MessageService } from 'primeng/api';
@@ -611,3 +611,4 @@ describe('ProductDialog', () => {
     });
   });
 });
+

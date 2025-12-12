@@ -1,11 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
-  HttpClientTestingModule,
   HttpTestingController,
+  provideHttpClientTesting,
 } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { environment } from '../../../../environments/environment';
-import { CustomerData, CustomerInfo } from '../models/customer.model';
+import { apiBaseUrlInterceptor } from '@core/api/api-base-url.interceptor';
+import { API_BASE_URL } from '@core/api/api-base-url.token';
+import { environment } from '@env';
+import { CustomerData, CustomerInfo } from '../models/customer';
 import { CustomerService } from './customer';
 
 describe('CustomerService', () => {
@@ -42,8 +45,15 @@ describe('CustomerService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [CustomerService],
+      providers: [
+        CustomerService,
+        {
+          provide: API_BASE_URL,
+          useValue: environment.apiUrl,
+        },
+        provideHttpClient(withInterceptors([apiBaseUrlInterceptor])),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(CustomerService);
     httpMock = TestBed.inject(HttpTestingController);

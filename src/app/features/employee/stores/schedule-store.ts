@@ -1,4 +1,4 @@
-import { computed, inject } from '@angular/core';
+﻿import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -20,7 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import { ScheduleData, ScheduleInfo } from '../models/schedule.model';
+import { ScheduleData, ScheduleInfo } from '../models/schedule';
 import { ScheduleService } from '../services/schedule';
 
 export interface ScheduleState {
@@ -262,3 +262,4 @@ export const ScheduleStore = signalStore(
     },
   }),
 );
+

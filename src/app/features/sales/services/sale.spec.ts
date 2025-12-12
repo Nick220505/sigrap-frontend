@@ -1,13 +1,15 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { provideHttpClient } from '@angular/common/http';
+﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { apiBaseUrlInterceptor } from '@core/api/api-base-url.interceptor';
+import { API_BASE_URL } from '@core/api/api-base-url.token';
 import { environment } from '@env';
-import { UserRole } from '@features/configuration/models/user.model';
-import { SaleData, SaleInfo } from '../models/sale.model';
+import { UserRole } from '@features/configuration/models/user';
+import { SaleData, SaleInfo } from '../models/sale';
 import { SaleService } from './sale';
 
 describe('SaleService', () => {
@@ -56,7 +58,15 @@ describe('SaleService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SaleService, provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        SaleService,
+        {
+          provide: API_BASE_URL,
+          useValue: environment.apiUrl,
+        },
+        provideHttpClient(withInterceptors([apiBaseUrlInterceptor])),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(SaleService);
     httpMock = TestBed.inject(HttpTestingController);

@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { DatePipe } from '@angular/common';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CustomerInfo } from '@features/customer/models/customer.model';
+import { CustomerInfo } from '@features/customer/models/customer';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { ConfirmationService } from 'primeng/api';
 import { CustomerTable } from './customer-table';
@@ -239,3 +239,4 @@ describe('CustomerTable', () => {
     expect(customerStore.delete).toHaveBeenCalledWith(mockCustomers[0].id);
   });
 });
+

@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpErrorResponse } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -23,7 +23,7 @@ import {
   AttendanceInfo,
   ClockInData,
   ClockOutData,
-} from '../models/attendance.model';
+} from '../models/attendance';
 import { AttendanceService } from '../services/attendance';
 
 export interface AttendanceState {
@@ -176,3 +176,4 @@ export const AttendanceStore = signalStore(
     },
   }),
 );
+

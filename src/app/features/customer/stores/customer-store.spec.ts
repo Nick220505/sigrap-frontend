@@ -1,4 +1,4 @@
-import {
+﻿import {
   afterEach,
   beforeEach,
   describe,
@@ -15,7 +15,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { CustomerData, CustomerInfo } from '../models/customer.model';
+import { CustomerData, CustomerInfo } from '../models/customer';
 import { CustomerService } from '../services/customer';
 import { CustomerStore } from './customer-store';
 
@@ -195,3 +195,4 @@ describe('CustomerStore', () => {
     });
   });
 });
+

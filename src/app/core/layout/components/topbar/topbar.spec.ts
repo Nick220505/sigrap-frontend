@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { CommonModule } from '@angular/common';
 import {
   ElementRef,
@@ -10,7 +10,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { User } from '@core/auth/models/user.model';
+import { User } from '@core/auth/models/user';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { LayoutConfig, LayoutService } from '@core/layout/services/layout';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -297,3 +297,4 @@ describe('Topbar', () => {
     expect(layoutService.setThemeMode).toHaveBeenCalledWith('light');
   });
 });
+

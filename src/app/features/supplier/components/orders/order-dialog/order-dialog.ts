@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   computed,
   effect,
@@ -9,7 +9,7 @@ import {
 import { Field, applyEach, form, min, required } from '@angular/forms/signals';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
-import { PurchaseOrderData } from '@features/supplier/models/purchase-order.model';
+import { PurchaseOrderData } from '@features/supplier/models/purchase-order';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { CurrencyPipe } from '@angular/common';
@@ -508,3 +508,4 @@ export class OrderDialog {
     this.purchaseOrderStore.closeOrderDialog();
   }
 }
+

@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+﻿import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AttendanceInfo } from '@features/employee/models/attendance.model';
+import { AttendanceInfo } from '@features/employee/models/attendance';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -277,3 +277,4 @@ export class AttendanceTable {
     });
   }
 }
+

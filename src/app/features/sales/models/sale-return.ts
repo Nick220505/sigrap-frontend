@@ -1,6 +1,6 @@
-import { UserInfo } from '@features/configuration/models/user.model';
-import { CustomerInfo } from '@features/customer/models/customer.model';
-import { ProductInfo } from '@features/inventory/models/product.model';
+﻿import { UserInfo } from '@features/configuration/models/user';
+import { CustomerInfo } from '@features/customer/models/customer';
+import { ProductInfo } from '@features/inventory/models/product';
 
 export interface SaleReturnItemInfo {
   id: number;
@@ -37,3 +37,4 @@ export interface SaleReturnData {
   items: SaleReturnItemData[];
   reason?: string;
 }
+

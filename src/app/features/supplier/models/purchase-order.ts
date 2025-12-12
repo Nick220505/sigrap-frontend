@@ -1,5 +1,5 @@
-import { ProductInfo } from '@features/inventory/models/product.model';
-import { SupplierInfo } from './supplier.model';
+﻿import { ProductInfo } from '@features/inventory/models/product';
+import { SupplierInfo } from './supplier';
 
 export type PurchaseOrderStatus =
   | 'DRAFT'
@@ -46,3 +46,4 @@ export interface PurchaseOrderData {
   deliveryDate?: string;
   items: PurchaseOrderItemData[];
 }
+

@@ -1,4 +1,4 @@
-import {
+﻿import {
   afterEach,
   beforeEach,
   describe,
@@ -19,7 +19,7 @@ import {
   PurchaseOrderData,
   PurchaseOrderInfo,
   PurchaseOrderItemData,
-} from '../models/purchase-order.model';
+} from '../models/purchase-order';
 import { PurchaseOrderService } from '../services/purchase-order';
 import { PurchaseOrderStore } from './purchase-order-store';
 
@@ -538,3 +538,4 @@ describe('PurchaseOrderStore', () => {
     });
   });
 });
+

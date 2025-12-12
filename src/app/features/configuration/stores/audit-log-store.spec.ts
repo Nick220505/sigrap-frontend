@@ -1,8 +1,8 @@
-import { describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { describe, expect, it, type Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { AuditLogInfo } from '../models/audit-log.model';
+import { AuditLogInfo } from '../models/audit-log';
 import { AuditLogService, PageResponse } from '../services/audit-log';
 import { AuditLogStore } from './audit-log-store';
 
@@ -313,3 +313,4 @@ describe('AuditLogStore', () => {
     });
   });
 });
+

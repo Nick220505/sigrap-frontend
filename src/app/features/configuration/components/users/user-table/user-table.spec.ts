@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { DatePipe, NgClass } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { UserInfo, UserRole } from '@features/configuration/models/user.model';
+import { UserInfo, UserRole } from '@features/configuration/models/user';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserTable } from './user-table';
@@ -329,3 +329,4 @@ describe('UserTable', () => {
     expect(userStore.findAll).toHaveBeenCalled();
   });
 });
+

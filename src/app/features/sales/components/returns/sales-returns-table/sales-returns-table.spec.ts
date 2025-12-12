@@ -1,14 +1,14 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { UserInfo, UserRole } from '@features/configuration/models/user.model';
-import { CustomerInfo } from '@features/customer/models/customer.model';
-import { ProductInfo } from '@features/inventory/models/product.model';
-import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
+import { UserInfo, UserRole } from '@features/configuration/models/user';
+import { CustomerInfo } from '@features/customer/models/customer';
+import { ProductInfo } from '@features/inventory/models/product';
+import { SaleReturnInfo } from '@features/sales/models/sale-return';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { ConfirmationService } from 'primeng/api';
 import { PrimeNG } from 'primeng/config';
@@ -429,3 +429,4 @@ describe('SalesReturnsTable', () => {
     });
   });
 });
+

@@ -1,6 +1,6 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+﻿import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { Field, form, min, required } from '@angular/forms/signals';
-import { ProductData } from '@features/inventory/models/product.model';
+import { ProductData } from '@features/inventory/models/product';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ButtonModule } from 'primeng/button';
@@ -357,3 +357,4 @@ export class ProductDialog {
     this.productStore.closeProductDialog();
   }
 }
+

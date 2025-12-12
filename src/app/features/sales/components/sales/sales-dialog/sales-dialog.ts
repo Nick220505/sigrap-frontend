@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   computed,
   effect,
@@ -27,7 +27,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
-import { SaleData } from '../../../models/sale.model';
+import { SaleData } from '../../../models/sale';
 import { SaleStore } from '../../../stores/sale-store';
 
 @Component({
@@ -616,3 +616,4 @@ export class SalesDialog {
     }
   }
 }
+

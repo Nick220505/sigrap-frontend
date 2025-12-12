@@ -1,9 +1,9 @@
-import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+﻿import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CustomerInfo } from '@features/customer/models/customer.model';
+import { CustomerInfo } from '@features/customer/models/customer';
 import { CustomerStore } from '@features/customer/stores/customer-store';
-import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleInfo } from '@features/sales/models/sale';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -249,7 +249,7 @@ interface PieChartTooltipContext {
                     }"
                     >{{ i + 1
                     }}{{
-                      i === 0 ? ' 🥇' : i === 1 ? ' 🥈' : i === 2 ? ' 🥉' : ''
+                      i === 0 ? ' ðŸ¥‡' : i === 1 ? ' ðŸ¥ˆ' : i === 2 ? ' ðŸ¥‰' : ''
                     }}</span
                   >
                 </td>
@@ -715,3 +715,4 @@ export class CustomersReport implements OnInit {
     return date.toLocaleDateString('en-US', options);
   }
 }
+

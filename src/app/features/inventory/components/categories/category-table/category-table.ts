@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   inject,
   linkedSignal,
@@ -6,7 +6,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CategoryInfo } from '@features/inventory/models/category.model';
+import { CategoryInfo } from '@features/inventory/models/category';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -213,3 +213,4 @@ export class CategoryTable {
     });
   }
 }
+

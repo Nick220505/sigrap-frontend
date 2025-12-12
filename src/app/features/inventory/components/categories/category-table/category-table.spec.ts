@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CategoryInfo } from '@features/inventory/models/category.model';
+import { CategoryInfo } from '@features/inventory/models/category';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ConfirmationService } from 'primeng/api';
 import { CategoryTable } from './category-table';
@@ -418,3 +418,4 @@ describe('CategoryTable', () => {
     });
   });
 });
+

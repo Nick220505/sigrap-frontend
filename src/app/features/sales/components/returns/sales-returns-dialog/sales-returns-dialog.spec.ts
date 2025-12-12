@@ -1,18 +1,18 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { CurrencyPipe } from '@angular/common';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthStore } from '@core/auth/stores/auth-store';
-import { UserInfo, UserRole } from '@features/configuration/models/user.model';
+import { UserInfo, UserRole } from '@features/configuration/models/user';
 import { UserStore } from '@features/configuration/stores/user-store';
-import { CustomerInfo } from '@features/customer/models/customer.model';
-import { CategoryInfo } from '@features/inventory/models/category.model';
-import { ProductInfo } from '@features/inventory/models/product.model';
+import { CustomerInfo } from '@features/customer/models/customer';
+import { CategoryInfo } from '@features/inventory/models/category';
+import { ProductInfo } from '@features/inventory/models/product';
 import { ProductStore } from '@features/inventory/stores/product-store';
-import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
-import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
+import { SaleReturnInfo } from '@features/sales/models/sale-return';
+import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { MessageService } from 'primeng/api';
@@ -533,3 +533,4 @@ describe('SalesReturnsDialog', () => {
     });
   });
 });
+

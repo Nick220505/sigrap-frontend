@@ -1,7 +1,7 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+﻿import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.model';
+import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -263,3 +263,4 @@ export class OrderTable {
     });
   }
 }
+

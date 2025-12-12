@@ -1,6 +1,6 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+﻿import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { Field, form, required } from '@angular/forms/signals';
-import { CategoryData } from '@features/inventory/models/category.model';
+import { CategoryData } from '@features/inventory/models/category';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -157,3 +157,4 @@ export class CategoryDialog {
     this.categoryStore.closeCategoryDialog();
   }
 }
+

@@ -1,4 +1,4 @@
-import {
+﻿import {
   afterEach,
   beforeEach,
   describe,
@@ -13,10 +13,10 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { UserRole } from '@features/configuration/models/user.model';
+import { UserRole } from '@features/configuration/models/user';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { SaleReturnData, SaleReturnInfo } from '../models/sale-return.model';
+import { SaleReturnData, SaleReturnInfo } from '../models/sale-return';
 import { SaleReturnService } from '../services/sale-return';
 import { SaleReturnStore } from './sale-return-store';
 
@@ -302,3 +302,4 @@ describe('SaleReturnStore', () => {
     });
   });
 });
+

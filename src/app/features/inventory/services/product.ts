@@ -1,44 +1,40 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
-import { ProductData, ProductInfo } from '../models/product.model';
+import { ProductData, ProductInfo } from '../models/product';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private readonly http = inject(HttpClient);
-  private readonly productsUrl = `${environment.apiUrl}/products`;
 
   findAll(): Observable<ProductInfo[]> {
-    return this.http.get<ProductInfo[]>(this.productsUrl);
+    return this.http.get<ProductInfo[]>('/products');
   }
 
   findById(id: number): Observable<ProductInfo> {
-    return this.http.get<ProductInfo>(`${this.productsUrl}/${id}`);
+    return this.http.get<ProductInfo>(`/products/${id}`);
   }
 
   create(productData: ProductData): Observable<ProductInfo> {
-    return this.http.post<ProductInfo>(this.productsUrl, productData);
+    return this.http.post<ProductInfo>('/products', productData);
   }
 
   update(
     id: number,
     productData: Partial<ProductData>,
   ): Observable<ProductInfo> {
-    return this.http.put<ProductInfo>(`${this.productsUrl}/${id}`, productData);
+    return this.http.put<ProductInfo>(`/products/${id}`, productData);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.productsUrl}/${id}`);
+    return this.http.delete<void>(`/products/${id}`);
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.request<void>(
-      'delete',
-      `${this.productsUrl}/delete-many`,
-      { body: ids },
-    );
+    return this.http.request<void>('delete', '/products/delete-many', {
+      body: ids,
+    });
   }
 }

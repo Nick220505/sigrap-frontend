@@ -1,45 +1,37 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
 import {
   AttendanceInfo,
   ClockInData,
   ClockOutData,
-} from '../models/attendance.model';
+} from '../models/attendance';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttendanceService {
   private readonly http = inject(HttpClient);
-  private readonly attendanceUrl = `${environment.apiUrl}/attendance`;
 
   findAll(): Observable<AttendanceInfo[]> {
-    return this.http.get<AttendanceInfo[]>(this.attendanceUrl);
+    return this.http.get<AttendanceInfo[]>('/attendance');
   }
 
   findById(id: number): Observable<AttendanceInfo> {
-    return this.http.get<AttendanceInfo>(`${this.attendanceUrl}/${id}`);
+    return this.http.get<AttendanceInfo>(`/attendance/${id}`);
   }
 
   findByEmployeeId(employeeId: number): Observable<AttendanceInfo[]> {
     return this.http.get<AttendanceInfo[]>(
-      `${this.attendanceUrl}/employee/${employeeId}`,
+      `/attendance/employee/${employeeId}`,
     );
   }
 
   clockIn(clockInData: ClockInData): Observable<AttendanceInfo> {
-    return this.http.post<AttendanceInfo>(
-      `${this.attendanceUrl}/clock-in`,
-      clockInData,
-    );
+    return this.http.post<AttendanceInfo>('/attendance/clock-in', clockInData);
   }
 
   clockOut(clockOutData: ClockOutData): Observable<AttendanceInfo> {
-    return this.http.put<AttendanceInfo>(
-      `${this.attendanceUrl}/clock-out`,
-      clockOutData,
-    );
+    return this.http.put<AttendanceInfo>('/attendance/clock-out', clockOutData);
   }
 }

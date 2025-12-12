@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+﻿import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import {
   Component,
   inject,
@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
+import { SaleReturnInfo } from '@features/sales/models/sale-return';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -244,3 +244,4 @@ export class SalesReturnsTable {
     });
   }
 }
+

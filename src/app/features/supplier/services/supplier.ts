@@ -1,47 +1,40 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
-import { SupplierData, SupplierInfo } from '../models/supplier.model';
+import { SupplierData, SupplierInfo } from '../models/supplier';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SupplierService {
   private readonly http = inject(HttpClient);
-  private readonly suppliersUrl = `${environment.apiUrl}/suppliers`;
 
   findAll(): Observable<SupplierInfo[]> {
-    return this.http.get<SupplierInfo[]>(this.suppliersUrl);
+    return this.http.get<SupplierInfo[]>('/suppliers');
   }
 
   findById(id: number): Observable<SupplierInfo> {
-    return this.http.get<SupplierInfo>(`${this.suppliersUrl}/${id}`);
+    return this.http.get<SupplierInfo>(`/suppliers/${id}`);
   }
 
   create(supplierData: SupplierData): Observable<SupplierInfo> {
-    return this.http.post<SupplierInfo>(this.suppliersUrl, supplierData);
+    return this.http.post<SupplierInfo>('/suppliers', supplierData);
   }
 
   update(
     id: number,
     supplierData: Partial<SupplierData>,
   ): Observable<SupplierInfo> {
-    return this.http.put<SupplierInfo>(
-      `${this.suppliersUrl}/${id}`,
-      supplierData,
-    );
+    return this.http.put<SupplierInfo>(`/suppliers/${id}`, supplierData);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.suppliersUrl}/${id}`);
+    return this.http.delete<void>(`/suppliers/${id}`);
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.request<void>(
-      'delete',
-      `${this.suppliersUrl}/delete-many`,
-      { body: ids },
-    );
+    return this.http.request<void>('delete', '/suppliers/delete-many', {
+      body: ids,
+    });
   }
 }

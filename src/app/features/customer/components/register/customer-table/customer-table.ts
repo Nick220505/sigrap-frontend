@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   inject,
   linkedSignal,
@@ -14,7 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { CustomerInfo } from '../../../models/customer.model';
+import { CustomerInfo } from '../../../models/customer';
 import { CustomerStore } from '../../../stores/customer-store';
 
 @Component({
@@ -222,3 +222,4 @@ export class CustomerTable {
     });
   }
 }
+

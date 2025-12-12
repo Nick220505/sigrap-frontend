@@ -1,11 +1,11 @@
-import { DecimalPipe, NgClass } from '@angular/common';
+﻿import { DecimalPipe, NgClass } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CategoryInfo } from '@features/inventory/models/category.model';
-import { ProductInfo } from '@features/inventory/models/product.model';
+import { CategoryInfo } from '@features/inventory/models/category';
+import { ProductInfo } from '@features/inventory/models/product';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
-import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleInfo } from '@features/sales/models/sale';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -676,3 +676,4 @@ export class InventoryReport implements OnInit {
     this.selectedStockView.set(view);
   }
 }
+

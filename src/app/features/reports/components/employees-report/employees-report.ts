@@ -1,13 +1,13 @@
-import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
+﻿import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserInfo } from '@features/configuration/models/user.model';
+import { UserInfo } from '@features/configuration/models/user';
 import { UserStore } from '@features/configuration/stores/user-store';
-import { AttendanceInfo } from '@features/employee/models/attendance.model';
-import { ScheduleInfo } from '@features/employee/models/schedule.model';
+import { AttendanceInfo } from '@features/employee/models/attendance';
+import { ScheduleInfo } from '@features/employee/models/schedule';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ScheduleStore } from '@features/employee/stores/schedule-store';
-import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleInfo } from '@features/sales/models/sale';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -969,3 +969,4 @@ export class EmployeesReport implements OnInit {
     return name.length > 15 ? `${name.substring(0, 15)}...` : name;
   }
 }
+

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+﻿import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
@@ -7,7 +7,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { UserRole } from '../../../../../features/configuration/models/user.model';
+import { UserRole } from '../../../../../features/configuration/models/user';
 import { MenuItem } from './menu-item/menu-item';
 import { Menu } from './menu';
 
@@ -77,3 +77,4 @@ describe('Menu', () => {
     expect(component).toBeTruthy();
   });
 });
+

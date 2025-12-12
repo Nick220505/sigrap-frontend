@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -10,7 +10,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { UserInfo, UserRole } from '../../../models/user.model';
+import { UserInfo, UserRole } from '../../../models/user';
 import { UserStore } from '../../../stores/user-store';
 import { UserDialog } from './user-dialog';
 
@@ -171,3 +171,4 @@ describe('UserDialog', () => {
     expect(userStoreMock.closeUserDialog).toHaveBeenCalled();
   });
 });
+

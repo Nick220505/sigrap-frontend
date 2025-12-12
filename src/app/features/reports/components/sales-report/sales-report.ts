@@ -1,9 +1,9 @@
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+﻿import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ProductInfo } from '@features/inventory/models/product.model';
+import { ProductInfo } from '@features/inventory/models/product';
 import { ProductStore } from '@features/inventory/stores/product-store';
-import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleInfo } from '@features/sales/models/sale';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -943,3 +943,4 @@ export class SalesReport implements OnInit {
     }
   }
 }
+

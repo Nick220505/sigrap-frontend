@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -8,7 +8,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { CustomerInfo } from '../../../models/customer.model';
+import { CustomerInfo } from '../../../models/customer';
 import { CustomerStore } from '../../../stores/customer-store';
 import { CustomerDialog } from './customer-dialog';
 
@@ -169,3 +169,4 @@ describe('CustomerDialog', () => {
     });
   });
 });
+

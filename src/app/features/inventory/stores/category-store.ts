@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+﻿import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
@@ -21,7 +21,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import { CategoryData, CategoryInfo } from '../models/category.model';
+import { CategoryData, CategoryInfo } from '../models/category';
 import { CategoryService } from '../services/category';
 
 export interface CategoryState {
@@ -245,3 +245,4 @@ export const CategoryStore = signalStore(
     },
   }),
 );
+

@@ -1,48 +1,46 @@
-import { HttpClient } from '@angular/common/http';
+﻿import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env';
 import { Observable } from 'rxjs';
-import { UserData, UserInfo } from '../models/user.model';
+import { UserData, UserInfo } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private readonly usersUrl = `${environment.apiUrl}/users`;
 
   findAll(): Observable<UserInfo[]> {
-    return this.http.get<UserInfo[]>(this.usersUrl);
+    return this.http.get<UserInfo[]>('/users');
   }
 
   findById(id: number): Observable<UserInfo> {
-    return this.http.get<UserInfo>(`${this.usersUrl}/${id}`);
+    return this.http.get<UserInfo>(`/users/${id}`);
   }
 
   findByEmail(email: string): Observable<UserInfo> {
-    return this.http.get<UserInfo>(`${this.usersUrl}/email/${email}`);
+    return this.http.get<UserInfo>(`/users/email/${email}`);
   }
 
   create(userData: UserData): Observable<UserInfo> {
-    return this.http.post<UserInfo>(this.usersUrl, userData);
+    return this.http.post<UserInfo>('/users', userData);
   }
 
   update(id: number, userData: Partial<UserData>): Observable<UserInfo> {
-    return this.http.put<UserInfo>(`${this.usersUrl}/${id}`, userData);
+    return this.http.put<UserInfo>(`/users/${id}`, userData);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.usersUrl}/${id}`);
+    return this.http.delete<void>(`/users/${id}`);
   }
 
   deleteAllById(ids: number[]): Observable<void> {
-    return this.http.delete<void>(`${this.usersUrl}/delete-many`, {
+    return this.http.delete<void>('/users/delete-many', {
       body: ids,
     });
   }
 
   updateProfile(id: number, userData: Partial<UserData>): Observable<UserInfo> {
-    return this.http.put<UserInfo>(`${this.usersUrl}/${id}/profile`, userData);
+    return this.http.put<UserInfo>(`/users/${id}/profile`, userData);
   }
 
   changePassword(
@@ -50,24 +48,24 @@ export class UserService {
     currentPassword: string,
     newPassword: string,
   ): Observable<UserInfo> {
-    return this.http.put<UserInfo>(`${this.usersUrl}/${id}/change-password`, {
+    return this.http.put<UserInfo>(`/users/${id}/change-password`, {
       currentPassword,
       newPassword,
     });
   }
 
   resetPassword(token: string, newPassword: string): Observable<UserInfo> {
-    return this.http.post<UserInfo>(`${this.usersUrl}/reset-password`, {
+    return this.http.post<UserInfo>('/users/reset-password', {
       token,
       newPassword,
     });
   }
 
   lockAccount(id: number): Observable<UserInfo> {
-    return this.http.put<UserInfo>(`${this.usersUrl}/${id}/lock`, {});
+    return this.http.put<UserInfo>(`/users/${id}/lock`, {});
   }
 
   unlockAccount(id: number): Observable<UserInfo> {
-    return this.http.put<UserInfo>(`${this.usersUrl}/${id}/unlock`, {});
+    return this.http.put<UserInfo>(`/users/${id}/unlock`, {});
   }
 }

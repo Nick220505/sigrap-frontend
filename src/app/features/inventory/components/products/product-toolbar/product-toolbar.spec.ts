@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+﻿import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ProductInfo } from '@features/inventory/models/product.model';
+import { ProductInfo } from '@features/inventory/models/product';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -232,3 +232,4 @@ describe('ProductToolbar', () => {
     });
   });
 });
+

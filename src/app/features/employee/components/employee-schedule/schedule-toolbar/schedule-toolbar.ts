@@ -1,9 +1,9 @@
-import { Component, inject, input } from '@angular/core';
+﻿import { Component, inject, input } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { ScheduleInfo } from '../../../models/schedule.model';
+import { ScheduleInfo } from '../../../models/schedule';
 import { ScheduleStore } from '../../../stores/schedule-store';
 import { ScheduleTable } from '../schedule-table/schedule-table';
 
@@ -65,7 +65,7 @@ export class ScheduleToolbar {
           ${schedules
             .map(
               ({ userName, day }: ScheduleInfo) =>
-                `<li>• <b>${userName}</b> - ${day}</li>`,
+                `<li>â€¢ <b>${userName}</b> - ${day}</li>`,
             )
             .join('')}
         </ul>
@@ -77,3 +77,4 @@ export class ScheduleToolbar {
     });
   }
 }
+

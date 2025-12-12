@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, computed, inject, signal } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth-store';
@@ -6,7 +6,7 @@ import { MenuItem as PrimeMenuItem } from 'primeng/api';
 import {
   UserInfo,
   UserRole,
-} from '../../../../../features/configuration/models/user.model';
+} from '../../../../../features/configuration/models/user';
 import { MenuItem } from './menu-item/menu-item';
 
 @Component({
@@ -172,3 +172,4 @@ export class Menu {
     return this.allMenuItems();
   });
 }
+

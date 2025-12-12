@@ -1,4 +1,4 @@
-import { computed, inject } from '@angular/core';
+﻿import { computed, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import {
   patchState,
@@ -20,7 +20,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import { UserData, UserInfo } from '../models/user.model';
+import { UserData, UserInfo } from '../models/user';
 import { UserService } from '../services/user';
 
 export interface UserState {
@@ -343,3 +343,4 @@ export const UserStore = signalStore(
     },
   }),
 );
+
