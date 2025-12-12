@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SupplierInfo } from '@features/supplier/models/supplier.model';
@@ -57,7 +56,6 @@ describe('SupplierDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         SupplierDialog,
-        ReactiveFormsModule,
         NoopAnimationsModule,
         DialogModule,
         ButtonModule,
@@ -81,29 +79,37 @@ describe('SupplierDialog', () => {
 
   describe('Form initialization and validation', () => {
     it('should initialize the form with default values', () => {
-      expect(component.supplierForm.get('name')?.value).toBe(null);
-      expect(component.supplierForm.get('contactPerson')?.value).toBe(null);
-      expect(component.supplierForm.get('phone')?.value).toBe(null);
-      expect(component.supplierForm.get('email')?.value).toBe(null);
+      expect(component.supplierForm.name().value()).toBe('');
+      expect(component.supplierForm.contactPerson().value()).toBe('');
+      expect(component.supplierForm.phone().value()).toBe('');
+      expect(component.supplierForm.email().value()).toBe('');
     });
 
     it('should validate required name field', () => {
-      const nameControl = component.supplierForm.get('name');
-      expect(nameControl?.valid).toBeFalsy();
-      expect(nameControl?.hasError('required')).toBeTruthy();
+      expect(component.supplierForm.name().valid()).toBe(false);
+      expect(
+        component.supplierForm
+          .name()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      nameControl?.setValue('Test Supplier');
-      expect(nameControl?.valid).toBeTruthy();
+      component.supplierForm.name().value.set('Test Supplier');
+      expect(component.supplierForm.name().valid()).toBe(true);
     });
 
     it('should validate email format', () => {
-      const emailControl = component.supplierForm.get('email');
-      emailControl?.setValue('invalid-email');
-      expect(emailControl?.valid).toBeFalsy();
-      expect(emailControl?.hasError('email')).toBeTruthy();
+      component.supplierForm.email().value.set('invalid-email');
+      expect(component.supplierForm.email().valid()).toBe(false);
+      expect(
+        component.supplierForm
+          .email()
+          .errors()
+          .some((e) => e.kind === 'email'),
+      ).toBe(true);
 
-      emailControl?.setValue('valid@example.com');
-      expect(emailControl?.valid).toBeTruthy();
+      component.supplierForm.email().value.set('valid@example.com');
+      expect(component.supplierForm.email().valid()).toBe(true);
     });
   });
 
@@ -155,16 +161,10 @@ describe('SupplierDialog', () => {
       ).set(mockSupplier);
       fixture.detectChanges();
 
-      expect(component.supplierForm.get('name')?.value).toBe('Test Supplier');
-      expect(component.supplierForm.get('contactPerson')?.value).toBe(
-        'John Doe',
-      );
-      expect(component.supplierForm.get('email')?.value).toBe(
-        'test@example.com',
-      );
-      expect(component.supplierForm.get('address')?.value).toBe(
-        'Test Address 123',
-      );
+      expect(component.supplierForm.name().value()).toBe('Test Supplier');
+      expect(component.supplierForm.contactPerson().value()).toBe('John Doe');
+      expect(component.supplierForm.email().value()).toBe('test@example.com');
+      expect(component.supplierForm.address().value()).toBe('Test Address 123');
     });
 
     it('should reset form when selected supplier is null', () => {
@@ -178,9 +178,9 @@ describe('SupplierDialog', () => {
       ).set(null);
       fixture.detectChanges();
 
-      expect(component.supplierForm.get('name')?.value).toBe(null);
-      expect(component.supplierForm.get('contactPerson')?.value).toBe(null);
-      expect(component.supplierForm.get('phone')?.value).toBe(null);
+      expect(component.supplierForm.name().value()).toBe('');
+      expect(component.supplierForm.contactPerson().value()).toBe('');
+      expect(component.supplierForm.phone().value()).toBe('');
     });
   });
 
@@ -190,13 +190,11 @@ describe('SupplierDialog', () => {
         supplierStore.selectedSupplier as WritableSignal<SupplierInfo | null>
       ).set(null);
 
-      component.supplierForm.patchValue({
-        name: 'New Supplier',
-        contactPerson: 'Jane Smith',
-        phone: '555-1234',
-        email: 'jane@example.com',
-        address: 'New Address 456',
-      });
+      component.supplierForm.name().value.set('New Supplier');
+      component.supplierForm.contactPerson().value.set('Jane Smith');
+      component.supplierForm.phone().value.set('555-1234');
+      component.supplierForm.email().value.set('jane@example.com');
+      component.supplierForm.address().value.set('New Address 456');
 
       component.saveSupplier();
 
@@ -217,12 +215,10 @@ describe('SupplierDialog', () => {
         supplierStore.selectedSupplier as WritableSignal<SupplierInfo | null>
       ).set(mockSupplier);
 
-      component.supplierForm.patchValue({
-        name: 'Updated Supplier',
-        contactPerson: 'Updated Contact',
-        phone: '999-8888',
-        email: 'updated@example.com',
-      });
+      component.supplierForm.name().value.set('Updated Supplier');
+      component.supplierForm.contactPerson().value.set('Updated Contact');
+      component.supplierForm.phone().value.set('999-8888');
+      component.supplierForm.email().value.set('updated@example.com');
 
       component.saveSupplier();
 
@@ -244,9 +240,8 @@ describe('SupplierDialog', () => {
       (supplierStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const nameControl = component.supplierForm.get('name');
-      nameControl?.setValue('');
-      nameControl?.markAsTouched();
+      component.supplierForm.name().value.set('');
+      component.supplierForm.name().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -260,9 +255,8 @@ describe('SupplierDialog', () => {
       (supplierStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const emailControl = component.supplierForm.get('email');
-      emailControl?.setValue('invalid-email');
-      emailControl?.markAsTouched();
+      component.supplierForm.email().value.set('invalid-email');
+      component.supplierForm.email().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -288,9 +282,7 @@ describe('SupplierDialog', () => {
       (supplierStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      component.supplierForm.patchValue({
-        name: 'Valid Supplier',
-      });
+      component.supplierForm.name().value.set('Valid Supplier');
 
       const saveButton = fixture.debugElement.query(
         By.css('p-button[label="Save"]'),

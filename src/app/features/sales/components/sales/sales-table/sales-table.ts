@@ -156,16 +156,25 @@ import { SaleStore } from '../../../stores/sale-store';
                   }}
                 }
                 @case ('totalAmount') {
-                  {{ sale.totalAmount | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    sale.totalAmount | currency: undefined : undefined : '1.0-0'
+                  }}
                 }
                 @case ('discountAmount') {
-                  {{ sale.discountAmount | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    sale.discountAmount
+                      | currency: undefined : undefined : '1.0-0'
+                  }}
                 }
                 @case ('taxAmount') {
-                  {{ sale.taxAmount | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    sale.taxAmount | currency: undefined : undefined : '1.0-0'
+                  }}
                 }
                 @case ('finalAmount') {
-                  {{ sale.finalAmount | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    sale.finalAmount | currency: undefined : undefined : '1.0-0'
+                  }}
                 }
                 @case ('createdAt') {
                   {{ sale.createdAt | date: 'dd/MM/yyyy HH:mm' : 'UTC-5' }}
@@ -320,14 +329,14 @@ export class SalesTable {
                 }</td>
                 <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">${this.currencyPipe.transform(
                   item.unitPrice,
-                  'COP',
-                  '$',
+                  undefined,
+                  undefined,
                   '1.0-0',
                 )}</td>
                 <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">${this.currencyPipe.transform(
                   item.subtotal,
-                  'COP',
-                  '$',
+                  undefined,
+                  undefined,
                   '1.0-0',
                 )}</td>
               </tr>
@@ -341,7 +350,7 @@ export class SalesTable {
                 <strong>Base Total:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
-                ${this.currencyPipe.transform(sale.totalAmount, 'COP', '$', '1.0-0')}
+                ${this.currencyPipe.transform(sale.totalAmount, undefined, undefined, '1.0-0')}
               </td>
             </tr>
             <tr>
@@ -349,7 +358,7 @@ export class SalesTable {
                 <strong>Discount:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
-                ${this.currencyPipe.transform(sale.discountAmount, 'COP', '$', '1.0-0')}
+                ${this.currencyPipe.transform(sale.discountAmount, undefined, undefined, '1.0-0')}
               </td>
             </tr>
             <tr>
@@ -357,7 +366,7 @@ export class SalesTable {
                 <strong>Tax (19% VAT):</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
-                ${this.currencyPipe.transform(sale.taxAmount, 'COP', '$', '1.0-0')}
+                ${this.currencyPipe.transform(sale.taxAmount, undefined, undefined, '1.0-0')}
               </td>
             </tr>
             <tr style="background-color: #f8f9fa;">
@@ -365,7 +374,7 @@ export class SalesTable {
                 <strong>Final Total:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
-                <strong>${this.currencyPipe.transform(sale.finalAmount, 'COP', '$', '1.0-0')}</strong>
+                <strong>${this.currencyPipe.transform(sale.finalAmount, undefined, undefined, '1.0-0')}</strong>
               </td>
             </tr>
           </tfoot>

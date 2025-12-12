@@ -8,13 +8,14 @@ import {
   untracked,
 } from '@angular/core';
 import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  Field,
+  applyEach,
+  form,
+  max,
+  min,
+  minLength,
+  required,
+} from '@angular/forms/signals';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -32,11 +33,8 @@ import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 
-import {
-  SaleReturnItemInfo as ReturnItemInfo,
-  SaleReturnData,
-} from '@features/sales/models/sale-return.model';
-import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
+import { SaleReturnData } from '@features/sales/models/sale-return.model';
+import { SaleInfo } from '@features/sales/models/sale.model';
 
 @Component({
   selector: 'app-sales-returns-dialog',
@@ -44,8 +42,6 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
     CommonModule,
     DialogModule,
     ButtonModule,
-    ReactiveFormsModule,
-    FormsModule,
     InputTextModule,
     InputNumberModule,
     SelectModule,
@@ -54,6 +50,7 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
     CurrencyPipe,
     InputGroupModule,
     InputGroupAddonModule,
+    Field,
   ],
   template: `
     <p-dialog
@@ -64,25 +61,37 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
       modal
       [resizable]="false"
     >
-      <form [formGroup]="returnForm" class="flex flex-col gap-4 pt-4">
+      <form
+        (submit)="$event.preventDefault(); saveReturn()"
+        class="flex flex-col gap-4 pt-4"
+      >
         <div class="flex flex-col gap-2">
           <label for="originalSaleId" class="font-bold">Original Sale</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-shopping-cart"></i>
             </p-inputgroup-addon>
-            <p-select
-              id="originalSaleId"
-              formControlName="originalSaleId"
-              [options]="saleStore.entities()"
-              optionLabel="id"
-              optionValue="id"
-              placeholder="Select Original Sale"
-              (onChange)="onOriginalSaleChange($event.value)"
-              [filter]="true"
-              styleClass="w-full"
-              appendTo="body"
-            ></p-select>
+            @if (!viewMode()) {
+              <p-select
+                id="originalSaleId"
+                [field]="returnForm.originalSaleId"
+                [options]="saleStore.entities()"
+                optionLabel="id"
+                optionValue="id"
+                placeholder="Select Original Sale"
+                (onChange)="onOriginalSaleChange($event.value)"
+                [filter]="true"
+                styleClass="w-full"
+                appendTo="body"
+              ></p-select>
+            } @else {
+              <input
+                id="originalSaleId"
+                pInputText
+                [value]="returnForm.originalSaleId().value()"
+                disabled
+              />
+            }
           </p-inputgroup>
         </div>
 
@@ -130,28 +139,31 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
               <p-inputgroup-addon>
                 <i class="pi pi-comment"></i>
               </p-inputgroup-addon>
-              <textarea
-                id="reason"
-                pTextarea
-                formControlName="reason"
-                rows="3"
-                class="w-full"
-                [ngClass]="{
-                  'ng-invalid ng-dirty':
-                    returnForm.get('reason')?.invalid &&
-                    returnForm.get('reason')?.touched,
-                }"
-                placeholder="Enter the detailed reason for the return..."
-              ></textarea>
+              @if (!viewMode()) {
+                <textarea
+                  id="reason"
+                  [field]="returnForm.reason"
+                  rows="3"
+                  class="w-full"
+                  [class.ng-invalid]="reasonInvalid()"
+                  [class.ng-dirty]="reasonInvalid()"
+                  placeholder="Enter the detailed reason for the return..."
+                ></textarea>
+              } @else {
+                <textarea
+                  id="reason"
+                  [value]="returnForm.reason().value()"
+                  rows="3"
+                  class="w-full"
+                  disabled
+                ></textarea>
+              }
             </p-inputgroup>
-            @if (
-              returnForm.get('reason')?.invalid &&
-              returnForm.get('reason')?.touched
-            ) {
+            @if (reasonInvalid()) {
               <small class="p-error">
-                @if (returnForm.get('reason')?.hasError('required')) {
+                @if (reasonHasRequiredError()) {
                   Return reason is required.
-                } @else if (returnForm.get('reason')?.hasError('minlength')) {
+                } @else if (reasonHasMinLengthError()) {
                   Reason must have at least 5 characters.
                 }
               </small>
@@ -160,82 +172,73 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
 
           <div class="flex flex-col gap-2">
             <h3 class="font-bold text-lg m-0">Products to Return</h3>
-            <div formArrayName="items">
-              <p-table
-                [value]="returnItemsArray.controls"
-                [tableStyle]="{ 'min-width': '50rem' }"
-              >
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Product</th>
-                    <th>Original Price</th>
-                    <th>Qty. Purchased</th>
-                    <th>Qty. to Return</th>
-                    <th>Return Subtotal</th>
-                  </tr>
-                </ng-template>
-                <ng-template
-                  pTemplate="body"
-                  let-itemFormGroup
-                  let-i="rowIndex"
-                  let-last="last"
-                >
-                  <tr [formGroupName]="i">
-                    <td>
-                      {{
-                        getProductName(itemFormGroup.get('productId')?.value)
-                      }}
-                    </td>
-                    <td>
-                      {{
-                        itemFormGroup.get('unitPrice')?.value
-                          | currency: 'COP' : '$' : '1.0-0'
-                      }}
-                    </td>
-                    <td>
-                      {{
-                        getOriginalQuantity(
-                          itemFormGroup.get('productId')?.value
-                        )
-                      }}
-                    </td>
-                    <td>
+            <p-table
+              [value]="itemIndexes()"
+              [tableStyle]="{ 'min-width': '50rem' }"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Product</th>
+                  <th>Original Price</th>
+                  <th>Qty. Purchased</th>
+                  <th>Qty. to Return</th>
+                  <th>Return Subtotal</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-idx>
+                <tr>
+                  <td>
+                    {{
+                      getProductName(
+                        returnForm.items[idx].productId().value() ?? 0
+                      )
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      returnForm.items[idx].unitPrice().value()
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
+                  </td>
+                  <td>
+                    {{ returnForm.items[idx].originalQuantity().value() }}
+                  </td>
+                  <td>
+                    @if (!viewMode()) {
                       <p-inputNumber
-                        formControlName="quantity"
+                        [field]="returnForm.items[idx].quantity"
                         [min]="0"
-                        [max]="
-                          getOriginalQuantity(
-                            itemFormGroup.get('productId')?.value
-                          )
-                        "
+                        [max]="returnForm.items[idx].originalQuantity().value()"
                         [showButtons]="true"
                         buttonLayout="horizontal"
-                        (onInput)="updateReturnItemSubtotal(i)"
+                        (onInput)="updateReturnItemSubtotal(idx)"
                       ></p-inputNumber>
-                    </td>
-                    <td>
-                      {{
-                        itemFormGroup.get('subtotal')?.value
-                          | currency: 'COP' : '$' : '1.0-0'
-                      }}
-                    </td>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="footer">
-                  <tr>
-                    <td colspan="4" class="text-right font-bold">
-                      Total Return:
-                    </td>
-                    <td class="font-bold text-xl">
-                      {{
-                        returnForm.get('totalReturnAmount')?.value
-                          | currency: 'COP' : '$' : '1.0-0'
-                      }}
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
+                    } @else {
+                      {{ returnForm.items[idx].quantity().value() }}
+                    }
+                  </td>
+                  <td>
+                    {{
+                      returnForm.items[idx].subtotal().value()
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="footer">
+                <tr>
+                  <td colspan="4" class="text-right font-bold">
+                    Total Return:
+                  </td>
+                  <td class="font-bold text-xl">
+                    {{
+                      returnForm.totalReturnAmount().value()
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
           </div>
         }
       </form>
@@ -251,10 +254,12 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
           <p-button
             label="Save"
             icon="pi pi-check"
-            (click)="saveReturn()"
+            (click)="
+              returnForm().valid() ? saveReturn() : returnForm().markAsTouched()
+            "
             [disabled]="
-              returnForm.invalid ||
-              returnItemsArray.length === 0 ||
+              returnForm().invalid() ||
+              returnForm.items.length === 0 ||
               returnHasNoItems()
             "
           />
@@ -264,7 +269,6 @@ import { SaleInfo, SaleItemInfo } from '@features/sales/models/sale.model';
   `,
 })
 export class SalesReturnsDialog {
-  private readonly fb = inject(FormBuilder);
   readonly saleReturnStore = inject(SaleReturnStore);
   readonly saleStore = inject(SaleStore);
   readonly productStore = inject(ProductStore);
@@ -274,18 +278,25 @@ export class SalesReturnsDialog {
 
   readonly selectedOriginalSale = signal<SaleInfo | null>(null);
 
-  returnForm: FormGroup = this.fb.group({
-    originalSaleId: [null, Validators.required],
-    customerId: [{ value: null, disabled: true }, Validators.required],
-    employeeId: [null, Validators.required],
-    totalReturnAmount: [{ value: 0, disabled: true }, Validators.required],
-    reason: ['', [Validators.required, Validators.minLength(5)]],
-    items: this.fb.array([]),
+  private readonly model = signal<{
+    originalSaleId: number | null;
+    employeeId: number | null;
+    totalReturnAmount: number;
+    reason: string;
+    items: {
+      productId: number | null;
+      unitPrice: number;
+      originalQuantity: number;
+      quantity: number;
+      subtotal: number;
+    }[];
+  }>({
+    originalSaleId: null,
+    employeeId: null,
+    totalReturnAmount: 0,
+    reason: '',
+    items: [],
   });
-
-  get returnItemsArray(): FormArray {
-    return this.returnForm.get('items') as FormArray;
-  }
 
   readonly viewMode = computed(
     () => this.saleReturnStore.selectedSaleReturn() !== null,
@@ -294,20 +305,68 @@ export class SalesReturnsDialog {
     this.viewMode() ? 'Return Details' : 'New Return',
   );
 
+  readonly itemIndexes = computed(() =>
+    Array.from(
+      { length: this.returnForm.items.length },
+      (_: unknown, i: number) => i,
+    ),
+  );
+
+  readonly reasonInvalid = computed(
+    () =>
+      this.returnForm.reason().invalid() && this.returnForm.reason().touched(),
+  );
+
+  readonly reasonHasRequiredError = computed(() =>
+    this.returnForm
+      .reason()
+      .errors()
+      .some((e) => e.kind === 'required'),
+  );
+
+  readonly reasonHasMinLengthError = computed(() =>
+    this.returnForm
+      .reason()
+      .errors()
+      .some((e) => e.kind === 'minLength'),
+  );
+
+  readonly returnForm = form(this.model, (m) => {
+    required(m.originalSaleId);
+    required(m.employeeId);
+    required(m.reason);
+    minLength(m.reason, 5);
+    min(m.totalReturnAmount, 0);
+
+    applyEach(m.items, (i) => {
+      required(i.productId);
+      min(i.unitPrice, 0);
+      min(i.originalQuantity, 0);
+      min(i.quantity, 0);
+      max(i.quantity, ({ valueOf }) => valueOf(i.originalQuantity));
+      min(i.subtotal, 0);
+    });
+  });
+
   constructor() {
     effect(() => {
       const loggedInUser = this.authStore.user();
-      if (!this.viewMode() && !this.returnForm.get('employeeId')?.value) {
-        if (
-          loggedInUser &&
+      if (this.viewMode()) {
+        return;
+      }
+
+      const v = this.returnForm().value();
+      if (v.employeeId == null && this.userStore.entities().length > 0) {
+        const employeeId =
+          loggedInUser?.id != null &&
           this.userStore.entities().some((u) => u.id === loggedInUser.id)
-        ) {
-          this.returnForm.get('employeeId')?.setValue(loggedInUser.id);
-        } else if (this.userStore.entities().length > 0) {
-          this.returnForm
-            .get('employeeId')
-            ?.setValue(this.userStore.entities()[0].id);
-        }
+            ? loggedInUser.id
+            : (this.userStore.entities()[0]?.id ?? null);
+
+        this.returnForm().value.set({
+          ...v,
+          employeeId,
+        });
       }
     });
 
@@ -320,29 +379,39 @@ export class SalesReturnsDialog {
             .find((s) => s.id === currentSaleReturn.originalSaleId);
           if (originalSale) {
             this.selectedOriginalSale.set(originalSale);
-            this.returnForm.patchValue({
+            this.returnForm().reset({
               originalSaleId: currentSaleReturn.originalSaleId,
-              customerId: currentSaleReturn.customer.id,
               employeeId: currentSaleReturn.employee.id,
-              totalReturnAmount: currentSaleReturn.totalReturnAmount,
-              reason: currentSaleReturn.reason,
+              totalReturnAmount: currentSaleReturn.totalReturnAmount ?? 0,
+              reason: currentSaleReturn.reason ?? '',
+              items: currentSaleReturn.items
+                .map((item) => {
+                  const originalSaleItem = originalSale.items.find(
+                    (i) => i.product.id === item.product.id,
+                  );
+                  if (!originalSaleItem) {
+                    return null;
+                  }
+                  return {
+                    productId: item.product.id,
+                    unitPrice: item.unitPrice,
+                    originalQuantity: originalSaleItem.quantity,
+                    quantity: item.quantity,
+                    subtotal: item.subtotal,
+                  };
+                })
+                .filter(
+                  (
+                    i,
+                  ): i is {
+                    productId: number;
+                    unitPrice: number;
+                    originalQuantity: number;
+                    quantity: number;
+                    subtotal: number;
+                  } => i !== null,
+                ),
             });
-            this.returnItemsArray.clear();
-            currentSaleReturn.items.forEach((item) => {
-              const originalSaleItem = originalSale.items.find(
-                (i) => i.product.id === item.product.id,
-              );
-              if (originalSaleItem) {
-                this.returnItemsArray.push(
-                  this.createReturnItemFormGroupFromReturn(
-                    item,
-                    true,
-                    originalSaleItem.quantity,
-                  ),
-                );
-              }
-            });
-            this.returnForm.disable();
           } else {
             this.messageService.add({
               severity: 'error',
@@ -360,57 +429,61 @@ export class SalesReturnsDialog {
 
   resetForm(): void {
     this.selectedOriginalSale.set(null);
-    let defaultEmployeeId = null;
+    let defaultEmployeeId: number | null = null;
     const loggedInUser = this.authStore.user();
     if (
-      loggedInUser &&
+      loggedInUser?.id != null &&
       this.userStore.entities().some((u) => u.id === loggedInUser.id)
     ) {
       defaultEmployeeId = loggedInUser.id;
     } else if (this.userStore.entities().length > 0) {
-      defaultEmployeeId = this.userStore.entities()[0].id;
+      defaultEmployeeId = this.userStore.entities()[0]?.id ?? null;
     }
 
-    this.returnForm.reset({
+    this.returnForm().reset({
       originalSaleId: null,
-      customerId: null,
       employeeId: defaultEmployeeId,
       totalReturnAmount: 0,
       reason: '',
+      items: [],
     });
-    this.returnItemsArray.clear();
-    this.returnForm.get('totalReturnAmount')?.setValue(0);
-
-    this.returnForm.enable();
-    this.returnForm.get('customerId')?.disable();
-    this.returnForm.get('totalReturnAmount')?.disable();
   }
 
   onOriginalSaleChange(saleId: number | null): void {
     if (!saleId) {
       this.selectedOriginalSale.set(null);
-      this.returnForm.get('customerId')?.setValue(null);
-      this.returnItemsArray.clear();
-      this.updateTotalReturnAmount();
+      const v = this.returnForm().value();
+      this.returnForm().value.set({
+        ...v,
+        items: [],
+        totalReturnAmount: 0,
+      });
       return;
     }
 
     const originalSale = this.saleStore.entities().find((s) => s.id === saleId);
     if (originalSale) {
       this.selectedOriginalSale.set(originalSale);
-      this.returnForm.get('customerId')?.setValue(originalSale.customer.id);
-      this.returnItemsArray.clear();
-      originalSale.items.forEach((item) => {
-        this.returnItemsArray.push(
-          this.createReturnItemFormGroup(item, this.viewMode()),
-        );
+      const v = this.returnForm().value();
+      this.returnForm().value.set({
+        ...v,
+        items: originalSale.items.map((item) => ({
+          productId: item.product.id,
+          unitPrice: item.unitPrice,
+          originalQuantity: item.quantity,
+          quantity: 0,
+          subtotal: 0,
+        })),
+        totalReturnAmount: 0,
       });
-      this.updateTotalReturnAmount();
     } else {
       this.selectedOriginalSale.set(null);
-      this.returnForm.get('customerId')?.setValue(null);
-      this.returnItemsArray.clear();
-      this.updateTotalReturnAmount();
+      const v = this.returnForm().value();
+      this.returnForm().value.set({
+        ...v,
+        items: [],
+        totalReturnAmount: 0,
+      });
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
@@ -419,59 +492,23 @@ export class SalesReturnsDialog {
     }
   }
 
-  createReturnItemFormGroup(
-    originalSaleItem: SaleItemInfo,
-    isViewMode: boolean,
-  ): FormGroup {
-    const previouslyReturnedQty = 0;
-    const maxReturnable = originalSaleItem.quantity - previouslyReturnedQty;
-    return this.fb.group({
-      productId: [{ value: originalSaleItem.product.id, disabled: true }],
-      unitPrice: [{ value: originalSaleItem.unitPrice, disabled: true }],
-      originalQuantity: [{ value: originalSaleItem.quantity, disabled: true }],
-      quantity: [
-        { value: 0, disabled: isViewMode },
-        [Validators.required, Validators.min(0), Validators.max(maxReturnable)],
-      ],
-      subtotal: [{ value: 0, disabled: true }],
-    });
-  }
-
-  createReturnItemFormGroupFromReturn(
-    returnedItem: ReturnItemInfo,
-    isViewMode: boolean,
-    originalSaleItemQty: number,
-  ): FormGroup {
-    return this.fb.group({
-      productId: [{ value: returnedItem.product.id, disabled: true }],
-      unitPrice: [{ value: returnedItem.unitPrice, disabled: true }],
-      originalQuantity: [{ value: originalSaleItemQty, disabled: true }],
-      quantity: [
-        { value: returnedItem.quantity, disabled: isViewMode },
-        [
-          Validators.required,
-          Validators.min(0),
-          Validators.max(originalSaleItemQty),
-        ],
-      ],
-      subtotal: [{ value: returnedItem.subtotal, disabled: true }],
-    });
-  }
-
   updateReturnItemSubtotal(index: number): void {
-    const itemGroup = this.returnItemsArray.at(index);
-    const quantity = itemGroup.get('quantity')?.value ?? 0;
-    const unitPrice = itemGroup.get('unitPrice')?.value ?? 0;
-    itemGroup.get('subtotal')?.setValue(quantity * unitPrice);
-    this.updateTotalReturnAmount();
-  }
+    const v = this.returnForm().value();
+    const nextItems = [...v.items];
+    const current = nextItems[index];
+    const subtotal = (current.quantity ?? 0) * (current.unitPrice ?? 0);
+    nextItems[index] = { ...current, subtotal };
 
-  updateTotalReturnAmount(): void {
-    const total = this.returnItemsArray.controls.reduce(
-      (sum, control) => sum + (control.get('subtotal')?.value ?? 0),
+    const totalReturnAmount = nextItems.reduce(
+      (sum, it) => sum + (it.subtotal ?? 0),
       0,
     );
-    this.returnForm.get('totalReturnAmount')?.setValue(total);
+
+    this.returnForm().value.set({
+      ...v,
+      items: nextItems,
+      totalReturnAmount,
+    });
   }
 
   getProductName(productId: number): string {
@@ -489,13 +526,12 @@ export class SalesReturnsDialog {
   }
 
   returnHasNoItems(): boolean {
-    return !this.returnItemsArray.controls.some(
-      (control) => (control.get('quantity')?.value ?? 0) > 0,
-    );
+    const v = this.returnForm().value();
+    return !v.items.some((it) => (it.quantity ?? 0) > 0);
   }
 
   saveReturn(): void {
-    if (this.returnForm.invalid) {
+    if (this.returnForm().invalid()) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
@@ -504,12 +540,21 @@ export class SalesReturnsDialog {
       return;
     }
 
-    const formValue = this.returnForm.getRawValue();
+    const formValue = this.returnForm().value();
     if (!this.selectedOriginalSale()) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
         detail: 'No valid original sale selected.',
+      });
+      return;
+    }
+
+    if (formValue.originalSaleId == null || formValue.employeeId == null) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Invalid form. Please check the fields.',
       });
       return;
     }
@@ -520,11 +565,10 @@ export class SalesReturnsDialog {
       employeeId: formValue.employeeId,
       totalReturnAmount: formValue.totalReturnAmount,
       reason: formValue.reason,
-      items: this.returnItemsArray.controls
-        .map((control) => control.getRawValue())
+      items: formValue.items
         .filter((item) => item.quantity > 0)
         .map((item) => ({
-          productId: item.productId,
+          productId: item.productId!,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           subtotal: item.subtotal,

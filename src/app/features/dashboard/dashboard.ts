@@ -82,7 +82,7 @@ interface ProductWithStock {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                {{ monthlySales() | currency: 'COP' : '$' : '1.0-0' }}
+                {{ monthlySales() | currency: undefined : undefined : '1.0-0' }}
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -128,7 +128,9 @@ interface ProductWithStock {
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Value:
-              {{ pendingOrdersValue() | currency: 'COP' : '$' : '1.0-0' }}
+              {{
+                pendingOrdersValue() | currency: undefined : undefined : '1.0-0'
+              }}
             </div>
           </div>
         </p-card>
@@ -307,7 +309,10 @@ interface ProductWithStock {
                   <td>{{ sale.customer?.fullName || 'Direct Sale' }}</td>
                   <td>{{ sale.items.length }}</td>
                   <td>
-                    {{ sale.finalAmount | currency: 'COP' : '$' : '1.0-0' }}
+                    {{
+                      sale.finalAmount
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
                   </td>
                 </tr>
               </ng-template>

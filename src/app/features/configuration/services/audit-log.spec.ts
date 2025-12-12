@@ -31,6 +31,7 @@ describe('AuditLogService', () => {
   };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
@@ -39,7 +40,8 @@ describe('AuditLogService', () => {
   });
 
   afterEach(() => {
-    httpMock.verify();
+    httpMock?.verify();
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {

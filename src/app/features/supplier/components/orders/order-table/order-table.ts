@@ -135,7 +135,10 @@ import { TooltipModule } from 'primeng/tooltip';
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'totalAmount') {
-                {{ order[column.field] | currency: 'COP' : '$' : '1.0-0' }}
+                {{
+                  order[column.field]
+                    | currency: undefined : undefined : '1.0-0'
+                }}
               } @else if (column.field === 'supplier.name') {
                 {{ order.supplier?.name || 'No supplier' }}
               } @else if (column.field === 'createdAt') {

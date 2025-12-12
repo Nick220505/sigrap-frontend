@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -25,7 +24,7 @@ describe('ScheduleDialog', () => {
       selectedSchedule: signal(null),
       openScheduleDialog: vi.fn(),
       closeScheduleDialog: vi.fn(),
-      save: vi.fn(),
+      create: vi.fn(),
       update: vi.fn(),
     };
 
@@ -39,7 +38,6 @@ describe('ScheduleDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
-        ReactiveFormsModule,
         DialogModule,
         ButtonModule,
         InputTextModule,
@@ -68,33 +66,31 @@ describe('ScheduleDialog', () => {
 
   it('should have a form with required fields', () => {
     expect(component.scheduleForm).toBeDefined();
-    expect(component.scheduleForm.get('userId')).toBeDefined();
-    expect(component.scheduleForm.get('day')).toBeDefined();
-    expect(component.scheduleForm.get('type')).toBeDefined();
-    expect(component.scheduleForm.get('startTime')).toBeDefined();
-    expect(component.scheduleForm.get('endTime')).toBeDefined();
+    expect(component.scheduleForm.userId).toBeDefined();
+    expect(component.scheduleForm.day).toBeDefined();
+    expect(component.scheduleForm.type).toBeDefined();
+    expect(component.scheduleForm.startTime).toBeDefined();
+    expect(component.scheduleForm.endTime).toBeDefined();
   });
 
   it('should validate required fields', () => {
-    const form = component.scheduleForm;
+    expect(component.scheduleForm.userId().valid()).toBe(false);
+    expect(component.scheduleForm.day().valid()).toBe(false);
+    expect(component.scheduleForm.type().valid()).toBe(false);
+    expect(component.scheduleForm.startTime().valid()).toBe(false);
+    expect(component.scheduleForm.endTime().valid()).toBe(false);
 
-    expect(form.get('userId')?.valid).toBe(false);
-    expect(form.get('day')?.valid).toBe(false);
-    expect(form.get('type')?.valid).toBe(false);
-    expect(form.get('startTime')?.valid).toBe(false);
-    expect(form.get('endTime')?.valid).toBe(false);
+    component.scheduleForm.userId().value.set(1);
+    component.scheduleForm.day().value.set('Monday');
+    component.scheduleForm.type().value.set('Regular');
+    component.scheduleForm.startTime().value.set('09:00');
+    component.scheduleForm.endTime().value.set('17:00');
 
-    form.get('userId')?.setValue(1);
-    form.get('day')?.setValue('Monday');
-    form.get('type')?.setValue('Regular');
-    form.get('startTime')?.setValue('09:00');
-    form.get('endTime')?.setValue('17:00');
-
-    expect(form.get('userId')?.valid).toBe(true);
-    expect(form.get('day')?.valid).toBe(true);
-    expect(form.get('type')?.valid).toBe(true);
-    expect(form.get('startTime')?.valid).toBe(true);
-    expect(form.get('endTime')?.valid).toBe(true);
-    expect(form.valid).toBe(true);
+    expect(component.scheduleForm.userId().valid()).toBe(true);
+    expect(component.scheduleForm.day().valid()).toBe(true);
+    expect(component.scheduleForm.type().valid()).toBe(true);
+    expect(component.scheduleForm.startTime().valid()).toBe(true);
+    expect(component.scheduleForm.endTime().valid()).toBe(true);
+    expect(component.scheduleForm().valid()).toBe(true);
   });
 });

@@ -145,7 +145,10 @@ import { TooltipModule } from 'primeng/tooltip';
           <td>{{ saleReturn.customer?.fullName }}</td>
           <td>{{ saleReturn.employee?.name }}</td>
           <td>
-            {{ saleReturn.totalReturnAmount | currency: 'COP' : '$' : '1.0-0' }}
+            {{
+              saleReturn.totalReturnAmount
+                | currency: undefined : undefined : '1.0-0'
+            }}
           </td>
           <td>
             <span

@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
@@ -55,7 +54,6 @@ describe('CustomerDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         CustomerDialog,
-        ReactiveFormsModule,
         NoopAnimationsModule,
         DialogModule,
         ButtonModule,
@@ -76,11 +74,11 @@ describe('CustomerDialog', () => {
   });
 
   it('should initialize the form with default values', () => {
-    expect(component.customerForm.get('fullName')?.value).toBe(null);
-    expect(component.customerForm.get('documentId')?.value).toBe(null);
-    expect(component.customerForm.get('email')?.value).toBe(null);
-    expect(component.customerForm.get('phoneNumber')?.value).toBe(null);
-    expect(component.customerForm.get('address')?.value).toBe(null);
+    expect(component.customerForm.fullName().value()).toBe('');
+    expect(component.customerForm.documentId().value()).toBe('');
+    expect(component.customerForm.email().value()).toBe('');
+    expect(component.customerForm.phoneNumber().value()).toBe('');
+    expect(component.customerForm.address().value()).toBe('');
   });
 
   it('should show "New Customer" header when no customer is selected', () => {
@@ -111,19 +109,17 @@ describe('CustomerDialog', () => {
     );
     fixture.detectChanges();
 
-    expect(component.customerForm.get('fullName')?.value).toBe(
+    expect(component.customerForm.fullName().value()).toBe(
       mockCustomer.fullName,
     );
-    expect(component.customerForm.get('documentId')?.value).toBe(
+    expect(component.customerForm.documentId().value()).toBe(
       mockCustomer.documentId,
     );
-    expect(component.customerForm.get('email')?.value).toBe(mockCustomer.email);
-    expect(component.customerForm.get('phoneNumber')?.value).toBe(
+    expect(component.customerForm.email().value()).toBe(mockCustomer.email);
+    expect(component.customerForm.phoneNumber().value()).toBe(
       mockCustomer.phoneNumber,
     );
-    expect(component.customerForm.get('address')?.value).toBe(
-      mockCustomer.address,
-    );
+    expect(component.customerForm.address().value()).toBe(mockCustomer.address);
   });
 
   it('should call create when saving a new customer', () => {
@@ -131,13 +127,11 @@ describe('CustomerDialog', () => {
       null,
     );
 
-    component.customerForm.patchValue({
-      fullName: 'New Customer',
-      documentId: '987654321',
-      email: 'new@example.com',
-      phoneNumber: '0987654321',
-      address: 'New Address',
-    });
+    component.customerForm.fullName().value.set('New Customer');
+    component.customerForm.documentId().value.set('987654321');
+    component.customerForm.email().value.set('new@example.com');
+    component.customerForm.phoneNumber().value.set('0987654321');
+    component.customerForm.address().value.set('New Address');
 
     component.saveCustomer();
 
@@ -155,13 +149,11 @@ describe('CustomerDialog', () => {
       mockCustomer,
     );
 
-    component.customerForm.patchValue({
-      fullName: 'Updated Customer',
-      documentId: '555555555',
-      email: 'updated@example.com',
-      phoneNumber: '5555555555',
-      address: 'Updated Address',
-    });
+    component.customerForm.fullName().value.set('Updated Customer');
+    component.customerForm.documentId().value.set('555555555');
+    component.customerForm.email().value.set('updated@example.com');
+    component.customerForm.phoneNumber().value.set('5555555555');
+    component.customerForm.address().value.set('Updated Address');
 
     component.saveCustomer();
 

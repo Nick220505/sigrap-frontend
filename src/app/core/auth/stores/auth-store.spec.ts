@@ -28,6 +28,31 @@ describe('AuthStore', () => {
   let router: { navigate: Mock };
   let messageService: { add: Mock };
   let httpMock: HttpTestingController;
+  let localStorageMock: Storage;
+
+  const createLocalStorageMock = (): Storage => {
+    const data = new Map<string, string>();
+    return {
+      get length() {
+        return data.size;
+      },
+      clear() {
+        data.clear();
+      },
+      getItem(key: string) {
+        return data.has(key) ? data.get(key)! : null;
+      },
+      key(index: number) {
+        return Array.from(data.keys())[index] ?? null;
+      },
+      removeItem(key: string) {
+        data.delete(key);
+      },
+      setItem(key: string, value: string) {
+        data.set(key, value);
+      },
+    } as unknown as Storage;
+  };
 
   const mockResponse = {
     token: 'test-token',
@@ -38,6 +63,9 @@ describe('AuthStore', () => {
   };
 
   beforeEach(() => {
+    localStorageMock = createLocalStorageMock();
+    vi.stubGlobal('localStorage', localStorageMock);
+
     const routerSpy = {
       navigate: vi.fn().mockName('Router.navigate'),
     };
@@ -72,7 +100,9 @@ describe('AuthStore', () => {
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.clear();
+    localStorageMock.clear();
+    TestBed.resetTestingModule();
+    vi.unstubAllGlobals();
   });
 
   it('should be created', () => {

@@ -1,10 +1,5 @@
-import { Component, effect, inject, untracked } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Field, form, required } from '@angular/forms/signals';
 import { CategoryData } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ButtonModule } from 'primeng/button';
@@ -21,7 +16,7 @@ import { TextareaModule } from 'primeng/textarea';
     ButtonModule,
     InputTextModule,
     TextareaModule,
-    ReactiveFormsModule,
+    Field,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -39,12 +34,15 @@ import { TextareaModule } from 'primeng/textarea';
       "
       modal
     >
-      <form [formGroup]="categoryForm" class="flex flex-col gap-6 pt-4">
-        @let nameControlInvalid =
-          categoryForm.get('name')?.invalid &&
-          categoryForm.get('name')?.touched;
+      <form
+        (submit)="$event.preventDefault(); onSubmit()"
+        class="flex flex-col gap-6 pt-4"
+      >
+        @let nameInvalid =
+          categoryForm.name().invalid() && categoryForm.name().touched();
+        @let nameErrors = categoryForm.name().errors();
 
-        <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
+        <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
           <label for="name" class="font-bold">Name</label>
           <p-inputgroup>
             <p-inputgroup-addon>
@@ -54,17 +52,20 @@ import { TextareaModule } from 'primeng/textarea';
               type="text"
               pInputText
               id="name"
-              formControlName="name"
+              [field]="categoryForm.name"
               placeholder="Enter category name"
-              [class.ng-dirty]="nameControlInvalid"
-              [class.ng-invalid]="nameControlInvalid"
-              required
+              [class.ng-dirty]="nameInvalid"
+              [class.ng-invalid]="nameInvalid"
               fluid
             />
           </p-inputgroup>
 
-          @if (nameControlInvalid) {
-            <small class="text-red-500">Name is required.</small>
+          @if (nameInvalid) {
+            <ul>
+              @for (error of nameErrors; track error.kind) {
+                <li class="text-red-500">{{ error.message }}</li>
+              }
+            </ul>
           }
         </div>
 
@@ -76,9 +77,8 @@ import { TextareaModule } from 'primeng/textarea';
             </p-inputgroup-addon>
             <textarea
               rows="3"
-              pTextarea
               id="description"
-              formControlName="description"
+              [field]="categoryForm.description"
               placeholder="Enter a description (optional)"
               class="w-full"
               fluid
@@ -98,11 +98,8 @@ import { TextareaModule } from 'primeng/textarea';
         <p-button
           label="Save"
           icon="pi pi-check"
-          (click)="
-            categoryForm.valid
-              ? saveCategory()
-              : categoryForm.markAllAsTouched()
-          "
+          type="submit"
+          (click)="onSubmit()"
           [loading]="categoryStore.loading()"
         />
       </ng-template>
@@ -110,12 +107,15 @@ import { TextareaModule } from 'primeng/textarea';
   `,
 })
 export class CategoryDialog {
-  private readonly fb = inject(FormBuilder);
   readonly categoryStore = inject(CategoryStore);
 
-  readonly categoryForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    description: [''],
+  private readonly categoryModel = signal({
+    name: '',
+    description: '',
+  });
+
+  readonly categoryForm = form(this.categoryModel, (category) => {
+    required(category.name, { message: 'Name is required.' });
   });
 
   constructor() {
@@ -123,16 +123,31 @@ export class CategoryDialog {
       const category = this.categoryStore.selectedCategory();
       untracked(() => {
         if (category) {
-          this.categoryForm.patchValue(category);
+          this.categoryModel.set({
+            name: category.name,
+            description: category.description ?? '',
+          });
         } else {
-          this.categoryForm.reset();
+          this.categoryModel.set({
+            name: '',
+            description: '',
+          });
         }
       });
     });
   }
 
+  onSubmit(): void {
+    if (this.categoryForm().valid()) {
+      this.saveCategory();
+      return;
+    }
+
+    this.categoryForm.name().markAsTouched();
+  }
+
   saveCategory(): void {
-    const categoryData: CategoryData = this.categoryForm.value;
+    const categoryData: CategoryData = this.categoryForm().value();
     const id = this.categoryStore.selectedCategory()?.id;
     if (id) {
       this.categoryStore.update({ id, categoryData });

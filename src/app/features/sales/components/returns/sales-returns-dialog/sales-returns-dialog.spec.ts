@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { CurrencyPipe } from '@angular/common';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthStore } from '@core/auth/stores/auth-store';
@@ -198,8 +197,6 @@ describe('SalesReturnsDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         SalesReturnsDialog,
-        ReactiveFormsModule,
-        FormsModule,
         NoopAnimationsModule,
         DialogModule,
         ButtonModule,
@@ -233,10 +230,10 @@ describe('SalesReturnsDialog', () => {
 
   describe('Dialog initialization', () => {
     it('should initialize with an empty form', () => {
-      expect(component.returnForm.get('originalSaleId')?.value).toBeNull();
-      expect(component.returnForm.get('reason')?.value).toBe('');
-      expect(component.returnForm.get('totalReturnAmount')?.value).toBe(0);
-      expect(component.returnItemsArray.length).toBe(0);
+      expect(component.returnForm.originalSaleId().value()).toBeNull();
+      expect(component.returnForm.reason().value()).toBe('');
+      expect(component.returnForm.totalReturnAmount().value()).toBe(0);
+      expect(component.returnForm.items.length).toBe(0);
     });
 
     it('should show dialog when dialogVisible is true', () => {
@@ -284,7 +281,7 @@ describe('SalesReturnsDialog', () => {
     });
 
     it('should populate customer info when original sale is selected', () => {
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+      component.returnForm.originalSaleId().value.set(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
       fixture.detectChanges();
 
@@ -295,82 +292,83 @@ describe('SalesReturnsDialog', () => {
     });
 
     it('should populate items when original sale is selected', () => {
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+      component.returnForm.originalSaleId().value.set(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
       fixture.detectChanges();
 
-      expect(component.returnItemsArray.length).toBe(mockSaleItems.length);
-      expect(component.returnItemsArray.at(0).get('productId')?.value).toBe(
+      expect(component.returnForm.items.length).toBe(mockSaleItems.length);
+      expect(component.returnForm.items[0].productId().value()).toBe(
         mockSaleItems[0].product.id,
       );
-      expect(component.returnItemsArray.at(0).get('unitPrice')?.value).toBe(
+      expect(component.returnForm.items[0].unitPrice().value()).toBe(
         mockSaleItems[0].unitPrice,
       );
     });
 
     it('should reset form when sale is deselected', () => {
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+      component.returnForm.originalSaleId().value.set(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
       fixture.detectChanges();
 
-      component.returnForm.get('originalSaleId')?.setValue(null);
+      component.returnForm.originalSaleId().value.set(null);
       component.onOriginalSaleChange(null);
       fixture.detectChanges();
 
       expect(component.selectedOriginalSale()).toBeNull();
-      expect(component.returnForm.get('customerId')?.value).toBeNull();
-      expect(component.returnItemsArray.length).toBe(0);
+      expect(component.returnForm.items.length).toBe(0);
+      expect(component.returnForm.totalReturnAmount().value()).toBe(0);
     });
   });
 
   describe('Return items', () => {
     beforeEach(() => {
       (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+      component.returnForm.originalSaleId().value.set(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
       fixture.detectChanges();
     });
 
     it('should update subtotal when quantity changes', () => {
-      const itemGroup = component.returnItemsArray.at(0);
-      const originalPrice = itemGroup.get('unitPrice')?.value;
+      const originalPrice = component.returnForm.items[0].unitPrice().value();
 
-      itemGroup.get('quantity')?.setValue(1);
+      component.returnForm.items[0].quantity().value.set(1);
       component.updateReturnItemSubtotal(0);
       fixture.detectChanges();
 
-      expect(itemGroup.get('subtotal')?.value).toBe(originalPrice);
-      expect(component.returnForm.get('totalReturnAmount')?.value).toBe(
+      expect(component.returnForm.items[0].subtotal().value()).toBe(
+        originalPrice,
+      );
+      expect(component.returnForm.totalReturnAmount().value()).toBe(
         originalPrice,
       );
     });
 
     it('should update total return amount when subtotals change', () => {
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+      component.returnForm.items[0].quantity().value.set(1);
       component.updateReturnItemSubtotal(0);
 
-      component.returnItemsArray.at(1).get('quantity')?.setValue(1);
+      component.returnForm.items[1].quantity().value.set(1);
       component.updateReturnItemSubtotal(1);
 
       fixture.detectChanges();
 
       const expectedTotal =
-        component.returnItemsArray.at(0).get('subtotal')?.value +
-        component.returnItemsArray.at(1).get('subtotal')?.value;
+        component.returnForm.items[0].subtotal().value() +
+        component.returnForm.items[1].subtotal().value();
 
-      expect(component.returnForm.get('totalReturnAmount')?.value).toBe(
+      expect(component.returnForm.totalReturnAmount().value()).toBe(
         expectedTotal,
       );
     });
 
     it('should detect when no items are selected for return', () => {
-      component.returnItemsArray.at(0).get('quantity')?.setValue(0);
-      component.returnItemsArray.at(1).get('quantity')?.setValue(0);
+      component.returnForm.items[0].quantity().value.set(0);
+      component.returnForm.items[1].quantity().value.set(0);
       fixture.detectChanges();
 
       expect(component.returnHasNoItems()).toBe(true);
 
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+      component.returnForm.items[0].quantity().value.set(1);
       fixture.detectChanges();
 
       expect(component.returnHasNoItems()).toBe(false);
@@ -380,61 +378,70 @@ describe('SalesReturnsDialog', () => {
   describe('Form validation', () => {
     beforeEach(() => {
       (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+      component.returnForm.originalSaleId().value.set(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
       fixture.detectChanges();
     });
 
     it('should require reason field', () => {
-      component.returnForm.get('reason')?.setValue('');
-      component.returnForm.get('reason')?.markAsTouched();
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+      component.returnForm.reason().value.set('');
+      component.returnForm.reason().markAsTouched();
+      component.returnForm.items[0].quantity().value.set(1);
       component.updateReturnItemSubtotal(0);
       fixture.detectChanges();
 
-      expect(component.returnForm.get('reason')?.invalid).toBe(true);
+      expect(component.returnForm.reason().invalid()).toBe(true);
       expect(
-        component.returnForm.get('reason')?.errors?.['required'],
-      ).toBeTruthy();
+        component.returnForm
+          .reason()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      component.returnForm.get('reason')?.setValue('Valid reason for return');
+      component.returnForm.reason().value.set('Valid reason for return');
       fixture.detectChanges();
 
-      expect(component.returnForm.get('reason')?.invalid).toBe(false);
+      expect(component.returnForm.reason().invalid()).toBe(false);
     });
 
     it('should enforce minimum length for reason', () => {
-      component.returnForm.get('reason')?.setValue('abc');
-      component.returnForm.get('reason')?.markAsTouched();
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+      component.returnForm.reason().value.set('abc');
+      component.returnForm.reason().markAsTouched();
+      component.returnForm.items[0].quantity().value.set(1);
       component.updateReturnItemSubtotal(0);
       fixture.detectChanges();
 
-      expect(component.returnForm.get('reason')?.invalid).toBe(true);
+      expect(component.returnForm.reason().invalid()).toBe(true);
       expect(
-        component.returnForm.get('reason')?.errors?.['minlength'],
-      ).toBeTruthy();
+        component.returnForm
+          .reason()
+          .errors()
+          .some((e) => e.kind === 'minLength'),
+      ).toBe(true);
 
-      component.returnForm.get('reason')?.setValue('Valid reason');
+      component.returnForm.reason().value.set('Valid reason');
       fixture.detectChanges();
 
-      expect(component.returnForm.get('reason')?.invalid).toBe(false);
+      expect(component.returnForm.reason().invalid()).toBe(false);
     });
 
     it('should validate that at least one item has quantity > 0', () => {
-      const reasonControl = component.returnForm.get('reason');
-      reasonControl?.setValue('Valid reason');
+      component.returnForm.reason().value.set('Valid reason');
 
-      component.returnItemsArray.controls.forEach((control, index) => {
-        control.get('quantity')?.setValue(0);
+      const itemCount = component.returnForm.items.length;
+      for (const index of Array.from(
+        { length: itemCount },
+        (_: unknown, i: number) => i,
+      )) {
+        component.returnForm.items[index].quantity().value.set(0);
         component.updateReturnItemSubtotal(index);
-      });
+      }
 
       fixture.detectChanges();
 
       expect(component.returnHasNoItems()).toBe(true);
 
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+      component.returnForm.items[0].quantity().value.set(1);
       component.updateReturnItemSubtotal(0);
       fixture.detectChanges();
 
@@ -445,10 +452,10 @@ describe('SalesReturnsDialog', () => {
   describe('Save functionality', () => {
     beforeEach(() => {
       (saleReturnStore.dialogVisible as WritableSignal<boolean>).set(true);
-      component.returnForm.get('originalSaleId')?.setValue(mockSale.id);
+      component.returnForm.originalSaleId().value.set(mockSale.id);
       component.onOriginalSaleChange(mockSale.id);
-      component.returnForm.get('reason')?.setValue('Valid return reason');
-      component.returnItemsArray.at(0).get('quantity')?.setValue(1);
+      component.returnForm.reason().value.set('Valid return reason');
+      component.returnForm.items[0].quantity().value.set(1);
       component.updateReturnItemSubtotal(0);
       fixture.detectChanges();
     });
@@ -472,7 +479,7 @@ describe('SalesReturnsDialog', () => {
     });
 
     it('should filter out items with quantity = 0', () => {
-      component.returnItemsArray.at(1).get('quantity')?.setValue(0);
+      component.returnForm.items[1].quantity().value.set(0);
       component.updateReturnItemSubtotal(1);
       fixture.detectChanges();
 
@@ -486,10 +493,14 @@ describe('SalesReturnsDialog', () => {
     });
 
     it('should show warning when no items have quantity > 0', () => {
-      component.returnItemsArray.controls.forEach((control, index) => {
-        control.get('quantity')?.setValue(0);
+      const itemCount = component.returnForm.items.length;
+      for (const index of Array.from(
+        { length: itemCount },
+        (_: unknown, i: number) => i,
+      )) {
+        component.returnForm.items[index].quantity().value.set(0);
         component.updateReturnItemSubtotal(index);
-      });
+      }
       fixture.detectChanges();
 
       component.saveReturn();

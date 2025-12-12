@@ -1,10 +1,5 @@
-import { Component, effect, inject, untracked } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Field, form, required } from '@angular/forms/signals';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -12,16 +7,17 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
+import { ScheduleData } from '../../../models/schedule.model';
 import { ScheduleStore } from '../../../stores/schedule-store';
 
 @Component({
   selector: 'app-schedule-dialog',
   imports: [
-    ReactiveFormsModule,
     DialogModule,
     ButtonModule,
     InputTextModule,
     Select,
+    Field,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -40,15 +36,15 @@ import { ScheduleStore } from '../../../stores/schedule-store';
       [style]="{ width: '500px' }"
       modal
     >
-      <form [formGroup]="scheduleForm" class="flex flex-col gap-4 pt-4">
-        @let userIdControlInvalid =
-          scheduleForm.get('userId')?.invalid &&
-          scheduleForm.get('userId')?.touched;
+      <form
+        (submit)="$event.preventDefault(); onSubmit()"
+        class="flex flex-col gap-4 pt-4"
+      >
+        @let userIdInvalid =
+          scheduleForm.userId().invalid() && scheduleForm.userId().touched();
+        @let userIdErrors = scheduleForm.userId().errors();
 
-        <div
-          class="flex flex-col gap-2"
-          [class.p-invalid]="userIdControlInvalid"
-        >
+        <div class="flex flex-col gap-2" [class.p-invalid]="userIdInvalid">
           <label for="userId" class="font-bold">Employee</label>
           <p-inputgroup>
             <p-inputgroup-addon>
@@ -56,33 +52,33 @@ import { ScheduleStore } from '../../../stores/schedule-store';
             </p-inputgroup-addon>
             <p-select
               id="userId"
-              formControlName="userId"
+              [field]="scheduleForm.userId"
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
               placeholder="Select an employee"
-              [required]="true"
-              [class.ng-dirty]="userIdControlInvalid"
-              [class.ng-invalid]="userIdControlInvalid"
+              [class.ng-dirty]="userIdInvalid"
+              [class.ng-invalid]="userIdInvalid"
               appendTo="body"
               styleClass="w-full"
               filter
               filterBy="name"
             />
           </p-inputgroup>
-          @if (userIdControlInvalid) {
-            <small class="text-red-500">Employee is required.</small>
+          @if (userIdInvalid) {
+            <ul>
+              @for (error of userIdErrors; track error.kind) {
+                <li class="text-red-500">{{ error.message }}</li>
+              }
+            </ul>
           }
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          @let dayControlInvalid =
-            scheduleForm.get('day')?.invalid &&
-            scheduleForm.get('day')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="dayControlInvalid"
-          >
+          @let dayInvalid =
+            scheduleForm.day().invalid() && scheduleForm.day().touched();
+          @let dayErrors = scheduleForm.day().errors();
+          <div class="flex flex-col gap-2" [class.p-invalid]="dayInvalid">
             <label for="day" class="font-bold">Day of Week</label>
             <p-inputgroup>
               <p-inputgroup-addon>
@@ -90,7 +86,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               </p-inputgroup-addon>
               <p-select
                 id="day"
-                formControlName="day"
+                [field]="scheduleForm.day"
                 [options]="[
                   { label: 'Monday', value: 'Monday' },
                   { label: 'Tuesday', value: 'Tuesday' },
@@ -103,26 +99,26 @@ import { ScheduleStore } from '../../../stores/schedule-store';
                 optionLabel="label"
                 optionValue="value"
                 placeholder="Select a day"
-                [required]="true"
-                [class.ng-dirty]="dayControlInvalid"
-                [class.ng-invalid]="dayControlInvalid"
+                [class.ng-dirty]="dayInvalid"
+                [class.ng-invalid]="dayInvalid"
                 appendTo="body"
                 styleClass="w-full"
                 scrollHeight="300px"
               />
             </p-inputgroup>
-            @if (dayControlInvalid) {
-              <small class="text-red-500"> Day of week is required. </small>
+            @if (dayInvalid) {
+              <ul>
+                @for (error of dayErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
 
-          @let typeControlInvalid =
-            scheduleForm.get('type')?.invalid &&
-            scheduleForm.get('type')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="typeControlInvalid"
-          >
+          @let typeInvalid =
+            scheduleForm.type().invalid() && scheduleForm.type().touched();
+          @let typeErrors = scheduleForm.type().errors();
+          <div class="flex flex-col gap-2" [class.p-invalid]="typeInvalid">
             <label for="type" class="font-bold">Schedule Type</label>
             <p-inputgroup>
               <p-inputgroup-addon>
@@ -130,7 +126,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               </p-inputgroup-addon>
               <p-select
                 id="type"
-                formControlName="type"
+                [field]="scheduleForm.type"
                 [options]="[
                   { label: 'Regular', value: 'Regular' },
                   { label: 'Overtime', value: 'Horas Extra' },
@@ -139,27 +135,28 @@ import { ScheduleStore } from '../../../stores/schedule-store';
                 optionLabel="label"
                 optionValue="value"
                 placeholder="Select a type"
-                [required]="true"
-                [class.ng-dirty]="typeControlInvalid"
-                [class.ng-invalid]="typeControlInvalid"
+                [class.ng-dirty]="typeInvalid"
+                [class.ng-invalid]="typeInvalid"
                 appendTo="body"
                 styleClass="w-full"
               />
             </p-inputgroup>
-            @if (typeControlInvalid) {
-              <small class="text-red-500"> Schedule type is required. </small>
+            @if (typeInvalid) {
+              <ul>
+                @for (error of typeErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          @let startTimeControlInvalid =
-            scheduleForm.get('startTime')?.invalid &&
-            scheduleForm.get('startTime')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="startTimeControlInvalid"
-          >
+          @let startTimeInvalid =
+            scheduleForm.startTime().invalid() &&
+            scheduleForm.startTime().touched();
+          @let startTimeErrors = scheduleForm.startTime().errors();
+          <div class="flex flex-col gap-2" [class.p-invalid]="startTimeInvalid">
             <label for="startTime" class="font-bold">Start Time</label>
             <p-inputgroup>
               <p-inputgroup-addon>
@@ -168,26 +165,27 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               <input
                 pInputText
                 id="startTime"
-                formControlName="startTime"
+                [field]="scheduleForm.startTime"
                 type="time"
-                [required]="true"
-                [class.ng-dirty]="startTimeControlInvalid"
-                [class.ng-invalid]="startTimeControlInvalid"
+                [class.ng-dirty]="startTimeInvalid"
+                [class.ng-invalid]="startTimeInvalid"
                 class="w-full"
               />
             </p-inputgroup>
-            @if (startTimeControlInvalid) {
-              <small class="text-red-500">Start time is required.</small>
+            @if (startTimeInvalid) {
+              <ul>
+                @for (error of startTimeErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
 
-          @let endTimeControlInvalid =
-            scheduleForm.get('endTime')?.invalid &&
-            scheduleForm.get('endTime')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="endTimeControlInvalid"
-          >
+          @let endTimeInvalid =
+            scheduleForm.endTime().invalid() &&
+            scheduleForm.endTime().touched();
+          @let endTimeErrors = scheduleForm.endTime().errors();
+          <div class="flex flex-col gap-2" [class.p-invalid]="endTimeInvalid">
             <label for="endTime" class="font-bold">End Time</label>
             <p-inputgroup>
               <p-inputgroup-addon>
@@ -196,16 +194,19 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               <input
                 pInputText
                 id="endTime"
-                formControlName="endTime"
+                [field]="scheduleForm.endTime"
                 type="time"
-                [required]="true"
-                [class.ng-dirty]="endTimeControlInvalid"
-                [class.ng-invalid]="endTimeControlInvalid"
+                [class.ng-dirty]="endTimeInvalid"
+                [class.ng-invalid]="endTimeInvalid"
                 class="w-full"
               />
             </p-inputgroup>
-            @if (endTimeControlInvalid) {
-              <small class="text-red-500">End time is required.</small>
+            @if (endTimeInvalid) {
+              <ul>
+                @for (error of endTimeErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
         </div>
@@ -221,11 +222,8 @@ import { ScheduleStore } from '../../../stores/schedule-store';
         <p-button
           label="Save"
           icon="pi pi-check"
-          (click)="
-            scheduleForm.valid
-              ? saveSchedule()
-              : scheduleForm.markAllAsTouched()
-          "
+          type="submit"
+          (onClick)="onSubmit()"
           [disabled]="scheduleStore.loading()"
         />
       </ng-template>
@@ -233,16 +231,24 @@ import { ScheduleStore } from '../../../stores/schedule-store';
   `,
 })
 export class ScheduleDialog {
-  private readonly fb = inject(FormBuilder);
   readonly scheduleStore = inject(ScheduleStore);
   readonly userStore = inject(UserStore);
 
-  readonly scheduleForm: FormGroup = this.fb.group({
-    userId: [null, [Validators.required]],
-    day: ['', [Validators.required]],
-    startTime: ['', [Validators.required]],
-    endTime: ['', [Validators.required]],
-    type: ['', [Validators.required]],
+  private readonly scheduleModel = signal({
+    userId: null as number | null,
+    day: '',
+    type: '',
+    startTime: '',
+    endTime: '',
+    isActive: true,
+  });
+
+  readonly scheduleForm = form(this.scheduleModel, (schedule) => {
+    required(schedule.userId, { message: 'Employee is required.' });
+    required(schedule.day, { message: 'Day of week is required.' });
+    required(schedule.type, { message: 'Schedule type is required.' });
+    required(schedule.startTime, { message: 'Start time is required.' });
+    required(schedule.endTime, { message: 'End time is required.' });
   });
 
   constructor() {
@@ -276,16 +282,51 @@ export class ScheduleDialog {
               selectedSchedule.endTime as string | undefined,
             ),
           };
-          this.scheduleForm.patchValue(patchData);
+          this.scheduleModel.set({
+            userId: patchData.userId,
+            day: patchData.day,
+            type: patchData.type,
+            startTime: patchData.startTime,
+            endTime: patchData.endTime,
+            isActive: patchData.isActive,
+          });
         } else {
-          this.scheduleForm.reset();
+          this.scheduleModel.set({
+            userId: null,
+            day: '',
+            type: '',
+            startTime: '',
+            endTime: '',
+            isActive: true,
+          });
         }
       });
     });
   }
 
+  onSubmit(): void {
+    if (this.scheduleForm().valid()) {
+      this.saveSchedule();
+      return;
+    }
+
+    this.scheduleForm.userId().markAsTouched();
+    this.scheduleForm.day().markAsTouched();
+    this.scheduleForm.type().markAsTouched();
+    this.scheduleForm.startTime().markAsTouched();
+    this.scheduleForm.endTime().markAsTouched();
+  }
+
   saveSchedule(): void {
-    const scheduleData = this.scheduleForm.value;
+    const schedule = this.scheduleForm().value();
+    const scheduleData: ScheduleData = {
+      userId: schedule.userId!,
+      day: schedule.day,
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
+      type: schedule.type,
+      isActive: schedule.isActive,
+    };
     const id = this.scheduleStore.selectedSchedule()?.id;
 
     if (id) {

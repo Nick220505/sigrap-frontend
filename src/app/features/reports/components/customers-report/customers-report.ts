@@ -256,7 +256,10 @@ interface PieChartTooltipContext {
                 <td>{{ customer.customer.fullName }}</td>
                 <td>{{ customer.purchaseCount }}</td>
                 <td>
-                  {{ customer.totalAmount | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    customer.totalAmount
+                      | currency: undefined : undefined : '1.0-0'
+                  }}
                 </td>
                 <td>
                   {{
@@ -573,7 +576,7 @@ export class CustomersReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Sales Amount (COP)',
+          text: 'Sales Amount',
         },
       },
     },

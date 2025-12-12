@@ -1,11 +1,5 @@
-import { Component, effect, inject, untracked } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Field, email, form, required } from '@angular/forms/signals';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -16,13 +10,12 @@ import { CustomerStore } from '../../../stores/customer-store';
 @Component({
   selector: 'app-customer-dialog',
   imports: [
-    ReactiveFormsModule,
-    FormsModule,
     DialogModule,
     ButtonModule,
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
+    Field,
   ],
   template: `
     <p-dialog
@@ -38,16 +31,20 @@ import { CustomerStore } from '../../../stores/customer-store';
       "
       modal
     >
-      <form [formGroup]="customerForm" class="flex flex-col gap-4 pt-4">
+      <form
+        (submit)="$event.preventDefault(); onSubmit()"
+        class="flex flex-col gap-4 pt-4"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
-            @let fullNameControlInvalid =
-              customerForm.get('fullName')?.invalid &&
-              customerForm.get('fullName')?.touched;
+            @let fullNameInvalid =
+              customerForm.fullName().invalid() &&
+              customerForm.fullName().touched();
+            @let fullNameErrors = customerForm.fullName().errors();
 
             <div
               class="flex flex-col gap-2"
-              [class.p-invalid]="fullNameControlInvalid"
+              [class.p-invalid]="fullNameInvalid"
             >
               <label for="fullName" class="font-bold">Full Name</label>
               <p-inputgroup>
@@ -58,29 +55,33 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="fullName"
-                  formControlName="fullName"
+                  [field]="customerForm.fullName"
                   placeholder="Enter full name"
-                  [class.ng-dirty]="fullNameControlInvalid"
-                  [class.ng-invalid]="fullNameControlInvalid"
-                  required
+                  [class.ng-dirty]="fullNameInvalid"
+                  [class.ng-invalid]="fullNameInvalid"
                   fluid
                 />
               </p-inputgroup>
 
-              @if (fullNameControlInvalid) {
-                <small class="text-red-500">Full name is required.</small>
+              @if (fullNameInvalid) {
+                <ul>
+                  @for (error of fullNameErrors; track error.kind) {
+                    <li class="text-red-500">{{ error.message }}</li>
+                  }
+                </ul>
               }
             </div>
           </div>
 
           <div class="col-span-1">
-            @let documentIdControlInvalid =
-              customerForm.get('documentId')?.invalid &&
-              customerForm.get('documentId')?.touched;
+            @let documentIdInvalid =
+              customerForm.documentId().invalid() &&
+              customerForm.documentId().touched();
+            @let documentIdErrors = customerForm.documentId().errors();
 
             <div
               class="flex flex-col gap-2"
-              [class.p-invalid]="documentIdControlInvalid"
+              [class.p-invalid]="documentIdInvalid"
             >
               <label for="documentId" class="font-bold">Document</label>
               <p-inputgroup>
@@ -91,17 +92,20 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="documentId"
-                  formControlName="documentId"
+                  [field]="customerForm.documentId"
                   placeholder="Enter document number"
-                  [class.ng-dirty]="documentIdControlInvalid"
-                  [class.ng-invalid]="documentIdControlInvalid"
-                  required
+                  [class.ng-dirty]="documentIdInvalid"
+                  [class.ng-invalid]="documentIdInvalid"
                   fluid
                 />
               </p-inputgroup>
 
-              @if (documentIdControlInvalid) {
-                <small class="text-red-500">Document is required.</small>
+              @if (documentIdInvalid) {
+                <ul>
+                  @for (error of documentIdErrors; track error.kind) {
+                    <li class="text-red-500">{{ error.message }}</li>
+                  }
+                </ul>
               }
             </div>
           </div>
@@ -117,7 +121,7 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="phoneNumber"
-                  formControlName="phoneNumber"
+                  [field]="customerForm.phoneNumber"
                   placeholder="Enter phone number (optional)"
                   fluid
                 />
@@ -126,14 +130,11 @@ import { CustomerStore } from '../../../stores/customer-store';
           </div>
 
           <div class="col-span-1 md:col-span-2">
-            @let emailControlInvalid =
-              customerForm.get('email')?.invalid &&
-              customerForm.get('email')?.touched;
+            @let emailInvalid =
+              customerForm.email().invalid() && customerForm.email().touched();
+            @let emailErrors = customerForm.email().errors();
 
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="emailControlInvalid"
-            >
+            <div class="flex flex-col gap-2" [class.p-invalid]="emailInvalid">
               <label for="email" class="font-bold">Email</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -143,34 +144,31 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="email"
                   pInputText
                   id="email"
-                  formControlName="email"
+                  [field]="customerForm.email"
                   placeholder="Enter email"
-                  [class.ng-dirty]="emailControlInvalid"
-                  [class.ng-invalid]="emailControlInvalid"
-                  required
+                  [class.ng-dirty]="emailInvalid"
+                  [class.ng-invalid]="emailInvalid"
                   fluid
                 />
               </p-inputgroup>
 
-              @if (emailControlInvalid) {
-                @if (customerForm.get('email')?.errors?.['required']) {
-                  <small class="text-red-500">Email is required.</small>
-                } @else if (customerForm.get('email')?.errors?.['email']) {
-                  <small class="text-red-500">Enter a valid email.</small>
-                }
+              @if (emailInvalid) {
+                <ul>
+                  @for (error of emailErrors; track error.kind) {
+                    <li class="text-red-500">{{ error.message }}</li>
+                  }
+                </ul>
               }
             </div>
           </div>
 
           <div class="col-span-1 md:col-span-2">
-            @let addressControlInvalid =
-              customerForm.get('address')?.invalid &&
-              customerForm.get('address')?.touched;
+            @let addressInvalid =
+              customerForm.address().invalid() &&
+              customerForm.address().touched();
+            @let addressErrors = customerForm.address().errors();
 
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="addressControlInvalid"
-            >
+            <div class="flex flex-col gap-2" [class.p-invalid]="addressInvalid">
               <label for="address" class="font-bold">Address</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -180,17 +178,20 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="address"
-                  formControlName="address"
+                  [field]="customerForm.address"
                   placeholder="Enter address"
-                  [class.ng-dirty]="addressControlInvalid"
-                  [class.ng-invalid]="addressControlInvalid"
-                  required
+                  [class.ng-dirty]="addressInvalid"
+                  [class.ng-invalid]="addressInvalid"
                   fluid
                 />
               </p-inputgroup>
 
-              @if (addressControlInvalid) {
-                <small class="text-red-500">Address is required.</small>
+              @if (addressInvalid) {
+                <ul>
+                  @for (error of addressErrors; track error.kind) {
+                    <li class="text-red-500">{{ error.message }}</li>
+                  }
+                </ul>
               }
             </div>
           </div>
@@ -208,11 +209,8 @@ import { CustomerStore } from '../../../stores/customer-store';
         <p-button
           label="Save"
           icon="pi pi-check"
-          (click)="
-            customerForm.valid
-              ? saveCustomer()
-              : customerForm.markAllAsTouched()
-          "
+          type="submit"
+          (onClick)="onSubmit()"
           [disabled]="customerStore.loading()"
         />
       </ng-template>
@@ -220,15 +218,22 @@ import { CustomerStore } from '../../../stores/customer-store';
   `,
 })
 export class CustomerDialog {
-  private readonly fb = inject(FormBuilder);
   readonly customerStore = inject(CustomerStore);
 
-  readonly customerForm: FormGroup = this.fb.group({
-    fullName: ['', [Validators.required]],
-    documentId: ['', [Validators.required]],
-    phoneNumber: [''],
-    email: ['', [Validators.required, Validators.email]],
-    address: ['', [Validators.required]],
+  private readonly customerModel = signal({
+    fullName: '',
+    documentId: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
+  });
+
+  readonly customerForm = form(this.customerModel, (customer) => {
+    required(customer.fullName, { message: 'Full name is required.' });
+    required(customer.documentId, { message: 'Document is required.' });
+    required(customer.email, { message: 'Email is required.' });
+    email(customer.email, { message: 'Enter a valid email.' });
+    required(customer.address, { message: 'Address is required.' });
   });
 
   constructor() {
@@ -236,16 +241,40 @@ export class CustomerDialog {
       const customer = this.customerStore.selectedCustomer();
       untracked(() => {
         if (customer) {
-          this.customerForm.patchValue(customer);
+          this.customerModel.set({
+            fullName: customer.fullName,
+            documentId: customer.documentId ?? '',
+            phoneNumber: customer.phoneNumber ?? '',
+            email: customer.email,
+            address: customer.address,
+          });
         } else {
-          this.customerForm.reset();
+          this.customerModel.set({
+            fullName: '',
+            documentId: '',
+            phoneNumber: '',
+            email: '',
+            address: '',
+          });
         }
       });
     });
   }
 
+  onSubmit(): void {
+    if (this.customerForm().valid()) {
+      this.saveCustomer();
+      return;
+    }
+
+    this.customerForm.fullName().markAsTouched();
+    this.customerForm.documentId().markAsTouched();
+    this.customerForm.email().markAsTouched();
+    this.customerForm.address().markAsTouched();
+  }
+
   saveCustomer(): void {
-    const customerData = this.customerForm.value;
+    const customerData = this.customerForm().value();
     const selectedCustomer = this.customerStore.selectedCustomer();
 
     if (selectedCustomer) {

@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryInfo } from '@features/inventory/models/category.model';
@@ -48,7 +47,6 @@ describe('CategoryDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         CategoryDialog,
-        ReactiveFormsModule,
         NoopAnimationsModule,
         DialogModule,
         ButtonModule,
@@ -74,29 +72,31 @@ describe('CategoryDialog', () => {
 
   describe('Form initialization and validation', () => {
     it('should initialize the form with empty values', () => {
-      expect(component.categoryForm.get('name')?.value).toBeNull();
-      expect(component.categoryForm.get('description')?.value).toBeNull();
+      expect(component.categoryForm.name().value()).toBe('');
+      expect(component.categoryForm.description().value()).toBe('');
     });
 
     it('should validate required name field', () => {
-      const nameControl = component.categoryForm.get('name');
-      expect(nameControl?.valid).toBeFalsy();
-      expect(nameControl?.hasError('required')).toBeTruthy();
+      expect(component.categoryForm.name().valid()).toBe(false);
+      expect(
+        component.categoryForm
+          .name()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      nameControl?.setValue('Test Category');
-      expect(nameControl?.valid).toBeTruthy();
+      component.categoryForm.name().value.set('Test Category');
+      expect(component.categoryForm.name().valid()).toBe(true);
     });
 
     it('should mark name control as invalid when empty', () => {
-      const nameControl = component.categoryForm.get('name');
-      nameControl?.setValue('');
-      expect(nameControl?.valid).toBeFalsy();
+      component.categoryForm.name().value.set('');
+      expect(component.categoryForm.name().valid()).toBe(false);
     });
 
     it('should mark description control as valid even when empty', () => {
-      const descriptionControl = component.categoryForm.get('description');
-      descriptionControl?.setValue('');
-      expect(descriptionControl?.valid).toBeTruthy();
+      component.categoryForm.description().value.set('');
+      expect(component.categoryForm.description().valid()).toBe(true);
     });
   });
 
@@ -178,10 +178,8 @@ describe('CategoryDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.categoryForm.get('name')?.value).toBe(
-        'Existing Category',
-      );
-      expect(component.categoryForm.get('description')?.value).toBe(
+      expect(component.categoryForm.name().value()).toBe('Existing Category');
+      expect(component.categoryForm.description().value()).toBe(
         'Test Description',
       );
     });
@@ -201,8 +199,8 @@ describe('CategoryDialog', () => {
       ).set(null);
       fixture.detectChanges();
 
-      expect(component.categoryForm.get('name')?.value).toBeNull();
-      expect(component.categoryForm.get('description')?.value).toBeNull();
+      expect(component.categoryForm.name().value()).toBe('');
+      expect(component.categoryForm.description().value()).toBe('');
     });
 
     it('should handle multiple successive category selections', () => {
@@ -215,7 +213,7 @@ describe('CategoryDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.categoryForm.get('name')?.value).toBe('First Category');
+      expect(component.categoryForm.name().value()).toBe('First Category');
 
       (
         categoryStore.selectedCategory as WritableSignal<CategoryInfo | null>
@@ -226,44 +224,30 @@ describe('CategoryDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.categoryForm.get('name')?.value).toBe('Second Category');
+      expect(component.categoryForm.name().value()).toBe('Second Category');
     });
   });
 
   describe('Form operations', () => {
-    it('should properly reset form with FormGroup.reset method', () => {
-      component.categoryForm.patchValue({
-        name: 'Some Name',
-        description: 'Some Description',
+    it('should reset form values', () => {
+      component.categoryForm.name().value.set('Some Name');
+      component.categoryForm.description().value.set('Some Description');
+
+      expect(component.categoryForm.name().value()).toBe('Some Name');
+
+      component.categoryForm().reset({
+        name: '',
+        description: '',
       });
 
-      expect(component.categoryForm.get('name')?.value).toBe('Some Name');
-
-      component.categoryForm.reset();
-
-      expect(component.categoryForm.get('name')?.value).toBeNull();
-      expect(component.categoryForm.get('description')?.value).toBeNull();
+      expect(component.categoryForm.name().value()).toBe('');
+      expect(component.categoryForm.description().value()).toBe('');
     });
 
-    it('should patch form with specific values', () => {
-      component.categoryForm.patchValue({
-        name: 'Patched Name',
-        description: 'Patched Description',
-      });
-
-      expect(component.categoryForm.get('name')?.value).toBe('Patched Name');
-      expect(component.categoryForm.get('description')?.value).toBe(
-        'Patched Description',
-      );
-    });
-
-    it('should mark all form controls as touched', () => {
-      const nameControl = component.categoryForm.get('name');
-      expect(nameControl?.touched).toBeFalsy();
-
-      component.categoryForm.markAllAsTouched();
-
-      expect(nameControl?.touched).toBe(true);
+    it('should mark name field as touched', () => {
+      expect(component.categoryForm.name().touched()).toBe(false);
+      component.categoryForm.name().markAsTouched();
+      expect(component.categoryForm.name().touched()).toBe(true);
     });
   });
 
@@ -273,8 +257,8 @@ describe('CategoryDialog', () => {
         categoryStore.selectedCategory as WritableSignal<CategoryInfo | null>
       ).set(null);
 
-      component.categoryForm.get('name')?.setValue('New Category');
-      component.categoryForm.get('description')?.setValue('New Description');
+      component.categoryForm.name().value.set('New Category');
+      component.categoryForm.description().value.set('New Description');
 
       component.saveCategory();
 
@@ -294,10 +278,8 @@ describe('CategoryDialog', () => {
         description: 'Old Description',
       });
 
-      component.categoryForm.get('name')?.setValue('Updated Category');
-      component.categoryForm
-        .get('description')
-        ?.setValue('Updated Description');
+      component.categoryForm.name().value.set('Updated Category');
+      component.categoryForm.description().value.set('Updated Description');
 
       component.saveCategory();
 
@@ -320,12 +302,10 @@ describe('CategoryDialog', () => {
         description: 'Description',
       });
 
-      component.categoryForm.setValue({
-        name: 'Existing Category',
-        description: 'Description',
-      });
+      component.categoryForm.name().value.set('Existing Category');
+      component.categoryForm.description().value.set('Description');
 
-      component.categoryForm.get('name')?.setValue('Updated Name Only');
+      component.categoryForm.name().value.set('Updated Name Only');
 
       component.saveCategory();
 
@@ -347,10 +327,10 @@ describe('CategoryDialog', () => {
         description: 'Original',
       });
 
-      component.categoryForm.setValue({
-        name: 'Test Form Values',
-        description: 'Getting form values test',
-      });
+      component.categoryForm.name().value.set('Test Form Values');
+      component.categoryForm
+        .description()
+        .value.set('Getting form values test');
 
       component.saveCategory();
 
@@ -369,9 +349,8 @@ describe('CategoryDialog', () => {
       (categoryStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const nameControl = component.categoryForm.get('name');
-      nameControl?.setValue('');
-      nameControl?.markAsTouched();
+      component.categoryForm.name().value.set('');
+      component.categoryForm.name().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -385,9 +364,8 @@ describe('CategoryDialog', () => {
       (categoryStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const nameControl = component.categoryForm.get('name');
-      nameControl?.setValue('Valid Name');
-      nameControl?.markAsTouched();
+      component.categoryForm.name().value.set('Valid Name');
+      component.categoryForm.name().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -398,15 +376,11 @@ describe('CategoryDialog', () => {
       (categoryStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const nameControl = component.categoryForm.get('name');
-      nameControl?.setValue('');
-      nameControl?.markAsTouched();
-      nameControl?.markAsDirty();
+      component.categoryForm.name().value.set('');
+      component.categoryForm.name().markAsTouched();
       fixture.detectChanges();
 
-      const nameInput = fixture.debugElement.query(
-        By.css('input[formControlName="name"]'),
-      );
+      const nameInput = fixture.debugElement.query(By.css('input#name'));
 
       expect(nameInput.nativeElement.classList.contains('ng-invalid')).toBe(
         true,
@@ -432,29 +406,25 @@ describe('CategoryDialog', () => {
     });
 
     it('should handle valid form submission', () => {
-      component.categoryForm.get('name')?.setValue('Valid Name');
+      component.categoryForm.name().value.set('Valid Name');
 
-      if (component.categoryForm.valid) {
+      if (component.categoryForm().valid()) {
         component.saveCategory();
-      } else {
-        component.categoryForm.markAllAsTouched();
       }
 
       expect(categoryStore.create).toHaveBeenCalled();
     });
 
     it('should handle invalid form submission', () => {
-      component.categoryForm.get('name')?.setValue('');
+      component.categoryForm.name().value.set('');
 
-      vi.spyOn(component.categoryForm, 'markAllAsTouched');
-
-      if (component.categoryForm.valid) {
+      if (component.categoryForm().valid()) {
         component.saveCategory();
       } else {
-        component.categoryForm.markAllAsTouched();
+        component.categoryForm.name().markAsTouched();
       }
 
-      expect(component.categoryForm.markAllAsTouched).toHaveBeenCalled();
+      expect(component.categoryForm.name().touched()).toBe(true);
       expect(categoryStore.create).not.toHaveBeenCalled();
     });
   });

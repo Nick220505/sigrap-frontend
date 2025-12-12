@@ -1,11 +1,5 @@
-import { Component, effect, inject, untracked } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Field, form, min, required } from '@angular/forms/signals';
 import { ProductData } from '@features/inventory/models/product.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
@@ -27,10 +21,9 @@ import { TextareaModule } from 'primeng/textarea';
     InputNumberModule,
     TextareaModule,
     SelectModule,
-    FormsModule,
-    ReactiveFormsModule,
     InputGroupModule,
     InputGroupAddonModule,
+    Field,
   ],
   template: `
     <p-dialog
@@ -46,11 +39,15 @@ import { TextareaModule } from 'primeng/textarea';
       "
       modal
     >
-      <form [formGroup]="productForm" class="flex flex-col gap-4 pt-4">
-        @let nameControlInvalid =
-          productForm.get('name')?.invalid && productForm.get('name')?.touched;
+      <form
+        (submit)="$event.preventDefault(); onSubmit()"
+        class="flex flex-col gap-4 pt-4"
+      >
+        @let nameInvalid =
+          productForm.name().invalid() && productForm.name().touched();
+        @let nameErrors = productForm.name().errors();
 
-        <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
+        <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
           <label for="name" class="font-bold">Name</label>
           <p-inputgroup>
             <p-inputgroup-addon>
@@ -60,17 +57,20 @@ import { TextareaModule } from 'primeng/textarea';
               type="text"
               pInputText
               id="name"
-              formControlName="name"
+              [field]="productForm.name"
               placeholder="Enter product name"
-              [class.ng-dirty]="nameControlInvalid"
-              [class.ng-invalid]="nameControlInvalid"
-              required
+              [class.ng-dirty]="nameInvalid"
+              [class.ng-invalid]="nameInvalid"
               fluid
             />
           </p-inputgroup>
 
-          @if (nameControlInvalid) {
-            <small class="text-red-500">Name is required.</small>
+          @if (nameInvalid) {
+            <ul>
+              @for (error of nameErrors; track error.kind) {
+                <li class="text-red-500">{{ error.message }}</li>
+              }
+            </ul>
           }
         </div>
 
@@ -82,9 +82,8 @@ import { TextareaModule } from 'primeng/textarea';
             </p-inputgroup-addon>
             <textarea
               rows="3"
-              pTextarea
               id="description"
-              formControlName="description"
+              [field]="productForm.description"
               placeholder="Enter a description (optional)"
               class="w-full"
               fluid
@@ -93,127 +92,130 @@ import { TextareaModule } from 'primeng/textarea';
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          @let costPriceControlInvalid =
-            productForm.get('costPrice')?.invalid &&
-            productForm.get('costPrice')?.touched;
+          @let costPriceInvalid =
+            productForm.costPrice().invalid() &&
+            productForm.costPrice().touched();
+          @let costPriceErrors = productForm.costPrice().errors();
 
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="costPriceControlInvalid"
-          >
+          <div class="flex flex-col gap-2" [class.p-invalid]="costPriceInvalid">
             <label for="costPrice" class="font-bold">Cost Price</label>
             <p-inputNumber
               id="costPrice"
-              formControlName="costPrice"
+              [field]="productForm.costPrice"
               placeholder="0"
               [min]="0"
               mode="currency"
-              currency="COP"
+              currency="USD"
               locale="en-US"
               [maxFractionDigits]="0"
               [step]="50"
               showButtons
               buttonLayout="horizontal"
-              [class.ng-dirty]="costPriceControlInvalid"
-              [class.ng-invalid]="costPriceControlInvalid"
-              required
+              [class.ng-dirty]="costPriceInvalid"
+              [class.ng-invalid]="costPriceInvalid"
               fluid
             />
 
-            @if (costPriceControlInvalid) {
-              <small class="text-red-500"> Cost price is required. </small>
+            @if (costPriceInvalid) {
+              <ul>
+                @for (error of costPriceErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
 
-          @let salePriceControlInvalid =
-            productForm.get('salePrice')?.invalid &&
-            productForm.get('salePrice')?.touched;
+          @let salePriceInvalid =
+            productForm.salePrice().invalid() &&
+            productForm.salePrice().touched();
+          @let salePriceErrors = productForm.salePrice().errors();
 
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="salePriceControlInvalid"
-          >
+          <div class="flex flex-col gap-2" [class.p-invalid]="salePriceInvalid">
             <label for="salePrice" class="font-bold">Sale Price</label>
             <p-inputNumber
               id="salePrice"
-              formControlName="salePrice"
+              [field]="productForm.salePrice"
               placeholder="0"
               [min]="0"
               mode="currency"
-              currency="COP"
+              currency="USD"
               locale="en-US"
               [maxFractionDigits]="0"
               [step]="50"
               showButtons
               buttonLayout="horizontal"
-              [class.ng-dirty]="salePriceControlInvalid"
-              [class.ng-invalid]="salePriceControlInvalid"
-              required
+              [class.ng-dirty]="salePriceInvalid"
+              [class.ng-invalid]="salePriceInvalid"
               fluid
             />
 
-            @if (salePriceControlInvalid) {
-              <small class="text-red-500"> Sale price is required. </small>
+            @if (salePriceInvalid) {
+              <ul>
+                @for (error of salePriceErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          @let stockControlInvalid =
-            productForm.get('stock')?.invalid &&
-            productForm.get('stock')?.touched;
-          <div
-            class="flex flex-col gap-2"
-            [class.p-invalid]="stockControlInvalid"
-          >
+          @let stockInvalid =
+            productForm.stock().invalid() && productForm.stock().touched();
+          @let stockErrors = productForm.stock().errors();
+          <div class="flex flex-col gap-2" [class.p-invalid]="stockInvalid">
             <label for="stock" class="font-bold">Stock</label>
             <p-inputNumber
               id="stock"
-              formControlName="stock"
+              [field]="productForm.stock"
               placeholder="0"
               [min]="0"
               [step]="1"
               showButtons
               buttonLayout="horizontal"
-              [class.ng-dirty]="stockControlInvalid"
-              [class.ng-invalid]="stockControlInvalid"
-              required
+              [class.ng-dirty]="stockInvalid"
+              [class.ng-invalid]="stockInvalid"
               fluid
             />
-            @if (stockControlInvalid) {
-              <small class="text-red-500">
-                Stock is required and must be a positive number.
-              </small>
+            @if (stockInvalid) {
+              <ul>
+                @for (error of stockErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
 
-          @let minimumStockThresholdControlInvalid =
-            productForm.get('minimumStockThreshold')?.invalid &&
-            productForm.get('minimumStockThreshold')?.touched;
+          @let minimumStockThresholdInvalid =
+            productForm.minimumStockThreshold().invalid() &&
+            productForm.minimumStockThreshold().touched();
+          @let minimumStockThresholdErrors =
+            productForm.minimumStockThreshold().errors();
           <div
             class="flex flex-col gap-2"
-            [class.p-invalid]="minimumStockThresholdControlInvalid"
+            [class.p-invalid]="minimumStockThresholdInvalid"
           >
             <label for="minimumStockThreshold" class="font-bold"
               >Minimum Stock</label
             >
             <p-inputNumber
               id="minimumStockThreshold"
-              formControlName="minimumStockThreshold"
+              [field]="productForm.minimumStockThreshold"
               placeholder="0"
               [min]="0"
               [step]="1"
               showButtons
               buttonLayout="horizontal"
-              [class.ng-dirty]="minimumStockThresholdControlInvalid"
-              [class.ng-invalid]="minimumStockThresholdControlInvalid"
-              required
+              [class.ng-dirty]="minimumStockThresholdInvalid"
+              [class.ng-invalid]="minimumStockThresholdInvalid"
               fluid
             />
-            @if (minimumStockThresholdControlInvalid) {
-              <small class="text-red-500">
-                Minimum stock is required and must be a positive number.
-              </small>
+            @if (minimumStockThresholdInvalid) {
+              <ul>
+                @for (error of minimumStockThresholdErrors; track error.kind) {
+                  <li class="text-red-500">{{ error.message }}</li>
+                }
+              </ul>
             }
           </div>
         </div>
@@ -226,7 +228,7 @@ import { TextareaModule } from 'primeng/textarea';
             </p-inputgroup-addon>
             <p-select
               id="category"
-              formControlName="categoryId"
+              [field]="productForm.categoryId"
               [options]="categoryStore.entities()"
               optionLabel="name"
               optionValue="id"
@@ -245,15 +247,14 @@ import { TextareaModule } from 'primeng/textarea';
           label="Cancel"
           icon="pi pi-times"
           text
-          (click)="productStore.closeProductDialog()"
+          (onClick)="productStore.closeProductDialog()"
         />
 
         <p-button
           label="Save"
           icon="pi pi-check"
-          (click)="
-            productForm.valid ? saveProduct() : productForm.markAllAsTouched()
-          "
+          type="submit"
+          (onClick)="onSubmit()"
           [disabled]="productStore.loading()"
         />
       </ng-template>
@@ -261,18 +262,37 @@ import { TextareaModule } from 'primeng/textarea';
   `,
 })
 export class ProductDialog {
-  private readonly fb = inject(FormBuilder);
   readonly productStore = inject(ProductStore);
   readonly categoryStore = inject(CategoryStore);
 
-  readonly productForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    description: [''],
-    costPrice: [0, [Validators.required, Validators.min(0)]],
-    salePrice: [0, [Validators.required, Validators.min(0)]],
-    stock: [0, [Validators.required, Validators.min(0)]],
-    minimumStockThreshold: [0, [Validators.required, Validators.min(0)]],
-    categoryId: [null],
+  private readonly productModel = signal({
+    name: '',
+    description: '',
+    costPrice: null as number | null,
+    salePrice: null as number | null,
+    stock: null as number | null,
+    minimumStockThreshold: null as number | null,
+    categoryId: null as number | null,
+  });
+
+  readonly productForm = form(this.productModel, (product) => {
+    required(product.name, { message: 'Name is required.' });
+
+    required(product.costPrice, { message: 'Cost price is required.' });
+    min(product.costPrice, 0, { message: 'Cost price must be at least 0.' });
+
+    required(product.salePrice, { message: 'Sale price is required.' });
+    min(product.salePrice, 0, { message: 'Sale price must be at least 0.' });
+
+    required(product.stock, { message: 'Stock is required.' });
+    min(product.stock, 0, { message: 'Stock must be at least 0.' });
+
+    required(product.minimumStockThreshold, {
+      message: 'Minimum stock is required.',
+    });
+    min(product.minimumStockThreshold, 0, {
+      message: 'Minimum stock must be at least 0.',
+    });
   });
 
   constructor() {
@@ -280,20 +300,54 @@ export class ProductDialog {
       const product = this.productStore.selectedProduct();
       untracked(() => {
         if (product) {
-          const formValue = {
-            ...product,
-            categoryId: product.category?.id > 0 ? product.category?.id : null,
-          };
-          this.productForm.patchValue(formValue);
+          this.productModel.set({
+            name: product.name,
+            description: product.description ?? '',
+            costPrice: product.costPrice,
+            salePrice: product.salePrice,
+            stock: product.stock,
+            minimumStockThreshold: product.minimumStockThreshold,
+            categoryId: product.category?.id > 0 ? product.category.id : null,
+          });
         } else {
-          this.productForm.reset();
+          this.productModel.set({
+            name: '',
+            description: '',
+            costPrice: null,
+            salePrice: null,
+            stock: null,
+            minimumStockThreshold: null,
+            categoryId: null,
+          });
         }
       });
     });
   }
 
+  onSubmit(): void {
+    if (this.productForm().valid()) {
+      this.saveProduct();
+      return;
+    }
+
+    this.productForm.name().markAsTouched();
+    this.productForm.costPrice().markAsTouched();
+    this.productForm.salePrice().markAsTouched();
+    this.productForm.stock().markAsTouched();
+    this.productForm.minimumStockThreshold().markAsTouched();
+  }
+
   saveProduct(): void {
-    const productData: ProductData = this.productForm.value;
+    const product = this.productForm().value();
+    const productData: ProductData = {
+      name: product.name,
+      description: product.description || undefined,
+      costPrice: product.costPrice!,
+      salePrice: product.salePrice!,
+      categoryId: product.categoryId ?? 0,
+      stock: product.stock!,
+      minimumStockThreshold: product.minimumStockThreshold!,
+    };
     const id = this.productStore.selectedProduct()?.id;
     if (id) {
       this.productStore.update({ id, productData });

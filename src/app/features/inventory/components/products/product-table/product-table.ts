@@ -138,7 +138,10 @@ import { TooltipModule } from 'primeng/tooltip';
               @if (
                 column.field === 'costPrice' || column.field === 'salePrice'
               ) {
-                {{ product[column.field] | currency: 'COP' : '$' : '1.0-0' }}
+                {{
+                  product[column.field]
+                    | currency: undefined : undefined : '1.0-0'
+                }}
               } @else if (
                 column.field === 'stock' ||
                 column.field === 'minimumStockThreshold'

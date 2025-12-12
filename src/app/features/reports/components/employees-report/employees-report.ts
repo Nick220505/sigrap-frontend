@@ -153,7 +153,7 @@ interface ChartTooltipContext {
               ></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-blue-600">{{
-                totalSalesAmount() | currency: 'COP' : '$' : '1.0-0'
+                totalSalesAmount() | currency: undefined : undefined : '1.0-0'
               }}</span>
             }
           </div>
@@ -187,7 +187,7 @@ interface ChartTooltipContext {
               ></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-green-600">{{
-                averageSaleValue() | currency: 'COP' : '$' : '1.0-0'
+                averageSaleValue() | currency: undefined : undefined : '1.0-0'
               }}</span>
             }
           </div>
@@ -284,12 +284,14 @@ interface ChartTooltipContext {
                 <td>{{ employee.salesCount }}</td>
                 <td>
                   {{
-                    employee.totalSalesAmount | currency: 'COP' : '$' : '1.0-0'
+                    employee.totalSalesAmount
+                      | currency: undefined : undefined : '1.0-0'
                   }}
                 </td>
                 <td>
                   {{
-                    employee.averageSaleValue | currency: 'COP' : '$' : '1.0-0'
+                    employee.averageSaleValue
+                      | currency: undefined : undefined : '1.0-0'
                   }}
                 </td>
                 <td>{{ employee.scheduledHours | number: '1.1-1' }}</td>
@@ -331,7 +333,9 @@ interface ChartTooltipContext {
             <div class="flex flex-col items-center border rounded-lg p-4">
               <h3 class="text-xl font-semibold mb-2">Total Sales</h3>
               <span class="text-3xl font-bold text-blue-600">
-                {{ totalSalesAmount() | currency: 'COP' : '$' : '1.0-0' }}
+                {{
+                  totalSalesAmount() | currency: undefined : undefined : '1.0-0'
+                }}
               </span>
             </div>
 
@@ -345,7 +349,9 @@ interface ChartTooltipContext {
             <div class="flex flex-col items-center border rounded-lg p-4">
               <h3 class="text-xl font-semibold mb-2">Average Value</h3>
               <span class="text-3xl font-bold text-green-600">
-                {{ averageSaleValue() | currency: 'COP' : '$' : '1.0-0' }}
+                {{
+                  averageSaleValue() | currency: undefined : undefined : '1.0-0'
+                }}
               </span>
             </div>
           </div>
@@ -406,13 +412,13 @@ interface ChartTooltipContext {
                   <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
                     {{
                       employee.totalSalesAmount
-                        | currency: 'COP' : '$' : '1.0-0'
+                        | currency: undefined : undefined : '1.0-0'
                     }}
                   </td>
                   <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
                     {{
                       employee.averageSaleValue
-                        | currency: 'COP' : '$' : '1.0-0'
+                        | currency: undefined : undefined : '1.0-0'
                     }}
                   </td>
                   <td style="border: 1px solid #dee2e6; padding: 0.75rem;">
@@ -748,7 +754,7 @@ export class EmployeesReport implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.dataset.label}: ${context.parsed.y.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}`;
+            return `${context.dataset.label}: ${context.parsed.y.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
           },
         },
       },
@@ -760,7 +766,7 @@ export class EmployeesReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Total Sales Amount (COP)',
+          text: 'Total Sales Amount',
         },
       },
       x: {

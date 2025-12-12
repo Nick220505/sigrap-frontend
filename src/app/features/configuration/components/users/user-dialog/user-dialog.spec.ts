@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
-import { Component, input, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -14,16 +13,6 @@ import { Select } from 'primeng/select';
 import { UserInfo, UserRole } from '../../../models/user.model';
 import { UserStore } from '../../../stores/user-store';
 import { UserDialog } from './user-dialog';
-
-@Component({
-  selector: 'app-password-field',
-  standalone: true,
-  template: `<div>Password Field Mock</div>`,
-})
-class MockPasswordField {
-  readonly id = input.required<string>();
-  readonly control = input.required<FormControl>();
-}
 
 describe('UserDialog', () => {
   let component: UserDialog;
@@ -52,14 +41,12 @@ describe('UserDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
-        ReactiveFormsModule,
         DialogModule,
         ButtonModule,
         InputTextModule,
         InputGroupModule,
         InputGroupAddonModule,
         Select,
-        MockPasswordField,
         UserDialog,
       ],
       providers: [
@@ -85,28 +72,24 @@ describe('UserDialog', () => {
 
   it('should have a form with required fields', () => {
     expect(component.userForm).toBeDefined();
-    expect(component.userForm.get('name')).toBeDefined();
-    expect(component.userForm.get('email')).toBeDefined();
-    expect(component.userForm.get('role')).toBeDefined();
-    expect(component.userForm.get('password')).toBeDefined();
+    expect(component.userForm.name).toBeDefined();
+    expect(component.userForm.email).toBeDefined();
+    expect(component.userForm.role).toBeDefined();
+    expect(component.passwordControl).toBeDefined();
   });
 
   it('should validate name and email fields', () => {
-    const form = component.userForm;
+    expect(component.userForm.name().valid()).toBe(false);
+    expect(component.userForm.email().valid()).toBe(false);
 
-    expect(form.get('name')?.valid).toBe(false);
-    expect(form.get('email')?.valid).toBe(false);
+    component.userForm.name().value.set('Test User');
+    component.userForm.email().value.set('test@example.com');
+    component.userForm.role().value.set(UserRole.EMPLOYEE);
 
-    expect(form.get('role')).toBeTruthy();
-
-    form.get('name')?.setValue('Test User');
-    form.get('email')?.setValue('test@example.com');
-    form.get('role')?.setValue(UserRole.EMPLOYEE);
-
-    expect(form.get('name')?.valid).toBe(true);
-    expect(form.get('email')?.valid).toBe(true);
-    expect(form.get('role')?.valid).toBe(true);
-    expect(form.get('role')?.value).toBe(UserRole.EMPLOYEE);
+    expect(component.userForm.name().valid()).toBe(true);
+    expect(component.userForm.email().valid()).toBe(true);
+    expect(component.userForm.role().valid()).toBe(true);
+    expect(component.userForm.role().value()).toBe(UserRole.EMPLOYEE);
   });
 
   it('should call closeUserDialog when cancel button is clicked', () => {
@@ -127,14 +110,15 @@ describe('UserDialog', () => {
     userStoreMock.dialogVisible.set(true);
     fixture.detectChanges();
 
-    component.userForm.setValue({
+    component.userForm().value.set({
       name: 'Test User',
       email: 'test@example.com',
       documentId: '',
       phone: '',
       role: UserRole.EMPLOYEE,
-      password: 'Password123!',
     });
+
+    component.passwordControl.setValue('Password123!');
 
     component.saveUser();
 
@@ -161,13 +145,15 @@ describe('UserDialog', () => {
     userStoreMock.dialogVisible.set(true);
     fixture.detectChanges();
 
-    component.userForm.patchValue({
+    component.userForm().value.set({
       name: 'Updated User',
       email: 'updated@example.com',
-      documentId: null,
-      phone: null,
+      documentId: '',
+      phone: '',
       role: UserRole.EMPLOYEE,
     });
+
+    component.passwordControl.setValue('');
 
     component.saveUser();
 
@@ -176,8 +162,8 @@ describe('UserDialog', () => {
       userData: {
         name: 'Updated User',
         email: 'updated@example.com',
-        documentId: null,
-        phone: null,
+        documentId: '',
+        phone: '',
         role: UserRole.EMPLOYEE,
       },
     });

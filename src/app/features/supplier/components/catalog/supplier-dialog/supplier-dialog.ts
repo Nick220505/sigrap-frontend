@@ -1,10 +1,6 @@
-import { Component, effect, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, inject, signal } from '@angular/core';
+import { Field, email, form, required } from '@angular/forms/signals';
+import { SupplierData } from '@features/supplier/models/supplier.model';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -19,12 +15,12 @@ import { TextareaModule } from 'primeng/textarea';
   imports: [
     DialogModule,
     ButtonModule,
-    ReactiveFormsModule,
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
     TextareaModule,
     InputNumberModule,
+    Field,
   ],
   template: `
     <p-dialog
@@ -36,18 +32,18 @@ import { TextareaModule } from 'primeng/textarea';
       "
       modal
     >
-      <form [formGroup]="supplierForm" class="flex flex-col gap-4 py-4">
+      <form
+        (submit)="$event.preventDefault(); onSubmit()"
+        class="flex flex-col gap-4 py-4"
+      >
         <h3 class="text-lg font-semibold mb-2">Basic Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
-            @let nameControlInvalid =
-              supplierForm.get('name')?.invalid &&
-              supplierForm.get('name')?.touched;
+            @let nameInvalid =
+              supplierForm.name().invalid() && supplierForm.name().touched();
+            @let nameErrors = supplierForm.name().errors();
 
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="nameControlInvalid"
-            >
+            <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
               <label for="name" class="font-bold">Name*</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -57,16 +53,19 @@ import { TextareaModule } from 'primeng/textarea';
                   id="name"
                   type="text"
                   pInputText
-                  formControlName="name"
+                  [field]="supplierForm.name"
                   placeholder="Supplier name"
-                  [class.ng-dirty]="nameControlInvalid"
-                  [class.ng-invalid]="nameControlInvalid"
-                  required
+                  [class.ng-dirty]="nameInvalid"
+                  [class.ng-invalid]="nameInvalid"
                   fluid
                 />
               </p-inputgroup>
-              @if (nameControlInvalid) {
-                <small class="text-red-500">Name is required.</small>
+              @if (nameInvalid) {
+                <ul>
+                  @for (error of nameErrors; track error.kind) {
+                    <li class="text-red-500">{{ error.message }}</li>
+                  }
+                </ul>
               }
             </div>
           </div>
@@ -80,8 +79,7 @@ import { TextareaModule } from 'primeng/textarea';
                 </p-inputgroup-addon>
                 <textarea
                   id="address"
-                  pTextarea
-                  formControlName="address"
+                  [field]="supplierForm.address"
                   [rows]="2"
                   placeholder="Full address"
                   class="w-full"
@@ -106,7 +104,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="contactPerson"
                   type="text"
                   pInputText
-                  formControlName="contactPerson"
+                  [field]="supplierForm.contactPerson"
                   placeholder="Contact name"
                   fluid
                 />
@@ -115,14 +113,11 @@ import { TextareaModule } from 'primeng/textarea';
           </div>
 
           <div class="col-span-1">
-            @let emailControlInvalid =
-              supplierForm.get('email')?.errors?.['email'] &&
-              supplierForm.get('email')?.touched;
+            @let emailInvalid =
+              supplierForm.email().invalid() && supplierForm.email().touched();
+            @let emailErrors = supplierForm.email().errors();
 
-            <div
-              class="flex flex-col gap-2"
-              [class.p-invalid]="emailControlInvalid"
-            >
+            <div class="flex flex-col gap-2" [class.p-invalid]="emailInvalid">
               <label for="email" class="font-bold">Email</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
@@ -132,15 +127,19 @@ import { TextareaModule } from 'primeng/textarea';
                   id="email"
                   type="email"
                   pInputText
-                  formControlName="email"
+                  [field]="supplierForm.email"
                   placeholder="email@example.com"
-                  [class.ng-dirty]="emailControlInvalid"
-                  [class.ng-invalid]="emailControlInvalid"
+                  [class.ng-dirty]="emailInvalid"
+                  [class.ng-invalid]="emailInvalid"
                   fluid
                 />
               </p-inputgroup>
-              @if (emailControlInvalid) {
-                <small class="text-red-500">Invalid email.</small>
+              @if (emailInvalid) {
+                <ul>
+                  @for (error of emailErrors; track error.kind) {
+                    <li class="text-red-500">{{ error.message }}</li>
+                  }
+                </ul>
               }
             </div>
           </div>
@@ -156,7 +155,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="phone"
                   type="text"
                   pInputText
-                  formControlName="phone"
+                  [field]="supplierForm.phone"
                   placeholder="Phone number"
                   fluid
                 />
@@ -177,7 +176,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="alternativePhone"
                   type="text"
                   pInputText
-                  formControlName="alternativePhone"
+                  [field]="supplierForm.alternativePhone"
                   placeholder="Alternative phone"
                   fluid
                 />
@@ -196,7 +195,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="website"
                   type="text"
                   pInputText
-                  formControlName="website"
+                  [field]="supplierForm.website"
                   placeholder="www.example.com"
                   fluid
                 />
@@ -218,8 +217,7 @@ import { TextareaModule } from 'primeng/textarea';
                 </p-inputgroup-addon>
                 <textarea
                   id="productsProvided"
-                  pTextarea
-                  formControlName="productsProvided"
+                  [field]="supplierForm.productsProvided"
                   [rows]="2"
                   placeholder="Describe the products or services offered"
                   class="w-full"
@@ -239,7 +237,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="paymentTerms"
                   type="text"
                   pInputText
-                  formControlName="paymentTerms"
+                  [field]="supplierForm.paymentTerms"
                   placeholder="Payment terms"
                   fluid
                 />
@@ -258,7 +256,7 @@ import { TextareaModule } from 'primeng/textarea';
                 </p-inputgroup-addon>
                 <p-inputNumber
                   id="averageDeliveryTime"
-                  formControlName="averageDeliveryTime"
+                  [field]="supplierForm.averageDeliveryTime"
                   [showButtons]="true"
                   [min]="1"
                   buttonLayout="horizontal"
@@ -282,8 +280,8 @@ import { TextareaModule } from 'primeng/textarea';
           <p-button
             label="Save"
             icon="pi pi-check"
-            [disabled]="supplierForm.invalid"
-            (onClick)="saveSupplier()"
+            type="submit"
+            (onClick)="onSubmit()"
           />
         </div>
       </ng-template>
@@ -291,35 +289,83 @@ import { TextareaModule } from 'primeng/textarea';
   `,
 })
 export class SupplierDialog {
-  private readonly fb = inject(FormBuilder);
   readonly supplierStore = inject(SupplierStore);
 
-  readonly supplierForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    contactPerson: [''],
-    phone: [''],
-    alternativePhone: [''],
-    email: ['', Validators.email],
-    address: [''],
-    website: [''],
-    productsProvided: [''],
-    averageDeliveryTime: [null],
-    paymentTerms: [''],
+  private readonly supplierModel = signal({
+    name: '',
+    contactPerson: '',
+    phone: '',
+    alternativePhone: '',
+    email: '',
+    address: '',
+    website: '',
+    productsProvided: '',
+    averageDeliveryTime: null as number | null,
+    paymentTerms: '',
+  });
+
+  readonly supplierForm = form(this.supplierModel, (supplier) => {
+    required(supplier.name, { message: 'Name is required.' });
+    email(supplier.email, { message: 'Invalid email.' });
   });
 
   constructor() {
     effect(() => {
       const supplier = this.supplierStore.selectedSupplier();
       if (supplier) {
-        this.supplierForm.patchValue(supplier);
+        this.supplierModel.set({
+          name: supplier.name,
+          contactPerson: supplier.contactPerson ?? '',
+          phone: supplier.phone ?? '',
+          alternativePhone: supplier.alternativePhone ?? '',
+          email: supplier.email ?? '',
+          address: supplier.address ?? '',
+          website: supplier.website ?? '',
+          productsProvided: supplier.productsProvided ?? '',
+          averageDeliveryTime: supplier.averageDeliveryTime ?? null,
+          paymentTerms: supplier.paymentTerms ?? '',
+        });
       } else {
-        this.supplierForm.reset();
+        this.supplierModel.set({
+          name: '',
+          contactPerson: '',
+          phone: '',
+          alternativePhone: '',
+          email: '',
+          address: '',
+          website: '',
+          productsProvided: '',
+          averageDeliveryTime: null,
+          paymentTerms: '',
+        });
       }
     });
   }
 
+  onSubmit(): void {
+    if (this.supplierForm().valid()) {
+      this.saveSupplier();
+      return;
+    }
+
+    this.supplierForm.name().markAsTouched();
+    this.supplierForm.email().markAsTouched();
+  }
+
   saveSupplier(): void {
-    const supplierData = this.supplierForm.value;
+    const supplier = this.supplierForm().value();
+    const supplierData: SupplierData = {
+      name: supplier.name,
+      contactPerson: supplier.contactPerson,
+      phone: supplier.phone,
+      alternativePhone: supplier.alternativePhone,
+      email: supplier.email,
+      address: supplier.address,
+      website: supplier.website,
+      productsProvided: supplier.productsProvided,
+      averageDeliveryTime: supplier.averageDeliveryTime ?? undefined,
+      paymentTerms: supplier.paymentTerms,
+    };
     const selectedSupplier = this.supplierStore.selectedSupplier();
 
     if (selectedSupplier) {

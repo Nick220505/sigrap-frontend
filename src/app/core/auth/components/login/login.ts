@@ -1,10 +1,5 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { Field, email, form, required } from '@angular/forms/signals';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { ButtonModule } from 'primeng/button';
@@ -21,7 +16,7 @@ import { AuthStore } from '../../stores/auth-store';
     ButtonModule,
     InputTextModule,
     PasswordModule,
-    ReactiveFormsModule,
+    Field,
     RouterModule,
     RippleModule,
     FloatingConfigurator,
@@ -59,15 +54,12 @@ import { AuthStore } from '../../stores/auth-store';
               </span>
             </div>
 
-            <form [formGroup]="loginForm">
-              @let emailControlInvalid =
-                loginForm.get('email')?.invalid &&
-                loginForm.get('email')?.touched;
+            <form (submit)="$event.preventDefault(); onSubmit()">
+              @let emailInvalid =
+                loginForm.email().invalid() && loginForm.email().touched();
+              @let emailErrors = loginForm.email().errors();
 
-              <div
-                class="flex flex-col gap-2"
-                [class.p-invalid]="emailControlInvalid"
-              >
+              <div class="flex flex-col gap-2" [class.p-invalid]="emailInvalid">
                 <label
                   for="email"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
@@ -82,33 +74,31 @@ import { AuthStore } from '../../stores/auth-store';
                       pInputText
                       id="email"
                       type="text"
-                      formControlName="email"
+                      [field]="loginForm.email"
                       placeholder="Enter your email"
-                      [class.ng-dirty]="emailControlInvalid"
-                      [class.ng-invalid]="emailControlInvalid"
+                      [class.ng-dirty]="emailInvalid"
+                      [class.ng-invalid]="emailInvalid"
                       fluid
                     />
                   </p-iconfield>
                 </div>
 
-                @if (emailControlInvalid) {
-                  @if (loginForm.get('email')?.hasError('required')) {
-                    <small class="text-red-500">Email is required.</small>
-                  } @else if (loginForm.get('email')?.hasError('email')) {
-                    <small class="text-red-500"
-                      >Enter a valid email address.</small
-                    >
-                  }
+                @if (emailInvalid) {
+                  <ul>
+                    @for (error of emailErrors; track error.kind) {
+                      <li class="text-red-500">{{ error.message }}</li>
+                    }
+                  </ul>
                 }
               </div>
 
-              @let passwordControlInvalid =
-                loginForm.get('password')?.invalid &&
-                loginForm.get('password')?.touched;
+              @let passwordInvalid =
+                loginForm.password().invalid() &&
+                loginForm.password().touched();
 
               <div
                 class="flex flex-col gap-2 mt-6"
-                [class.p-invalid]="passwordControlInvalid"
+                [class.p-invalid]="passwordInvalid"
               >
                 <label
                   for="password"
@@ -123,34 +113,37 @@ import { AuthStore } from '../../stores/auth-store';
                   ></i>
                   <p-password
                     id="password"
-                    formControlName="password"
+                    [field]="loginForm.password"
                     placeholder="Enter your password"
                     toggleMask
                     styleClass="w-full"
                     inputStyleClass="pl-10 w-full"
                     feedback="false"
-                    [class.ng-dirty]="passwordControlInvalid"
-                    [class.ng-invalid]="passwordControlInvalid"
+                    [class.ng-dirty]="passwordInvalid"
+                    [class.ng-invalid]="passwordInvalid"
                     fluid
                   />
                 </div>
 
-                @if (passwordControlInvalid) {
-                  <small class="text-red-500">Password is required.</small>
+                @if (passwordInvalid) {
+                  <ul>
+                    @for (
+                      error of loginForm.password().errors();
+                      track error.kind
+                    ) {
+                      <li class="text-red-500">{{ error.message }}</li>
+                    }
+                  </ul>
                 }
               </div>
 
               <div class="mt-8">
                 <p-button
                   label="Sign In"
-                  type="button"
+                  type="submit"
                   styleClass="w-full"
                   [loading]="authStore.loading()"
-                  (onClick)="
-                    loginForm.valid
-                      ? authStore.login(loginForm.value)
-                      : loginForm.markAllAsTouched()
-                  "
+                  (onClick)="onSubmit()"
                 />
               </div>
 
@@ -174,11 +167,26 @@ import { AuthStore } from '../../stores/auth-store';
   `,
 })
 export class Login {
-  private readonly fb = inject(FormBuilder);
   readonly authStore = inject(AuthStore);
 
-  readonly loginForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
+  private readonly loginModel = signal({
+    email: '',
+    password: '',
   });
+
+  readonly loginForm = form(this.loginModel, (login) => {
+    required(login.email, { message: 'Email is required.' });
+    email(login.email, { message: 'Enter a valid email address.' });
+    required(login.password, { message: 'Password is required.' });
+  });
+
+  onSubmit(): void {
+    if (this.loginForm().valid()) {
+      this.authStore.login(this.loginForm().value());
+      return;
+    }
+
+    this.loginForm.email().markAsTouched();
+    this.loginForm.password().markAsTouched();
+  }
 }

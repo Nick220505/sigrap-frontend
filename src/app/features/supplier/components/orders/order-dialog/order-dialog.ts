@@ -6,22 +6,13 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Field, applyEach, form, min, required } from '@angular/forms/signals';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
-import {
-  PurchaseOrderData,
-  PurchaseOrderItemData,
-} from '@features/supplier/models/purchase-order.model';
+import { PurchaseOrderData } from '@features/supplier/models/purchase-order.model';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
+import { CurrencyPipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
@@ -41,13 +32,13 @@ import { TooltipModule } from 'primeng/tooltip';
     InputTextModule,
     InputNumberModule,
     SelectModule,
-    FormsModule,
-    ReactiveFormsModule,
     DatePickerModule,
     TableModule,
     TooltipModule,
     InputGroupModule,
     InputGroupAddonModule,
+    Field,
+    CurrencyPipe,
   ],
   template: `
     <p-dialog
@@ -61,13 +52,16 @@ import { TooltipModule } from 'primeng/tooltip';
       [header]="dialogHeader()"
       modal
     >
-      <form [formGroup]="orderForm" class="flex flex-col gap-4 pt-4">
+      <form
+        (submit)="$event.preventDefault(); saveOrder()"
+        class="flex flex-col gap-4 pt-4"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             class="flex flex-col gap-2"
             [class.p-invalid]="
-              orderForm.get('supplierId')?.invalid &&
-              orderForm.get('supplierId')?.touched
+              orderForm.supplierId().invalid() &&
+              orderForm.supplierId().touched()
             "
           >
             <label for="supplierId" class="font-bold">Supplier</label>
@@ -77,7 +71,7 @@ import { TooltipModule } from 'primeng/tooltip';
               </p-inputgroup-addon>
               <p-select
                 id="supplierId"
-                formControlName="supplierId"
+                [field]="orderForm.supplierId"
                 [options]="supplierStore.entities()"
                 optionLabel="name"
                 optionValue="id"
@@ -86,11 +80,12 @@ import { TooltipModule } from 'primeng/tooltip';
                 filterBy="name"
                 styleClass="w-full"
                 appendTo="body"
+                [disabled]="viewMode()"
               />
             </p-inputgroup>
             @if (
-              orderForm.get('supplierId')?.invalid &&
-              orderForm.get('supplierId')?.touched
+              orderForm.supplierId().invalid() &&
+              orderForm.supplierId().touched()
             ) {
               <small class="text-red-500">Supplier is required.</small>
             }
@@ -99,22 +94,23 @@ import { TooltipModule } from 'primeng/tooltip';
           <div
             class="flex flex-col gap-2"
             [class.p-invalid]="
-              orderForm.get('deliveryDate')?.invalid &&
-              orderForm.get('deliveryDate')?.touched
+              orderForm.deliveryDate().invalid() &&
+              orderForm.deliveryDate().touched()
             "
           >
             <label for="deliveryDate" class="font-bold">Delivery Date</label>
             <p-datePicker
               id="deliveryDate"
               inputId="deliveryDate"
-              formControlName="deliveryDate"
+              [field]="orderForm.deliveryDate"
               [showIcon]="true"
               appendTo="body"
               [showOnFocus]="true"
+              [disabled]="viewMode()"
             />
             @if (
-              orderForm.get('deliveryDate')?.invalid &&
-              orderForm.get('deliveryDate')?.touched
+              orderForm.deliveryDate().invalid() &&
+              orderForm.deliveryDate().touched()
             ) {
               <small class="text-red-500">Delivery date is required.</small>
             }
@@ -134,118 +130,98 @@ import { TooltipModule } from 'primeng/tooltip';
             }
           </div>
 
-          <div formArrayName="items">
-            <p-table
-              [value]="tableRows()"
-              [tableStyle]="{ width: '100%' }"
-              styleClass="p-datatable-sm"
-            >
-              <ng-template pTemplate="header">
+          <p-table
+            [value]="tableRows()"
+            [tableStyle]="{ width: '100%' }"
+            styleClass="p-datatable-sm"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="w-1/3">Product</th>
+                <th class="w-1/8">Quantity</th>
+                <th class="w-1/8">Unit Price</th>
+                <th class="w-1/8">Subtotal</th>
+                @if (!viewMode()) {
+                  <th class="w-12 text-center">Actions</th>
+                }
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+              @if (!row.isSummary) {
+                @let idx = row.formGroupIndex;
                 <tr>
-                  <th class="w-1/3">Product</th>
-                  <th class="w-1/8">Quantity</th>
-                  <th class="w-1/8">Unit Price</th>
-                  <th class="w-1/8">Subtotal</th>
+                  <td class="p-2">
+                    <p-select
+                      [field]="orderForm.items[idx].productId"
+                      [options]="productStore.entities()"
+                      optionLabel="name"
+                      optionValue="id"
+                      placeholder="Select Product"
+                      [filter]="true"
+                      filterBy="name"
+                      (onChange)="onProductChange(idx, $event.value)"
+                      [style]="{ width: '100%' }"
+                      appendTo="body"
+                      [disabled]="viewMode()"
+                    />
+                  </td>
+                  <td class="p-2">
+                    <p-inputNumber
+                      [field]="orderForm.items[idx].quantity"
+                      [min]="1"
+                      [showButtons]="true"
+                      buttonLayout="horizontal"
+                      [step]="1"
+                      (onInput)="updateItemSubtotal(idx)"
+                      fluid
+                      [style]="{ minWidth: '130px' }"
+                      [disabled]="viewMode()"
+                    />
+                  </td>
+                  <td class="p-2">
+                    <p-inputNumber
+                      [field]="orderForm.items[idx].unitPrice"
+                      mode="currency"
+                      (onInput)="updateItemSubtotal(idx)"
+                      maxFractionDigits="0"
+                      [style]="{ width: '100%' }"
+                      [disabled]="viewMode()"
+                    />
+                  </td>
+                  <td class="p-2">
+                    {{
+                      orderForm.items[idx].subtotal().value()
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
+                  </td>
                   @if (!viewMode()) {
-                    <th class="w-12 text-center">Actions</th>
+                    <td class="p-2 text-center w-12">
+                      <p-button
+                        icon="pi pi-trash"
+                        severity="danger"
+                        (onClick)="removeItem(idx)"
+                        size="small"
+                      />
+                    </td>
                   }
                 </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-row let-i="rowIndex">
-                @if (!row.isSummary) {
-                  <tr [formGroupName]="row.formGroupIndex">
-                    <td class="p-2">
-                      <p-select
-                        formControlName="productId"
-                        [options]="productStore.entities()"
-                        optionLabel="name"
-                        optionValue="id"
-                        placeholder="Select Product"
-                        [filter]="true"
-                        filterBy="name"
-                        (onChange)="
-                          onProductChange(row.formGroupIndex, $event.value)
-                        "
-                        [style]="{ width: '100%' }"
-                        appendTo="body"
-                      />
+              } @else {
+                @if (row.type === 'total') {
+                  <tr>
+                    <td colspan="3" class="p-2 text-right font-bold text-lg">
+                      Total:
                     </td>
-                    <td class="p-2">
-                      <p-inputNumber
-                        formControlName="quantity"
-                        [min]="1"
-                        [showButtons]="true"
-                        buttonLayout="horizontal"
-                        [step]="1"
-                        (onInput)="updateItemSubtotal(row.formGroupIndex)"
-                        fluid
-                        [style]="{ minWidth: '130px' }"
-                      />
+                    <td colspan="@if (viewMode()) {1} @else {2}" class="p-2">
+                      {{
+                        orderForm.totalAmount().value()
+                          | currency: undefined : undefined : '1.0-0'
+                      }}
                     </td>
-                    <td class="p-2">
-                      <p-inputNumber
-                        formControlName="unitPrice"
-                        mode="currency"
-                        currency="COP"
-                        locale="es-CO"
-                        (onInput)="updateItemSubtotal(row.formGroupIndex)"
-                        maxFractionDigits="0"
-                        [style]="{ width: '100%' }"
-                      />
-                    </td>
-                    <td class="p-2">
-                      <p-inputNumber
-                        [ngModel]="
-                          itemsArray.at(row.formGroupIndex).get('subtotal')
-                            ?.value
-                        "
-                        [ngModelOptions]="{ standalone: true }"
-                        mode="currency"
-                        currency="COP"
-                        locale="es-CO"
-                        [readonly]="true"
-                        [disabled]="true"
-                        maxFractionDigits="0"
-                        [style]="{ width: '100%' }"
-                      />
-                    </td>
-                    @if (!viewMode()) {
-                      <td class="p-2 text-center w-12">
-                        <p-button
-                          icon="pi pi-trash"
-                          severity="danger"
-                          (onClick)="removeItem(row.formGroupIndex)"
-                          size="small"
-                        />
-                      </td>
-                    }
                   </tr>
-                } @else {
-                  @if (row.type === 'total') {
-                    <tr>
-                      <td colspan="3" class="p-2 text-right font-bold text-lg">
-                        Total:
-                      </td>
-                      <td colspan="@if (viewMode()) {1} @else {2}" class="p-2">
-                        <p-inputNumber
-                          [ngModel]="orderForm.get('totalAmount')?.value"
-                          [ngModelOptions]="{ standalone: true }"
-                          mode="currency"
-                          currency="COP"
-                          locale="es-CO"
-                          [readonly]="true"
-                          [disabled]="true"
-                          maxFractionDigits="0"
-                          [style]="{ width: '100%' }"
-                          styleClass="font-bold"
-                        />
-                      </td>
-                    </tr>
-                  }
                 }
-              </ng-template>
-            </p-table>
-          </div>
+              }
+            </ng-template>
+          </p-table>
         </div>
       </form>
 
@@ -256,12 +232,12 @@ import { TooltipModule } from 'primeng/tooltip';
               label="Save"
               icon="pi pi-check"
               (onClick)="
-                orderForm.valid ? saveOrder() : orderForm.markAllAsTouched()
+                orderForm().valid() ? saveOrder() : orderForm().markAsTouched()
               "
               [disabled]="
                 purchaseOrderStore.loading() ||
-                orderForm.invalid ||
-                orderForm.pristine
+                orderForm().invalid() ||
+                !orderForm().dirty()
               "
             />
           }
@@ -271,7 +247,6 @@ import { TooltipModule } from 'primeng/tooltip';
   `,
 })
 export class OrderDialog {
-  private readonly fb = inject(FormBuilder);
   readonly purchaseOrderStore = inject(PurchaseOrderStore);
   readonly supplierStore = inject(SupplierStore);
   readonly productStore = inject(ProductStore);
@@ -291,31 +266,57 @@ export class OrderDialog {
     return 'Register New Order';
   });
 
-  readonly itemsCountSignal = signal(0);
+  private readonly model = signal<{
+    supplierId: number | null;
+    deliveryDate: Date | null;
+    totalAmount: number;
+    items: {
+      id?: number;
+      productId: number | null;
+      quantity: number;
+      unitPrice: number;
+      subtotal: number;
+    }[];
+  }>({
+    supplierId: null,
+    deliveryDate: new Date(),
+    totalAmount: 0,
+    items: [
+      {
+        productId: null,
+        quantity: 1,
+        unitPrice: 0,
+        subtotal: 0,
+      },
+    ],
+  });
+
+  readonly orderForm = form(this.model, (m) => {
+    required(m.supplierId, { message: 'Supplier is required' });
+    required(m.deliveryDate, { message: 'Delivery date is required' });
+    min(m.totalAmount, 0);
+
+    applyEach(m.items, (i) => {
+      required(i.productId);
+      min(i.quantity, 1);
+      min(i.unitPrice, 0);
+      min(i.subtotal, 0);
+    });
+  });
 
   readonly tableRows = computed(() => {
-    this.itemsCountSignal();
-
-    const itemRows = this.itemsArray.controls.map((_, i) => ({
-      isSummary: false,
-      formGroupIndex: i,
-    }));
+    const itemRows = Array.from(
+      { length: this.orderForm.items.length },
+      (_: unknown, i: number) => ({
+        isSummary: false,
+        formGroupIndex: i,
+      }),
+    );
 
     const summaryRows = [{ isSummary: true, type: 'total' }];
 
     return [...itemRows, ...summaryRows];
   });
-
-  readonly orderForm: FormGroup = this.fb.group({
-    supplierId: [null, Validators.required],
-    deliveryDate: [new Date(), Validators.required],
-    totalAmount: [0, Validators.min(0)],
-    items: this.fb.array([]),
-  });
-
-  get itemsArray(): FormArray {
-    return this.orderForm.get('items') as FormArray;
-  }
 
   get minDeliveryDate(): Date {
     const currentDate = new Date();
@@ -331,106 +332,77 @@ export class OrderDialog {
 
       untracked(() => {
         if (order) {
-          while (this.itemsArray.length > 0) {
-            this.itemsArray.removeAt(0);
-          }
-
-          this.itemsCountSignal.set(0);
-
           const deliveryDate = order.deliveryDate
             ? new Date(order.deliveryDate)
             : null;
 
-          this.orderForm.patchValue({
-            supplierId: order.supplier?.id,
+          this.orderForm().reset({
+            supplierId: order.supplier?.id ?? null,
             deliveryDate,
             totalAmount: order.totalAmount,
+            items:
+              order.items?.map((item) => ({
+                id: item.id,
+                productId: item.product.id,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                subtotal: item.totalPrice,
+              })) ?? [],
           });
 
-          if (order.items && order.items.length > 0) {
-            order.items.forEach((item) => {
-              const itemGroup = this.fb.group({
-                id: [item.id],
-                productId: [
-                  { value: item.product.id, disabled: viewOnly },
-                  Validators.required,
-                ],
-                quantity: [
-                  { value: item.quantity, disabled: viewOnly },
-                  [Validators.required, Validators.min(1)],
-                ],
-                unitPrice: [
-                  { value: item.unitPrice, disabled: viewOnly },
-                  [Validators.required, Validators.min(0)],
-                ],
-                subtotal: [
-                  item.totalPrice,
-                  [Validators.required, Validators.min(0)],
-                ],
-              });
-
-              this.itemsArray.push(itemGroup);
-            });
+          if (!order.items || order.items.length === 0) {
+            this.addItem();
           }
 
-          this.itemsCountSignal.set(this.itemsArray.length);
-
-          this.calculateSubtotals();
-          this.updateTotals();
-
-          if (viewOnly) {
-            this.orderForm.disable();
-            this.orderForm.markAsPristine();
+          if (!viewOnly) {
+            this.calculateSubtotals();
+            this.updateTotals();
           }
         } else {
-          this.orderForm.enable();
-
-          this.orderForm.reset({
+          this.orderForm().reset({
             supplierId: null,
             deliveryDate: new Date(),
             totalAmount: 0,
+            items: [
+              {
+                productId: null,
+                quantity: 1,
+                unitPrice: 0,
+                subtotal: 0,
+              },
+            ],
           });
-
-          while (this.itemsArray.length > 0) {
-            this.itemsArray.removeAt(0);
-          }
-
-          this.itemsCountSignal.set(0);
-          this.addItem();
         }
       });
     });
-
-    this.orderForm
-      .get('items')
-      ?.valueChanges.subscribe(() => this.updateTotals());
   }
 
   addItem(): void {
-    const newItem = this.fb.group({
-      productId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]],
-      unitPrice: [0, [Validators.required, Validators.min(0)]],
-      subtotal: [0, [Validators.required, Validators.min(0)]],
+    const v = this.orderForm().value();
+    this.orderForm().value.set({
+      ...v,
+      items: [
+        ...v.items,
+        {
+          productId: null,
+          quantity: 1,
+          unitPrice: 0,
+          subtotal: 0,
+        },
+      ],
     });
-
-    if (this.viewMode()) {
-      newItem.disable();
-    }
-
-    this.itemsArray.push(newItem);
-    this.itemsCountSignal.set(this.itemsArray.length);
-    this.updateItemSubtotal(this.itemsArray.length - 1);
-    this.orderForm.markAsDirty();
   }
 
   removeItem(index: number): void {
-    if (this.itemsArray.length > 1) {
-      this.itemsArray.removeAt(index);
-      this.itemsCountSignal.set(this.itemsArray.length);
-      this.updateTotals();
-      this.orderForm.markAsDirty();
-    }
+    const v = this.orderForm().value();
+    if (v.items.length <= 1) return;
+
+    const nextItems = v.items.filter((_, i) => i !== index);
+    this.orderForm().value.set({
+      ...v,
+      items: nextItems,
+      totalAmount: nextItems.reduce((sum, it) => sum + (it.subtotal ?? 0), 0),
+    });
   }
 
   onProductChange(index: number, productId: number): void {
@@ -440,45 +412,57 @@ export class OrderDialog {
       .entities()
       .find((p) => p.id === productId);
 
-    if (product) {
-      const itemGroup = this.itemsArray.at(index);
-      itemGroup.patchValue({
-        unitPrice: product.costPrice,
-      });
-      this.updateItemSubtotal(index);
-    }
+    if (!product) return;
+
+    const v = this.orderForm().value();
+    const nextItems = [...v.items];
+    nextItems[index] = {
+      ...nextItems[index],
+      unitPrice: product.costPrice,
+    };
+    this.orderForm().value.set({
+      ...v,
+      items: nextItems,
+    });
+    this.updateItemSubtotal(index);
   }
 
   calculateSubtotals(): void {
-    for (let i = 0; i < this.itemsArray.length; i++) {
-      this.updateItemSubtotal(i, false);
-    }
+    const v = this.orderForm().value();
+    const nextItems = v.items.map((it) => ({
+      ...it,
+      subtotal: (it.quantity ?? 0) * (it.unitPrice ?? 0),
+    }));
+    this.orderForm().value.set({
+      ...v,
+      items: nextItems,
+      totalAmount: nextItems.reduce((sum, it) => sum + (it.subtotal ?? 0), 0),
+    });
   }
 
   updateItemSubtotal(index: number, updateTotal = true): void {
-    const itemGroup = this.itemsArray.at(index);
-    const quantity = itemGroup.get('quantity')?.value ?? 0;
-    const unitPrice = itemGroup.get('unitPrice')?.value ?? 0;
+    const v = this.orderForm().value();
+    const nextItems = [...v.items];
+    const current = nextItems[index];
+    const subtotal = (current.quantity ?? 0) * (current.unitPrice ?? 0);
+    nextItems[index] = { ...current, subtotal };
 
-    const subtotal = quantity * unitPrice;
-    itemGroup.get('subtotal')?.setValue(subtotal);
-
-    if (updateTotal) {
-      this.updateTotals();
-      this.orderForm.markAsDirty();
-    }
+    this.orderForm().value.set({
+      ...v,
+      items: nextItems,
+      totalAmount: updateTotal
+        ? nextItems.reduce((sum, it) => sum + (it.subtotal ?? 0), 0)
+        : v.totalAmount,
+    });
   }
 
   updateTotals(): void {
-    let total = 0;
-
-    for (let i = 0; i < this.itemsArray.length; i++) {
-      const itemGroup = this.itemsArray.at(i);
-      const subtotal = itemGroup.get('subtotal')?.value ?? 0;
-      total += subtotal;
-    }
-
-    this.orderForm.get('totalAmount')?.setValue(total);
+    const v = this.orderForm().value();
+    const total = v.items.reduce((sum, it) => sum + (it.subtotal ?? 0), 0);
+    this.orderForm().value.set({
+      ...v,
+      totalAmount: total,
+    });
   }
 
   formatDateToISO(date: Date | null): string | null {
@@ -487,31 +471,32 @@ export class OrderDialog {
   }
 
   saveOrder(): void {
-    if (this.orderForm.invalid) {
-      this.orderForm.markAllAsTouched();
+    if (this.orderForm().invalid()) {
+      this.orderForm().markAsTouched();
       return;
     }
 
-    const formValue = this.orderForm.getRawValue();
+    const formValue = this.orderForm().value();
+
+    if (formValue.supplierId == null) {
+      this.orderForm().markAsTouched();
+      return;
+    }
+
+    if (formValue.items.some((i) => i.productId == null)) {
+      this.orderForm().markAsTouched();
+      return;
+    }
 
     const orderData: PurchaseOrderData = {
       supplierId: formValue.supplierId,
       deliveryDate: this.formatDateToISO(formValue.deliveryDate) ?? undefined,
-      items: formValue.items.map(
-        (item: PurchaseOrderItemData & { id?: number; subtotal?: number }) => {
-          const itemData: PurchaseOrderItemData = {
-            productId: item.productId,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-          };
-
-          if (item.id) {
-            itemData.id = item.id;
-          }
-
-          return itemData;
-        },
-      ),
+      items: formValue.items.map((item) => ({
+        id: item.id,
+        productId: item.productId!,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
     };
 
     const orderId = this.purchaseOrderStore.selectedOrder()?.id;

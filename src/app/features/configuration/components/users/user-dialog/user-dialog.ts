@@ -1,10 +1,13 @@
-import { Component, computed, effect, inject, untracked } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Field, email, form, required } from '@angular/forms/signals';
 import { PasswordField } from 'app/shared/components/password-field/password-field';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -22,10 +25,10 @@ import { UserStore } from '../../../stores/user-store';
     ButtonModule,
     InputTextModule,
     Select,
-    ReactiveFormsModule,
     InputGroupModule,
     InputGroupAddonModule,
     PasswordField,
+    Field,
   ],
   template: `
     <p-dialog
@@ -37,9 +40,12 @@ import { UserStore } from '../../../stores/user-store';
       [header]="userStore.selectedUser() ? 'Edit User' : 'Create User'"
       modal
     >
-      <form [formGroup]="userForm" class="flex flex-col gap-4 pt-4">
+      <form
+        (submit)="$event.preventDefault(); onSubmit()"
+        class="flex flex-col gap-4 pt-4"
+      >
         @let nameControlInvalid =
-          userForm.get('name')?.invalid && userForm.get('name')?.touched;
+          userForm.name().invalid() && userForm.name().touched();
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
           <label for="name" class="font-bold">Name</label>
@@ -51,11 +57,10 @@ import { UserStore } from '../../../stores/user-store';
               type="text"
               pInputText
               id="name"
-              formControlName="name"
+              [field]="userForm.name"
               placeholder="Enter user name"
               [class.ng-dirty]="nameControlInvalid"
               [class.ng-invalid]="nameControlInvalid"
-              required
               fluid
             />
           </p-inputgroup>
@@ -66,7 +71,7 @@ import { UserStore } from '../../../stores/user-store';
         </div>
 
         @let emailControlInvalid =
-          userForm.get('email')?.invalid && userForm.get('email')?.touched;
+          userForm.email().invalid() && userForm.email().touched();
 
         <div
           class="flex flex-col gap-2"
@@ -81,20 +86,19 @@ import { UserStore } from '../../../stores/user-store';
               type="email"
               pInputText
               id="email"
-              formControlName="email"
+              [field]="userForm.email"
               placeholder="Enter user email"
               [class.ng-dirty]="emailControlInvalid"
               [class.ng-invalid]="emailControlInvalid"
-              required
               fluid
             />
           </p-inputgroup>
 
           @if (emailControlInvalid) {
             <small class="text-red-500">
-              @if (userForm.get('email')?.hasError('required')) {
+              @if (emailHasRequiredError()) {
                 Email is required.
-              } @else if (userForm.get('email')?.hasError('email')) {
+              } @else if (emailHasEmailError()) {
                 Email is not valid.
               }
             </small>
@@ -111,7 +115,7 @@ import { UserStore } from '../../../stores/user-store';
               type="text"
               pInputText
               id="documentId"
-              formControlName="documentId"
+              [field]="userForm.documentId"
               placeholder="Enter ID number"
               fluid
             />
@@ -128,7 +132,7 @@ import { UserStore } from '../../../stores/user-store';
               type="text"
               pInputText
               id="phone"
-              formControlName="phone"
+              [field]="userForm.phone"
               placeholder="Enter phone number"
               fluid
             />
@@ -138,7 +142,7 @@ import { UserStore } from '../../../stores/user-store';
         <app-password-field
           id="password"
           [label]="isEditMode() ? 'Password (Optional)' : 'Password'"
-          [control]="$any(userForm.get('password'))"
+          [control]="passwordControl"
           [required]="!isEditMode()"
         />
 
@@ -150,7 +154,7 @@ import { UserStore } from '../../../stores/user-store';
             </p-inputgroup-addon>
             <p-select
               id="role"
-              formControlName="role"
+              [field]="userForm.role"
               [options]="roleOptions"
               optionLabel="label"
               optionValue="value"
@@ -173,7 +177,7 @@ import { UserStore } from '../../../stores/user-store';
         <p-button
           label="Save"
           icon="pi pi-check"
-          (click)="userForm.valid ? saveUser() : userForm.markAllAsTouched()"
+          (click)="onSubmit()"
           [disabled]="userStore.loading()"
         />
       </ng-template>
@@ -181,7 +185,6 @@ import { UserStore } from '../../../stores/user-store';
   `,
 })
 export class UserDialog {
-  private readonly fb = inject(FormBuilder);
   readonly userStore = inject(UserStore);
 
   readonly roleOptions = [
@@ -191,65 +194,108 @@ export class UserDialog {
 
   readonly isEditMode = computed(() => !!this.userStore.selectedUser());
 
-  readonly userForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    documentId: [''],
-    phone: [''],
-    password: [
-      '',
-      [
-        Validators.required,
+  private readonly model = signal({
+    name: '',
+    email: '',
+    documentId: '',
+    phone: '',
+    role: UserRole.EMPLOYEE,
+  });
+
+  readonly passwordControl = new FormControl<string>('', {
+    nonNullable: true,
+  });
+
+  readonly userForm = form(this.model, (m) => {
+    required(m.name, { message: 'Name is required' });
+    required(m.email, { message: 'Email is required' });
+    email(m.email, { message: 'Email is not valid' });
+    required(m.role, { message: 'Role is required' });
+  });
+
+  readonly emailHasRequiredError = computed(() =>
+    this.userForm
+      .email()
+      .errors()
+      .some((e) => e.kind === 'required'),
+  );
+
+  readonly emailHasEmailError = computed(() =>
+    this.userForm
+      .email()
+      .errors()
+      .some((e) => e.kind === 'email'),
+  );
+
+  constructor() {
+    effect(() => {
+      const isEditMode = this.isEditMode();
+
+      const validators = [
         Validators.pattern(
           '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$',
         ),
-      ],
-    ],
-    role: [UserRole.EMPLOYEE, Validators.required],
-  });
+      ];
 
-  constructor() {
+      if (!isEditMode) {
+        validators.unshift(Validators.required);
+      }
+
+      this.passwordControl.setValidators(validators);
+      this.passwordControl.updateValueAndValidity({ emitEvent: false });
+    });
+
     effect(() => {
       const user = this.userStore.selectedUser();
       untracked(() => {
         if (user) {
-          this.userForm.patchValue({
-            ...user,
-            password: '',
+          this.userForm().value.set({
+            name: user.name,
+            email: user.email,
+            documentId: user.documentId ?? '',
+            phone: user.phone ?? '',
+            role: user.role,
           });
-          this.userForm.get('password')?.clearValidators();
-          this.userForm
-            .get('password')
-            ?.setValidators(
-              Validators.pattern(
-                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$',
-              ),
-            );
+          this.passwordControl.setValue('');
+          this.passwordControl.markAsUntouched();
         } else {
-          this.userForm.reset({
+          this.userForm().value.set({
+            name: '',
+            email: '',
+            documentId: '',
+            phone: '',
             role: UserRole.EMPLOYEE,
           });
-          this.userForm
-            .get('password')
-            ?.setValidators([
-              Validators.required,
-              Validators.pattern(
-                '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$',
-              ),
-            ]);
+          this.passwordControl.setValue('');
+          this.passwordControl.markAsUntouched();
         }
-        this.userForm.get('password')?.updateValueAndValidity();
       });
     });
   }
 
-  saveUser(): void {
-    const userData: UserData = this.userForm.value;
+  onSubmit(): void {
+    this.passwordControl.updateValueAndValidity();
 
-    if (
-      this.isEditMode() &&
-      (!userData.password || userData.password.trim() === '')
-    ) {
+    if (this.userForm().valid() && this.passwordControl.valid) {
+      this.saveUser();
+      return;
+    }
+
+    this.userForm.name().markAsTouched();
+    this.userForm.email().markAsTouched();
+    this.userForm.documentId().markAsTouched();
+    this.userForm.phone().markAsTouched();
+    this.userForm.role().markAsTouched();
+    this.passwordControl.markAsTouched();
+  }
+
+  saveUser(): void {
+    const userData: UserData = this.userForm().value();
+
+    const password = this.passwordControl.value;
+    if (password && password.trim() !== '') {
+      userData.password = password;
+    } else if (this.isEditMode()) {
       delete userData.password;
     }
 

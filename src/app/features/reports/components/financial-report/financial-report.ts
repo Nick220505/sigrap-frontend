@@ -165,7 +165,7 @@ interface PieChartTooltipContext {
               ></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-green-600">{{
-                totalRevenue() | currency: 'COP' : '$' : '1.0-0'
+                totalRevenue() | currency: undefined : undefined : '1.0-0'
               }}</span>
             }
           </div>
@@ -182,7 +182,7 @@ interface PieChartTooltipContext {
               ></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-red-600">{{
-                totalExpenses() | currency: 'COP' : '$' : '1.0-0'
+                totalExpenses() | currency: undefined : undefined : '1.0-0'
               }}</span>
             }
           </div>
@@ -205,7 +205,9 @@ interface PieChartTooltipContext {
                   'text-red-600': totalProfit() < 0,
                   'text-gray-600': totalProfit() === 0,
                 }"
-                >{{ totalProfit() | currency: 'COP' : '$' : '1.0-0' }}</span
+                >{{
+                  totalProfit() | currency: undefined : undefined : '1.0-0'
+                }}</span
               >
               <span
                 class="text-lg mt-1"
@@ -309,11 +311,21 @@ interface PieChartTooltipContext {
             <ng-template pTemplate="body" let-summary>
               <tr>
                 <td>{{ summary.period }}</td>
-                <td>{{ summary.revenue | currency: 'COP' : '$' : '1.0-0' }}</td>
                 <td>
-                  {{ summary.expenses | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    summary.revenue | currency: undefined : undefined : '1.0-0'
+                  }}
                 </td>
-                <td>{{ summary.returns | currency: 'COP' : '$' : '1.0-0' }}</td>
+                <td>
+                  {{
+                    summary.expenses | currency: undefined : undefined : '1.0-0'
+                  }}
+                </td>
+                <td>
+                  {{
+                    summary.returns | currency: undefined : undefined : '1.0-0'
+                  }}
+                </td>
                 <td>
                   <span
                     [ngClass]="{
@@ -321,7 +333,7 @@ interface PieChartTooltipContext {
                       'text-red-600 font-medium': summary.profit < 0,
                     }"
                     >{{
-                      summary.profit | currency: 'COP' : '$' : '1.0-0'
+                      summary.profit | currency: undefined : undefined : '1.0-0'
                     }}</span
                   >
                 </td>
@@ -357,7 +369,7 @@ interface PieChartTooltipContext {
           <div class="flex flex-col items-center">
             <h3 class="text-xl font-semibold mb-2">Ingresos Totales</h3>
             <span class="text-3xl font-bold text-green-600">{{
-              totalRevenue() | currency: 'COP' : '$' : '1.0-0'
+              totalRevenue() | currency: undefined : undefined : '1.0-0'
             }}</span>
           </div>
         </div>
@@ -366,7 +378,7 @@ interface PieChartTooltipContext {
           <div class="flex flex-col items-center">
             <h3 class="text-xl font-semibold mb-2">Total Expenses</h3>
             <span class="text-3xl font-bold text-red-600">{{
-              totalExpenses() | currency: 'COP' : '$' : '1.0-0'
+              totalExpenses() | currency: undefined : undefined : '1.0-0'
             }}</span>
           </div>
         </div>
@@ -381,7 +393,9 @@ interface PieChartTooltipContext {
                 'text-red-600': totalProfit() < 0,
                 'text-gray-600': totalProfit() === 0,
               }"
-              >{{ totalProfit() | currency: 'COP' : '$' : '1.0-0' }}</span
+              >{{
+                totalProfit() | currency: undefined : undefined : '1.0-0'
+              }}</span
             >
             <span
               class="text-lg mt-1"
@@ -414,13 +428,19 @@ interface PieChartTooltipContext {
               <tr class="border-b">
                 <td class="p-2">{{ summary.period }}</td>
                 <td class="p-2 text-right">
-                  {{ summary.revenue | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    summary.revenue | currency: undefined : undefined : '1.0-0'
+                  }}
                 </td>
                 <td class="p-2 text-right">
-                  {{ summary.expenses | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    summary.expenses | currency: undefined : undefined : '1.0-0'
+                  }}
                 </td>
                 <td class="p-2 text-right">
-                  {{ summary.returns | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    summary.returns | currency: undefined : undefined : '1.0-0'
+                  }}
                 </td>
                 <td class="p-2 text-right">
                   <span
@@ -429,7 +449,7 @@ interface PieChartTooltipContext {
                       'text-red-600 font-medium': summary.profit < 0,
                     }"
                     >{{
-                      summary.profit | currency: 'COP' : '$' : '1.0-0'
+                      summary.profit | currency: undefined : undefined : '1.0-0'
                     }}</span
                   >
                 </td>
@@ -770,7 +790,7 @@ export class FinancialReport implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.dataset.label}: ${context.parsed.y.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}`;
+            return `${context.dataset.label}: ${context.parsed.y.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
           },
         },
       },
@@ -782,7 +802,7 @@ export class FinancialReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto (COP)',
+          text: 'Amount',
         },
       },
       x: {
@@ -805,7 +825,7 @@ export class FinancialReport implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.dataset.label}: ${context.parsed.y.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}`;
+            return `${context.dataset.label}: ${context.parsed.y.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
           },
         },
       },
@@ -817,7 +837,7 @@ export class FinancialReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Monto (COP)',
+          text: 'Amount',
         },
       },
     },
@@ -841,7 +861,7 @@ export class FinancialReport implements OnInit {
             );
             const percentage =
               total > 0 ? ((value * 100) / total).toFixed(1) : '0';
-            return `${context.label}: ${value.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })} (${percentage}%)`;
+            return `${context.label}: ${value.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })} (${percentage}%)`;
           },
         },
       },

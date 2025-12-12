@@ -86,16 +86,11 @@ describe('Register', () => {
                 type="password"
                 [formControl]="control()"
                 [placeholder]="placeholder()"
-                [class.ng-dirty]="control().touched && control().invalid"
-                [class.ng-invalid]="control().touched && control().invalid"
               />
               @if (control().touched && control().hasError('required')) {
                 <small class="text-red-500">Password is required.</small>
               } @else if (control().touched && control().hasError('pattern')) {
-                <small class="text-red-500">
-                  Password must contain at least one uppercase, one lowercase,
-                  a number and a special character.
-                </small>
+                <small class="text-red-500">Password must meet all requirements.</small>
               }
             </div>
           `,
@@ -114,29 +109,32 @@ describe('Register', () => {
   });
 
   it('should initialize register form with empty values', () => {
-    expect(component.registerForm.get('name')?.value).toBe('');
-    expect(component.registerForm.get('email')?.value).toBe('');
-    expect(component.registerForm.get('password')?.value).toBe('');
-    expect(component.registerForm.get('confirmPassword')?.value).toBe('');
+    expect(component.registerForm().value()).toEqual({
+      name: '',
+      email: '',
+    });
+    expect(component.passwordControl.value).toBe('');
+    expect(component.confirmPasswordControl.value).toBe('');
   });
 
   describe('Name field validation', () => {
     it('should have required validation for name field', () => {
-      const nameControl = component.registerForm.get('name');
+      component.registerForm.name().value.set('');
+      expect(component.registerForm.name().valid()).toBe(false);
+      expect(
+        component.registerForm
+          .name()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      nameControl?.setValue('');
-      expect(nameControl?.valid).toBeFalsy();
-      expect(nameControl?.hasError('required')).toBeTruthy();
-
-      nameControl?.setValue('John Doe');
-      expect(nameControl?.valid).toBeTruthy();
+      component.registerForm.name().value.set('John Doe');
+      expect(component.registerForm.name().valid()).toBe(true);
     });
 
     it('should show validation message when name is empty and touched', () => {
-      const nameControl = component.registerForm.get('name');
-
-      nameControl?.setValue('');
-      nameControl?.markAsTouched();
+      component.registerForm.name().value.set('');
+      component.registerForm.name().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -149,32 +147,30 @@ describe('Register', () => {
 
   describe('Email field validation', () => {
     it('should have required validation for email field', () => {
-      const emailControl = component.registerForm.get('email');
+      component.registerForm.email().value.set('');
+      expect(component.registerForm.email().valid()).toBe(false);
+      expect(
+        component.registerForm
+          .email()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      emailControl?.setValue('');
-      expect(emailControl?.valid).toBeFalsy();
-      expect(emailControl?.hasError('required')).toBeTruthy();
-
-      emailControl?.setValue('test@example.com');
-      expect(emailControl?.valid).toBeTruthy();
+      component.registerForm.email().value.set('test@example.com');
+      expect(component.registerForm.email().valid()).toBe(true);
     });
 
     it('should validate email format', () => {
-      const emailControl = component.registerForm.get('email');
+      component.registerForm.email().value.set('invalid-email');
+      expect(component.registerForm.email().valid()).toBe(false);
 
-      emailControl?.setValue('invalid-email');
-      expect(emailControl?.valid).toBeFalsy();
-      expect(emailControl?.hasError('email')).toBeTruthy();
-
-      emailControl?.setValue('test@example.com');
-      expect(emailControl?.valid).toBeTruthy();
+      component.registerForm.email().value.set('test@example.com');
+      expect(component.registerForm.email().valid()).toBe(true);
     });
 
     it('should show validation message when email is empty and touched', () => {
-      const emailControl = component.registerForm.get('email');
-
-      emailControl?.setValue('');
-      emailControl?.markAsTouched();
+      component.registerForm.email().value.set('');
+      component.registerForm.email().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -185,10 +181,8 @@ describe('Register', () => {
     });
 
     it('should show validation message when email format is invalid and touched', () => {
-      const emailControl = component.registerForm.get('email');
-
-      emailControl?.setValue('invalid-email');
-      emailControl?.markAsTouched();
+      component.registerForm.email().value.set('invalid-email');
+      component.registerForm.email().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -201,116 +195,129 @@ describe('Register', () => {
 
   describe('Password field validation', () => {
     it('should have required validation for password field', () => {
-      const passwordControl = component.registerForm.get('password');
-
-      passwordControl?.setValue('');
-      expect(passwordControl?.valid).toBeFalsy();
-      expect(passwordControl?.hasError('required')).toBeTruthy();
+      component.passwordControl.setValue('');
+      component.passwordControl.updateValueAndValidity();
+      expect(component.passwordControl.valid).toBe(false);
+      expect(component.passwordControl.hasError('required')).toBe(true);
     });
 
     it('should validate password pattern', () => {
-      const passwordControl = component.registerForm.get('password');
+      component.passwordControl.setValue('password');
+      component.passwordControl.updateValueAndValidity();
+      expect(component.passwordControl.valid).toBe(false);
+      expect(component.passwordControl.hasError('pattern')).toBe(true);
 
-      passwordControl?.setValue('password');
-      expect(passwordControl?.valid).toBeFalsy();
-      expect(passwordControl?.hasError('pattern')).toBeTruthy();
+      component.passwordControl.setValue('Password');
+      component.passwordControl.updateValueAndValidity();
+      expect(component.passwordControl.valid).toBe(false);
 
-      passwordControl?.setValue('Password');
-      expect(passwordControl?.valid).toBeFalsy();
+      component.passwordControl.setValue('Password1');
+      component.passwordControl.updateValueAndValidity();
+      expect(component.passwordControl.valid).toBe(false);
 
-      passwordControl?.setValue('Password1');
-      expect(passwordControl?.valid).toBeFalsy();
-
-      passwordControl?.setValue('Password1!');
-      expect(passwordControl?.valid).toBeTruthy();
+      component.passwordControl.setValue('Password1!');
+      component.passwordControl.updateValueAndValidity();
+      expect(component.passwordControl.valid).toBe(true);
     });
 
     it('should show validation message when password is empty and touched', () => {
-      const passwordControl = component.registerForm.get('password');
-
-      passwordControl?.setValue('');
-      passwordControl?.markAsTouched();
+      component.passwordControl.setValue('');
+      component.passwordControl.markAsTouched();
       fixture.detectChanges();
 
-      const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
-      expect(errorMessage).toBeTruthy();
-      expect(errorMessage.nativeElement.textContent).toContain(
-        'Password is required',
+      const errorMessages = fixture.debugElement.queryAll(
+        By.css('.text-red-500'),
       );
+      expect(
+        errorMessages.some((m) =>
+          (m.nativeElement.textContent as string).includes(
+            'Password is required',
+          ),
+        ),
+      ).toBe(true);
     });
 
     it('should show validation message when password pattern is invalid and touched', () => {
-      const passwordControl = component.registerForm.get('password');
-
-      passwordControl?.setValue('password');
-      passwordControl?.markAsTouched();
+      component.passwordControl.setValue('password');
+      component.passwordControl.markAsTouched();
       fixture.detectChanges();
 
-      const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
-      expect(errorMessage).toBeTruthy();
-      expect(errorMessage.nativeElement.textContent).toContain(
-        'Password must contain at least one uppercase, one lowercase, a number and a special character',
+      const errorMessages = fixture.debugElement.queryAll(
+        By.css('.text-red-500'),
       );
+      expect(
+        errorMessages.some((m) =>
+          (m.nativeElement.textContent as string).includes(
+            'Password must meet all requirements',
+          ),
+        ),
+      ).toBe(true);
     });
   });
 
   describe('Confirm Password validation', () => {
     it('should have required validation for confirm password field', () => {
-      const confirmPasswordControl =
-        component.registerForm.get('confirmPassword');
-
-      confirmPasswordControl?.setValue('');
-      expect(confirmPasswordControl?.valid).toBeFalsy();
-      expect(confirmPasswordControl?.hasError('required')).toBeTruthy();
+      component.confirmPasswordControl.setValue('');
+      component.confirmPasswordControl.updateValueAndValidity();
+      expect(component.confirmPasswordControl.valid).toBe(false);
+      expect(component.confirmPasswordControl.hasError('required')).toBe(true);
     });
 
     it('should validate that passwords match', () => {
-      const passwordControl = component.registerForm.get('password');
-      const confirmPasswordControl =
-        component.registerForm.get('confirmPassword');
-
-      passwordControl?.setValue('Password1!');
-      confirmPasswordControl?.setValue('DifferentPassword1!');
+      component.passwordControl.setValue('Password1!');
+      component.confirmPasswordControl.setValue('DifferentPassword1!');
       fixture.detectChanges();
 
-      expect(component.registerForm.hasError('passwordMismatch')).toBeTruthy();
+      component.onSubmit();
+      expect(
+        component.confirmPasswordControl.hasError('passwordMismatch'),
+      ).toBe(true);
 
-      confirmPasswordControl?.setValue('Password1!');
+      component.confirmPasswordControl.setValue('Password1!');
       fixture.detectChanges();
 
-      expect(component.registerForm.hasError('passwordMismatch')).toBeFalsy();
+      component.onSubmit();
+      expect(
+        component.confirmPasswordControl.hasError('passwordMismatch'),
+      ).toBe(false);
     });
 
     it('should show validation message when confirm password is empty and touched', () => {
-      const confirmPasswordControl =
-        component.registerForm.get('confirmPassword');
-
-      confirmPasswordControl?.setValue('');
-      confirmPasswordControl?.markAsTouched();
+      component.confirmPasswordControl.setValue('');
+      component.confirmPasswordControl.markAsTouched();
       fixture.detectChanges();
 
-      const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
-      expect(errorMessage).toBeTruthy();
-      expect(errorMessage.nativeElement.textContent).toContain(
-        'Password is required',
+      const errorMessages = fixture.debugElement.queryAll(
+        By.css('.text-red-500'),
       );
+      expect(
+        errorMessages.some((m) =>
+          (m.nativeElement.textContent as string).includes(
+            'Password is required',
+          ),
+        ),
+      ).toBe(true);
     });
 
     it('should show validation message when passwords do not match', () => {
-      const passwordControl = component.registerForm.get('password');
-      const confirmPasswordControl =
-        component.registerForm.get('confirmPassword');
-
-      passwordControl?.setValue('Password1!');
-      confirmPasswordControl?.setValue('DifferentPassword1!');
-      confirmPasswordControl?.markAsTouched();
+      component.passwordControl.setValue('Password1!');
+      component.confirmPasswordControl.setValue('DifferentPassword1!');
+      component.confirmPasswordControl.markAsTouched();
       fixture.detectChanges();
 
-      const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
-      expect(errorMessage).toBeTruthy();
-      expect(errorMessage.nativeElement.textContent).toContain(
-        'Passwords do not match',
+      component.onSubmit();
+      fixture.detectChanges();
+
+      const errorMessages = fixture.debugElement.queryAll(
+        By.css('.text-red-500'),
       );
+      expect(
+        errorMessages.some((m) =>
+          (m.nativeElement.textContent as string).includes(
+            'Passwords do not match',
+          ),
+        ),
+      ).toBe(true);
     });
   });
 
@@ -321,10 +328,10 @@ describe('Register', () => {
       );
       registerButton.nativeElement.click();
 
-      expect(component.registerForm.get('name')?.touched).toBe(true);
-      expect(component.registerForm.get('email')?.touched).toBe(true);
-      expect(component.registerForm.get('password')?.touched).toBe(true);
-      expect(component.registerForm.get('confirmPassword')?.touched).toBe(true);
+      expect(component.registerForm.name().touched()).toBe(true);
+      expect(component.registerForm.email().touched()).toBe(true);
+      expect(component.passwordControl.touched).toBe(true);
+      expect(component.confirmPasswordControl.touched).toBe(true);
     });
 
     it('should call register method of AuthStore when form is valid and button is clicked', () => {
@@ -334,10 +341,10 @@ describe('Register', () => {
         password: 'Password1!',
       };
 
-      component.registerForm.patchValue({
-        ...userData,
-        confirmPassword: 'Password1!',
-      });
+      component.registerForm.name().value.set(userData.name);
+      component.registerForm.email().value.set(userData.email);
+      component.passwordControl.setValue(userData.password);
+      component.confirmPasswordControl.setValue(userData.password);
       fixture.detectChanges();
 
       const registerButton = fixture.debugElement.query(

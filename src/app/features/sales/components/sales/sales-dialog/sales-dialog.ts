@@ -6,15 +6,15 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  Field,
+  applyEach,
+  form,
+  max,
+  min,
+  required,
+} from '@angular/forms/signals';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { CustomerStore } from '@features/customer/stores/customer-store';
@@ -35,14 +35,14 @@ import { SaleStore } from '../../../stores/sale-store';
   imports: [
     DialogModule,
     ButtonModule,
-    ReactiveFormsModule,
-    FormsModule,
     InputTextModule,
     InputNumberModule,
     SelectModule,
     TableModule,
     InputGroupModule,
     InputGroupAddonModule,
+    Field,
+    CurrencyPipe,
   ],
   template: `
     <p-dialog
@@ -55,7 +55,10 @@ import { SaleStore } from '../../../stores/sale-store';
       [modal]="true"
       [resizable]="false"
     >
-      <form [formGroup]="saleForm" class="flex flex-col gap-4 pt-4">
+      <form
+        (submit)="$event.preventDefault(); saveSale()"
+        class="flex flex-col gap-4 pt-4"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
             <label for="customerId" class="font-bold">Customer</label>
@@ -65,7 +68,7 @@ import { SaleStore } from '../../../stores/sale-store';
               </p-inputgroup-addon>
               <p-select
                 id="customerId"
-                formControlName="customerId"
+                [field]="saleForm.customerId"
                 [options]="this.customerStore.entities()"
                 optionLabel="fullName"
                 optionValue="id"
@@ -74,6 +77,7 @@ import { SaleStore } from '../../../stores/sale-store';
                 filterBy="fullName"
                 styleClass="w-full"
                 appendTo="body"
+                [disabled]="viewMode()"
               ></p-select>
             </p-inputgroup>
           </div>
@@ -86,7 +90,7 @@ import { SaleStore } from '../../../stores/sale-store';
               </p-inputgroup-addon>
               <p-select
                 id="employeeId"
-                formControlName="employeeId"
+                [field]="saleForm.employeeId"
                 [options]="this.userStore.entities()"
                 optionLabel="name"
                 optionValue="id"
@@ -95,6 +99,7 @@ import { SaleStore } from '../../../stores/sale-store';
                 filterBy="name"
                 styleClass="w-full"
                 appendTo="body"
+                [disabled]="viewMode()"
               ></p-select>
             </p-inputgroup>
           </div>
@@ -113,244 +118,180 @@ import { SaleStore } from '../../../stores/sale-store';
             }
           </div>
 
-          <div formArrayName="items">
-            <p-table
-              [value]="tableRows()"
-              [tableStyle]="{ width: '100%' }"
-              styleClass="p-datatable-sm"
-            >
-              <ng-template pTemplate="header">
+          <p-table
+            [value]="tableRows()"
+            [tableStyle]="{ width: '100%' }"
+            styleClass="p-datatable-sm"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="w-1/3">Product</th>
+                <th class="w-1/8">Quantity</th>
+                <th class="w-1/8">Unit Price</th>
+                <th class="w-1/4">Subtotal</th>
+                @if (!viewMode()) {
+                  <th class="w-12 text-center">Actions</th>
+                }
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-i="rowIndex">
+              @if (!row.isSummary) {
+                @let idx = row.formGroupIndex;
                 <tr>
-                  <th class="w-1/3">Product</th>
-                  <th class="w-1/8">Quantity</th>
-                  <th class="w-1/8">Unit Price</th>
-                  <th class="w-1/4">Subtotal</th>
+                  <td class="p-2">
+                    <p-select
+                      [field]="saleForm.items[idx].productId"
+                      [options]="this.productStore.entities()"
+                      optionLabel="name"
+                      optionValue="id"
+                      placeholder="Select Product"
+                      [filter]="true"
+                      filterBy="name"
+                      (onChange)="onProductChange(idx, $event.value)"
+                      [style]="{ width: '100%' }"
+                      appendTo="body"
+                      [disabled]="viewMode()"
+                    />
+                  </td>
+                  <td class="p-2">
+                    <p-inputNumber
+                      [field]="saleForm.items[idx].quantity"
+                      [min]="1"
+                      [showButtons]="true"
+                      buttonLayout="horizontal"
+                      [step]="1"
+                      (onInput)="updateItemSubtotal(idx)"
+                      fluid
+                      [style]="{ minWidth: '130px' }"
+                      [disabled]="viewMode()"
+                    />
+                  </td>
+                  <td class="p-2">
+                    <p-inputNumber
+                      [field]="saleForm.items[idx].unitPrice"
+                      [readonly]="true"
+                      [disabled]="true"
+                      maxFractionDigits="0"
+                      [style]="{ width: '100%' }"
+                    />
+                  </td>
+                  <td class="p-2">
+                    {{
+                      saleForm.items[idx].subtotal().value()
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
+                  </td>
                   @if (!viewMode()) {
-                    <th class="w-12 text-center">Actions</th>
+                    <td class="p-2 text-center w-12">
+                      <p-button
+                        icon="pi pi-trash"
+                        severity="danger"
+                        (click)="removeItem(idx)"
+                        size="small"
+                      />
+                    </td>
                   }
                 </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-row let-i="rowIndex">
-                @if (!row.isSummary) {
-                  <tr [formGroupName]="row.formGroupIndex">
-                    <td class="p-2">
-                      <p-select
-                        formControlName="productId"
-                        [options]="this.productStore.entities()"
-                        optionLabel="name"
-                        optionValue="id"
-                        placeholder="Select Product"
-                        [filter]="true"
-                        filterBy="name"
-                        (onChange)="
-                          onProductChange(row.formGroupIndex, $event.value)
-                        "
-                        [style]="{ width: '100%' }"
-                        appendTo="body"
-                      />
-                    </td>
-                    <td class="p-2">
-                      <p-inputNumber
-                        formControlName="quantity"
-                        [min]="1"
-                        [showButtons]="true"
-                        buttonLayout="horizontal"
-                        [step]="1"
-                        (onInput)="updateItemSubtotal(row.formGroupIndex)"
-                        fluid
-                        [style]="{ minWidth: '130px' }"
-                      />
-                    </td>
-                    <td class="p-2">
-                      <p-inputNumber
-                        [ngModel]="
-                          itemsArray.at(row.formGroupIndex).get('unitPrice')
-                            ?.value
-                        "
-                        [ngModelOptions]="{ standalone: true }"
-                        mode="currency"
-                        currency="COP"
-                        locale="es-CO"
-                        [readonly]="true"
-                        [disabled]="true"
-                        maxFractionDigits="0"
-                        [style]="{ width: '100%' }"
-                      />
-                    </td>
-                    <td class="p-2">
-                      <p-inputNumber
-                        [ngModel]="
-                          itemsArray.at(row.formGroupIndex).get('subtotal')
-                            ?.value
-                        "
-                        [ngModelOptions]="{ standalone: true }"
-                        mode="currency"
-                        currency="COP"
-                        locale="es-CO"
-                        [readonly]="true"
-                        [disabled]="true"
-                        maxFractionDigits="0"
-                        [style]="{ width: '100%' }"
-                      />
-                    </td>
-                    @if (!viewMode()) {
-                      <td class="p-2 text-center w-12">
-                        <p-button
-                          icon="pi pi-trash"
-                          severity="danger"
-                          (click)="removeItem(row.formGroupIndex)"
-                          size="small"
-                        />
+              } @else {
+                @switch (row.type) {
+                  @case ('total') {
+                    <tr>
+                      <td colspan="3" class="p-2 text-right font-bold">
+                        Total:
                       </td>
-                    }
-                  </tr>
-                } @else {
-                  @switch (row.type) {
-                    @case ('total') {
-                      <tr>
-                        <td colspan="3" class="p-2 text-right font-bold">
-                          Total:
-                        </td>
-                        <td class="p-2">
-                          <p-inputNumber
-                            [ngModel]="saleForm.get('totalAmount')?.value"
-                            [ngModelOptions]="{ standalone: true }"
-                            mode="currency"
-                            currency="COP"
-                            locale="es-CO"
-                            [readonly]="true"
-                            [disabled]="true"
-                            maxFractionDigits="0"
-                            [style]="{ width: '100%' }"
-                          />
-                        </td>
-                        @if (!viewMode()) {
-                          <td></td>
-                        }
-                      </tr>
-                    }
-                    @case ('tax') {
-                      <tr>
-                        <td colspan="3" class="p-2 text-right font-bold">
-                          Tax (19% VAT):
-                        </td>
-                        <td class="p-2">
-                          <p-inputNumber
-                            [ngModel]="saleForm.get('taxAmount')?.value"
-                            [ngModelOptions]="{ standalone: true }"
-                            mode="currency"
-                            currency="COP"
-                            locale="es-CO"
-                            [readonly]="true"
-                            [disabled]="true"
-                            maxFractionDigits="0"
-                            [style]="{ width: '100%' }"
-                          />
-                        </td>
-                        @if (!viewMode()) {
-                          <td></td>
-                        }
-                      </tr>
-                    }
-                    @case ('combinedDiscount') {
-                      <tr>
-                        <td colspan="3" class="p-2 text-right font-bold">
-                          Discount:
-                        </td>
-                        <td class="p-2">
-                          <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                            <div class="flex flex-col">
-                              <label for="discountPercent" class="text-xs mb-1"
-                                >Percentage</label
-                              >
-                              @if (!viewMode()) {
-                                <p-inputNumber
-                                  id="discountPercent"
-                                  [formControl]="discountPercentControl"
-                                  suffix="%"
-                                  [min]="0"
-                                  [max]="100"
-                                  showButtons
-                                  buttonLayout="horizontal"
-                                  [step]="1"
-                                  (onInput)="updateDiscountFromPercentage()"
-                                  styleClass="w-full"
-                                  fluid
-                                  [style]="{ minWidth: '130px' }"
-                                />
-                              } @else {
-                                <p-inputNumber
-                                  id="discountPercent"
-                                  [ngModel]="discountPercentControl.value"
-                                  [ngModelOptions]="{ standalone: true }"
-                                  suffix="%"
-                                  [readonly]="true"
-                                  [disabled]="true"
-                                  styleClass="w-full"
-                                  fluid
-                                  [style]="{ minWidth: '130px' }"
-                                />
-                              }
-                            </div>
-                            <div class="flex flex-col">
-                              <label for="discountAmount" class="text-xs mb-1"
-                                >Amount</label
-                              >
+                      <td class="p-2">
+                        {{
+                          saleForm.totalAmount().value()
+                            | currency: undefined : undefined : '1.0-0'
+                        }}
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
+                  }
+                  @case ('tax') {
+                    <tr>
+                      <td colspan="3" class="p-2 text-right font-bold">
+                        Tax (19% VAT):
+                      </td>
+                      <td class="p-2">
+                        {{
+                          saleForm.taxAmount().value()
+                            | currency: undefined : undefined : '1.0-0'
+                        }}
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
+                  }
+                  @case ('combinedDiscount') {
+                    <tr>
+                      <td colspan="3" class="p-2 text-right font-bold">
+                        Discount:
+                      </td>
+                      <td class="p-2">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                          <div class="flex flex-col">
+                            <label for="discountPercent" class="text-xs mb-1"
+                              >Percentage</label
+                            >
+                            @if (!viewMode()) {
                               <p-inputNumber
-                                id="discountAmount"
-                                [ngModel]="
-                                  saleForm.get('discountAmount')?.value
-                                "
-                                [ngModelOptions]="{ standalone: true }"
-                                mode="currency"
-                                currency="COP"
-                                locale="es-CO"
-                                [readonly]="true"
-                                [disabled]="true"
-                                maxFractionDigits="0"
+                                id="discountPercent"
+                                [field]="saleForm.discountPercent"
+                                suffix="%"
+                                [min]="0"
+                                [max]="100"
+                                showButtons
+                                buttonLayout="horizontal"
+                                [step]="1"
+                                (onInput)="updateDiscountFromPercentage()"
                                 styleClass="w-full"
                                 fluid
+                                [style]="{ minWidth: '130px' }"
                               />
-                            </div>
+                            } @else {
+                              {{ saleForm.discountPercent().value() }}%
+                            }
                           </div>
-                        </td>
-                        @if (!viewMode()) {
-                          <td></td>
-                        }
-                      </tr>
-                    }
-                    @case ('finalTotal') {
-                      <tr>
-                        <td
-                          colspan="3"
-                          class="p-2 text-right font-bold text-lg"
-                        >
-                          Final Total:
-                        </td>
-                        <td class="p-2">
-                          <p-inputNumber
-                            [ngModel]="saleForm.get('finalAmount')?.value"
-                            [ngModelOptions]="{ standalone: true }"
-                            mode="currency"
-                            currency="COP"
-                            locale="es-CO"
-                            [readonly]="true"
-                            [disabled]="true"
-                            maxFractionDigits="0"
-                            [style]="{ width: '100%' }"
-                            styleClass="w-full font-bold"
-                          />
-                        </td>
-                        @if (!viewMode()) {
-                          <td></td>
-                        }
-                      </tr>
-                    }
+                          <div class="flex flex-col">
+                            <label for="discountAmount" class="text-xs mb-1"
+                              >Amount</label
+                            >
+                            {{
+                              saleForm.discountAmount().value()
+                                | currency: undefined : undefined : '1.0-0'
+                            }}
+                          </div>
+                        </div>
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
+                  }
+                  @case ('finalTotal') {
+                    <tr>
+                      <td colspan="3" class="p-2 text-right font-bold text-lg">
+                        Final Total:
+                      </td>
+                      <td class="p-2">
+                        {{
+                          saleForm.finalAmount().value()
+                            | currency: undefined : undefined : '1.0-0'
+                        }}
+                      </td>
+                      @if (!viewMode()) {
+                        <td></td>
+                      }
+                    </tr>
                   }
                 }
-              </ng-template>
-            </p-table>
-          </div>
+              }
+            </ng-template>
+          </p-table>
         </div>
       </form>
 
@@ -365,8 +306,10 @@ import { SaleStore } from '../../../stores/sale-store';
           <p-button
             label="Save"
             icon="pi pi-check"
-            [disabled]="saleForm.invalid || saleForm.pristine"
-            (click)="saveSale()"
+            (click)="
+              saleForm().valid() ? saveSale() : saleForm().markAsTouched()
+            "
+            [disabled]="saleForm().invalid() || !saleForm().dirty()"
           />
         }
       </ng-template>
@@ -374,14 +317,43 @@ import { SaleStore } from '../../../stores/sale-store';
   `,
 })
 export class SalesDialog {
-  private readonly fb = inject(FormBuilder);
   readonly saleStore = inject(SaleStore);
   readonly authStore = inject(AuthStore);
   readonly productStore = inject(ProductStore);
   readonly customerStore = inject(CustomerStore);
   readonly userStore = inject(UserStore);
 
-  private readonly itemsCountSignal = signal(0);
+  private readonly model = signal<{
+    customerId: number | null;
+    employeeId: number | null;
+    totalAmount: number;
+    taxAmount: number;
+    discountAmount: number;
+    discountPercent: number;
+    finalAmount: number;
+    items: {
+      productId: number | null;
+      quantity: number;
+      unitPrice: number;
+      subtotal: number;
+    }[];
+  }>({
+    customerId: null,
+    employeeId: null,
+    totalAmount: 0,
+    taxAmount: 0,
+    discountAmount: 0,
+    discountPercent: 0,
+    finalAmount: 0,
+    items: [
+      {
+        productId: null,
+        quantity: 1,
+        unitPrice: 0,
+        subtotal: 0,
+      },
+    ],
+  });
 
   readonly viewMode = computed(() => {
     const selectedSale = this.saleStore.selectedSale();
@@ -396,13 +368,32 @@ export class SalesDialog {
     return 'Register New Sale';
   });
 
-  readonly tableRows = computed(() => {
-    this.itemsCountSignal();
+  readonly saleForm = form(this.model, (m) => {
+    required(m.customerId, { message: 'Customer is required' });
+    required(m.employeeId, { message: 'Employee is required' });
+    min(m.totalAmount, 0);
+    min(m.taxAmount, 0);
+    min(m.discountAmount, 0);
+    min(m.discountPercent, 0);
+    max(m.discountPercent, 100);
+    min(m.finalAmount, 0);
 
-    const itemRows = this.itemsArray.controls.map((_, i) => ({
-      isSummary: false,
-      formGroupIndex: i,
-    }));
+    applyEach(m.items, (i) => {
+      required(i.productId);
+      min(i.quantity, 1);
+      min(i.unitPrice, 0);
+      min(i.subtotal, 0);
+    });
+  });
+
+  readonly tableRows = computed(() => {
+    const itemRows = Array.from(
+      { length: this.saleForm.items.length },
+      (_: unknown, i: number) => ({
+        isSummary: false,
+        formGroupIndex: i,
+      }),
+    );
 
     const summaryRows = [
       { isSummary: true, type: 'total' },
@@ -414,62 +405,29 @@ export class SalesDialog {
     return [...itemRows, ...summaryRows];
   });
 
-  readonly saleForm: FormGroup = this.fb.group({
-    customerId: [null, Validators.required],
-    employeeId: [null, Validators.required],
-    totalAmount: [
-      { value: 0, disabled: true },
-      [Validators.required, Validators.min(0)],
-    ],
-    taxAmount: [
-      { value: 0, disabled: true },
-      [Validators.required, Validators.min(0)],
-    ],
-    discountAmount: [0, [Validators.required, Validators.min(0)]],
-    discountPercent: [
-      0,
-      [Validators.required, Validators.min(0), Validators.max(100)],
-    ],
-    finalAmount: [
-      { value: 0, disabled: true },
-      [Validators.required, Validators.min(0)],
-    ],
-    items: this.fb.array([]),
-  });
-
-  get discountAmountControl() {
-    return this.saleForm.get('discountAmount') as FormControl;
-  }
-
-  get discountPercentControl() {
-    return this.saleForm.get('discountPercent') as FormControl;
-  }
-
-  get itemsArray(): FormArray {
-    return this.saleForm.get('items') as FormArray;
-  }
-
   private readonly IVA_RATE = 0.19;
 
   constructor() {
     effect(() => {
       const currentEmployees = this.userStore.entities();
-      const formEmployeeIdControl = this.saleForm.get('employeeId');
       const loggedInUser = this.authStore.user();
 
-      if (currentEmployees.length > 0 && !formEmployeeIdControl?.value) {
-        if (loggedInUser?.id) {
-          const employeeInList = currentEmployees.find(
-            (emp) => emp.id === loggedInUser.id,
-          );
-          if (employeeInList) {
-            formEmployeeIdControl?.setValue(employeeInList.id);
-          } else {
-            formEmployeeIdControl?.setValue(currentEmployees[0].id);
-          }
-        } else if (currentEmployees.length > 0) {
-          formEmployeeIdControl?.setValue(currentEmployees[0].id);
-        }
+      if (this.viewMode()) {
+        return;
+      }
+
+      const v = this.saleForm().value();
+      if (currentEmployees.length > 0 && v.employeeId == null) {
+        const employeeId = loggedInUser?.id
+          ? currentEmployees.some((e) => e.id === loggedInUser.id)
+            ? loggedInUser.id
+            : currentEmployees[0].id
+          : currentEmployees[0].id;
+
+        this.saleForm().value.set({
+          ...v,
+          employeeId,
+        });
       }
     });
 
@@ -478,12 +436,6 @@ export class SalesDialog {
 
       untracked(() => {
         if (selectedSale) {
-          while (this.itemsArray.length > 0) {
-            this.itemsArray.removeAt(0);
-          }
-
-          this.itemsCountSignal.set(0);
-
           const discountPercent =
             selectedSale.totalAmount > 0
               ? Math.round(
@@ -492,185 +444,155 @@ export class SalesDialog {
                 )
               : 0;
 
-          this.saleForm.patchValue({
+          this.saleForm().reset({
             customerId: selectedSale.customer.id,
             employeeId: selectedSale.employee.id,
             totalAmount: selectedSale.totalAmount,
             taxAmount: selectedSale.taxAmount,
             discountAmount: selectedSale.discountAmount,
-            discountPercent: discountPercent,
+            discountPercent,
             finalAmount: selectedSale.finalAmount,
+            items: selectedSale.items.map((item) => ({
+              productId: item.product.id,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              subtotal: item.subtotal,
+            })),
           });
-
-          selectedSale.items.forEach((item) => {
-            const itemGroup = this.fb.group({
-              productId: [
-                { value: item.product.id, disabled: this.viewMode() },
-                Validators.required,
-              ],
-              quantity: [
-                { value: item.quantity, disabled: this.viewMode() },
-                [Validators.required, Validators.min(1)],
-              ],
-              unitPrice: [
-                item.unitPrice,
-                [Validators.required, Validators.min(0)],
-              ],
-              subtotal: [
-                item.subtotal,
-                [Validators.required, Validators.min(0)],
-              ],
-            });
-
-            this.itemsArray.push(itemGroup);
-          });
-
-          this.itemsCountSignal.set(this.itemsArray.length);
-
-          this.saleForm.markAsPristine();
-
-          if (this.viewMode()) {
-            this.saleForm.disable();
-          }
         } else {
-          this.saleForm.enable();
+          const currentEmployees = this.userStore.entities();
+          const loggedInUser = this.authStore.user();
+          const employeeId =
+            loggedInUser?.id &&
+            currentEmployees.some((e) => e.id === loggedInUser.id)
+              ? loggedInUser.id
+              : (currentEmployees[0]?.id ?? null);
 
-          let defaultEmployeeId = null;
-          if (
-            this.userStore.entities().length > 0 &&
-            this.saleForm.get('employeeId')?.value
-          ) {
-            defaultEmployeeId = this.saleForm.get('employeeId')?.value;
-          } else if (this.userStore.entities().length > 0) {
-            defaultEmployeeId = this.userStore.entities()[0].id;
-          }
-
-          this.saleForm.reset({
+          this.saleForm().reset({
             customerId: null,
-            employeeId: defaultEmployeeId,
+            employeeId,
             totalAmount: 0,
             taxAmount: 0,
             discountAmount: 0,
             discountPercent: 0,
             finalAmount: 0,
+            items: [
+              {
+                productId: null,
+                quantity: 1,
+                unitPrice: 0,
+                subtotal: 0,
+              },
+            ],
           });
-
-          this.saleForm.get('totalAmount')?.disable();
-          this.saleForm.get('finalAmount')?.disable();
-
-          while (this.itemsArray.length > 0) {
-            this.itemsArray.removeAt(0);
-          }
-
-          this.itemsCountSignal.set(0);
-
-          this.addItem();
         }
       });
-    });
-
-    this.saleForm.get('items')?.valueChanges.subscribe(() => {
-      this.updateTotals();
-    });
-
-    this.saleForm.get('taxAmount')?.valueChanges.subscribe(() => {
-      this.updateFinalAmount();
-    });
-
-    this.saleForm.get('discountAmount')?.valueChanges.subscribe(() => {
-      this.updateFinalAmount();
     });
   }
 
   addItem(): void {
-    this.itemsArray.push(
-      this.fb.group({
-        productId: [null, Validators.required],
-        quantity: [1, [Validators.required, Validators.min(1)]],
-        unitPrice: [0, [Validators.required, Validators.min(0)]],
-        subtotal: [0, [Validators.required, Validators.min(0)]],
-      }),
-    );
-    this.itemsCountSignal.set(this.itemsArray.length);
+    const v = this.saleForm().value();
+    this.saleForm().value.set({
+      ...v,
+      items: [
+        ...v.items,
+        {
+          productId: null,
+          quantity: 1,
+          unitPrice: 0,
+          subtotal: 0,
+        },
+      ],
+    });
     this.updateTotals();
-    this.saleForm.markAsDirty();
   }
 
   removeItem(index: number): void {
-    if (this.itemsArray.length > 1) {
-      this.itemsArray.removeAt(index);
-      this.itemsCountSignal.set(this.itemsArray.length);
-      this.updateTotals();
-      this.saleForm.markAsDirty();
+    const v = this.saleForm().value();
+    if (v.items.length <= 1) {
+      return;
     }
+
+    const nextItems = v.items.filter((_, i) => i !== index);
+    this.saleForm().value.set({
+      ...v,
+      items: nextItems,
+    });
+    this.updateTotals();
   }
 
   onProductChange(index: number, productId: number): void {
     const product = this.productStore
       .entities()
       .find((p) => p.id === productId);
-    if (product) {
-      const itemGroup = this.itemsArray.at(index);
-      const unitPriceControl = itemGroup.get('unitPrice');
-      if (unitPriceControl) {
-        unitPriceControl.setValue(product.salePrice);
-      }
-      this.updateItemSubtotal(index);
+    if (!product) {
+      return;
     }
+
+    const v = this.saleForm().value();
+    const nextItems = [...v.items];
+    nextItems[index] = {
+      ...nextItems[index],
+      unitPrice: product.salePrice,
+    };
+    this.saleForm().value.set({
+      ...v,
+      items: nextItems,
+    });
+    this.updateItemSubtotal(index);
   }
 
   updateItemSubtotal(index: number): void {
-    const itemGroup = this.itemsArray.at(index);
-    const quantity = itemGroup.get('quantity')?.value ?? 0;
-    const unitPrice = itemGroup.get('unitPrice')?.value ?? 0;
-
-    const subtotal = quantity * unitPrice;
-    itemGroup.get('subtotal')?.setValue(subtotal);
-
+    const v = this.saleForm().value();
+    const nextItems = [...v.items];
+    const current = nextItems[index];
+    const subtotal = (current.quantity ?? 0) * (current.unitPrice ?? 0);
+    nextItems[index] = { ...current, subtotal };
+    this.saleForm().value.set({
+      ...v,
+      items: nextItems,
+    });
     this.updateTotals();
-    this.saleForm.markAsDirty();
   }
 
   updateTotals(): void {
-    let total = 0;
-    for (let i = 0; i < this.itemsArray.length; i++) {
-      const itemGroup = this.itemsArray.at(i);
-      total += itemGroup.get('subtotal')?.value ?? 0;
-    }
-
-    this.saleForm.get('totalAmount')?.setValue(total);
-
+    const v = this.saleForm().value();
+    const total = v.items.reduce((sum, it) => sum + (it.subtotal ?? 0), 0);
     const taxAmount = Math.round(total * this.IVA_RATE);
-    this.saleForm.get('taxAmount')?.setValue(taxAmount);
+    const discountAmount = Math.round((total * (v.discountPercent ?? 0)) / 100);
+    const finalAmount = total + taxAmount - discountAmount;
 
-    this.updateDiscountFromPercentage();
+    this.saleForm().value.set({
+      ...v,
+      totalAmount: total,
+      taxAmount,
+      discountAmount,
+      finalAmount,
+    });
   }
 
   updateDiscountFromPercentage(): void {
-    const totalAmount = this.saleForm.get('totalAmount')?.value ?? 0;
-    const discountPercent = this.discountPercentControl.value ?? 0;
-
-    const discountAmount = Math.round((totalAmount * discountPercent) / 100);
-
-    this.saleForm
-      .get('discountAmount')
-      ?.setValue(discountAmount, { emitEvent: false });
-
-    this.updateFinalAmount();
-    this.saleForm.markAsDirty();
-  }
-
-  updateFinalAmount(): void {
-    const totalAmount = this.saleForm.get('totalAmount')?.value ?? 0;
-    const taxAmount = this.saleForm.get('taxAmount')?.value ?? 0;
-    const discountAmount = this.saleForm.get('discountAmount')?.value ?? 0;
-
-    const finalAmount = totalAmount + taxAmount - discountAmount;
-    this.saleForm.get('finalAmount')?.setValue(finalAmount);
+    this.updateTotals();
   }
 
   saveSale(): void {
-    const formValue = this.saleForm.getRawValue();
+    if (this.saleForm().invalid()) {
+      this.saleForm().markAsTouched();
+      return;
+    }
+
+    const formValue = this.saleForm().value();
+
+    if (formValue.customerId == null || formValue.employeeId == null) {
+      this.saleForm().markAsTouched();
+      return;
+    }
+
+    if (formValue.items.some((i) => i.productId == null)) {
+      this.saleForm().markAsTouched();
+      return;
+    }
+
     const saleData: SaleData = {
       totalAmount: formValue.totalAmount,
       taxAmount: formValue.taxAmount,
@@ -678,19 +600,12 @@ export class SalesDialog {
       finalAmount: formValue.finalAmount,
       customerId: formValue.customerId,
       employeeId: formValue.employeeId,
-      items: formValue.items.map(
-        (item: {
-          productId: number;
-          quantity: number;
-          unitPrice: number;
-          subtotal: number;
-        }) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          subtotal: item.subtotal,
-        }),
-      ),
+      items: formValue.items.map((item) => ({
+        productId: item.productId!,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        subtotal: item.subtotal,
+      })),
     };
 
     const selectedSale = this.saleStore.selectedSale();

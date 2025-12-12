@@ -1,13 +1,9 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { PasswordField } from 'app/shared/components/password-field/password-field';
+import { Field, email, form, required } from '@angular/forms/signals';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -15,14 +11,12 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 import { AuthStore } from '../../stores/auth-store';
-import { passwordMatchValidator } from '../../validators/password-match.validator';
 
 @Component({
   selector: 'app-register',
   imports: [
     ButtonModule,
     InputTextModule,
-    ReactiveFormsModule,
     RouterModule,
     RippleModule,
     FloatingConfigurator,
@@ -30,6 +24,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
     InputIconModule,
     DividerModule,
     PasswordField,
+    Field,
   ],
   template: `
     <app-floating-configurator />
@@ -62,10 +57,9 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
               </span>
             </div>
 
-            <form [formGroup]="registerForm">
+            <form (submit)="$event.preventDefault(); onSubmit()">
               @let nameControlInvalid =
-                registerForm.get('name')?.invalid &&
-                registerForm.get('name')?.touched;
+                registerForm.name().invalid() && registerForm.name().touched();
 
               <div
                 class="flex flex-col gap-2"
@@ -85,7 +79,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                       pInputText
                       id="name"
                       type="text"
-                      formControlName="name"
+                      [field]="registerForm.name"
                       placeholder="Enter your full name"
                       [class.ng-dirty]="nameControlInvalid"
                       [class.ng-invalid]="nameControlInvalid"
@@ -100,8 +94,8 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
               </div>
 
               @let emailControlInvalid =
-                registerForm.get('email')?.invalid &&
-                registerForm.get('email')?.touched;
+                registerForm.email().invalid() &&
+                registerForm.email().touched();
 
               <div
                 class="flex flex-col gap-2 mt-6"
@@ -121,7 +115,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                       pInputText
                       id="email"
                       type="text"
-                      formControlName="email"
+                      [field]="registerForm.email"
                       placeholder="Enter your email"
                       [class.ng-dirty]="emailControlInvalid"
                       [class.ng-invalid]="emailControlInvalid"
@@ -131,9 +125,9 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                 </div>
 
                 @if (emailControlInvalid) {
-                  @if (registerForm.get('email')?.hasError('required')) {
+                  @if (emailHasRequiredError()) {
                     <small class="text-red-500">Email is required.</small>
-                  } @else if (registerForm.get('email')?.hasError('email')) {
+                  } @else if (emailHasEmailError()) {
                     <small class="text-red-500"
                       >Enter a valid email address.</small
                     >
@@ -144,7 +138,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
               <div class="mt-6">
                 <app-password-field
                   id="password"
-                  [control]="$any(registerForm.get('password'))"
+                  [control]="passwordControl"
                   label="Password"
                   placeholder="Choose a password"
                 />
@@ -153,15 +147,15 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
               <div class="mt-6">
                 <app-password-field
                   id="confirmPassword"
-                  [control]="$any(registerForm.get('confirmPassword'))"
+                  [control]="confirmPasswordControl"
                   label="Confirm Password"
                   placeholder="Confirm your password"
                   [feedback]="false"
                 />
 
                 @if (
-                  registerForm.errors?.['passwordMismatch'] &&
-                  registerForm.get('confirmPassword')?.touched
+                  confirmPasswordControl.touched &&
+                  confirmPasswordControl.hasError('passwordMismatch')
                 ) {
                   <small class="text-red-500 mt-2 block"
                     >Passwords do not match.</small
@@ -175,11 +169,7 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
                   type="button"
                   styleClass="w-full"
                   [loading]="authStore.loading()"
-                  (onClick)="
-                    registerForm.valid
-                      ? register()
-                      : registerForm.markAllAsTouched()
-                  "
+                  (onClick)="onSubmit()"
                 />
               </div>
 
@@ -203,29 +193,102 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
   `,
 })
 export class Register {
-  private readonly fb = inject(FormBuilder);
   readonly authStore = inject(AuthStore);
 
-  readonly registerForm: FormGroup = this.fb.group(
-    {
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(
-            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
-          ),
-        ],
-      ],
-      confirmPassword: ['', Validators.required],
-    },
-    { validators: passwordMatchValidator },
+  private readonly model = signal({
+    name: '',
+    email: '',
+  });
+
+  readonly passwordControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [
+      Validators.required,
+      Validators.pattern(
+        '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$',
+      ),
+    ],
+  });
+
+  readonly confirmPasswordControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.required],
+  });
+
+  readonly registerForm = form(this.model, (m) => {
+    required(m.name, { message: 'Name is required' });
+    required(m.email, { message: 'Email is required' });
+    email(m.email, { message: 'Enter a valid email address' });
+  });
+
+  readonly emailHasRequiredError = computed(() =>
+    this.registerForm
+      .email()
+      .errors()
+      .some((e) => e.kind === 'required'),
   );
 
-  register(): void {
-    const { name, email, password } = this.registerForm.value;
-    this.authStore.register({ name, email, password });
+  readonly emailHasEmailError = computed(() =>
+    this.registerForm
+      .email()
+      .errors()
+      .some((e) => e.kind === 'email'),
+  );
+
+  onSubmit(): void {
+    this.passwordControl.updateValueAndValidity();
+    this.confirmPasswordControl.updateValueAndValidity();
+    this.updatePasswordMismatchError();
+
+    const formValid = this.registerForm().valid();
+    const passwordsValid =
+      this.passwordControl.valid &&
+      this.confirmPasswordControl.valid &&
+      !this.confirmPasswordControl.hasError('passwordMismatch');
+
+    if (formValid && passwordsValid) {
+      const { name, email } = this.registerForm().value();
+      this.authStore.register({
+        name,
+        email,
+        password: this.passwordControl.value,
+      });
+      return;
+    }
+
+    this.registerForm.name().markAsTouched();
+    this.registerForm.email().markAsTouched();
+    this.passwordControl.markAsTouched();
+    this.confirmPasswordControl.markAsTouched();
+  }
+
+  updatePasswordMismatchError(): void {
+    const password = this.passwordControl.value;
+    const confirmPassword = this.confirmPasswordControl.value;
+
+    const hasMismatch =
+      password.trim() !== '' &&
+      confirmPassword.trim() !== '' &&
+      password !== confirmPassword;
+
+    const existingErrors = this.confirmPasswordControl.errors ?? {};
+
+    if (hasMismatch) {
+      this.confirmPasswordControl.setErrors({
+        ...existingErrors,
+        passwordMismatch: true,
+      });
+      return;
+    }
+
+    if (!('passwordMismatch' in existingErrors)) {
+      return;
+    }
+
+    const rest = { ...existingErrors };
+    delete rest['passwordMismatch'];
+    this.confirmPasswordControl.setErrors(
+      Object.keys(rest).length ? rest : null,
+    );
   }
 }

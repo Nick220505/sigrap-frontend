@@ -272,7 +272,10 @@ interface PieChartTooltipContext {
                 <td>{{ product.product.name }}</td>
                 <td>{{ product.quantity }}</td>
                 <td>
-                  {{ product.totalAmount | currency: 'COP' : '$' : '1.0-0' }}
+                  {{
+                    product.totalAmount
+                      | currency: undefined : undefined : '1.0-0'
+                  }}
                 </td>
                 <td>
                   {{

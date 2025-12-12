@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryInfo } from '@features/inventory/models/category.model';
@@ -63,7 +62,6 @@ describe('ProductDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         ProductDialog,
-        ReactiveFormsModule,
         NoopAnimationsModule,
         DialogModule,
         ButtonModule,
@@ -92,72 +90,90 @@ describe('ProductDialog', () => {
 
   describe('Form initialization and validation', () => {
     it('should initialize the form with default values', () => {
-      expect(component.productForm.get('name')?.value).toBe(null);
-      expect(component.productForm.get('description')?.value).toBe(null);
-      expect(component.productForm.get('costPrice')?.value).toBe(null);
-      expect(component.productForm.get('salePrice')?.value).toBe(null);
-      expect(component.productForm.get('categoryId')?.value).toBe(null);
+      expect(component.productForm.name().value()).toBe('');
+      expect(component.productForm.description().value()).toBe('');
+      expect(component.productForm.costPrice().value()).toBe(null);
+      expect(component.productForm.salePrice().value()).toBe(null);
+      expect(component.productForm.categoryId().value()).toBe(null);
     });
 
     it('should validate required name field', () => {
-      const nameControl = component.productForm.get('name');
-      expect(nameControl?.valid).toBeFalsy();
-      expect(nameControl?.hasError('required')).toBeTruthy();
+      expect(component.productForm.name().valid()).toBe(false);
+      expect(
+        component.productForm
+          .name()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      nameControl?.setValue('Test Product');
-      expect(nameControl?.valid).toBeTruthy();
+      component.productForm.name().value.set('Test Product');
+      expect(component.productForm.name().valid()).toBe(true);
     });
 
     it('should validate required costPrice field', () => {
-      const costPriceControl = component.productForm.get('costPrice');
-      costPriceControl?.setValue(null);
-      expect(costPriceControl?.valid).toBeFalsy();
-      expect(costPriceControl?.hasError('required')).toBeTruthy();
+      component.productForm.costPrice().value.set(null);
+      expect(component.productForm.costPrice().valid()).toBe(false);
+      expect(
+        component.productForm
+          .costPrice()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      costPriceControl?.setValue(100);
-      expect(costPriceControl?.valid).toBeTruthy();
+      component.productForm.costPrice().value.set(100);
+      expect(component.productForm.costPrice().valid()).toBe(true);
     });
 
     it('should validate costPrice minimum value', () => {
-      const costPriceControl = component.productForm.get('costPrice');
-      costPriceControl?.setValue(-10);
-      expect(costPriceControl?.valid).toBeFalsy();
-      expect(costPriceControl?.hasError('min')).toBeTruthy();
+      component.productForm.costPrice().value.set(-10);
+      expect(component.productForm.costPrice().valid()).toBe(false);
+      expect(
+        component.productForm
+          .costPrice()
+          .errors()
+          .some((e) => e.kind === 'min'),
+      ).toBe(true);
 
-      costPriceControl?.setValue(0);
-      expect(costPriceControl?.valid).toBeTruthy();
+      component.productForm.costPrice().value.set(0);
+      expect(component.productForm.costPrice().valid()).toBe(true);
     });
 
     it('should validate required salePrice field', () => {
-      const salePriceControl = component.productForm.get('salePrice');
-      salePriceControl?.setValue(null);
-      expect(salePriceControl?.valid).toBeFalsy();
-      expect(salePriceControl?.hasError('required')).toBeTruthy();
+      component.productForm.salePrice().value.set(null);
+      expect(component.productForm.salePrice().valid()).toBe(false);
+      expect(
+        component.productForm
+          .salePrice()
+          .errors()
+          .some((e) => e.kind === 'required'),
+      ).toBe(true);
 
-      salePriceControl?.setValue(150);
-      expect(salePriceControl?.valid).toBeTruthy();
+      component.productForm.salePrice().value.set(150);
+      expect(component.productForm.salePrice().valid()).toBe(true);
     });
 
     it('should validate salePrice minimum value', () => {
-      const salePriceControl = component.productForm.get('salePrice');
-      salePriceControl?.setValue(-10);
-      expect(salePriceControl?.valid).toBeFalsy();
-      expect(salePriceControl?.hasError('min')).toBeTruthy();
+      component.productForm.salePrice().value.set(-10);
+      expect(component.productForm.salePrice().valid()).toBe(false);
+      expect(
+        component.productForm
+          .salePrice()
+          .errors()
+          .some((e) => e.kind === 'min'),
+      ).toBe(true);
 
-      salePriceControl?.setValue(0);
-      expect(salePriceControl?.valid).toBeTruthy();
+      component.productForm.salePrice().value.set(0);
+      expect(component.productForm.salePrice().valid()).toBe(true);
     });
 
     it('should allow description to be empty', () => {
-      const descriptionControl = component.productForm.get('description');
-      descriptionControl?.setValue('');
-      expect(descriptionControl?.valid).toBeTruthy();
+      component.productForm.description().value.set('');
+      expect(component.productForm.description().valid()).toBe(true);
     });
 
     it('should allow categoryId to be null', () => {
-      const categoryIdControl = component.productForm.get('categoryId');
-      categoryIdControl?.setValue(null);
-      expect(categoryIdControl?.valid).toBeTruthy();
+      component.productForm.categoryId().value.set(null);
+      expect(component.productForm.categoryId().valid()).toBe(true);
     });
   });
 
@@ -245,13 +261,11 @@ describe('ProductDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.productForm.get('name')?.value).toBe('Product 1');
-      expect(component.productForm.get('description')?.value).toBe(
-        'Description 1',
-      );
-      expect(component.productForm.get('costPrice')?.value).toBe(10.0);
-      expect(component.productForm.get('salePrice')?.value).toBe(20.0);
-      expect(component.productForm.get('categoryId')?.value).toBe(1);
+      expect(component.productForm.name().value()).toBe('Product 1');
+      expect(component.productForm.description().value()).toBe('Description 1');
+      expect(component.productForm.costPrice().value()).toBe(10.0);
+      expect(component.productForm.salePrice().value()).toBe(20.0);
+      expect(component.productForm.categoryId().value()).toBe(1);
     });
 
     it('should patch form with null categoryId when product category is null', () => {
@@ -267,7 +281,7 @@ describe('ProductDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.productForm.get('categoryId')?.value).toBeNull();
+      expect(component.productForm.categoryId().value()).toBeNull();
     });
 
     it('should reset form when selected product is null', () => {
@@ -288,11 +302,11 @@ describe('ProductDialog', () => {
       );
       fixture.detectChanges();
 
-      expect(component.productForm.get('name')?.value).toBe(null);
-      expect(component.productForm.get('description')?.value).toBe(null);
-      expect(component.productForm.get('costPrice')?.value).toBe(null);
-      expect(component.productForm.get('salePrice')?.value).toBe(null);
-      expect(component.productForm.get('categoryId')?.value).toBe(null);
+      expect(component.productForm.name().value()).toBe('');
+      expect(component.productForm.description().value()).toBe('');
+      expect(component.productForm.costPrice().value()).toBe(null);
+      expect(component.productForm.salePrice().value()).toBe(null);
+      expect(component.productForm.categoryId().value()).toBe(null);
     });
 
     it('should handle multiple successive product selections', () => {
@@ -308,7 +322,7 @@ describe('ProductDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.productForm.get('name')?.value).toBe('First Product');
+      expect(component.productForm.name().value()).toBe('First Product');
 
       (productStore.selectedProduct as WritableSignal<ProductInfo | null>).set({
         id: 2,
@@ -322,61 +336,37 @@ describe('ProductDialog', () => {
       });
       fixture.detectChanges();
 
-      expect(component.productForm.get('name')?.value).toBe('Second Product');
-      expect(component.productForm.get('costPrice')?.value).toBe(200);
+      expect(component.productForm.name().value()).toBe('Second Product');
+      expect(component.productForm.costPrice().value()).toBe(200);
     });
   });
 
   describe('Form operations', () => {
-    it('should properly reset form with FormGroup.reset method', () => {
-      component.productForm.patchValue({
-        name: 'Some Name',
-        description: 'Some Description',
-        costPrice: 500,
-        salePrice: 750,
-        categoryId: 1,
-      });
-
-      expect(component.productForm.get('name')?.value).toBe('Some Name');
-
-      component.productForm.reset();
-
-      expect(component.productForm.get('name')?.value).toBeNull();
-      expect(component.productForm.get('description')?.value).toBeNull();
-      expect(component.productForm.get('costPrice')?.value).toBeNull();
-      expect(component.productForm.get('salePrice')?.value).toBeNull();
-      expect(component.productForm.get('categoryId')?.value).toBeNull();
-    });
-
     it('should patch form with specific values', () => {
-      component.productForm.patchValue({
-        name: 'Patched Name',
-        description: 'Patched Description',
-        costPrice: 300,
-        salePrice: 400,
-        categoryId: 2,
-      });
+      component.productForm.name().value.set('Patched Name');
+      component.productForm.description().value.set('Patched Description');
+      component.productForm.costPrice().value.set(300);
+      component.productForm.salePrice().value.set(400);
+      component.productForm.categoryId().value.set(2);
 
-      expect(component.productForm.get('name')?.value).toBe('Patched Name');
-      expect(component.productForm.get('description')?.value).toBe(
+      expect(component.productForm.name().value()).toBe('Patched Name');
+      expect(component.productForm.description().value()).toBe(
         'Patched Description',
       );
-      expect(component.productForm.get('costPrice')?.value).toBe(300);
-      expect(component.productForm.get('salePrice')?.value).toBe(400);
-      expect(component.productForm.get('categoryId')?.value).toBe(2);
+      expect(component.productForm.costPrice().value()).toBe(300);
+      expect(component.productForm.salePrice().value()).toBe(400);
+      expect(component.productForm.categoryId().value()).toBe(2);
     });
 
     it('should mark all form controls as touched', () => {
-      const nameControl = component.productForm.get('name');
-      const costPriceControl = component.productForm.get('costPrice');
+      expect(component.productForm.name().touched()).toBe(false);
+      expect(component.productForm.costPrice().touched()).toBe(false);
 
-      expect(nameControl?.touched).toBeFalsy();
-      expect(costPriceControl?.touched).toBeFalsy();
+      component.productForm.name().markAsTouched();
+      component.productForm.costPrice().markAsTouched();
 
-      component.productForm.markAllAsTouched();
-
-      expect(nameControl?.touched).toBe(true);
-      expect(costPriceControl?.touched).toBe(true);
+      expect(component.productForm.name().touched()).toBe(true);
+      expect(component.productForm.costPrice().touched()).toBe(true);
     });
   });
 
@@ -386,15 +376,13 @@ describe('ProductDialog', () => {
         null,
       );
 
-      component.productForm.patchValue({
-        name: 'New Product',
-        description: 'New Description',
-        costPrice: 100,
-        salePrice: 150,
-        categoryId: 1,
-        stock: 100,
-        minimumStockThreshold: 10,
-      });
+      component.productForm.name().value.set('New Product');
+      component.productForm.description().value.set('New Description');
+      component.productForm.costPrice().value.set(100);
+      component.productForm.salePrice().value.set(150);
+      component.productForm.categoryId().value.set(1);
+      component.productForm.stock().value.set(100);
+      component.productForm.minimumStockThreshold().value.set(10);
 
       component.saveProduct();
 
@@ -422,15 +410,13 @@ describe('ProductDialog', () => {
         minimumStockThreshold: 10,
       });
 
-      component.productForm.patchValue({
-        name: 'Updated Product',
-        description: 'Updated Description',
-        costPrice: 120,
-        salePrice: 180,
-        categoryId: 2,
-        stock: 150,
-        minimumStockThreshold: 15,
-      });
+      component.productForm.name().value.set('Updated Product');
+      component.productForm.description().value.set('Updated Description');
+      component.productForm.costPrice().value.set(120);
+      component.productForm.salePrice().value.set(180);
+      component.productForm.categoryId().value.set(2);
+      component.productForm.stock().value.set(150);
+      component.productForm.minimumStockThreshold().value.set(15);
 
       component.saveProduct();
 
@@ -454,15 +440,13 @@ describe('ProductDialog', () => {
         null,
       );
 
-      component.productForm.patchValue({
-        name: 'Product Without Category',
-        description: 'Description',
-        costPrice: 100,
-        salePrice: 150,
-        categoryId: null,
-        stock: 100,
-        minimumStockThreshold: 10,
-      });
+      component.productForm.name().value.set('Product Without Category');
+      component.productForm.description().value.set('Description');
+      component.productForm.costPrice().value.set(100);
+      component.productForm.salePrice().value.set(150);
+      component.productForm.categoryId().value.set(null);
+      component.productForm.stock().value.set(100);
+      component.productForm.minimumStockThreshold().value.set(10);
 
       component.saveProduct();
 
@@ -471,7 +455,7 @@ describe('ProductDialog', () => {
         description: 'Description',
         costPrice: 100,
         salePrice: 150,
-        categoryId: null,
+        categoryId: 0,
         stock: 100,
         minimumStockThreshold: 10,
       });
@@ -481,18 +465,16 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      component.productForm.patchValue({
-        name: 'Valid Product',
-        costPrice: 100,
-        salePrice: 150,
-        stock: 100,
-        minimumStockThreshold: 10,
-      });
+      component.productForm.name().value.set('Valid Product');
+      component.productForm.costPrice().value.set(100);
+      component.productForm.salePrice().value.set(150);
+      component.productForm.stock().value.set(100);
+      component.productForm.minimumStockThreshold().value.set(10);
 
       const saveButton = fixture.debugElement.query(
         By.css('p-button[label="Save"]'),
       );
-      saveButton.triggerEventHandler('click', null);
+      saveButton.triggerEventHandler('onClick', null);
 
       expect(productStore.create).toHaveBeenCalled();
     });
@@ -503,9 +485,8 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const nameControl = component.productForm.get('name');
-      nameControl?.setValue('');
-      nameControl?.markAsTouched();
+      component.productForm.name().value.set('');
+      component.productForm.name().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -519,9 +500,8 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const costPriceControl = component.productForm.get('costPrice');
-      costPriceControl?.setValue(null);
-      costPriceControl?.markAsTouched();
+      component.productForm.costPrice().value.set(null);
+      component.productForm.costPrice().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -535,9 +515,8 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const salePriceControl = component.productForm.get('salePrice');
-      salePriceControl?.setValue(null);
-      salePriceControl?.markAsTouched();
+      component.productForm.salePrice().value.set(null);
+      component.productForm.salePrice().markAsTouched();
       fixture.detectChanges();
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
@@ -551,15 +530,11 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      const nameControl = component.productForm.get('name');
-      nameControl?.setValue('');
-      nameControl?.markAsTouched();
-      nameControl?.markAsDirty();
+      component.productForm.name().value.set('');
+      component.productForm.name().markAsTouched();
       fixture.detectChanges();
 
-      const nameInput = fixture.debugElement.query(
-        By.css('input[formControlName="name"]'),
-      );
+      const nameInput = fixture.debugElement.query(By.css('input#name'));
       expect(nameInput.nativeElement.classList.contains('ng-invalid')).toBe(
         true,
       );
@@ -596,7 +571,7 @@ describe('ProductDialog', () => {
       const cancelButton = fixture.debugElement.query(
         By.css('p-button[label="Cancel"]'),
       );
-      cancelButton.triggerEventHandler('click', null);
+      cancelButton.triggerEventHandler('onClick', null);
 
       expect(productStore.closeProductDialog).toHaveBeenCalled();
     });
@@ -605,16 +580,14 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      component.productForm.get('name')?.setValue('');
-
-      vi.spyOn(component.productForm, 'markAllAsTouched');
+      vi.spyOn(component, 'onSubmit');
 
       const saveButton = fixture.debugElement.query(
         By.css('p-button[label="Save"]'),
       );
-      saveButton.triggerEventHandler('click', null);
+      saveButton.triggerEventHandler('onClick', null);
 
-      expect(component.productForm.markAllAsTouched).toHaveBeenCalled();
+      expect(component.onSubmit).toHaveBeenCalled();
       expect(productStore.create).not.toHaveBeenCalled();
     });
   });
@@ -633,8 +606,8 @@ describe('ProductDialog', () => {
       (productStore.dialogVisible as WritableSignal<boolean>).set(true);
       fixture.detectChanges();
 
-      component.productForm.get('categoryId')?.setValue(2);
-      expect(component.productForm.get('categoryId')?.value).toBe(2);
+      component.productForm.categoryId().value.set(2);
+      expect(component.productForm.categoryId().value()).toBe(2);
     });
   });
 });

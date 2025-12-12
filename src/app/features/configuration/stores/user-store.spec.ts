@@ -34,7 +34,7 @@ describe('UserStore', () => {
     resetPassword: Mock;
   };
   let messageService: { add: Mock };
-  let httpMock: HttpTestingController;
+  let httpMock: HttpTestingController | undefined;
 
   const mockUsers: UserInfo[] = [
     {
@@ -63,6 +63,7 @@ describe('UserStore', () => {
   };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     userService = {
       findAll: vi.fn().mockName('UserService.findAll'),
       findById: vi.fn().mockName('UserService.findById'),
@@ -105,7 +106,8 @@ describe('UserStore', () => {
   });
 
   afterEach(() => {
-    httpMock.verify();
+    httpMock?.verify();
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {

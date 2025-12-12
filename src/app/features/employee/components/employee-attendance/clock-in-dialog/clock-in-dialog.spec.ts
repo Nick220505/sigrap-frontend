@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
@@ -38,7 +37,6 @@ describe('ClockInDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
-        ReactiveFormsModule,
         DialogModule,
         ButtonModule,
         InputGroupModule,
@@ -66,15 +64,20 @@ describe('ClockInDialog', () => {
 
   it('should have a form with userId control', () => {
     expect(component.clockInForm).toBeDefined();
-    expect(component.clockInForm.get('userId')).toBeDefined();
+    expect(component.clockInForm.userId).toBeDefined();
   });
 
   it('should have userId as required', () => {
-    const userIdControl = component.clockInForm.get('userId');
-    userIdControl?.setValue(null);
-    expect(userIdControl?.valid).toBe(false);
+    component.clockInForm.userId().value.set(null);
+    expect(component.clockInForm.userId().valid()).toBe(false);
+    expect(
+      component.clockInForm
+        .userId()
+        .errors()
+        .some((e) => e.kind === 'required'),
+    ).toBe(true);
 
-    userIdControl?.setValue(1);
-    expect(userIdControl?.valid).toBe(true);
+    component.clockInForm.userId().value.set(1);
+    expect(component.clockInForm.userId().valid()).toBe(true);
   });
 });
