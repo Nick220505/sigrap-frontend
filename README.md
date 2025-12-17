@@ -1,4 +1,4 @@
-# SIGRAP Frontend - Sistema de Gestión de Papelería
+# SIGRAP Frontend - Stationery Store Management System
 
 <p align="center">
   <img src="public/logo.png" alt="SIGRAP Logo" width="200">

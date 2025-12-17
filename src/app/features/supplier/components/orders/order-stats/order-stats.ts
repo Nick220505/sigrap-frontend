@@ -10,7 +10,7 @@ import { CardModule } from 'primeng/card';
       <div class="flex flex-wrap gap-4 mb-6">
         <p-card class="w-full md:w-80">
           <div class="flex flex-col gap-2">
-            <h5 class="m-0 text-lg font-semibold">Pedidos en Proceso</h5>
+            <h5 class="m-0 text-lg font-semibold">Orders in Progress</h5>
             <div class="flex items-center justify-between">
               <span class="text-4xl font-bold">
                 {{ ordersInProgressCount() }}
@@ -24,7 +24,7 @@ import { CardModule } from 'primeng/card';
 
         <p-card class="w-full md:w-80">
           <div class="flex flex-col gap-2">
-            <h5 class="m-0 text-lg font-semibold">Pedidos Completados</h5>
+            <h5 class="m-0 text-lg font-semibold">Completed Orders</h5>
             <div class="flex items-center justify-between">
               <span class="text-4xl font-bold">
                 {{ ordersCompletedCount() }}
@@ -38,7 +38,7 @@ import { CardModule } from 'primeng/card';
 
         <p-card class="w-full md:w-80">
           <div class="flex flex-col gap-2">
-            <h5 class="m-0 text-lg font-semibold">Pedidos Pendientes</h5>
+            <h5 class="m-0 text-lg font-semibold">Pending Orders</h5>
             <div class="flex items-center justify-between">
               <span class="text-4xl font-bold">{{ ordersPendingCount() }}</span>
               <i
