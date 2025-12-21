@@ -55,6 +55,19 @@ import { AuthStore } from '../../stores/auth-store';
             </div>
 
             <form (submit)="$event.preventDefault(); onSubmit()">
+              @let testCredentials = [
+                {
+                  role: 'Administrator',
+                  email: 'admin@sigrap.com',
+                  password: 'Admin123*',
+                },
+                {
+                  role: 'Employee',
+                  email: 'employee@sigrap.com',
+                  password: 'Employee123*',
+                },
+              ];
+
               @let emailInvalid =
                 loginForm.email().invalid() && loginForm.email().touched();
               @let emailErrors = loginForm.email().errors();
@@ -147,6 +160,38 @@ import { AuthStore } from '../../stores/auth-store';
                 />
               </div>
 
+              <div class="mt-8">
+                <div
+                  class="border border-surface-200 dark:border-surface-800 rounded-2xl p-5 bg-surface-50 dark:bg-surface-800/60"
+                >
+                  <div
+                    class="flex items-center gap-2 mb-3 text-surface-900 dark:text-surface-0"
+                  >
+                    <i class="pi pi-info-circle text-primary"></i>
+                    <div class="font-medium">Test Credentials</div>
+                  </div>
+                  <div class="text-sm text-surface-600 dark:text-surface-300 mb-3">
+                    Use these accounts to explore each role. The admin credentials are prefilled above.
+                  </div>
+                  <div class="grid gap-3">
+                    @for (cred of testCredentials; track cred.role) {
+                      <div
+                        class="rounded-xl px-4 py-3 bg-surface-0 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+                      >
+                        <div
+                          class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+                        >
+                          {{ cred.role }}
+                        </div>
+                        <div class="text-sm text-surface-600 dark:text-surface-300">
+                          {{ cred.email }} / {{ cred.password }}
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
               <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
                   Don’t have an account?
@@ -170,8 +215,8 @@ export class Login {
   readonly authStore = inject(AuthStore);
 
   private readonly loginModel = signal({
-    email: '',
-    password: '',
+    email: 'admin@sigrap.com',
+    password: 'Admin123*',
   });
 
   readonly loginForm = form(this.loginModel, (login) => {

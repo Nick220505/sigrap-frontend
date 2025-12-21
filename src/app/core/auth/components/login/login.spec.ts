@@ -78,9 +78,9 @@ describe('Login', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize login form with empty email and password', () => {
-    expect(component.loginForm.email().value()).toBe('');
-    expect(component.loginForm.password().value()).toBe('');
+  it('should initialize login form with default admin credentials', () => {
+    expect(component.loginForm.email().value()).toBe('admin@sigrap.com');
+    expect(component.loginForm.password().value()).toBe('Admin123*');
   });
 
   it('should have required validation for email field', () => {
@@ -163,6 +163,10 @@ describe('Login', () => {
 
   describe('Form validation', () => {
     it('should mark all form controls as touched when form is invalid and button is clicked', () => {
+      component.loginForm.email().value.set('');
+      component.loginForm.password().value.set('');
+      fixture.detectChanges();
+
       const loginButton = fixture.debugElement.query(
         By.css('button[type="submit"]'),
       );
