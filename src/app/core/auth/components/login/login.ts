@@ -80,7 +80,7 @@ import { AuthStore } from '../../stores/auth-store';
                   Email
                 </label>
 
-                <div class="w-full md:w-[30rem] mb-2">
+                <div class="w-full mb-2">
                   <p-iconfield>
                     <p-inputicon class="pi pi-envelope" />
                     <input
@@ -120,7 +120,7 @@ import { AuthStore } from '../../stores/auth-store';
                   Password
                 </label>
 
-                <div class="w-full md:w-[30rem] mb-2 relative">
+                <div class="w-full mb-2 relative">
                   <i
                     class="pi pi-lock absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-500"
                   ></i>
