@@ -306,6 +306,23 @@ describe('SalesReturnsTable', () => {
         'contains',
       );
     });
+
+    it('should update selectedSaleReturns when selection changes', () => {
+      const selectedReturn = mockSaleReturns[0];
+      component.selectedSaleReturns.set([selectedReturn]);
+      expect(component.selectedSaleReturns().length).toBe(1);
+      expect(component.selectedSaleReturns()[0]).toBe(selectedReturn);
+    });
+
+    it('should keep selection in sync with available entities', () => {
+      const returns = [mockSaleReturns[0], mockSaleReturns[1]];
+      saleReturnStore.entities.set(returns);
+      component.selectedSaleReturns.set([returns[0]]);
+
+      // removing return 0 should clear the selection since it's no longer available
+      saleReturnStore.entities.set([returns[1]]);
+      expect(component.selectedSaleReturns()).toEqual([]);
+    });
   });
 
   describe('Clear filters functionality', () => {

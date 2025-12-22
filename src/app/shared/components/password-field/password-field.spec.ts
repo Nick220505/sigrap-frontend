@@ -117,22 +117,100 @@ describe('PasswordField', () => {
     expect(errorTextAfter).toBeFalsy();
   });
 
-  it('should show visual indicators for password requirements', () => {
+  it('should update password strength indicators on value changes', () => {
     const control = hostComponent.passwordControl;
-    control.setValue('Test1@');
 
-    control.updateValueAndValidity();
-    passwordFieldComponent.hasUppercase.set(true);
-    passwordFieldComponent.hasLowercase.set(true);
-    passwordFieldComponent.hasNumber.set(true);
-    passwordFieldComponent.hasSpecialChar.set(true);
-    passwordFieldComponent.hasMinLength.set(false);
+    // Start with empty password
+    control.setValue('');
     fixture.detectChanges();
 
-    expect(passwordFieldComponent.hasUppercase()).toBe(true);
+    expect(passwordFieldComponent.hasMinLength()).toBe(false);
+    expect(passwordFieldComponent.hasLowercase()).toBe(false);
+    expect(passwordFieldComponent.hasUppercase()).toBe(false);
+    expect(passwordFieldComponent.hasNumber()).toBe(false);
+    expect(passwordFieldComponent.hasSpecialChar()).toBe(false);
+
+    // Set a valid password
+    control.setValue('StrongP@ss123');
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.hasMinLength()).toBe(true);
     expect(passwordFieldComponent.hasLowercase()).toBe(true);
+    expect(passwordFieldComponent.hasUppercase()).toBe(true);
     expect(passwordFieldComponent.hasNumber()).toBe(true);
     expect(passwordFieldComponent.hasSpecialChar()).toBe(true);
+  });
+
+  it('should handle partial passwords and update indicators accordingly', () => {
+    const control = hostComponent.passwordControl;
+
+    control.setValue('short');
+    fixture.detectChanges();
+
     expect(passwordFieldComponent.hasMinLength()).toBe(false);
+    expect(passwordFieldComponent.hasLowercase()).toBe(true); // 'short'
+    expect(passwordFieldComponent.hasUppercase()).toBe(false);
+    expect(passwordFieldComponent.hasNumber()).toBe(false);
+    expect(passwordFieldComponent.hasSpecialChar()).toBe(false);
+
+    control.setValue('Short1');
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.hasMinLength()).toBe(false);
+    expect(passwordFieldComponent.hasLowercase()).toBe(true);
+    expect(passwordFieldComponent.hasUppercase()).toBe(true);
+    expect(passwordFieldComponent.hasNumber()).toBe(true);
+    expect(passwordFieldComponent.hasSpecialChar()).toBe(false);
+  });
+
+  it('should show error when control is invalid and touched', () => {
+    const control = hostComponent.passwordControl;
+    control.setValue('weak');
+    control.markAsTouched();
+    fixture.detectChanges();
+
+    // Force the effect to run by triggering value change
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.showError()).toBe(true);
+  });
+
+  it('should not show error when control is valid', () => {
+    const control = hostComponent.passwordControl;
+    control.setValue('StrongP@ss123');
+    control.markAsTouched();
+    fixture.detectChanges();
+
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.showError()).toBe(false);
+  });
+
+  it('should display pattern error message when control has pattern error', () => {
+    const control = hostComponent.passwordControl;
+    control.setValue('invalid');
+    control.markAsTouched();
+    fixture.detectChanges();
+
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+
+    const errorText = passwordFieldElement.querySelector('.text-red-500');
+    expect(errorText).toBeTruthy();
+    expect(errorText?.textContent?.trim()).toContain('Password must meet all requirements');
+  });
+
+  it('should not show error when control is untouched', () => {
+    const control = hostComponent.passwordControl;
+    control.setValue('');
+    // Do not mark as touched
+    fixture.detectChanges();
+
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.showError()).toBe(false);
   });
 });
