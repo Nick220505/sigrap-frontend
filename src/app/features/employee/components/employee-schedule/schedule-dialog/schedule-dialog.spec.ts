@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -37,7 +36,7 @@ describe('ScheduleDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        NoopAnimationsModule,
+        
         DialogModule,
         ButtonModule,
         InputTextModule,

@@ -4,7 +4,6 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { CustomerInfo } from '@features/customer/models/customer.model';
 import { ProductInfo } from '@features/inventory/models/product.model';
@@ -146,7 +145,7 @@ describe('SalesReturnsTable', () => {
     await TestBed.configureTestingModule({
       imports: [
         SalesReturnsTable,
-        NoopAnimationsModule,
+        
         FormsModule,
         DatePipe,
         CurrencyPipe,

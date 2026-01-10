@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CustomerInfo } from '@features/customer/models/customer.model';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { ConfirmationService } from 'primeng/api';
@@ -74,7 +73,7 @@ describe('CustomerToolbar', () => {
     mockCustomerTable.dt.mockReturnValue(mockTable as unknown as Table);
 
     await TestBed.configureTestingModule({
-      imports: [CustomerToolbar, NoopAnimationsModule, ButtonModule],
+      imports: [CustomerToolbar, ButtonModule],
       providers: [
         { provide: CustomerStore, useValue: customerStore },
         { provide: ConfirmationService, useValue: confirmationService },

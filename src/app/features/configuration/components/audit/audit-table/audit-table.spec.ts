@@ -4,7 +4,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { PrimeNG } from 'primeng/config';
@@ -56,7 +55,7 @@ describe('AuditTable', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        NoopAnimationsModule,
+        
         FormsModule,
         DatePipe,
         PaginatorModule,

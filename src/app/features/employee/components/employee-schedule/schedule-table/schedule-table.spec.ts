@@ -3,7 +3,6 @@ import { DatePipe, NgClass } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Confirmation, ConfirmationService, MessageService } from 'primeng/api';
 import { ScheduleInfo } from '../../../models/schedule.model';
 import { ScheduleStore } from '../../../stores/schedule-store';
@@ -52,7 +51,7 @@ describe('ScheduleTable', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, NgClass, DatePipe, ScheduleTable],
+      imports: [NgClass, DatePipe, ScheduleTable],
       providers: [
         provideHttpClient(),
         MessageService,

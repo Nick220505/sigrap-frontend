@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -36,7 +35,7 @@ describe('ClockInDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        NoopAnimationsModule,
+        
         DialogModule,
         ButtonModule,
         InputGroupModule,

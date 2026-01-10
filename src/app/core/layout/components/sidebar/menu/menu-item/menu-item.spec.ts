@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationEnd, Router, provideRouter } from '@angular/router';
 import { LayoutService } from '@core/layout/services/layout';
 import { MenuItem as PrimeMenuItem } from 'primeng/api';
@@ -42,7 +41,7 @@ describe('MenuItem', () => {
     router.isActive.mockReturnValue(false);
 
     await TestBed.configureTestingModule({
-      imports: [MenuItem, NoopAnimationsModule],
+      imports: [MenuItem],
       providers: [
         provideRouter([]),
         { provide: LayoutService, useValue: layoutService },

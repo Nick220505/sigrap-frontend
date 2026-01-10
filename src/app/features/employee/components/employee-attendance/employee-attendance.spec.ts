@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { EmployeeAttendance } from './employee-attendance';
@@ -12,7 +11,7 @@ describe('EmployeeAttendance', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, EmployeeAttendance],
+      imports: [EmployeeAttendance],
       providers: [
         provideHttpClient(),
         MessageService,

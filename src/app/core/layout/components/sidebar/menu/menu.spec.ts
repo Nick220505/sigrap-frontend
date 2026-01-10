@@ -3,7 +3,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -50,7 +49,7 @@ describe('Menu', () => {
     }
 
     await TestBed.configureTestingModule({
-      imports: [Menu, NoopAnimationsModule, MenuItem],
+      imports: [Menu, MenuItem],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

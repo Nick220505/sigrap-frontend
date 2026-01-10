@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, provideRouter } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
@@ -14,7 +13,7 @@ describe('NotFound', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotFound, RouterModule, ButtonModule, NoopAnimationsModule],
+      imports: [NotFound, RouterModule, ButtonModule],
       providers: [provideRouter([])],
     })
       .overrideComponent(FloatingConfigurator, {

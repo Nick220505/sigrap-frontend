@@ -4,7 +4,6 @@ import { Signal, WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -63,7 +62,7 @@ describe('Register', () => {
         InputGroupAddonModule,
         DividerModule,
         NgClass,
-        NoopAnimationsModule,
+        
       ],
       providers: [
         { provide: AuthStore, useValue: authStoreMock },

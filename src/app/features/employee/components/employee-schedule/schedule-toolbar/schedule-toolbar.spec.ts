@@ -3,7 +3,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -49,7 +48,7 @@ describe('ScheduleToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        NoopAnimationsModule,
+        
         ButtonModule,
         ToolbarModule,
         TooltipModule,

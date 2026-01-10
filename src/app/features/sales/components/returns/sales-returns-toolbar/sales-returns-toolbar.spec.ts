@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { CustomerInfo } from '@features/customer/models/customer.model';
 import { ProductInfo } from '@features/inventory/models/product.model';
@@ -97,7 +96,7 @@ describe('SalesReturnsToolbar', () => {
     await TestBed.configureTestingModule({
       imports: [
         SalesReturnsToolbar,
-        NoopAnimationsModule,
+        
         ButtonModule,
         ToolbarModule,
         TooltipModule,

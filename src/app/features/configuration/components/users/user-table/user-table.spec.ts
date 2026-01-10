@@ -5,7 +5,6 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -75,7 +74,7 @@ describe('UserTable', () => {
     await TestBed.configureTestingModule({
       imports: [
         UserTable,
-        NoopAnimationsModule,
+        
         FormsModule,
         DatePipe,
         NgClass,

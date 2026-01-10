@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -78,7 +77,7 @@ describe('ProductToolbar', () => {
     await TestBed.configureTestingModule({
       imports: [
         ProductToolbar,
-        NoopAnimationsModule,
+        
         ToolbarModule,
         ButtonModule,
         TooltipModule,

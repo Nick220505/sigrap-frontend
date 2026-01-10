@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { MessageService } from 'primeng/api';
@@ -47,7 +46,7 @@ describe('CategoryDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         CategoryDialog,
-        NoopAnimationsModule,
+        
         DialogModule,
         ButtonModule,
         InputTextModule,

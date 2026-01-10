@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Menu } from './menu/menu';
@@ -31,7 +30,7 @@ describe('Sidebar', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [Sidebar, NoopAnimationsModule, Menu],
+      imports: [Sidebar, Menu],
       providers: [provideRouter([]), provideHttpClient(), MessageService],
     }).compileComponents();
 

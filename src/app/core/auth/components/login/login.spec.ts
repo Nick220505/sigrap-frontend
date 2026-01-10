@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { Signal, signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -54,7 +53,6 @@ describe('Login', () => {
         IconFieldModule,
         InputIconModule,
         InputGroupModule,
-        NoopAnimationsModule,
       ],
       providers: [
         { provide: AuthStore, useValue: authStoreMock },

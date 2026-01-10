@@ -3,7 +3,6 @@ import { CurrencyPipe } from '@angular/common';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { UserStore } from '@features/configuration/stores/user-store';
@@ -197,7 +196,7 @@ describe('SalesReturnsDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         SalesReturnsDialog,
-        NoopAnimationsModule,
+        
         DialogModule,
         ButtonModule,
         InputTextModule,

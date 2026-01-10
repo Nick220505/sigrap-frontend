@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PasswordModule } from 'primeng/password';
 import { PasswordField } from './password-field';
 
@@ -40,7 +39,7 @@ describe('PasswordField', () => {
         PasswordField,
         ReactiveFormsModule,
         PasswordModule,
-        NoopAnimationsModule,
+        
       ],
     }).compileComponents();
 

@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -54,7 +53,7 @@ describe('CustomerDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         CustomerDialog,
-        NoopAnimationsModule,
+        
         DialogModule,
         ButtonModule,
         InputTextModule,

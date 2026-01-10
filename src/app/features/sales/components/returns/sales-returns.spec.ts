@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SalesReturnsDialog } from './sales-returns-dialog/sales-returns-dialog';
@@ -25,7 +24,7 @@ describe('SalesReturns', () => {
         SalesReturnsTable,
         SalesReturnsToolbar,
         SalesReturnsDialog,
-        NoopAnimationsModule,
+        
       ],
       providers: [
         provideHttpClient(),

@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { User } from '@core/auth/models/user.model';
 import { AuthStore } from '@core/auth/stores/auth-store';
@@ -92,7 +91,7 @@ describe('Topbar', () => {
         CommonModule,
         StyleClassModule,
         TooltipModule,
-        NoopAnimationsModule,
+        
       ],
       providers: [
         { provide: LayoutService, useValue: layoutService },

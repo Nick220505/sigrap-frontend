@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SupplierInfo } from '@features/supplier/models/supplier.model';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ButtonModule } from 'primeng/button';
@@ -56,7 +55,7 @@ describe('SupplierDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         SupplierDialog,
-        NoopAnimationsModule,
+        
         DialogModule,
         ButtonModule,
         InputTextModule,

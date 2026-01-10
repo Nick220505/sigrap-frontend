@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
@@ -48,7 +47,7 @@ describe('InventoryReport', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [InventoryReport, NoopAnimationsModule],
+      imports: [InventoryReport],
       providers: [
         provideHttpClient(),
         MessageService,

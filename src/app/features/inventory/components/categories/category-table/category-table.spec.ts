@@ -3,7 +3,6 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ConfirmationService } from 'primeng/api';
@@ -62,7 +61,7 @@ describe('CategoryTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CategoryTable, NoopAnimationsModule, FormsModule],
+      imports: [CategoryTable, FormsModule],
       providers: [
         { provide: CategoryStore, useValue: categoryStore },
         { provide: ConfirmationService, useValue: confirmationService },

@@ -4,7 +4,6 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CustomerInfo } from '@features/customer/models/customer.model';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { ConfirmationService } from 'primeng/api';
@@ -67,7 +66,7 @@ describe('CustomerTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CustomerTable, NoopAnimationsModule, FormsModule, DatePipe],
+      imports: [CustomerTable, FormsModule, DatePipe],
       providers: [
         { provide: CustomerStore, useValue: customerStore },
         { provide: ConfirmationService, useValue: confirmationService },

@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutService } from '@core/layout/services/layout';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
@@ -40,7 +39,7 @@ describe('FloatingConfigurator', () => {
     await TestBed.configureTestingModule({
       imports: [
         FloatingConfigurator,
-        NoopAnimationsModule,
+        
         ButtonModule,
         StyleClassModule,
       ],
