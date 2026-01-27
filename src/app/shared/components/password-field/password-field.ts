@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, effect, input, signal } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DividerModule } from 'primeng/divider';
 import { PasswordModule } from 'primeng/password';
@@ -19,9 +19,7 @@ import { PasswordModule } from 'primeng/password';
         [class.ng-dirty]="showError()"
         [class.ng-invalid]="showError()"
         [required]="required()"
-        [strongRegex]="
-          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$'
-        "
+        [strongRegex]="'^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:,.<>/?]).{8,}$'"
         appendTo="body"
         fluid
       >
@@ -99,7 +97,7 @@ import { PasswordModule } from 'primeng/password';
     </div>
   `,
 })
-export class PasswordField {
+export class PasswordField implements OnInit {
   readonly id = input.required<string>();
   readonly label = input<string>('Password');
   readonly placeholder = input<string>('Enter password');
@@ -114,20 +112,15 @@ export class PasswordField {
   readonly hasNumber = signal(false);
   readonly hasSpecialChar = signal(false);
 
-  constructor() {
-    effect(() => {
-      const control = this.control();
-      control.valueChanges.subscribe((value) => {
-        const password = value || '';
-        this.showError.set(control.invalid && control.touched);
-        this.hasMinLength.set(password.length >= 8);
-        this.hasLowercase.set(/[a-z]/.test(password));
-        this.hasUppercase.set(/[A-Z]/.test(password));
-        this.hasNumber.set(/\d/.test(password));
-        this.hasSpecialChar.set(
-          /[!@#$%^&*()_+\-=[\]{}|;:,.<>/?]/.test(password),
-        );
-      });
+  ngOnInit(): void {
+    this.control().valueChanges.subscribe((value) => {
+      const password = value || '';
+      this.showError.set(this.control().invalid && this.control().touched);
+      this.hasMinLength.set(password.length >= 8);
+      this.hasLowercase.set(/[a-z]/.test(password));
+      this.hasUppercase.set(/[A-Z]/.test(password));
+      this.hasNumber.set(/\d/.test(password));
+      this.hasSpecialChar.set(/[!@#$%^&*()_+\-=[\]{}|;:,.<>/?]/.test(password));
     });
   }
 }

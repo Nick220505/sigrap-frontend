@@ -115,18 +115,8 @@ describe('Topbar', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA],
     })
-      .overrideComponent(Configurator, {
-        set: {
-          template: '',
-          imports: [],
-        },
-      })
-      .overrideComponent(ConfirmDialog, {
-        set: {
-          selector: 'p-confirmDialog',
-          template: '',
-        },
-      })
+      .overrideComponent(Configurator, { set: { template: '' } })
+      .overrideComponent(ConfirmDialog, { set: { template: '' } })
       .compileComponents();
 
     fixture = TestBed.createComponent(Topbar);

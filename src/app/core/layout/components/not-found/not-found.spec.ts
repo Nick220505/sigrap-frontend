@@ -16,12 +16,7 @@ describe('NotFound', () => {
       imports: [NotFound, RouterModule, ButtonModule],
       providers: [provideRouter([])],
     })
-      .overrideComponent(FloatingConfigurator, {
-        set: {
-          template: '',
-          imports: [],
-        },
-      })
+      .overrideComponent(FloatingConfigurator, { set: { template: '' } })
       .compileComponents();
 
     fixture = TestBed.createComponent(NotFound);

@@ -14,12 +14,7 @@ describe('Audit', () => {
       imports: [Audit],
       providers: [provideHttpClient(), MessageService, AuditLogStore],
     })
-      .overrideComponent(Audit, {
-        set: {
-          imports: [],
-          template: '',
-        },
-      })
+      .overrideComponent(Audit, { set: { template: '' } })
       .compileComponents();
 
     fixture = TestBed.createComponent(Audit);

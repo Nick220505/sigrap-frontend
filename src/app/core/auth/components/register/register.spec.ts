@@ -82,12 +82,7 @@ describe('Register', () => {
         MessageService,
       ],
     })
-      .overrideComponent(FloatingConfigurator, {
-        set: {
-          template: '',
-          imports: [],
-        },
-      })
+      .overrideComponent(FloatingConfigurator, { set: { template: '' } })
       .overrideComponent(PasswordField, {
         set: {
           template: `

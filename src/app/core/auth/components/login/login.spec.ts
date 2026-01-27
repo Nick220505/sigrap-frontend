@@ -73,12 +73,7 @@ describe('Login', () => {
         MessageService,
       ],
     })
-      .overrideComponent(FloatingConfigurator, {
-        set: {
-          template: '',
-          imports: [],
-        },
-      })
+      .overrideComponent(FloatingConfigurator, { set: { template: '' } })
       .compileComponents();
 
     fixture = TestBed.createComponent(Login);

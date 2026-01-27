@@ -57,12 +57,7 @@ describe('FloatingConfigurator', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA],
     })
-      .overrideComponent(Configurator, {
-        set: {
-          template: '',
-          imports: [],
-        },
-      })
+      .overrideComponent(Configurator, { set: { template: '' } })
       .compileComponents();
 
     fixture = TestBed.createComponent(FloatingConfigurator);
