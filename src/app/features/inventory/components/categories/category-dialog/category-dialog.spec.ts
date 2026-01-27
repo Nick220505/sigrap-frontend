@@ -4,7 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
+import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -46,7 +48,7 @@ describe('CategoryDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         CategoryDialog,
-        
+
         DialogModule,
         ButtonModule,
         InputTextModule,
@@ -55,6 +57,18 @@ describe('CategoryDialog', () => {
         InputGroupAddonModule,
       ],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         MessageService,
         { provide: CategoryStore, useValue: categoryStore },
       ],

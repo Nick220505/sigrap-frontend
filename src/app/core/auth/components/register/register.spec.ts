@@ -5,7 +5,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -62,9 +64,20 @@ describe('Register', () => {
         InputGroupAddonModule,
         DividerModule,
         NgClass,
-        
       ],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         { provide: AuthStore, useValue: authStoreMock },
         MessageService,
       ],

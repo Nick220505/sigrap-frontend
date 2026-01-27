@@ -3,7 +3,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
@@ -39,7 +41,6 @@ describe('AuditToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        
         ButtonModule,
         ToolbarModule,
         TooltipModule,
@@ -47,6 +48,18 @@ describe('AuditToolbar', () => {
         AuditToolbar,
       ],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         provideHttpClient(),
         MessageService,
         { provide: AuditLogStore, useValue: mockStore },

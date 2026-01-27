@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -39,7 +41,6 @@ describe('UserDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        
         DialogModule,
         ButtonModule,
         InputTextModule,
@@ -49,6 +50,18 @@ describe('UserDialog', () => {
         UserDialog,
       ],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         provideHttpClient(),
         MessageService,
         ConfirmationService,

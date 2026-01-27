@@ -12,7 +12,9 @@ import { RouterModule } from '@angular/router';
 import { User } from '@core/auth/models/user.model';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { LayoutConfig, LayoutService } from '@core/layout/services/layout';
+import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { StyleClassModule } from 'primeng/styleclass';
 import { TooltipModule } from 'primeng/tooltip';
@@ -91,9 +93,20 @@ describe('Topbar', () => {
         CommonModule,
         StyleClassModule,
         TooltipModule,
-        
       ],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         { provide: LayoutService, useValue: layoutService },
         { provide: AuthStore, useValue: authStore },
         { provide: ConfirmationService, useValue: confirmationService },

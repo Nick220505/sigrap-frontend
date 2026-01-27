@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import Aura from '@primeuix/themes/aura';
+import { providePrimeNG } from 'primeng/config';
 import { PasswordModule } from 'primeng/password';
 import { PasswordField } from './password-field';
 
@@ -34,12 +36,20 @@ describe('PasswordField', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TestHost,
-        PasswordField,
-        ReactiveFormsModule,
-        PasswordModule,
-        
+      imports: [TestHost, PasswordField, ReactiveFormsModule, PasswordModule],
+      providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
       ],
     }).compileComponents();
 
@@ -198,7 +208,9 @@ describe('PasswordField', () => {
 
     const errorText = passwordFieldElement.querySelector('.text-red-500');
     expect(errorText).toBeTruthy();
-    expect(errorText?.textContent?.trim()).toContain('Password must meet all requirements');
+    expect(errorText?.textContent?.trim()).toContain(
+      'Password must meet all requirements',
+    );
   });
 
   it('should not show error when control is untouched', () => {

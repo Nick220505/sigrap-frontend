@@ -5,7 +5,9 @@ import { By } from '@angular/platform-browser';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { InventoryReport } from './inventory-report';
 
 describe('InventoryReport', () => {
@@ -49,6 +51,18 @@ describe('InventoryReport', () => {
     await TestBed.configureTestingModule({
       imports: [InventoryReport],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         provideHttpClient(),
         MessageService,
         { provide: ProductStore, useValue: mockProductStore },

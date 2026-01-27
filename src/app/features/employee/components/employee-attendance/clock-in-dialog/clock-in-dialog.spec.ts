@@ -4,7 +4,9 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
+import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -35,7 +37,6 @@ describe('ClockInDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        
         DialogModule,
         ButtonModule,
         InputGroupModule,
@@ -44,6 +45,18 @@ describe('ClockInDialog', () => {
         ClockInDialog,
       ],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         provideHttpClient(),
         MessageService,
         ConfirmationService,

@@ -3,7 +3,9 @@ import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { LayoutService } from '@core/layout/services/layout';
+import Aura from '@primeuix/themes/aura';
 import { ButtonModule } from 'primeng/button';
+import { providePrimeNG } from 'primeng/config';
 import { StyleClassModule } from 'primeng/styleclass';
 import { Configurator } from './configurator/configurator';
 import { FloatingConfigurator } from './floating-configurator';
@@ -37,13 +39,22 @@ describe('FloatingConfigurator', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        FloatingConfigurator,
-        
-        ButtonModule,
-        StyleClassModule,
+      imports: [FloatingConfigurator, ButtonModule, StyleClassModule],
+      providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
+        { provide: LayoutService, useValue: mockLayoutService },
       ],
-      providers: [{ provide: LayoutService, useValue: mockLayoutService }],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(Configurator, {

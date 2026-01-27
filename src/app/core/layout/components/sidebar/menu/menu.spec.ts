@@ -5,7 +5,9 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth-store';
+import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { UserRole } from '../../../../../features/configuration/models/user.model';
 import { MenuItem } from './menu-item/menu-item';
 import { Menu } from './menu';
@@ -51,6 +53,18 @@ describe('Menu', () => {
     await TestBed.configureTestingModule({
       imports: [Menu, MenuItem],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),

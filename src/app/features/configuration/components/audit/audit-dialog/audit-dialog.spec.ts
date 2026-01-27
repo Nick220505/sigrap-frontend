@@ -3,7 +3,9 @@ import { DatePipe, JsonPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AuditLogStore } from '../../../stores/audit-log-store';
@@ -22,15 +24,20 @@ describe('AuditDialog', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        
-        DialogModule,
-        ButtonModule,
-        DatePipe,
-        JsonPipe,
-        AuditDialog,
-      ],
+      imports: [DialogModule, ButtonModule, DatePipe, JsonPipe, AuditDialog],
       providers: [
+        providePrimeNG({
+          theme: {
+            preset: Aura,
+            options: {
+              darkModeSelector: '.app-dark',
+              cssLayer: {
+                name: 'primeng',
+                order: 'theme, base, primeng',
+              },
+            },
+          },
+        }),
         provideHttpClient(),
         MessageService,
         { provide: AuditLogStore, useValue: mockStore },
