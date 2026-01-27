@@ -78,6 +78,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
                 id="originalSaleId"
                 [ngModel]="returnForm.originalSaleId().value()"
                 (ngModelChange)="returnForm.originalSaleId().value.set($event)"
+                [ngModelOptions]="{ standalone: true }"
                 [options]="saleStore.entities()"
                 optionLabel="id"
                 optionValue="id"
@@ -211,6 +212,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
                       <p-inputNumber
                         [ngModel]="returnForm.items[idx].quantity().value()"
                         (ngModelChange)="returnForm.items[idx].quantity().value.set($event)"
+                        [ngModelOptions]="{ standalone: true }"
                         [min]="0"
                         [max]="returnForm.items[idx].originalQuantity().value()"
                         [showButtons]="true"

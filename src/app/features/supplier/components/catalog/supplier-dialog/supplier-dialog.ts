@@ -260,6 +260,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="averageDeliveryTime"
                   [ngModel]="supplierForm.averageDeliveryTime().value()"
                   (ngModelChange)="supplierForm.averageDeliveryTime().value.set($event)"
+                  [ngModelOptions]="{ standalone: true }"
                   [showButtons]="true"
                   [min]="1"
                   buttonLayout="horizontal"

@@ -48,6 +48,7 @@ import { Select } from 'primeng/select';
               id="userId"
               [ngModel]="clockInForm.userId().value()"
               (ngModelChange)="clockInForm.userId().value.set($event)"
+              [ngModelOptions]="{ standalone: true }"
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"

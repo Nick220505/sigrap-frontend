@@ -74,6 +74,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 id="supplierId"
                 [ngModel]="orderForm.supplierId().value()"
                 (ngModelChange)="orderForm.supplierId().value.set($event)"
+                [ngModelOptions]="{ standalone: true }"
                 [options]="supplierStore.entities()"
                 optionLabel="name"
                 optionValue="id"
@@ -106,6 +107,7 @@ import { TooltipModule } from 'primeng/tooltip';
               inputId="deliveryDate"
               [ngModel]="orderForm.deliveryDate().value()"
               (ngModelChange)="orderForm.deliveryDate().value.set($event)"
+              [ngModelOptions]="{ standalone: true }"
               [showIcon]="true"
               appendTo="body"
               [showOnFocus]="true"
@@ -157,6 +159,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p-select
                       [ngModel]="orderForm.items[idx].productId().value()"
                       (ngModelChange)="orderForm.items[idx].productId().value.set($event)"
+                      [ngModelOptions]="{ standalone: true }"
                       [options]="productStore.entities()"
                       optionLabel="name"
                       optionValue="id"
@@ -173,6 +176,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p-inputNumber
                       [ngModel]="orderForm.items[idx].quantity().value()"
                       (ngModelChange)="orderForm.items[idx].quantity().value.set($event)"
+                      [ngModelOptions]="{ standalone: true }"
                       [min]="1"
                       [showButtons]="true"
                       buttonLayout="horizontal"
@@ -187,6 +191,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p-inputNumber
                       [ngModel]="orderForm.items[idx].unitPrice().value()"
                       (ngModelChange)="orderForm.items[idx].unitPrice().value.set($event)"
+                      [ngModelOptions]="{ standalone: true }"
                       mode="currency"
                       (onInput)="updateItemSubtotal(idx)"
                       maxFractionDigits="0"

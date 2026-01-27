@@ -157,6 +157,7 @@ import { UserStore } from '../../../stores/user-store';
               id="role"
               [ngModel]="userForm.role().value()"
               (ngModelChange)="userForm.role().value.set($event)"
+              [ngModelOptions]="{ standalone: true }"
               [options]="roleOptions"
               optionLabel="label"
               optionValue="value"

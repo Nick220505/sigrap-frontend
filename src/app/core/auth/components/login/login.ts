@@ -130,6 +130,7 @@ import { AuthStore } from '../../stores/auth-store';
                     id="password"
                     [ngModel]="loginForm.password().value()"
                     (ngModelChange)="loginForm.password().value.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
                     placeholder="Enter your password"
                     toggleMask
                     styleClass="w-full"

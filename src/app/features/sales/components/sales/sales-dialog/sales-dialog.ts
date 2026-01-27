@@ -70,6 +70,7 @@ import { SaleStore } from '../../../stores/sale-store';
                 id="customerId"
                 [ngModel]="saleForm.customerId().value()"
                 (ngModelChange)="saleForm.customerId().value.set($event)"
+                [ngModelOptions]="{ standalone: true }"
                 [options]="this.customerStore.entities()"
                 optionLabel="fullName"
                 optionValue="id"
@@ -93,6 +94,7 @@ import { SaleStore } from '../../../stores/sale-store';
                 id="employeeId"
                 [ngModel]="saleForm.employeeId().value()"
                 (ngModelChange)="saleForm.employeeId().value.set($event)"
+                [ngModelOptions]="{ standalone: true }"
                 [options]="this.userStore.entities()"
                 optionLabel="name"
                 optionValue="id"
@@ -144,6 +146,7 @@ import { SaleStore } from '../../../stores/sale-store';
                     <p-select
                       [ngModel]="saleForm.items[idx].productId().value()"
                       (ngModelChange)="saleForm.items[idx].productId().value.set($event)"
+                      [ngModelOptions]="{ standalone: true }"
                       [options]="this.productStore.entities()"
                       optionLabel="name"
                       optionValue="id"
@@ -160,6 +163,7 @@ import { SaleStore } from '../../../stores/sale-store';
                     <p-inputNumber
                       [ngModel]="saleForm.items[idx].quantity().value()"
                       (ngModelChange)="saleForm.items[idx].quantity().value.set($event)"
+                      [ngModelOptions]="{ standalone: true }"
                       [min]="1"
                       [showButtons]="true"
                       buttonLayout="horizontal"
@@ -174,6 +178,7 @@ import { SaleStore } from '../../../stores/sale-store';
                     <p-inputNumber
                       [ngModel]="saleForm.items[idx].unitPrice().value()"
                       (ngModelChange)="saleForm.items[idx].unitPrice().value.set($event)"
+                      [ngModelOptions]="{ standalone: true }"
                       [readonly]="true"
                       [disabled]="true"
                       maxFractionDigits="0"
@@ -247,6 +252,7 @@ import { SaleStore } from '../../../stores/sale-store';
                                 id="discountPercent"
                                 [ngModel]="saleForm.discountPercent().value()"
                                 (ngModelChange)="saleForm.discountPercent().value.set($event)"
+                                [ngModelOptions]="{ standalone: true }"
                                 suffix="%"
                                 [min]="0"
                                 [max]="100"

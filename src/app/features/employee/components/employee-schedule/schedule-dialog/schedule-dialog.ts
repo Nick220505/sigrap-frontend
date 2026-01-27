@@ -56,6 +56,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               id="userId"
               [ngModel]="scheduleForm.userId().value()"
               (ngModelChange)="scheduleForm.userId().value.set($event)"
+              [ngModelOptions]="{ standalone: true }"
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
@@ -91,6 +92,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
                 id="day"
                 [ngModel]="scheduleForm.day().value()"
                 (ngModelChange)="scheduleForm.day().value.set($event)"
+                [ngModelOptions]="{ standalone: true }"
                 [options]="[
                   { label: 'Monday', value: 'Monday' },
                   { label: 'Tuesday', value: 'Tuesday' },
@@ -132,6 +134,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
                 id="type"
                 [ngModel]="scheduleForm.type().value()"
                 (ngModelChange)="scheduleForm.type().value.set($event)"
+                [ngModelOptions]="{ standalone: true }"
                 [options]="[
                   { label: 'Regular', value: 'Regular' },
                   { label: 'Overtime', value: 'Horas Extra' },
