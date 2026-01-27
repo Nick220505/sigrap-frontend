@@ -8,13 +8,7 @@ import {
 } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  applyEach,
-  form,
-  max,
-  min,
-  required,
-} from '@angular/forms/signals';
+import { applyEach, form, max, min, required } from '@angular/forms/signals';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { CustomerStore } from '@features/customer/stores/customer-store';
@@ -27,8 +21,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
-import { SaleData } from '../../../models/sale.model';
-import { SaleStore } from '../../../stores/sale-store';
+import { SaleData } from '@features/sales/models/sale.model';
+import { SaleStore } from '@features/sales/stores/sale-store';
 
 @Component({
   selector: 'app-sales-dialog',
@@ -145,7 +139,9 @@ import { SaleStore } from '../../../stores/sale-store';
                   <td class="p-2">
                     <p-select
                       [ngModel]="saleForm.items[idx].productId().value()"
-                      (ngModelChange)="saleForm.items[idx].productId().value.set($event)"
+                      (ngModelChange)="
+                        saleForm.items[idx].productId().value.set($event)
+                      "
                       [ngModelOptions]="{ standalone: true }"
                       [options]="this.productStore.entities()"
                       optionLabel="name"
@@ -162,7 +158,9 @@ import { SaleStore } from '../../../stores/sale-store';
                   <td class="p-2">
                     <p-inputNumber
                       [ngModel]="saleForm.items[idx].quantity().value()"
-                      (ngModelChange)="saleForm.items[idx].quantity().value.set($event)"
+                      (ngModelChange)="
+                        saleForm.items[idx].quantity().value.set($event)
+                      "
                       [ngModelOptions]="{ standalone: true }"
                       [min]="1"
                       [showButtons]="true"
@@ -177,7 +175,9 @@ import { SaleStore } from '../../../stores/sale-store';
                   <td class="p-2">
                     <p-inputNumber
                       [ngModel]="saleForm.items[idx].unitPrice().value()"
-                      (ngModelChange)="saleForm.items[idx].unitPrice().value.set($event)"
+                      (ngModelChange)="
+                        saleForm.items[idx].unitPrice().value.set($event)
+                      "
                       [ngModelOptions]="{ standalone: true }"
                       [readonly]="true"
                       [disabled]="true"
@@ -251,7 +251,9 @@ import { SaleStore } from '../../../stores/sale-store';
                               <p-inputNumber
                                 id="discountPercent"
                                 [ngModel]="saleForm.discountPercent().value()"
-                                (ngModelChange)="saleForm.discountPercent().value.set($event)"
+                                (ngModelChange)="
+                                  saleForm.discountPercent().value.set($event)
+                                "
                                 [ngModelOptions]="{ standalone: true }"
                                 suffix="%"
                                 [min]="0"

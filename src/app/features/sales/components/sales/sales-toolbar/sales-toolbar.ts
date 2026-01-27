@@ -8,8 +8,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { SaleService } from '../../../services/sale';
-import { SaleStore } from '../../../stores/sale-store';
+import { SaleService } from '@features/sales/services/sale';
+import { SaleStore } from '@features/sales/stores/sale-store';
 import { SalesTable } from '../sales-table/sales-table';
 
 @Component({

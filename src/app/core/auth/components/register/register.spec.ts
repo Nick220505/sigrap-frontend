@@ -20,7 +20,7 @@ import { RippleModule } from 'primeng/ripple';
 
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { PasswordField } from '@shared/components/password-field/password-field';
-import { AuthStore } from '../../stores/auth-store';
+import { AuthStore } from '@core/auth/stores/auth-store';
 import { Register } from './register';
 
 interface MockAuthStore {

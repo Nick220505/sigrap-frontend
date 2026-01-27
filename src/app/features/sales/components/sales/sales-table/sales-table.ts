@@ -18,8 +18,8 @@ import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { SaleInfo } from '../../../models/sale.model';
-import { SaleStore } from '../../../stores/sale-store';
+import { SaleInfo } from '@features/sales/models/sale.model';
+import { SaleStore } from '@features/sales/stores/sale-store';
 
 @Component({
   selector: 'app-sales-table',

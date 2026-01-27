@@ -1,5 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
-import { SupplierStore } from '../../stores/supplier-store';
+import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { SupplierDialog } from './supplier-dialog/supplier-dialog';
 import { SupplierTable } from './supplier-table/supplier-table';
 import { SupplierToolbar } from './supplier-toolbar/supplier-toolbar';

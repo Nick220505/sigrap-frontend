@@ -10,7 +10,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ScheduleStore } from '../../../stores/schedule-store';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleDialog } from './schedule-dialog';
 
 describe('ScheduleDialog', () => {
@@ -36,7 +36,6 @@ describe('ScheduleDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        
         DialogModule,
         ButtonModule,
         InputTextModule,

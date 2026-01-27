@@ -3,8 +3,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { CustomerInfo } from '../../../models/customer.model';
-import { CustomerStore } from '../../../stores/customer-store';
+import { CustomerInfo } from '@features/customer/models/customer.model';
+import { CustomerStore } from '@features/customer/stores/customer-store';
 import { CustomerTable } from '../customer-table/customer-table';
 
 @Component({

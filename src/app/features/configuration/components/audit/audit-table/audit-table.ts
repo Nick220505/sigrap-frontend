@@ -12,7 +12,7 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { AuditLogStore } from '../../../stores/audit-log-store';
+import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 
 @Component({
   selector: 'app-audit-table',

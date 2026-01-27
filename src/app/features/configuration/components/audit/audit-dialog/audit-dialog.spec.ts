@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { AuditLogStore } from '../../../stores/audit-log-store';
+import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditDialog } from './audit-dialog';
 
 describe('AuditDialog', () => {

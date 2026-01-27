@@ -4,8 +4,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Confirmation, ConfirmationService, MessageService } from 'primeng/api';
-import { ScheduleInfo } from '../../../models/schedule.model';
-import { ScheduleStore } from '../../../stores/schedule-store';
+import { ScheduleInfo } from '@features/employee/models/schedule.model';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleTable } from './schedule-table';
 
 interface MockScheduleStore {

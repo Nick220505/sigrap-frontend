@@ -1,5 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
-import { CustomerStore } from '../../stores/customer-store';
+import { CustomerStore } from '@features/customer/stores/customer-store';
 import { CustomerDialog } from './customer-dialog/customer-dialog';
 import { CustomerTable } from './customer-table/customer-table';
 import { CustomerToolbar } from './customer-toolbar/customer-toolbar';

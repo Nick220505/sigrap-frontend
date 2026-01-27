@@ -7,7 +7,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { ScheduleStore } from '../../../stores/schedule-store';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleTable } from '../schedule-table/schedule-table';
 import { ScheduleToolbar } from './schedule-toolbar';
 
@@ -48,7 +48,6 @@ describe('ScheduleToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        
         ButtonModule,
         ToolbarModule,
         TooltipModule,

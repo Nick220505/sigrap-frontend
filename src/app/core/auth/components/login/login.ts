@@ -9,7 +9,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { AuthStore } from '../../stores/auth-store';
+import { AuthStore } from '@core/auth/stores/auth-store';
 
 @Component({
   selector: 'app-login',
@@ -57,18 +57,19 @@ import { AuthStore } from '../../stores/auth-store';
             </div>
 
             <form (submit)="$event.preventDefault(); onSubmit()">
-              @let testCredentials = [
-                {
-                  role: 'Administrator',
-                  email: 'admin@sigrap.com',
-                  password: 'Admin123*',
-                },
-                {
-                  role: 'Employee',
-                  email: 'employee@sigrap.com',
-                  password: 'Employee123*',
-                },
-              ];
+              @let testCredentials =
+                [
+                  {
+                    role: 'Administrator',
+                    email: 'admin@sigrap.com',
+                    password: 'Admin123*',
+                  },
+                  {
+                    role: 'Employee',
+                    email: 'employee@sigrap.com',
+                    password: 'Employee123*',
+                  },
+                ];
 
               @let emailInvalid =
                 loginForm.email().invalid() && loginForm.email().touched();
@@ -174,8 +175,11 @@ import { AuthStore } from '../../stores/auth-store';
                     <i class="pi pi-info-circle text-primary"></i>
                     <div class="font-medium">Test Credentials</div>
                   </div>
-                  <div class="text-sm text-surface-600 dark:text-surface-300 mb-3">
-                    Use these accounts to explore each role. The admin credentials are prefilled above.
+                  <div
+                    class="text-sm text-surface-600 dark:text-surface-300 mb-3"
+                  >
+                    Use these accounts to explore each role. The admin
+                    credentials are prefilled above.
                   </div>
                   <div class="grid gap-3">
                     @for (cred of testCredentials; track cred.role) {
@@ -187,7 +191,9 @@ import { AuthStore } from '../../stores/auth-store';
                         >
                           {{ cred.role }}
                         </div>
-                        <div class="text-sm text-surface-600 dark:text-surface-300">
+                        <div
+                          class="text-sm text-surface-600 dark:text-surface-300"
+                        >
                           {{ cred.email }} / {{ cred.password }}
                         </div>
                       </div>

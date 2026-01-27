@@ -8,7 +8,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
 import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
-import { UserRole } from '../../../../../features/configuration/models/user.model';
+import { UserRole } from '@features/configuration/models/user.model';
 import { MenuItem } from './menu-item/menu-item';
 import { Menu } from './menu';
 

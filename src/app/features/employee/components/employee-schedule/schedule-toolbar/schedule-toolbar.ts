@@ -3,8 +3,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { ScheduleInfo } from '../../../models/schedule.model';
-import { ScheduleStore } from '../../../stores/schedule-store';
+import { ScheduleInfo } from '@features/employee/models/schedule.model';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleTable } from '../schedule-table/schedule-table';
 
 @Component({

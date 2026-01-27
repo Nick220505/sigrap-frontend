@@ -1,5 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
-import { AuditLogStore } from '../../stores/audit-log-store';
+import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditTable } from './audit-table/audit-table';
 import { AuditToolbar } from './audit-toolbar/audit-toolbar';
 

@@ -15,7 +15,7 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
-import { AuthStore } from '../../stores/auth-store';
+import { AuthStore } from '@core/auth/stores/auth-store';
 import { Login } from './login';
 
 interface MockAuthStore {

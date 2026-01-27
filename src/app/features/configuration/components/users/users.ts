@@ -1,5 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
-import { UserStore } from '../../stores/user-store';
+import { UserStore } from '@features/configuration/stores/user-store';
 import { UserDialog } from './user-dialog/user-dialog';
 import { UserTable } from './user-table/user-table';
 import { UserToolbar } from './user-toolbar/user-toolbar';

@@ -5,7 +5,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { CustomerStore } from '../../../stores/customer-store';
+import { CustomerStore } from '@features/customer/stores/customer-store';
 
 @Component({
   selector: 'app-customer-dialog',

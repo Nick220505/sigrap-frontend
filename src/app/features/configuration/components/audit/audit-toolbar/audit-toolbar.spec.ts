@@ -9,7 +9,7 @@ import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { AuditLogStore } from '../../../stores/audit-log-store';
+import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditTable } from '../audit-table/audit-table';
 import { AuditToolbar } from './audit-toolbar';
 

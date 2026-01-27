@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ScheduleStore } from '../../stores/schedule-store';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { EmployeeSchedule } from './employee-schedule';
 
 describe('EmployeeSchedule', () => {

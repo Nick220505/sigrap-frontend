@@ -2,7 +2,7 @@ import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { AuditLogStore } from '../../../stores/audit-log-store';
+import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 
 @Component({
   selector: 'app-audit-dialog',

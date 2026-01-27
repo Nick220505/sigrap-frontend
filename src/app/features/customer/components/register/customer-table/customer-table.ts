@@ -14,8 +14,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { CustomerInfo } from '../../../models/customer.model';
-import { CustomerStore } from '../../../stores/customer-store';
+import { CustomerInfo } from '@features/customer/models/customer.model';
+import { CustomerStore } from '@features/customer/stores/customer-store';
 
 @Component({
   selector: 'app-customer-table',

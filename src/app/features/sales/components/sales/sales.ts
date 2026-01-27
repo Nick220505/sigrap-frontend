@@ -1,5 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
-import { SaleStore } from '../../stores/sale-store';
+import { SaleStore } from '@features/sales/stores/sale-store';
 import { SalesDialog } from './sales-dialog/sales-dialog';
 import { SalesTable } from './sales-table/sales-table';
 import { SalesToolbar } from './sales-toolbar/sales-toolbar';

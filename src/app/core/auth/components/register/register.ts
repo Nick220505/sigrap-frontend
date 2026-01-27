@@ -10,7 +10,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
-import { AuthStore } from '../../stores/auth-store';
+import { AuthStore } from '@core/auth/stores/auth-store';
 
 @Component({
   selector: 'app-register',

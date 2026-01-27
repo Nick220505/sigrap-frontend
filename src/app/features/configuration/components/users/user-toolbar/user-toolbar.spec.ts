@@ -7,7 +7,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserStore } from '../../../stores/user-store';
+import { UserStore } from '@features/configuration/stores/user-store';
 import { UserTable } from '../user-table/user-table';
 import { UserToolbar } from './user-toolbar';
 
@@ -49,7 +49,6 @@ describe('UserToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        
         ButtonModule,
         ToolbarModule,
         TooltipModule,

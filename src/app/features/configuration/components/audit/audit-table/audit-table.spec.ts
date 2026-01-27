@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { PrimeNG } from 'primeng/config';
-import { AuditLogStore } from '../../../stores/audit-log-store';
+import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditTable } from './audit-table';
 
 const primengConfigStub: PrimeNG = new Proxy(
@@ -54,14 +54,7 @@ describe('AuditTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        
-        FormsModule,
-        DatePipe,
-        PaginatorModule,
-        NgClass,
-        AuditTable,
-      ],
+      imports: [FormsModule, DatePipe, PaginatorModule, NgClass, AuditTable],
       providers: [
         provideHttpClient(),
         MessageService,

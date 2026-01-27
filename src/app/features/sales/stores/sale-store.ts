@@ -21,7 +21,7 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
-import { ProductStore } from '../../inventory/stores/product-store';
+import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleData, SaleInfo } from '../models/sale.model';
 import { SaleService } from '../services/sale';
 

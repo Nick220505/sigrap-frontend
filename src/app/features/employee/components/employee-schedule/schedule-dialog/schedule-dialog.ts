@@ -8,8 +8,8 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { ScheduleData } from '../../../models/schedule.model';
-import { ScheduleStore } from '../../../stores/schedule-store';
+import { ScheduleData } from '@features/employee/models/schedule.model';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 
 @Component({
   selector: 'app-schedule-dialog',

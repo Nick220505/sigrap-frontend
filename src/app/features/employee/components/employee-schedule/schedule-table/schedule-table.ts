@@ -15,8 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { ScheduleInfo } from '../../../models/schedule.model';
-import { ScheduleStore } from '../../../stores/schedule-store';
+import { ScheduleInfo } from '@features/employee/models/schedule.model';
+import { ScheduleStore } from '@features/employee/stores/schedule-store';
 
 @Component({
   selector: 'app-schedule-table',

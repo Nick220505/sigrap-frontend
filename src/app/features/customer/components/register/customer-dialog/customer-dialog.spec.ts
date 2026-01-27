@@ -7,8 +7,8 @@ import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { CustomerInfo } from '../../../models/customer.model';
-import { CustomerStore } from '../../../stores/customer-store';
+import { CustomerInfo } from '@features/customer/models/customer.model';
+import { CustomerStore } from '@features/customer/stores/customer-store';
 import { CustomerDialog } from './customer-dialog';
 
 describe('CustomerDialog', () => {
@@ -53,7 +53,7 @@ describe('CustomerDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         CustomerDialog,
-        
+
         DialogModule,
         ButtonModule,
         InputTextModule,

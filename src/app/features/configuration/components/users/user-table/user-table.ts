@@ -15,8 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserInfo, UserRole } from '../../../models/user.model';
-import { UserStore } from '../../../stores/user-store';
+import { UserInfo, UserRole } from '@features/configuration/models/user.model';
+import { UserStore } from '@features/configuration/stores/user-store';
 
 @Component({
   selector: 'app-user-table',
