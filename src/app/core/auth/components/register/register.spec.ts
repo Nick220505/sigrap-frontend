@@ -19,7 +19,7 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
-import { PasswordField } from 'app/shared/components/password-field/password-field';
+import { PasswordField } from '@shared/components/password-field/password-field';
 import { AuthStore } from '../../stores/auth-store';
 import { Register } from './register';
 

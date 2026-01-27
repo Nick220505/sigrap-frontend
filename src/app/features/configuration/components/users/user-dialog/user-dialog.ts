@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormsModule, Validators } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
-import { PasswordField } from 'app/shared/components/password-field/password-field';
+import { PasswordField } from '@shared/components/password-field/password-field';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';

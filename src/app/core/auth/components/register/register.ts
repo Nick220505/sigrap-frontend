@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
-import { PasswordField } from 'app/shared/components/password-field/password-field';
+import { PasswordField } from '@shared/components/password-field/password-field';
 import { FormField, email, form, required } from '@angular/forms/signals';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
