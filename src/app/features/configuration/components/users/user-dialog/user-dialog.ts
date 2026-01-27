@@ -6,8 +6,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Field, email, form, required } from '@angular/forms/signals';
+import { FormControl, FormsModule, Validators } from '@angular/forms';
+import { FormField, email, form, required } from '@angular/forms/signals';
 import { PasswordField } from 'app/shared/components/password-field/password-field';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -28,7 +28,8 @@ import { UserStore } from '../../../stores/user-store';
     InputGroupModule,
     InputGroupAddonModule,
     PasswordField,
-    Field,
+    FormField,
+    FormsModule,
   ],
   template: `
     <p-dialog
@@ -57,7 +58,7 @@ import { UserStore } from '../../../stores/user-store';
               type="text"
               pInputText
               id="name"
-              [field]="userForm.name"
+              [formField]="userForm.name"
               placeholder="Enter user name"
               [class.ng-dirty]="nameControlInvalid"
               [class.ng-invalid]="nameControlInvalid"
@@ -86,7 +87,7 @@ import { UserStore } from '../../../stores/user-store';
               type="email"
               pInputText
               id="email"
-              [field]="userForm.email"
+              [formField]="userForm.email"
               placeholder="Enter user email"
               [class.ng-dirty]="emailControlInvalid"
               [class.ng-invalid]="emailControlInvalid"
@@ -115,7 +116,7 @@ import { UserStore } from '../../../stores/user-store';
               type="text"
               pInputText
               id="documentId"
-              [field]="userForm.documentId"
+              [formField]="userForm.documentId"
               placeholder="Enter ID number"
               fluid
             />
@@ -132,7 +133,7 @@ import { UserStore } from '../../../stores/user-store';
               type="text"
               pInputText
               id="phone"
-              [field]="userForm.phone"
+              [formField]="userForm.phone"
               placeholder="Enter phone number"
               fluid
             />
@@ -154,7 +155,8 @@ import { UserStore } from '../../../stores/user-store';
             </p-inputgroup-addon>
             <p-select
               id="role"
-              [field]="userForm.role"
+              [ngModel]="userForm.role().value()"
+              (ngModelChange)="userForm.role().value.set($event)"
               [options]="roleOptions"
               optionLabel="label"
               optionValue="value"

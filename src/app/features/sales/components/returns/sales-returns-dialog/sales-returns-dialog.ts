@@ -7,8 +7,9 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
-  Field,
+  FormField,
   applyEach,
   form,
   max,
@@ -50,7 +51,8 @@ import { SaleInfo } from '@features/sales/models/sale.model';
     CurrencyPipe,
     InputGroupModule,
     InputGroupAddonModule,
-    Field,
+    FormField,
+    FormsModule,
   ],
   template: `
     <p-dialog
@@ -74,7 +76,8 @@ import { SaleInfo } from '@features/sales/models/sale.model';
             @if (!viewMode()) {
               <p-select
                 id="originalSaleId"
-                [field]="returnForm.originalSaleId"
+                [ngModel]="returnForm.originalSaleId().value()"
+                (ngModelChange)="returnForm.originalSaleId().value.set($event)"
                 [options]="saleStore.entities()"
                 optionLabel="id"
                 optionValue="id"
@@ -142,7 +145,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
               @if (!viewMode()) {
                 <textarea
                   id="reason"
-                  [field]="returnForm.reason"
+                  [formField]="returnForm.reason"
                   rows="3"
                   class="w-full"
                   [class.ng-invalid]="reasonInvalid()"
@@ -206,7 +209,8 @@ import { SaleInfo } from '@features/sales/models/sale.model';
                   <td>
                     @if (!viewMode()) {
                       <p-inputNumber
-                        [field]="returnForm.items[idx].quantity"
+                        [ngModel]="returnForm.items[idx].quantity().value()"
+                        (ngModelChange)="returnForm.items[idx].quantity().value.set($event)"
                         [min]="0"
                         [max]="returnForm.items[idx].originalQuantity().value()"
                         [showButtons]="true"

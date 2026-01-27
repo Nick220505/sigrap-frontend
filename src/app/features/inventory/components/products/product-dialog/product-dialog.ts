@@ -1,5 +1,6 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
-import { Field, form, min, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
+import { FormField, form, min, required } from '@angular/forms/signals';
 import { ProductData } from '@features/inventory/models/product.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
@@ -23,7 +24,8 @@ import { TextareaModule } from 'primeng/textarea';
     SelectModule,
     InputGroupModule,
     InputGroupAddonModule,
-    Field,
+    FormField,
+    FormsModule,
   ],
   template: `
     <p-dialog
@@ -57,7 +59,7 @@ import { TextareaModule } from 'primeng/textarea';
               type="text"
               pInputText
               id="name"
-              [field]="productForm.name"
+              [formField]="productForm.name"
               placeholder="Enter product name"
               [class.ng-dirty]="nameInvalid"
               [class.ng-invalid]="nameInvalid"
@@ -83,7 +85,7 @@ import { TextareaModule } from 'primeng/textarea';
             <textarea
               rows="3"
               id="description"
-              [field]="productForm.description"
+              [formField]="productForm.description"
               placeholder="Enter a description (optional)"
               class="w-full"
               fluid
@@ -101,7 +103,8 @@ import { TextareaModule } from 'primeng/textarea';
             <label for="costPrice" class="font-bold">Cost Price</label>
             <p-inputNumber
               id="costPrice"
-              [field]="productForm.costPrice"
+              [ngModel]="productForm.costPrice().value()"
+              (ngModelChange)="productForm.costPrice().value.set($event)"
               placeholder="0"
               [min]="0"
               mode="currency"
@@ -134,7 +137,8 @@ import { TextareaModule } from 'primeng/textarea';
             <label for="salePrice" class="font-bold">Sale Price</label>
             <p-inputNumber
               id="salePrice"
-              [field]="productForm.salePrice"
+              [ngModel]="productForm.salePrice().value()"
+              (ngModelChange)="productForm.salePrice().value.set($event)"
               placeholder="0"
               [min]="0"
               mode="currency"
@@ -167,7 +171,8 @@ import { TextareaModule } from 'primeng/textarea';
             <label for="stock" class="font-bold">Stock</label>
             <p-inputNumber
               id="stock"
-              [field]="productForm.stock"
+              [ngModel]="productForm.stock().value()"
+              (ngModelChange)="productForm.stock().value.set($event)"
               placeholder="0"
               [min]="0"
               [step]="1"
@@ -200,7 +205,8 @@ import { TextareaModule } from 'primeng/textarea';
             >
             <p-inputNumber
               id="minimumStockThreshold"
-              [field]="productForm.minimumStockThreshold"
+              [ngModel]="productForm.minimumStockThreshold().value()"
+              (ngModelChange)="productForm.minimumStockThreshold().value.set($event)"
               placeholder="0"
               [min]="0"
               [step]="1"
@@ -228,7 +234,8 @@ import { TextareaModule } from 'primeng/textarea';
             </p-inputgroup-addon>
             <p-select
               id="category"
-              [field]="productForm.categoryId"
+              [ngModel]="productForm.categoryId().value()"
+              (ngModelChange)="productForm.categoryId().value.set($event)"
               [options]="categoryStore.entities()"
               optionLabel="name"
               optionValue="id"

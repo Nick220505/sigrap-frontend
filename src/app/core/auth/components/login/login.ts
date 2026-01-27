@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
-import { Field, email, form, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
+import { FormField, email, form, required } from '@angular/forms/signals';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +17,8 @@ import { AuthStore } from '../../stores/auth-store';
     ButtonModule,
     InputTextModule,
     PasswordModule,
-    Field,
+    FormField,
+    FormsModule,
     RouterModule,
     RippleModule,
     FloatingConfigurator,
@@ -87,7 +89,7 @@ import { AuthStore } from '../../stores/auth-store';
                       pInputText
                       id="email"
                       type="text"
-                      [field]="loginForm.email"
+                      [formField]="loginForm.email"
                       placeholder="Enter your email"
                       [class.ng-dirty]="emailInvalid"
                       [class.ng-invalid]="emailInvalid"
@@ -126,7 +128,8 @@ import { AuthStore } from '../../stores/auth-store';
                   ></i>
                   <p-password
                     id="password"
-                    [field]="loginForm.password"
+                    [ngModel]="loginForm.password().value()"
+                    (ngModelChange)="loginForm.password().value.set($event)"
                     placeholder="Enter your password"
                     toggleMask
                     styleClass="w-full"

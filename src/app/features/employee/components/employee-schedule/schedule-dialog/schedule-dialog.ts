@@ -1,5 +1,6 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
-import { Field, form, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -17,7 +18,8 @@ import { ScheduleStore } from '../../../stores/schedule-store';
     ButtonModule,
     InputTextModule,
     Select,
-    Field,
+    FormField,
+    FormsModule,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -52,7 +54,8 @@ import { ScheduleStore } from '../../../stores/schedule-store';
             </p-inputgroup-addon>
             <p-select
               id="userId"
-              [field]="scheduleForm.userId"
+              [ngModel]="scheduleForm.userId().value()"
+              (ngModelChange)="scheduleForm.userId().value.set($event)"
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
@@ -86,7 +89,8 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               </p-inputgroup-addon>
               <p-select
                 id="day"
-                [field]="scheduleForm.day"
+                [ngModel]="scheduleForm.day().value()"
+                (ngModelChange)="scheduleForm.day().value.set($event)"
                 [options]="[
                   { label: 'Monday', value: 'Monday' },
                   { label: 'Tuesday', value: 'Tuesday' },
@@ -126,7 +130,8 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               </p-inputgroup-addon>
               <p-select
                 id="type"
-                [field]="scheduleForm.type"
+                [ngModel]="scheduleForm.type().value()"
+                (ngModelChange)="scheduleForm.type().value.set($event)"
                 [options]="[
                   { label: 'Regular', value: 'Regular' },
                   { label: 'Overtime', value: 'Horas Extra' },
@@ -165,7 +170,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               <input
                 pInputText
                 id="startTime"
-                [field]="scheduleForm.startTime"
+                [formField]="scheduleForm.startTime"
                 type="time"
                 [class.ng-dirty]="startTimeInvalid"
                 [class.ng-invalid]="startTimeInvalid"
@@ -194,7 +199,7 @@ import { ScheduleStore } from '../../../stores/schedule-store';
               <input
                 pInputText
                 id="endTime"
-                [field]="scheduleForm.endTime"
+                [formField]="scheduleForm.endTime"
                 type="time"
                 [class.ng-dirty]="endTimeInvalid"
                 [class.ng-invalid]="endTimeInvalid"

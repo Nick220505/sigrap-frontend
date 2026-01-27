@@ -1,5 +1,6 @@
 import { Component, effect, inject, signal } from '@angular/core';
-import { Field, email, form, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
+import { FormField, email, form, required } from '@angular/forms/signals';
 import { SupplierData } from '@features/supplier/models/supplier.model';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +21,8 @@ import { TextareaModule } from 'primeng/textarea';
     InputGroupAddonModule,
     TextareaModule,
     InputNumberModule,
-    Field,
+    FormField,
+    FormsModule,
   ],
   template: `
     <p-dialog
@@ -53,7 +55,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="name"
                   type="text"
                   pInputText
-                  [field]="supplierForm.name"
+                  [formField]="supplierForm.name"
                   placeholder="Supplier name"
                   [class.ng-dirty]="nameInvalid"
                   [class.ng-invalid]="nameInvalid"
@@ -79,7 +81,7 @@ import { TextareaModule } from 'primeng/textarea';
                 </p-inputgroup-addon>
                 <textarea
                   id="address"
-                  [field]="supplierForm.address"
+                  [formField]="supplierForm.address"
                   [rows]="2"
                   placeholder="Full address"
                   class="w-full"
@@ -104,7 +106,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="contactPerson"
                   type="text"
                   pInputText
-                  [field]="supplierForm.contactPerson"
+                  [formField]="supplierForm.contactPerson"
                   placeholder="Contact name"
                   fluid
                 />
@@ -127,7 +129,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="email"
                   type="email"
                   pInputText
-                  [field]="supplierForm.email"
+                  [formField]="supplierForm.email"
                   placeholder="email@example.com"
                   [class.ng-dirty]="emailInvalid"
                   [class.ng-invalid]="emailInvalid"
@@ -155,7 +157,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="phone"
                   type="text"
                   pInputText
-                  [field]="supplierForm.phone"
+                  [formField]="supplierForm.phone"
                   placeholder="Phone number"
                   fluid
                 />
@@ -176,7 +178,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="alternativePhone"
                   type="text"
                   pInputText
-                  [field]="supplierForm.alternativePhone"
+                  [formField]="supplierForm.alternativePhone"
                   placeholder="Alternative phone"
                   fluid
                 />
@@ -195,7 +197,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="website"
                   type="text"
                   pInputText
-                  [field]="supplierForm.website"
+                  [formField]="supplierForm.website"
                   placeholder="www.example.com"
                   fluid
                 />
@@ -217,7 +219,7 @@ import { TextareaModule } from 'primeng/textarea';
                 </p-inputgroup-addon>
                 <textarea
                   id="productsProvided"
-                  [field]="supplierForm.productsProvided"
+                  [formField]="supplierForm.productsProvided"
                   [rows]="2"
                   placeholder="Describe the products or services offered"
                   class="w-full"
@@ -237,7 +239,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="paymentTerms"
                   type="text"
                   pInputText
-                  [field]="supplierForm.paymentTerms"
+                  [formField]="supplierForm.paymentTerms"
                   placeholder="Payment terms"
                   fluid
                 />
@@ -256,7 +258,8 @@ import { TextareaModule } from 'primeng/textarea';
                 </p-inputgroup-addon>
                 <p-inputNumber
                   id="averageDeliveryTime"
-                  [field]="supplierForm.averageDeliveryTime"
+                  [ngModel]="supplierForm.averageDeliveryTime().value()"
+                  (ngModelChange)="supplierForm.averageDeliveryTime().value.set($event)"
                   [showButtons]="true"
                   [min]="1"
                   buttonLayout="horizontal"

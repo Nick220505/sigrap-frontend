@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
-import { Field, form, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
+import { form, required } from '@angular/forms/signals';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ButtonModule } from 'primeng/button';
@@ -14,7 +15,7 @@ import { Select } from 'primeng/select';
     DialogModule,
     ButtonModule,
     Select,
-    Field,
+    FormsModule,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -45,7 +46,8 @@ import { Select } from 'primeng/select';
             </p-inputgroup-addon>
             <p-select
               id="userId"
-              [field]="clockInForm.userId"
+              [ngModel]="clockInForm.userId().value()"
+              (ngModelChange)="clockInForm.userId().value.set($event)"
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"

@@ -7,8 +7,8 @@ import {
   untracked,
 } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
-  Field,
   applyEach,
   form,
   max,
@@ -41,7 +41,7 @@ import { SaleStore } from '../../../stores/sale-store';
     TableModule,
     InputGroupModule,
     InputGroupAddonModule,
-    Field,
+    FormsModule,
     CurrencyPipe,
   ],
   template: `
@@ -68,7 +68,8 @@ import { SaleStore } from '../../../stores/sale-store';
               </p-inputgroup-addon>
               <p-select
                 id="customerId"
-                [field]="saleForm.customerId"
+                [ngModel]="saleForm.customerId().value()"
+                (ngModelChange)="saleForm.customerId().value.set($event)"
                 [options]="this.customerStore.entities()"
                 optionLabel="fullName"
                 optionValue="id"
@@ -90,7 +91,8 @@ import { SaleStore } from '../../../stores/sale-store';
               </p-inputgroup-addon>
               <p-select
                 id="employeeId"
-                [field]="saleForm.employeeId"
+                [ngModel]="saleForm.employeeId().value()"
+                (ngModelChange)="saleForm.employeeId().value.set($event)"
                 [options]="this.userStore.entities()"
                 optionLabel="name"
                 optionValue="id"
@@ -140,7 +142,8 @@ import { SaleStore } from '../../../stores/sale-store';
                 <tr>
                   <td class="p-2">
                     <p-select
-                      [field]="saleForm.items[idx].productId"
+                      [ngModel]="saleForm.items[idx].productId().value()"
+                      (ngModelChange)="saleForm.items[idx].productId().value.set($event)"
                       [options]="this.productStore.entities()"
                       optionLabel="name"
                       optionValue="id"
@@ -155,7 +158,8 @@ import { SaleStore } from '../../../stores/sale-store';
                   </td>
                   <td class="p-2">
                     <p-inputNumber
-                      [field]="saleForm.items[idx].quantity"
+                      [ngModel]="saleForm.items[idx].quantity().value()"
+                      (ngModelChange)="saleForm.items[idx].quantity().value.set($event)"
                       [min]="1"
                       [showButtons]="true"
                       buttonLayout="horizontal"
@@ -168,7 +172,8 @@ import { SaleStore } from '../../../stores/sale-store';
                   </td>
                   <td class="p-2">
                     <p-inputNumber
-                      [field]="saleForm.items[idx].unitPrice"
+                      [ngModel]="saleForm.items[idx].unitPrice().value()"
+                      (ngModelChange)="saleForm.items[idx].unitPrice().value.set($event)"
                       [readonly]="true"
                       [disabled]="true"
                       maxFractionDigits="0"
@@ -240,7 +245,8 @@ import { SaleStore } from '../../../stores/sale-store';
                             @if (!viewMode()) {
                               <p-inputNumber
                                 id="discountPercent"
-                                [field]="saleForm.discountPercent"
+                                [ngModel]="saleForm.discountPercent().value()"
+                                (ngModelChange)="saleForm.discountPercent().value.set($event)"
                                 suffix="%"
                                 [min]="0"
                                 [max]="100"

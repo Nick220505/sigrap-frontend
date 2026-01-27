@@ -1,5 +1,5 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
-import { Field, email, form, required } from '@angular/forms/signals';
+import { FormField, email, form, required } from '@angular/forms/signals';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -15,7 +15,7 @@ import { CustomerStore } from '../../../stores/customer-store';
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
-    Field,
+    FormField,
   ],
   template: `
     <p-dialog
@@ -55,7 +55,7 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="fullName"
-                  [field]="customerForm.fullName"
+                  [formField]="customerForm.fullName"
                   placeholder="Enter full name"
                   [class.ng-dirty]="fullNameInvalid"
                   [class.ng-invalid]="fullNameInvalid"
@@ -92,7 +92,7 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="documentId"
-                  [field]="customerForm.documentId"
+                  [formField]="customerForm.documentId"
                   placeholder="Enter document number"
                   [class.ng-dirty]="documentIdInvalid"
                   [class.ng-invalid]="documentIdInvalid"
@@ -121,7 +121,7 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="phoneNumber"
-                  [field]="customerForm.phoneNumber"
+                  [formField]="customerForm.phoneNumber"
                   placeholder="Enter phone number (optional)"
                   fluid
                 />
@@ -144,7 +144,7 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="email"
                   pInputText
                   id="email"
-                  [field]="customerForm.email"
+                  [formField]="customerForm.email"
                   placeholder="Enter email"
                   [class.ng-dirty]="emailInvalid"
                   [class.ng-invalid]="emailInvalid"
@@ -178,7 +178,7 @@ import { CustomerStore } from '../../../stores/customer-store';
                   type="text"
                   pInputText
                   id="address"
-                  [field]="customerForm.address"
+                  [formField]="customerForm.address"
                   placeholder="Enter address"
                   [class.ng-dirty]="addressInvalid"
                   [class.ng-invalid]="addressInvalid"

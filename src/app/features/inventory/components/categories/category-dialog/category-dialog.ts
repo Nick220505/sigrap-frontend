@@ -1,5 +1,5 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
-import { Field, form, required } from '@angular/forms/signals';
+import { FormField, form, required } from '@angular/forms/signals';
 import { CategoryData } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +16,7 @@ import { TextareaModule } from 'primeng/textarea';
     ButtonModule,
     InputTextModule,
     TextareaModule,
-    Field,
+    FormField,
     InputGroupModule,
     InputGroupAddonModule,
   ],
@@ -52,7 +52,7 @@ import { TextareaModule } from 'primeng/textarea';
               type="text"
               pInputText
               id="name"
-              [field]="categoryForm.name"
+              [formField]="categoryForm.name"
               placeholder="Enter category name"
               [class.ng-dirty]="nameInvalid"
               [class.ng-invalid]="nameInvalid"
@@ -78,7 +78,7 @@ import { TextareaModule } from 'primeng/textarea';
             <textarea
               rows="3"
               id="description"
-              [field]="categoryForm.description"
+              [formField]="categoryForm.description"
               placeholder="Enter a description (optional)"
               class="w-full"
               fluid

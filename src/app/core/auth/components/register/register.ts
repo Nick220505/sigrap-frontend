@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { PasswordField } from 'app/shared/components/password-field/password-field';
-import { Field, email, form, required } from '@angular/forms/signals';
+import { FormField, email, form, required } from '@angular/forms/signals';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -24,7 +24,7 @@ import { AuthStore } from '../../stores/auth-store';
     InputIconModule,
     DividerModule,
     PasswordField,
-    Field,
+    FormField,
   ],
   template: `
     <app-floating-configurator />
@@ -79,7 +79,7 @@ import { AuthStore } from '../../stores/auth-store';
                       pInputText
                       id="name"
                       type="text"
-                      [field]="registerForm.name"
+                      [formField]="registerForm.name"
                       placeholder="Enter your full name"
                       [class.ng-dirty]="nameControlInvalid"
                       [class.ng-invalid]="nameControlInvalid"
@@ -115,7 +115,7 @@ import { AuthStore } from '../../stores/auth-store';
                       pInputText
                       id="email"
                       type="text"
-                      [field]="registerForm.email"
+                      [formField]="registerForm.email"
                       placeholder="Enter your email"
                       [class.ng-dirty]="emailControlInvalid"
                       [class.ng-invalid]="emailControlInvalid"

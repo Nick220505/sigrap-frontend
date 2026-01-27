@@ -6,7 +6,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { Field, applyEach, form, min, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
+import { applyEach, form, min, required } from '@angular/forms/signals';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { PurchaseOrderData } from '@features/supplier/models/purchase-order.model';
@@ -37,7 +38,7 @@ import { TooltipModule } from 'primeng/tooltip';
     TooltipModule,
     InputGroupModule,
     InputGroupAddonModule,
-    Field,
+    FormsModule,
     CurrencyPipe,
   ],
   template: `
@@ -71,7 +72,8 @@ import { TooltipModule } from 'primeng/tooltip';
               </p-inputgroup-addon>
               <p-select
                 id="supplierId"
-                [field]="orderForm.supplierId"
+                [ngModel]="orderForm.supplierId().value()"
+                (ngModelChange)="orderForm.supplierId().value.set($event)"
                 [options]="supplierStore.entities()"
                 optionLabel="name"
                 optionValue="id"
@@ -102,7 +104,8 @@ import { TooltipModule } from 'primeng/tooltip';
             <p-datePicker
               id="deliveryDate"
               inputId="deliveryDate"
-              [field]="orderForm.deliveryDate"
+              [ngModel]="orderForm.deliveryDate().value()"
+              (ngModelChange)="orderForm.deliveryDate().value.set($event)"
               [showIcon]="true"
               appendTo="body"
               [showOnFocus]="true"
@@ -152,7 +155,8 @@ import { TooltipModule } from 'primeng/tooltip';
                 <tr>
                   <td class="p-2">
                     <p-select
-                      [field]="orderForm.items[idx].productId"
+                      [ngModel]="orderForm.items[idx].productId().value()"
+                      (ngModelChange)="orderForm.items[idx].productId().value.set($event)"
                       [options]="productStore.entities()"
                       optionLabel="name"
                       optionValue="id"
@@ -167,7 +171,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   </td>
                   <td class="p-2">
                     <p-inputNumber
-                      [field]="orderForm.items[idx].quantity"
+                      [ngModel]="orderForm.items[idx].quantity().value()"
+                      (ngModelChange)="orderForm.items[idx].quantity().value.set($event)"
                       [min]="1"
                       [showButtons]="true"
                       buttonLayout="horizontal"
@@ -180,7 +185,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   </td>
                   <td class="p-2">
                     <p-inputNumber
-                      [field]="orderForm.items[idx].unitPrice"
+                      [ngModel]="orderForm.items[idx].unitPrice().value()"
+                      (ngModelChange)="orderForm.items[idx].unitPrice().value.set($event)"
                       mode="currency"
                       (onInput)="updateItemSubtotal(idx)"
                       maxFractionDigits="0"
