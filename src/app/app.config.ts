@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
         scrollPositionRestoration: 'enabled',
       }),
-      withViewTransitions(),
+      withViewTransitions({ skipInitialTransition: true }),
     ),
     provideHttpClient(withInterceptors([authInterceptor])),
     providePrimeNG({
