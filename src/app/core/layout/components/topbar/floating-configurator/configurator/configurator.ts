@@ -10,10 +10,15 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LayoutService } from '@core/layout/services/layout';
-import { $t, updatePreset, updateSurfacePalette } from '@primeng/themes';
-import Aura from '@primeng/themes/aura';
-import Lara from '@primeng/themes/lara';
-import Nora from '@primeng/themes/nora';
+import {
+  definePreset,
+  updatePreset,
+  updateSurfacePalette,
+  usePreset,
+} from '@primeuix/themes';
+import Aura from '@primeuix/themes/aura';
+import Lara from '@primeuix/themes/lara';
+import Nora from '@primeuix/themes/nora';
 import { PrimeNG } from 'primeng/config';
 import { SelectButtonModule } from 'primeng/selectbutton';
 
@@ -523,11 +528,13 @@ export class Configurator implements OnInit {
     const surfacePalette = this.surfaces.find(
       (s) => s.name === this.selectedSurfaceColor(),
     )?.palette;
-    $t()
-      .preset(preset)
-      .preset(this.getPresetExt())
-      .surfacePalette(surfacePalette)
-      .use({ useDefaultOptions: true });
+
+    const combinedPreset = definePreset(preset, this.getPresetExt());
+    usePreset(combinedPreset);
+
+    if (surfacePalette) {
+      updateSurfacePalette(surfacePalette);
+    }
   }
 
   onMenuModeChange(event: string) {

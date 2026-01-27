@@ -5,7 +5,7 @@ import {
   withInMemoryScrolling,
   withViewTransitions,
 } from '@angular/router';
-import Aura from '@primeng/themes/aura';
+import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
