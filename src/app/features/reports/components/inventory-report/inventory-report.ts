@@ -200,7 +200,7 @@ interface ChartTooltipContext {
                 styleClass="p-button-sm p-button-warning mr-1"
               ></p-button>
               <p-button
-                label="Critical"
+                [label]="'reports.critical' | translate"
                 [outlined]="selectedStockView() !== 'critical'"
                 [raised]="selectedStockView() === 'critical'"
                 (onClick)="changeView('critical')"
@@ -521,7 +521,7 @@ export class InventoryReport implements OnInit {
       labels: categoryData.map((item) => item.category.name),
       datasets: [
         {
-          label: 'Products by Category',
+          label: this.translateService.instant('reports.chartLabels.productsByCategory'),
           data: categoryData.map((item) => item.productCount),
           backgroundColor: [
             '#FF6384',
@@ -547,12 +547,12 @@ export class InventoryReport implements OnInit {
       labels: categoryData.map((item) => item.category.name),
       datasets: [
         {
-          label: 'Total Stock',
+          label: this.translateService.instant('reports.chartLabels.totalStock'),
           data: categoryData.map((item) => item.totalStock),
           backgroundColor: '#42A5F5',
         },
         {
-          label: 'Products on Alert',
+          label: this.translateService.instant('reports.chartLabels.productsOnAlert'),
           data: categoryData.map((item) => item.lowStockCount),
           backgroundColor: '#FFA726',
         },
@@ -586,9 +586,9 @@ export class InventoryReport implements OnInit {
         callbacks: {
           label: (context: ChartTooltipContext) => {
             if (typeof context.parsed === 'number') {
-              return `${context.dataset.label}: ${context.parsed} units`;
+              return `${context.dataset.label}: ${context.parsed} ${this.translateService.instant('reports.chartLabels.units')}`;
             }
-            return `${context.dataset.label}: ${context.parsed.y} units`;
+            return `${context.dataset.label}: ${context.parsed.y} ${this.translateService.instant('reports.chartLabels.units')}`;
           },
         },
       },
@@ -600,7 +600,7 @@ export class InventoryReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Units',
+          text: this.translateService.instant('reports.chartLabels.units'),
         },
       },
     },
@@ -667,11 +667,11 @@ export class InventoryReport implements OnInit {
   getStockStatusLabel(status: 'normal' | 'low' | 'critical'): string {
     switch (status) {
       case 'critical':
-        return 'Critical';
+        return this.translateService.instant('reports.stockStatus.critical');
       case 'low':
-        return 'Low';
+        return this.translateService.instant('reports.stockStatus.low');
       default:
-        return 'Normal';
+        return this.translateService.instant('reports.stockStatus.normal');
     }
   }
 

@@ -28,7 +28,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
   template: `
     <p-dialog
       [header]="
-        scheduleStore.selectedSchedule() ? 'Edit Schedule' : 'New Schedule'
+        scheduleStore.selectedSchedule() ? ('common.dialogs.editSchedule' | translate) : ('common.dialogs.newSchedule' | translate)
       "
       [visible]="scheduleStore.dialogVisible()"
       (visibleChange)="

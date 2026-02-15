@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -36,13 +36,13 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Name' },
-        { field: 'description', header: 'Description' },
-        { field: 'costPrice', header: 'Cost Price' },
-        { field: 'salePrice', header: 'Sale Price' },
-        { field: 'stock', header: 'Stock' },
-        { field: 'minimumStockThreshold', header: 'Minimum Stock' },
-        { field: 'category.name', header: 'Category' },
+        { field: 'name', header: ('common.tableHeaders.name' | translate) },
+        { field: 'description', header: ('common.tableHeaders.description' | translate) },
+        { field: 'costPrice', header: ('common.tableHeaders.costPrice' | translate) },
+        { field: 'salePrice', header: ('common.tableHeaders.salePrice' | translate) },
+        { field: 'stock', header: ('common.tableHeaders.stock' | translate) },
+        { field: 'minimumStockThreshold', header: ('common.tableHeaders.minimumStock' | translate) },
+        { field: 'category.name', header: ('common.tableHeaders.category' | translate) },
       ];
 
     <p-table
@@ -54,7 +54,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+      [currentPageReportTemplate]="'common.pagination.showingProducts' | translate"
       [globalFilterFields]="['name', 'description', 'category.name', 'stock']"
       [tableStyle]="{ 'min-width': '85rem' }"
       rowHover
@@ -103,8 +103,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -166,7 +166,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="productStore.openProductDialog(product)"
-              pTooltip="Edit product"
+              [pTooltip]="'inventory.tooltips.editProduct' | translate"
               tooltipPosition="top"
               [disabled]="productStore.loading()"
             />
@@ -177,7 +177,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="deleteProduct(product)"
-              pTooltip="Delete product"
+              [pTooltip]="'inventory.tooltips.deleteProduct' | translate"
               tooltipPosition="top"
               [disabled]="productStore.loading()"
             />
@@ -192,7 +192,7 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading products:</strong>
+                    <strong>{{ 'common.errors.errorLoadingProducts' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -206,7 +206,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No products found.</p>
+              <p>{{ 'common.emptyStates.noProductsFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -216,6 +216,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class ProductTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly productStore = inject(ProductStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -236,8 +237,8 @@ export class ProductTable {
 
   deleteProduct({ id, name }: ProductInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete product',
-      message: `Are you sure you want to delete the product <b>${name}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'product' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'product', name }),
       accept: () => this.productStore.delete(id),
     });
   }

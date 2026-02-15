@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { CustomerStore } from '@features/customer/stores/customer-store';
@@ -10,13 +10,14 @@ import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
+import { Subscription } from 'rxjs';
 
 interface ChartDataset {
   labels: string[];
@@ -307,7 +308,7 @@ interface ProductWithStock {
               <ng-template pTemplate="body" let-sale>
                 <tr>
                   <td>{{ formatDateString(sale.createdAt) }}</td>
-                  <td>{{ sale.customer?.fullName || 'Direct Sale' }}</td>
+                  <td>{{ sale.customer?.fullName || translateService.instant('dashboard.directSale') }}</td>
                   <td>{{ sale.items.length }}</td>
                   <td>
                     {{
@@ -369,8 +370,9 @@ interface ProductWithStock {
     </div>
   `,
 })
-export class Dashboard implements OnInit {
+export class Dashboard implements OnInit, OnDestroy {
   private router = inject(Router);
+  public translateService = inject(TranslateService);
   public productStore = inject(ProductStore);
   public categoryStore = inject(CategoryStore);
   public saleStore = inject(SaleStore);
@@ -381,6 +383,7 @@ export class Dashboard implements OnInit {
   public userStore = inject(UserStore);
   public attendanceStore = inject(AttendanceStore);
 
+  private langChangeSubscription?: Subscription;
   today = new Date();
 
   isLoading = computed(() => {
@@ -571,7 +574,7 @@ export class Dashboard implements OnInit {
       ),
       datasets: [
         {
-          label: 'Units Sold',
+          label: this.translateService.instant('dashboard.unitsSold'),
           data: topProducts.map((product) => product.quantity),
           backgroundColor: [
             '#FF6384',
@@ -620,7 +623,7 @@ export class Dashboard implements OnInit {
       labels,
       datasets: [
         {
-          label: 'Sales',
+          label: this.translateService.instant('dashboard.sales'),
           data: salesData,
           borderColor: '#42A5F5',
           backgroundColor: 'rgba(66, 165, 245, 0.2)',
@@ -628,7 +631,7 @@ export class Dashboard implements OnInit {
           tension: 0.4,
         },
         {
-          label: 'Profit',
+          label: this.translateService.instant('dashboard.profit'),
           data: profitData,
           borderColor: '#66BB6A',
           backgroundColor: 'rgba(102, 187, 106, 0.2)',
@@ -666,7 +669,7 @@ export class Dashboard implements OnInit {
       labels: categories.map((cat) => this.truncateText(cat.name, 15)),
       datasets: [
         {
-          label: 'Units in Stock',
+          label: this.translateService.instant('dashboard.unitsInStock'),
           data: categories.map((cat) => cat.totalStock),
           backgroundColor: '#26C6DA',
         },
@@ -716,7 +719,7 @@ export class Dashboard implements OnInit {
     const data = [...topCustomers.map((c) => c.totalAmount)];
 
     if (othersTotal > 0) {
-      labels.push('Others');
+      labels.push(this.translateService.instant('dashboard.others'));
       data.push(othersTotal);
     }
 
@@ -724,7 +727,7 @@ export class Dashboard implements OnInit {
       labels,
       datasets: [
         {
-          label: 'Sales by Customer',
+          label: this.translateService.instant('dashboard.salesByCustomer'),
           data,
           backgroundColor: [
             '#FF7043',
@@ -752,7 +755,7 @@ export class Dashboard implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount ($)',
+          text: this.translateService.instant('dashboard.amountAxis'),
         },
       },
     },
@@ -781,7 +784,7 @@ export class Dashboard implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Units',
+          text: this.translateService.instant('dashboard.units'),
         },
       },
     },
@@ -799,6 +802,43 @@ export class Dashboard implements OnInit {
 
   ngOnInit() {
     this.refreshData();
+    
+    // Subscribe to language changes to update chart labels
+    this.langChangeSubscription = this.translateService.onLangChange.subscribe(() => {
+      // Update chart options with new translations
+      this.salesVsProfitChartOptions = {
+        ...this.salesVsProfitChartOptions,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: this.translateService.instant('dashboard.amountAxis'),
+            },
+          },
+        },
+      };
+      
+      this.barChartOptions = {
+        ...this.barChartOptions,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: this.translateService.instant('dashboard.units'),
+            },
+          },
+        },
+      };
+      
+      // Trigger recomputation of chart data by updating a dependency
+      // The computed signals will automatically recalculate with new translations
+    });
+  }
+
+  ngOnDestroy() {
+    this.langChangeSubscription?.unsubscribe();
   }
 
   refreshData() {

@@ -37,7 +37,128 @@
     "clearAllFilters": "Limpiar todos los filtros",
     "filterBy": "Filtrar por {{field}}",
     "addProduct": "Agregar Producto",
-    "selectLanguage": "Seleccionar Idioma"
+    "selectLanguage": "Seleccionar Idioma",
+    "tooltips": {
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "view": "Ver",
+      "viewDetails": "Ver detalles",
+      "exportPDF": "Exportar a PDF",
+      "clockOut": "Registrar salida",
+      "filterBy": "Filtrar por {{field}}"
+    },
+    "tableHeaders": {
+      "id": "ID",
+      "name": "Nombre",
+      "description": "Descripción",
+      "createdDate": "Fecha de Creación",
+      "deliveryDate": "Fecha de Entrega",
+      "supplier": "Proveedor",
+      "total": "Total",
+      "customer": "Cliente",
+      "baseTotal": "Total Base",
+      "discount": "Descuento",
+      "tax": "Impuesto",
+      "finalAmount": "Monto Final",
+      "date": "Fecha",
+      "originalSale": "Venta Original",
+      "employee": "Empleado",
+      "costPrice": "Precio de Costo",
+      "salePrice": "Precio de Venta",
+      "stock": "Stock",
+      "minimumStock": "Stock Mínimo",
+      "category": "Categoría",
+      "day": "Día",
+      "startTime": "Hora de Inicio",
+      "endTime": "Hora de Fin",
+      "type": "Tipo",
+      "clockIn": "Entrada",
+      "clockOut": "Salida",
+      "hoursWorked": "Horas Trabajadas",
+      "status": "Estado",
+      "amount": "Monto",
+      "reason": "Razón",
+      "contact": "Contacto",
+      "email": "Correo",
+      "phone": "Teléfono"
+    },
+    "confirmations": {
+      "deleteHeader": "Eliminar {{item}}",
+      "deleteHeaderPlural": "Eliminar {{items}}",
+      "deleteMessage": "¿Está seguro de que desea eliminar {{item}} <b>{{name}}</b>?",
+      "deleteMessagePlural": "¿Está seguro de que desea eliminar los {{count}} {{items}} seleccionados?",
+      "clockOutHeader": "Registrar Salida",
+      "clockOutMessage": "¿Está seguro de que desea registrar la salida de <b>{{name}}</b>?",
+      "operationNotAllowedHeader": "Operación No Permitida",
+      "draftOnlyMessage": "Solo se pueden eliminar órdenes en estado Borrador."
+    },
+    "pagination": {
+      "showingOrders": "Mostrando {first} a {last} de {totalRecords} órdenes",
+      "showingSuppliers": "Mostrando {first} a {last} de {totalRecords} proveedores",
+      "showingSales": "Mostrando {first} a {last} de {totalRecords} ventas",
+      "showingReturns": "Mostrando {first} a {last} de {totalRecords} devoluciones",
+      "showingProducts": "Mostrando {first} a {last} de {totalRecords} productos",
+      "showingCategories": "Mostrando {first} a {last} de {totalRecords} categorías",
+      "showingSchedules": "Mostrando {first} a {last} de {totalRecords} horarios",
+      "showingRecords": "Mostrando {first} a {last} de {totalRecords} registros"
+    },
+    "tableTitles": {
+      "employeeSchedules": "Horarios de Empleados",
+      "employeeAttendanceRecords": "Registros de Asistencia de Empleados",
+      "auditLog": "Registro de Auditoría"
+    },
+    "errors": {
+      "errorLoadingOrders": "Error al cargar órdenes:",
+      "errorLoadingSuppliers": "Error al cargar proveedores:",
+      "errorLoadingSales": "Error al cargar ventas:",
+      "errorLoadingReturns": "Error al cargar devoluciones:",
+      "errorLoadingProducts": "Error al cargar productos:",
+      "errorLoadingCategories": "Error al cargar categorías:",
+      "errorLoadingSchedules": "Error al cargar horarios:",
+      "errorLoadingRecords": "Error al cargar registros:",
+      "errorLoadingAuditLogs": "Error al cargar registros de auditoría:",
+      "errorLoadingUsers": "Error al cargar usuarios:"
+    },
+    "emptyStates": {
+      "noOrdersFound": "No se encontraron órdenes.",
+      "noSuppliersFound": "No se encontraron proveedores.",
+      "noSalesFound": "No se encontraron ventas.",
+      "noReturnsFound": "No se encontraron devoluciones.",
+      "noProductsFound": "No se encontraron productos.",
+      "noCategoriesFound": "No se encontraron categorías.",
+      "noSchedulesFound": "No se encontraron horarios.",
+      "noAttendanceRecordsFound": "No se encontraron registros de asistencia.",
+      "noAuditLogsFound": "No se encontraron registros de auditoría.",
+      "noUsersFound": "No se encontraron usuarios."
+    },
+    "statuses": {
+      "draft": "Borrador",
+      "submitted": "Enviado",
+      "confirmed": "Confirmado",
+      "cancelled": "Cancelado",
+      "present": "Presente",
+      "late": "Tarde",
+      "absent": "Ausente",
+      "earlyDeparture": "Salida Temprana",
+      "onLeave": "De Permiso",
+      "regular": "Regular",
+      "overtime": "Horas Extra",
+      "holiday": "Festivo"
+    },
+    "dialogs": {
+      "viewOrder": "Ver Orden #{{id}}",
+      "editOrder": "Editar Orden #{{id}}",
+      "registerNewOrder": "Registrar Nueva Orden",
+      "registerNewSale": "Registrar Nueva Venta",
+      "viewSale": "Venta #{{id}}",
+      "editProduct": "Editar Producto",
+      "createProduct": "Crear Producto",
+      "editCategory": "Editar Categoría",
+      "createCategory": "Crear Categoría",
+      "editSchedule": "Editar Horario",
+      "newSchedule": "Nuevo Horario",
+      "descriptionPlaceholder": "Ingrese una descripción (opcional)"
+    }
   },
   "dashboard": {
     "title": "Panel",
@@ -62,12 +183,19 @@
     "category": "Categoría",
     "customer": "Cliente",
     "amount": "Monto",
+    "amountAxis": "Monto ($)",
     "supplier": "Proveedor",
     "orderDate": "Fecha de Orden",
     "viewAll": "Ver Todo",
     "sales": "Ventas",
+    "salesByCustomer": "Ventas por Cliente",
     "profit": "Ganancias",
     "revenue": "Ingresos",
+    "directSale": "Venta Directa",
+    "units": "Unidades",
+    "unitsSold": "Unidades Vendidas",
+    "unitsInStock": "Unidades en Stock",
+    "others": "Otros",
     "noCriticalStock": "No hay productos con stock crítico.",
     "noRecentSales": "No hay ventas recientes."
   },
@@ -121,7 +249,23 @@
     "position": "Posición",
     "qtySold": "Cant. Vendida",
     "totalAmount": "Monto Total",
-    "percentOfTotal": "% del Total"
+    "percentOfTotal": "% del Total",
+    "critical": "Crítico",
+    "stockStatus": {
+      "normal": "Normal",
+      "low": "Bajo",
+      "critical": "Crítico"
+    },
+    "chartLabels": {
+      "productsByCategory": "Productos por Categoría",
+      "totalStock": "Stock Total",
+      "productsOnAlert": "Productos en Alerta",
+      "units": "Unidades"
+    },
+    "tooltips": {
+      "exportPDF": "Exportar reporte a PDF",
+      "applyFilter": "Aplicar filtro de fecha"
+    }
   },
   "inventory": {
     "products": {
@@ -139,6 +283,19 @@
       "retryButton": "Reintentar",
       "searchPlaceholder": "Buscar...",
       "categoryNamePlaceholder": "Ingrese el nombre de la categoría"
+    },
+    "tooltips": {
+      "createProduct": "Crear nuevo producto",
+      "deleteProducts": "Eliminar productos seleccionados",
+      "exportProducts": "Exportar productos a CSV",
+      "editProduct": "Editar producto",
+      "deleteProduct": "Eliminar producto",
+      "createCategory": "Crear nueva categoría",
+      "deleteCategories": "Eliminar categorías seleccionadas",
+      "exportCategories": "Exportar categorías a CSV",
+      "editCategory": "Editar categoría",
+      "deleteCategory": "Eliminar categoría",
+      "filterBy": "Filtrar por {{field}}"
     },
     "productsLabel": "Productos",
     "categoriesLabel": "Categorías",
@@ -192,6 +349,21 @@
       "searchPlaceholder": "Buscar...",
       "selectOriginalSale": "Seleccionar Venta Original",
       "returnReasonPlaceholder": "Ingrese el motivo detallado de la devolución..."
+    },
+    "tooltips": {
+      "createSale": "Crear nueva venta",
+      "deleteSales": "Eliminar ventas seleccionadas",
+      "selectDate": "Seleccionar fecha del reporte",
+      "exportDaily": "Exportar ventas diarias (abrirá un diálogo de guardado)",
+      "viewDetails": "Ver detalles",
+      "exportPDF": "Exportar a PDF",
+      "deleteSale": "Eliminar venta",
+      "createReturn": "Registrar nueva devolución",
+      "deleteReturns": "Eliminar devoluciones seleccionadas",
+      "exportReturns": "Exportar devoluciones a CSV",
+      "viewReturnDetails": "Ver Detalles",
+      "deleteReturn": "Eliminar Devolución",
+      "filterBy": "Filtrar por {{field}}"
     },
     "createSale": "Crear Venta",
     "editSale": "Editar Venta",
@@ -248,6 +420,14 @@
     "filterByAddress": "Filtrar por dirección",
     "notSpecified": "No especificado",
     "errorLoadingCustomers": "Error al cargar clientes:",
+    "tooltips": {
+      "createCustomer": "Crear nuevo cliente",
+      "deleteCustomers": "Eliminar clientes seleccionados",
+      "exportCustomers": "Exportar clientes a CSV",
+      "editCustomer": "Editar cliente",
+      "deleteCustomer": "Eliminar cliente",
+      "filterBy": "Filtrar por {{field}}"
+    },
     "dialog": {
       "newCustomer": "Nuevo Cliente",
       "editCustomer": "Editar Cliente",
@@ -323,6 +503,20 @@
       "productsProvidedPlaceholder": "Describa los productos o servicios ofrecidos",
       "paymentTermsLabel": "Términos de pago",
       "daysLabel": "Días"
+    },
+    "tooltips": {
+      "createOrder": "Crear nueva orden",
+      "deleteOrders": "Eliminar órdenes seleccionadas",
+      "exportOrders": "Exportar órdenes a CSV",
+      "viewDetails": "Ver detalles",
+      "editOrder": "Editar orden",
+      "deleteOrder": "Eliminar orden",
+      "createSupplier": "Crear nuevo proveedor",
+      "deleteSuppliers": "Eliminar proveedores seleccionados",
+      "exportSuppliers": "Exportar proveedores a CSV",
+      "editSupplier": "Editar proveedor",
+      "deleteSupplier": "Eliminar proveedor",
+      "filterBy": "Filtrar por {{field}}"
     },
     "suppliersLabel": "Proveedores",
     "catalogLabel": "Catálogo",
@@ -401,6 +595,15 @@
     "attendanceRecord": "Registro de Asistencia",
     "viewAttendance": "Ver Asistencia",
     "markAttendance": "Marcar Asistencia",
+    "tooltips": {
+      "clockIn": "Registrar entrada de empleado",
+      "export": "Exportar registros a CSV",
+      "createSchedule": "Crear nuevo horario",
+      "deleteSchedules": "Eliminar horarios seleccionados",
+      "exportSchedules": "Exportar horarios a CSV",
+      "editSchedule": "Editar horario",
+      "deleteSchedule": "Eliminar horario"
+    },
     "clockInDialog": {
       "title": "Registrar Entrada",
       "employeeLabel": "Empleado",
@@ -460,6 +663,14 @@
       "deleteSelectedUsers": "Eliminar usuarios seleccionados",
       "exportButton": "Exportar",
       "exportUsersToCSV": "Exportar usuarios a CSV"
+    },
+    "tooltips": {
+      "createUser": "Crear nuevo usuario",
+      "deleteUsers": "Eliminar usuarios seleccionados",
+      "exportUsers": "Exportar usuarios a CSV",
+      "editUser": "Editar usuario",
+      "deleteUser": "Eliminar usuario",
+      "filterBy": "Filtrar por {{field}}"
     },
     "dialog": {
       "createUserTitle": "Crear Usuario",
@@ -525,6 +736,14 @@
     "login": "Iniciar Sesión",
     "logout": "Cerrar Sesión",
     "export": "Exportar",
+    "refreshButton": "Actualizar",
+    "exportPDFButton": "Exportar PDF",
+    "exportCSVButton": "Exportar CSV",
+    "tooltips": {
+      "refresh": "Actualizar registros",
+      "exportPDF": "Exportar registros a PDF",
+      "exportCSV": "Exportar registros a CSV"
+    },
     "auditDialog": {
       "title": "Detalles del Registro",
       "entityLabel": "Entidad",
@@ -538,14 +757,22 @@
     }
   },
   "nav": {
+    "calendar": "Calendario",
     "home": "Inicio",
     "dashboard": "Panel",
+    "messages": "Mensajes",
     "profile": "Perfil",
     "settings": "Configuración",
     "logout": "Cerrar Sesión",
     "signOut": "Cerrar Sesión",
     "confirmSignOut": "Confirmar Cierre de Sesión",
     "confirmSignOutMessage": "¿Está seguro de que desea cerrar sesión?",
+    "themeMode": {
+      "auto": "Auto (Basado en la hora)",
+      "dark": "Modo Oscuro",
+      "light": "Modo Claro",
+      "system": "Preferencia del sistema"
+    },
     "menu": {
       "main": "PRINCIPAL",
       "settings": "CONFIGURACIÓN",
@@ -576,10 +803,17 @@
   "auth": {
     "login": {
       "title": "Iniciar Sesión",
+      "subtitle": "Ingrese sus credenciales para continuar",
       "email": "Correo Electrónico",
+      "emailPlaceholder": "Ingrese su correo electrónico",
       "password": "Contraseña",
+      "passwordPlaceholder": "Ingrese su contraseña",
       "submit": "Entrar",
       "forgotPassword": "¿Olvidaste tu Contraseña?",
+      "testCredentials": "Credenciales de Prueba",
+      "testCredentialsDescription": "Use estas cuentas para explorar cada rol. Las credenciales de administrador están prellenadas arriba.",
+      "noAccount": "¿No tienes una cuenta?",
+      "registerLink": "Registrarse",
       "errors": {
         "invalidCredentials": "Correo o contraseña inválidos",
         "required": "Este campo es obligatorio"
@@ -614,6 +848,8 @@
     "maxLength": "La longitud máxima es {{max}} caracteres"
   },
   "passwordField": {
+    "label": "Contraseña",
+    "placeholder": "Ingrese la contraseña",
     "choosePassword": "Elija una contraseña",
     "minLength": "Mínimo 8 caracteres",
     "lowercase": "Al menos una letra minúscula",
@@ -621,6 +857,20 @@
     "number": "Al menos un número",
     "specialChar": "Al menos un carácter especial",
     "requirementsNotMet": "La contraseña debe cumplir todos los requisitos."
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "El recurso solicitado no existe o no está disponible en el sistema de inventario.",
+    "generalInventory": "Inventario General",
+    "generalInventoryDescription": "Ver y gestionar productos registrados.",
+    "entryManagement": "Gestión de Entradas",
+    "entryManagementDescription": "Registrar nuevo stock en el inventario.",
+    "exitManagement": "Gestión de Salidas",
+    "exitManagementDescription": "Controlar y registrar salidas de productos.",
+    "goToMainPanel": "Ir al Panel Principal"
+  },
+  "footer": {
+    "appDescription": "Sistema Integrado de Gestión y Registro de Artículos de Papelería"
   },
   "messages": {
     "success": {

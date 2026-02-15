@@ -8,7 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -34,8 +34,8 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Name' },
-        { field: 'description', header: 'Description' },
+        { field: 'name', header: ('common.tableHeaders.name' | translate) },
+        { field: 'description', header: ('common.tableHeaders.description' | translate) },
       ];
 
     <p-table
@@ -47,7 +47,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} categories"
+      [currentPageReportTemplate]="'common.pagination.showingCategories' | translate"
       [globalFilterFields]="['name', 'description']"
       [tableStyle]="{ 'min-width': '50rem' }"
       rowHover
@@ -96,8 +96,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -139,7 +139,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="categoryStore.openCategoryDialog(category)"
-              pTooltip="Edit category"
+              [pTooltip]="'inventory.tooltips.editCategory' | translate"
               tooltipPosition="top"
               [disabled]="categoryStore.loading()"
             />
@@ -150,7 +150,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="deleteCategory(category)"
-              pTooltip="Delete category"
+              [pTooltip]="'inventory.tooltips.deleteCategory' | translate"
               tooltipPosition="top"
               [disabled]="categoryStore.loading()"
             />
@@ -165,7 +165,7 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading categories:</strong>
+                    <strong>{{ 'common.errors.errorLoadingCategories' | translate }}</strong>
                     <p>{{ categoryStore.error() }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -179,7 +179,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No categories found.</p>
+              <p>{{ 'common.emptyStates.noCategoriesFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -189,6 +189,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class CategoryTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly categoryStore = inject(CategoryStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -209,8 +210,8 @@ export class CategoryTable {
 
   deleteCategory({ id, name }: CategoryInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete category',
-      message: `Are you sure you want to delete category <b>${name}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'category' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'category', name }),
       accept: () => this.categoryStore.delete(id),
     });
   }

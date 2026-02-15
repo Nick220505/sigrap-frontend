@@ -19,7 +19,7 @@ import { CustomerTable } from '../customer-table/customer-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          [pTooltip]="'customers.createNewCustomer' | translate"
+          [pTooltip]="'customers.tooltips.createCustomer' | translate"
           tooltipPosition="top"
           (onClick)="customerStore.openCustomerDialog()"
         />
@@ -29,7 +29,7 @@ import { CustomerTable } from '../customer-table/customer-table';
           icon="pi pi-trash"
           severity="danger"
           outlined
-          [pTooltip]="'customers.deleteSelectedCustomers' | translate"
+          [pTooltip]="'customers.tooltips.deleteCustomers' | translate"
           tooltipPosition="top"
           [disabled]="customerTable().selectedCustomers().length === 0"
           (onClick)="deleteSelectedCustomers()"
@@ -44,7 +44,7 @@ import { CustomerTable } from '../customer-table/customer-table';
           severity="secondary"
           (onClick)="customerTable().dt().exportCSV()"
           [disabled]="customerStore.entities().length === 0"
-          [pTooltip]="'customers.exportCustomersToCSV' | translate"
+          [pTooltip]="'customers.tooltips.exportCustomers' | translate"
           tooltipPosition="top"
         />
       </ng-template>

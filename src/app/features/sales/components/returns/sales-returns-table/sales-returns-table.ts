@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -38,13 +38,13 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'id', header: 'ID' },
-        { field: 'originalSaleId', header: 'Original Sale' },
-        { field: 'customer', header: 'Customer' },
-        { field: 'employee', header: 'Employee' },
-        { field: 'totalReturnAmount', header: 'Amount' },
-        { field: 'reason', header: 'Reason' },
-        { field: 'createdAt', header: 'Date' },
+        { field: 'id', header: ('common.tableHeaders.id' | translate) },
+        { field: 'originalSaleId', header: ('common.tableHeaders.originalSale' | translate) },
+        { field: 'customer', header: ('common.tableHeaders.customer' | translate) },
+        { field: 'employee', header: ('common.tableHeaders.employee' | translate) },
+        { field: 'totalReturnAmount', header: ('common.tableHeaders.amount' | translate) },
+        { field: 'reason', header: ('common.tableHeaders.reason' | translate) },
+        { field: 'createdAt', header: ('common.tableHeaders.date' | translate) },
       ];
     <p-table
       #dt
@@ -67,7 +67,7 @@ import { TooltipModule } from 'primeng/tooltip';
       [tableStyle]="{ 'min-width': '85rem' }"
       [rowHover]="true"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} returns"
+      [currentPageReportTemplate]="'common.pagination.showingReturns' | translate"
       styleClass="p-datatable-sm p-datatable-striped"
       [loading]="saleReturnStore.loading()"
     >
@@ -112,8 +112,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -169,7 +169,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               class="mr-2"
-              pTooltip="View Details"
+              [pTooltip]="'common.tooltips.viewDetails' | translate"
               tooltipPosition="top"
               (onClick)="saleReturnStore.openReturnDialog(saleReturn)"
             />
@@ -178,7 +178,7 @@ import { TooltipModule } from 'primeng/tooltip';
               severity="danger"
               rounded
               outlined
-              pTooltip="Delete Return"
+              [pTooltip]="'sales.tooltips.deleteReturn' | translate"
               tooltipPosition="top"
               (onClick)="deleteSaleReturn(saleReturn)"
               [disabled]="saleReturnStore.loading()"
@@ -193,7 +193,7 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading returns:</strong>
+                    <strong>{{ 'common.errors.errorLoadingReturns' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -207,7 +207,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No returns found.</p>
+              <p>{{ 'common.emptyStates.noReturnsFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -218,6 +218,7 @@ import { TooltipModule } from 'primeng/tooltip';
 export class SalesReturnsTable {
   readonly saleReturnStore = inject(SaleReturnStore);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
 
   readonly dt = viewChild.required<Table>('dt');
   readonly searchValue = signal('');
@@ -240,8 +241,8 @@ export class SalesReturnsTable {
 
   deleteSaleReturn(saleReturn: SaleReturnInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete return',
-      message: `Are you sure you want to delete return #<b>${saleReturn.id}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'return' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'return', name: `#${saleReturn.id}` }),
       accept: () => this.saleReturnStore.deleteById(saleReturn.id),
     });
   }

@@ -136,7 +136,7 @@ interface PieChartTooltipContext {
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
               [loading]="isExporting()"
-              pTooltip="Export report to PDF"
+              [pTooltip]="'reports.tooltips.exportPDF' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button
@@ -144,7 +144,7 @@ interface PieChartTooltipContext {
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Apply date filter"
+              [pTooltip]="'reports.tooltips.applyFilter' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button

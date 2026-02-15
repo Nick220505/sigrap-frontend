@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -41,13 +41,13 @@ import { SaleStore } from '@features/sales/stores/sale-store';
   template: `
     @let columns =
       [
-        { field: 'id', header: 'ID' },
-        { field: 'customer', header: 'Customer' },
-        { field: 'totalAmount', header: 'Base Total' },
-        { field: 'discountAmount', header: 'Discount' },
-        { field: 'taxAmount', header: 'Tax' },
-        { field: 'finalAmount', header: 'Final Amount' },
-        { field: 'createdAt', header: 'Date' },
+        { field: 'id', header: ('common.tableHeaders.id' | translate) },
+        { field: 'customer', header: ('common.tableHeaders.customer' | translate) },
+        { field: 'totalAmount', header: ('common.tableHeaders.baseTotal' | translate) },
+        { field: 'discountAmount', header: ('common.tableHeaders.discount' | translate) },
+        { field: 'taxAmount', header: ('common.tableHeaders.tax' | translate) },
+        { field: 'finalAmount', header: ('common.tableHeaders.finalAmount' | translate) },
+        { field: 'createdAt', header: ('common.tableHeaders.date' | translate) },
       ];
 
     <p-table
@@ -59,7 +59,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} sales"
+      [currentPageReportTemplate]="'common.pagination.showingSales' | translate"
       [globalFilterFields]="[
         'customer.fullName',
         'totalAmount',
@@ -115,8 +115,8 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -196,7 +196,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 rounded
                 outlined
                 (click)="saleStore.openSaleDialog(sale)"
-                pTooltip="View details"
+                [pTooltip]="'common.tooltips.viewDetails' | translate"
                 tooltipPosition="top"
               />
 
@@ -207,7 +207,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 outlined
                 [loading]="isExporting() && currentExportId() === sale.id"
                 (click)="exportSaleToPDF(sale)"
-                pTooltip="Export to PDF"
+                [pTooltip]="'common.tooltips.exportPDF' | translate"
                 tooltipPosition="top"
               />
 
@@ -217,7 +217,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 rounded
                 outlined
                 (click)="deleteSale(sale)"
-                pTooltip="Delete sale"
+                [pTooltip]="'sales.tooltips.deleteSale' | translate"
                 tooltipPosition="top"
                 [disabled]="saleStore.loading()"
               />
@@ -233,7 +233,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading sales:</strong>
+                    <strong>{{ 'common.errors.errorLoadingSales' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -247,7 +247,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 </p-message>
               </div>
             } @else {
-              <p>No sales found.</p>
+              <p>{{ 'common.emptyStates.noSalesFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -257,6 +257,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
 })
 export class SalesTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   private readonly datePipe = inject(DatePipe);
   private readonly currencyPipe = inject(CurrencyPipe);
   readonly saleStore = inject(SaleStore);
@@ -282,8 +283,8 @@ export class SalesTable {
 
   deleteSale(sale: SaleInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete Sale',
-      message: `Are you sure you want to delete sale #<b>${sale.id}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'sale' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'sale', name: `#${sale.id}` }),
       accept: () => this.saleStore.delete(sale.id),
     });
   }

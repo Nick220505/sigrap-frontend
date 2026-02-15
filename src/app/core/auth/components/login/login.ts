@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
 import { RouterModule } from '@angular/router';
@@ -54,7 +54,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
               </div>
 
               <span class="font-medium text-muted-color">
-                Enter your credentials to continue
+                {{ 'auth.login.subtitle' | translate }}
               </span>
             </div>
 
@@ -62,12 +62,12 @@ import { AuthStore } from '@core/auth/stores/auth-store';
               @let testCredentials =
                 [
                   {
-                    role: 'Administrator',
+                    roleKey: 'users.administrator',
                     email: 'admin@sigrap.com',
                     password: 'Admin123*',
                   },
                   {
-                    role: 'Employee',
+                    roleKey: 'users.employee',
                     email: 'employee@sigrap.com',
                     password: 'Employee123*',
                   },
@@ -93,7 +93,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                       id="email"
                       type="text"
                       [formField]="loginForm.email"
-                      placeholder="Enter your email"
+                      [placeholder]="'auth.login.emailPlaceholder' | translate"
                       [class.ng-dirty]="emailInvalid"
                       [class.ng-invalid]="emailInvalid"
                       fluid
@@ -134,7 +134,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                     [ngModel]="loginForm.password().value()"
                     (ngModelChange)="loginForm.password().value.set($event)"
                     [ngModelOptions]="{ standalone: true }"
-                    placeholder="Enter your password"
+                    [placeholder]="'auth.login.passwordPlaceholder' | translate"
                     toggleMask
                     styleClass="w-full"
                     inputStyleClass="pl-10 w-full"
@@ -175,23 +175,22 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                     class="flex items-center gap-2 mb-3 text-surface-900 dark:text-surface-0"
                   >
                     <i class="pi pi-info-circle text-primary"></i>
-                    <div class="font-medium">Test Credentials</div>
+                    <div class="font-medium">{{ 'auth.login.testCredentials' | translate }}</div>
                   </div>
                   <div
                     class="text-sm text-surface-600 dark:text-surface-300 mb-3"
                   >
-                    Use these accounts to explore each role. The admin
-                    credentials are prefilled above.
+                    {{ 'auth.login.testCredentialsDescription' | translate }}
                   </div>
                   <div class="grid gap-3">
-                    @for (cred of testCredentials; track cred.role) {
+                    @for (cred of testCredentials; track cred.roleKey) {
                       <div
                         class="rounded-xl px-4 py-3 bg-surface-0 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
                       >
                         <div
                           class="text-sm font-semibold text-surface-900 dark:text-surface-0"
                         >
-                          {{ cred.role }}
+                          {{ cred.roleKey | translate }}
                         </div>
                         <div
                           class="text-sm text-surface-600 dark:text-surface-300"
@@ -206,14 +205,14 @@ import { AuthStore } from '@core/auth/stores/auth-store';
 
               <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
-                  Don’t have an account?
+                  {{ 'auth.login.noAccount' | translate }}
                 </span>
 
                 <a
                   routerLink="/register"
                   class="ml-2 font-medium text-primary cursor-pointer"
                 >
-                  Register
+                  {{ 'auth.login.registerLink' | translate }}
                 </a>
               </div>
             </form>

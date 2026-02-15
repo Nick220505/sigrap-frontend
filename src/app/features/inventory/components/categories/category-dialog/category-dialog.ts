@@ -32,7 +32,7 @@ import { TextareaModule } from 'primeng/textarea';
       "
       [style]="{ width: '450px' }"
       [header]="
-        categoryStore.selectedCategory() ? 'Edit Category' : 'Create Category'
+        categoryStore.selectedCategory() ? ('common.dialogs.editCategory' | translate) : ('common.dialogs.createCategory' | translate)
       "
       modal
     >
@@ -81,7 +81,7 @@ import { TextareaModule } from 'primeng/textarea';
               rows="3"
               id="description"
               [formField]="categoryForm.description"
-              placeholder="Enter a description (optional)"
+              [placeholder]="'common.dialogs.descriptionPlaceholder' | translate"
               class="w-full"
               fluid
             ></textarea>

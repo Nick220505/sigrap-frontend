@@ -39,7 +39,7 @@ import { TextareaModule } from 'primeng/textarea';
       "
       [style]="{ width: '500px' }"
       [header]="
-        productStore.selectedProduct() ? 'Edit Product' : 'Create Product'
+        productStore.selectedProduct() ? ('common.dialogs.editProduct' | translate) : ('common.dialogs.createProduct' | translate)
       "
       modal
     >

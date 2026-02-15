@@ -1,6 +1,6 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -34,7 +34,7 @@ import { SalesTable } from '../sales-table/sales-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new sale"
+          [pTooltip]="'sales.tooltips.createSale' | translate"
           tooltipPosition="top"
           (onClick)="openNewSaleDialog()"
         />
@@ -44,7 +44,7 @@ import { SalesTable } from '../sales-table/sales-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected sales"
+          [pTooltip]="'sales.tooltips.deleteSales' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedSales()"
           [disabled]="salesTable().selectedSales().length === 0"
@@ -55,7 +55,7 @@ import { SalesTable } from '../sales-table/sales-table';
         <div class="flex items-center gap-3">
           <div
             class="calendar-wrapper"
-            pTooltip="Select report date"
+            [pTooltip]="'sales.tooltips.selectDate' | translate"
             tooltipPosition="top"
           >
             <p-datePicker
@@ -71,7 +71,7 @@ import { SalesTable } from '../sales-table/sales-table';
             [label]="'sales.sales.exportSales' | translate"
             icon="pi pi-file-export"
             severity="secondary"
-            pTooltip="Export daily sales (will open a save dialog)"
+            [pTooltip]="'sales.tooltips.exportDaily' | translate"
             tooltipPosition="top"
             [loading]="exporting()"
             (onClick)="exportDailySales()"
@@ -83,6 +83,7 @@ import { SalesTable } from '../sales-table/sales-table';
 })
 export class SalesToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly saleStore = inject(SaleStore);
   private readonly saleService = inject(SaleService);
   readonly salesTable = input.required<SalesTable>();
@@ -105,13 +106,13 @@ export class SalesToolbar {
     }
 
     this.confirmationService.confirm({
-      header: 'Delete Sales',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'sales' }),
       message: `
-          Are you sure you want to delete the ${selection.length} selected sales?
-          <ul class='mt-2 mb-0'>
-            ${selection.map((item) => `<li>• <b>Sale #${item.id}</b></li>`).join('')}
-          </ul>
-        `,
+        ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: selection.length, items: 'sales' })}
+        <ul class='mt-2 mb-0'>
+          ${selection.map((item) => `<li>• <b>Sale #${item.id}</b></li>`).join('')}
+        </ul>
+      `,
       accept: () => {
         const ids = selection.map((item) => item.id);
         this.saleStore.deleteAllById(ids);

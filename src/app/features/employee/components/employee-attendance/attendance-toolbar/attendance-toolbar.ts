@@ -5,19 +5,20 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-attendance-toolbar',
-  imports: [ButtonModule, ToolbarModule, TooltipModule],
+  imports: [ButtonModule, ToolbarModule, TooltipModule, TranslateModule],
   template: `
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
         <p-button
-          label="Clock In"
+          [label]="'employees.clockIn' | translate"
           icon="pi pi-clock"
           outlined
           class="mr-2"
-          pTooltip="Register employee clock-in"
+          [pTooltip]="'employees.tooltips.clockIn' | translate"
           tooltipPosition="top"
           (onClick)="attendanceStore.openClockInDialog()"
         />
@@ -25,12 +26,12 @@ import { TooltipModule } from 'primeng/tooltip';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'common.export' | translate"
           icon="pi pi-download"
           severity="secondary"
           (onClick)="attendanceTable().dt().exportCSV()"
           [disabled]="attendanceStore.entities().length === 0"
-          pTooltip="Export records to CSV"
+          [pTooltip]="'employees.tooltips.export' | translate"
           tooltipPosition="top"
         />
       </ng-template>

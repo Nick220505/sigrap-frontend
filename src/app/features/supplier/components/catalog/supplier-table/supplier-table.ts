@@ -8,7 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SupplierInfo } from '@features/supplier/models/supplier.model';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -34,10 +34,10 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Name' },
-        { field: 'contactPerson', header: 'Contact' },
-        { field: 'email', header: 'Email' },
-        { field: 'phone', header: 'Phone' },
+        { field: 'name', header: ('common.tableHeaders.name' | translate) },
+        { field: 'contactPerson', header: ('common.tableHeaders.contact' | translate) },
+        { field: 'email', header: ('common.tableHeaders.email' | translate) },
+        { field: 'phone', header: ('common.tableHeaders.phone' | translate) },
       ];
 
     <p-table
@@ -49,7 +49,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} suppliers"
+      [currentPageReportTemplate]="'common.pagination.showingSuppliers' | translate"
       [globalFilterFields]="['name', 'contactPerson', 'email', 'phone']"
       [tableStyle]="{ 'min-width': '60rem' }"
       rowHover
@@ -98,8 +98,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -144,7 +144,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 rounded
                 outlined
                 (onClick)="supplierStore.openSupplierDialog(supplier)"
-                pTooltip="Edit supplier"
+                [pTooltip]="'suppliers.tooltips.editSupplier' | translate"
                 tooltipPosition="top"
                 [disabled]="supplierStore.loading()"
               />
@@ -155,7 +155,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 rounded
                 outlined
                 (onClick)="deleteSupplier(supplier)"
-                pTooltip="Delete supplier"
+                [pTooltip]="'suppliers.tooltips.deleteSupplier' | translate"
                 tooltipPosition="top"
                 [disabled]="supplierStore.loading()"
               />
@@ -171,7 +171,7 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading suppliers:</strong>
+                    <strong>{{ 'common.errors.errorLoadingSuppliers' | translate }}</strong>
                     <p>{{ supplierStore.error() }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -185,7 +185,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No suppliers found.</p>
+              <p>{{ 'common.emptyStates.noSuppliersFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -195,6 +195,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class SupplierTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly supplierStore = inject(SupplierStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -215,8 +216,8 @@ export class SupplierTable {
 
   deleteSupplier(supplier: SupplierInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete supplier',
-      message: `Are you sure you want to delete the supplier <b>${supplier.name}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'supplier' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'supplier', name: supplier.name }),
       accept: () => this.supplierStore.delete(supplier.id),
     });
   }

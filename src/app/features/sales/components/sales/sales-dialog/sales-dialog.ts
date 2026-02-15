@@ -9,7 +9,7 @@ import {
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { applyEach, form, max, min, required } from '@angular/forms/signals';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { CustomerStore } from '@features/customer/stores/customer-store';
@@ -333,6 +333,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
   `,
 })
 export class SalesDialog {
+  private readonly translateService = inject(TranslateService);
   readonly saleStore = inject(SaleStore);
   readonly authStore = inject(AuthStore);
   readonly productStore = inject(ProductStore);
@@ -379,9 +380,9 @@ export class SalesDialog {
   readonly dialogHeader = computed(() => {
     const selectedSale = this.saleStore.selectedSale();
     if (selectedSale) {
-      return `Sale #${selectedSale.id}`;
+      return this.translateService.instant('common.dialogs.viewSale', { id: selectedSale.id });
     }
-    return 'Register New Sale';
+    return this.translateService.instant('common.dialogs.registerNewSale');
   });
 
   readonly saleForm = form(this.model, (m) => {

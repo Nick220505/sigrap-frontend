@@ -7,7 +7,7 @@ import {
   untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { applyEach, form, min, required } from '@angular/forms/signals';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
@@ -260,6 +260,7 @@ import { TooltipModule } from 'primeng/tooltip';
   `,
 })
 export class OrderDialog {
+  private readonly translateService = inject(TranslateService);
   readonly purchaseOrderStore = inject(PurchaseOrderStore);
   readonly supplierStore = inject(SupplierStore);
   readonly productStore = inject(ProductStore);
@@ -273,10 +274,10 @@ export class OrderDialog {
     const selectedOrder = this.purchaseOrderStore.selectedOrder();
     if (selectedOrder) {
       return this.viewMode()
-        ? `View Order #${selectedOrder.id}`
-        : `Edit Order #${selectedOrder.id}`;
+        ? this.translateService.instant('common.dialogs.viewOrder', { id: selectedOrder.id })
+        : this.translateService.instant('common.dialogs.editOrder', { id: selectedOrder.id });
     }
-    return 'Register New Order';
+    return this.translateService.instant('common.dialogs.registerNewOrder');
   });
 
   private readonly model = signal<{

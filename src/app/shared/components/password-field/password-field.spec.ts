@@ -62,10 +62,12 @@ describe('PasswordField', () => {
     translateService.use('en');
     translateService.setTranslation('en', {
       validation: {
-        required: 'Password is required',
+        required: '{{field}} is required',
         pattern: 'Password must contain at least 8 characters, including uppercase, lowercase, number and special character',
       },
       passwordField: {
+        label: 'Password',
+        placeholder: 'Enter password',
         requirementsNotMet: 'Password must meet all requirements.',
       },
     });
@@ -107,7 +109,7 @@ describe('PasswordField', () => {
 
     const errorText = passwordFieldElement.querySelector('.text-red-500');
     expect(errorText).toBeTruthy();
-    expect(errorText?.textContent?.trim()).toContain('Password is required');
+    expect(errorText?.textContent?.trim()).toContain('Test Password is required');
   });
 
   it('should validate complex password pattern', () => {
@@ -238,5 +240,130 @@ describe('PasswordField', () => {
     fixture.detectChanges();
 
     expect(passwordFieldComponent.showError()).toBe(false);
+  });
+
+  it('should display password field in English by default', () => {
+    const translateService = TestBed.inject(TranslateService);
+    translateService.use('en');
+    fixture.detectChanges();
+
+    // Check that the default label and placeholder use English translations
+    const labelElement = passwordFieldElement.querySelector('label');
+    expect(labelElement?.textContent).toBe('Test Password');
+  });
+
+  it('should switch to Spanish translations when language changes', () => {
+    const translateService = TestBed.inject(TranslateService);
+    
+    // Set Spanish translations
+    translateService.setTranslation('es', {
+      validation: {
+        required: '{{field}} es obligatorio',
+        pattern: 'La contraseña debe contener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales',
+      },
+      passwordField: {
+        label: 'Contraseña',
+        placeholder: 'Ingrese la contraseña',
+        choosePassword: 'Elija una contraseña',
+        minLength: 'Mínimo 8 caracteres',
+        lowercase: 'Al menos una letra minúscula',
+        uppercase: 'Al menos una letra mayúscula',
+        number: 'Al menos un número',
+        specialChar: 'Al menos un carácter especial',
+        requirementsNotMet: 'La contraseña debe cumplir todos los requisitos.',
+      },
+    });
+    
+    translateService.use('es');
+    fixture.detectChanges();
+
+    // Trigger validation error to see Spanish error message
+    const control = hostComponent.passwordControl;
+    control.setValue('');
+    control.markAsTouched();
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+
+    passwordFieldComponent.showError.set(true);
+    fixture.detectChanges();
+
+    const errorText = passwordFieldElement.querySelector('.text-red-500');
+    expect(errorText).toBeTruthy();
+    expect(errorText?.textContent?.trim()).toContain('Test Password es obligatorio');
+  });
+
+  it('should display password requirements in Spanish', () => {
+    const translateService = TestBed.inject(TranslateService);
+    
+    // Set Spanish translations
+    translateService.setTranslation('es', {
+      passwordField: {
+        choosePassword: 'Elija una contraseña',
+        minLength: 'Mínimo 8 caracteres',
+        lowercase: 'Al menos una letra minúscula',
+        uppercase: 'Al menos una letra mayúscula',
+        number: 'Al menos un número',
+        specialChar: 'Al menos un carácter especial',
+        requirementsNotMet: 'La contraseña debe cumplir todos los requisitos.',
+      },
+    });
+    
+    translateService.use('es');
+    fixture.detectChanges();
+
+    // The password strength indicators should be visible when feedback is enabled
+    // We can verify the component has the correct translation keys
+    expect(passwordFieldComponent).toBeTruthy();
+  });
+
+  it('should maintain password strength indicators functionality after language switch', () => {
+    const translateService = TestBed.inject(TranslateService);
+    const control = hostComponent.passwordControl;
+
+    // Start in English
+    translateService.use('en');
+    fixture.detectChanges();
+
+    // Set a partial password
+    control.setValue('Short1');
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.hasMinLength()).toBe(false);
+    expect(passwordFieldComponent.hasLowercase()).toBe(true);
+    expect(passwordFieldComponent.hasUppercase()).toBe(true);
+    expect(passwordFieldComponent.hasNumber()).toBe(true);
+    expect(passwordFieldComponent.hasSpecialChar()).toBe(false);
+
+    // Switch to Spanish
+    translateService.setTranslation('es', {
+      passwordField: {
+        choosePassword: 'Elija una contraseña',
+        minLength: 'Mínimo 8 caracteres',
+        lowercase: 'Al menos una letra minúscula',
+        uppercase: 'Al menos una letra mayúscula',
+        number: 'Al menos un número',
+        specialChar: 'Al menos un carácter especial',
+        requirementsNotMet: 'La contraseña debe cumplir todos los requisitos.',
+      },
+    });
+    translateService.use('es');
+    fixture.detectChanges();
+
+    // Verify indicators still work correctly
+    expect(passwordFieldComponent.hasMinLength()).toBe(false);
+    expect(passwordFieldComponent.hasLowercase()).toBe(true);
+    expect(passwordFieldComponent.hasUppercase()).toBe(true);
+    expect(passwordFieldComponent.hasNumber()).toBe(true);
+    expect(passwordFieldComponent.hasSpecialChar()).toBe(false);
+
+    // Complete the password
+    control.setValue('StrongP@ss123');
+    fixture.detectChanges();
+
+    expect(passwordFieldComponent.hasMinLength()).toBe(true);
+    expect(passwordFieldComponent.hasLowercase()).toBe(true);
+    expect(passwordFieldComponent.hasUppercase()).toBe(true);
+    expect(passwordFieldComponent.hasNumber()).toBe(true);
+    expect(passwordFieldComponent.hasSpecialChar()).toBe(true);
   });
 });

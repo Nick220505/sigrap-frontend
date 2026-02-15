@@ -18,7 +18,7 @@ import { UserTable } from '../user-table/user-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          [pTooltip]="'users.toolbar.createNewUser' | translate"
+          [pTooltip]="'users.tooltips.createUser' | translate"
           tooltipPosition="top"
           (onClick)="userStore.openUserDialog()"
         />
@@ -28,7 +28,7 @@ import { UserTable } from '../user-table/user-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          [pTooltip]="'users.toolbar.deleteSelectedUsers' | translate"
+          [pTooltip]="'users.tooltips.deleteUsers' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedUsers()"
           [disabled]="userTable().selectedUsers().length === 0"
@@ -40,7 +40,7 @@ import { UserTable } from '../user-table/user-table';
           [label]="'users.toolbar.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          [pTooltip]="'users.toolbar.exportUsersToCSV' | translate"
+          [pTooltip]="'users.tooltips.exportUsers' | translate"
           tooltipPosition="top"
           (onClick)="userTable().dt().exportCSV()"
           [disabled]="userStore.usersCount() === 0"

@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { AttendanceInfo } from '@features/employee/models/attendance.model';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -37,12 +37,12 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'userName', header: 'Employee' },
-        { field: 'date', header: 'Date' },
-        { field: 'clockInTime', header: 'Clock In' },
-        { field: 'clockOutTime', header: 'Clock Out' },
-        { field: 'totalHours', header: 'Hours Worked' },
-        { field: 'status', header: 'Status' },
+        { field: 'userName', header: ('common.tableHeaders.employee' | translate) },
+        { field: 'date', header: ('common.tableHeaders.date' | translate) },
+        { field: 'clockInTime', header: ('common.tableHeaders.clockIn' | translate) },
+        { field: 'clockOutTime', header: ('common.tableHeaders.clockOut' | translate) },
+        { field: 'totalHours', header: ('common.tableHeaders.hoursWorked' | translate) },
+        { field: 'status', header: ('common.tableHeaders.status' | translate) },
       ];
 
     <p-table
@@ -54,7 +54,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+      [currentPageReportTemplate]="'common.pagination.showingRecords' | translate"
       [globalFilterFields]="[
         'userName',
         'date',
@@ -73,7 +73,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Employee Attendance Records</h5>
+            <h5 class="m-0 text-left">{{ 'common.tableTitles.employeeAttendanceRecords' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -106,8 +106,8 @@ import { TooltipModule } from 'primeng/tooltip';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -141,31 +141,31 @@ import { TooltipModule } from 'primeng/tooltip';
                   @case ('PRESENT') {
                     <span
                       class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-                      >Present</span
+                      >{{ 'common.statuses.present' | translate }}</span
                     >
                   }
                   @case ('LATE') {
                     <span
                       class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
-                      >Late</span
+                      >{{ 'common.statuses.late' | translate }}</span
                     >
                   }
                   @case ('ABSENT') {
                     <span
                       class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-                      >Absent</span
+                      >{{ 'common.statuses.absent' | translate }}</span
                     >
                   }
                   @case ('EARLY_DEPARTURE') {
                     <span
                       class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
-                      >Early Departure</span
+                      >{{ 'common.statuses.earlyDeparture' | translate }}</span
                     >
                   }
                   @case ('ON_LEAVE') {
                     <span
                       class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
-                      >On Leave</span
+                      >{{ 'common.statuses.onLeave' | translate }}</span
                     >
                   }
                   @default {
@@ -203,7 +203,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               (click)="clockOut(attendance)"
-              pTooltip="Clock out"
+              [pTooltip]="'common.tooltips.clockOut' | translate"
               tooltipPosition="top"
               [disabled]="
                 !!attendance.clockOutTime ||
@@ -222,7 +222,7 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading records:</strong>
+                    <strong>{{ 'common.errors.errorLoadingRecords' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -236,7 +236,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No attendance records found.</p>
+              <p>{{ 'common.emptyStates.noAttendanceRecordsFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -246,6 +246,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class AttendanceTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly attendanceStore = inject(AttendanceStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -269,8 +270,8 @@ export class AttendanceTable {
 
   clockOut({ id, userName }: AttendanceInfo): void {
     this.confirmationService.confirm({
-      header: 'Clock Out',
-      message: `Are you sure you want to clock out <b>${userName}</b>?`,
+      header: this.translateService.instant('common.confirmations.clockOutHeader'),
+      message: this.translateService.instant('common.confirmations.clockOutMessage', { name: userName }),
       accept: () => {
         this.attendanceStore.clockOut({
           attendanceId: id,

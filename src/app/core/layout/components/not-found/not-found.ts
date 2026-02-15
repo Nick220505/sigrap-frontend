@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { ButtonModule } from 'primeng/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-not-found',
-  imports: [RouterModule, ButtonModule, FloatingConfigurator],
+  imports: [RouterModule, ButtonModule, FloatingConfigurator, TranslateModule],
   template: `
     <app-floating-configurator />
 
@@ -29,12 +30,11 @@ import { ButtonModule } from 'primeng/button';
             <h1
               class="text-surface-900 dark:text-surface-0 font-bold text-3xl lg:text-5xl mb-2"
             >
-              Page not found
+              {{ 'notFound.title' | translate }}
             </h1>
 
             <div class="text-surface-600 dark:text-surface-200 mb-8">
-              The requested resource does not exist or is not available in the
-              inventory system.
+              {{ 'notFound.description' | translate }}
             </div>
 
             <a
@@ -51,10 +51,10 @@ import { ButtonModule } from 'primeng/button';
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
-                  >General Inventory</span
+                  >{{ 'notFound.generalInventory' | translate }}</span
                 >
                 <span class="text-surface-600 dark:text-surface-200 lg:text-xl"
-                  >View and manage registered products.</span
+                  >{{ 'notFound.generalInventoryDescription' | translate }}</span
                 >
               </span>
             </a>
@@ -73,10 +73,10 @@ import { ButtonModule } from 'primeng/button';
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
-                  >Entry Management</span
+                  >{{ 'notFound.entryManagement' | translate }}</span
                 >
                 <span class="text-surface-600 dark:text-surface-200 lg:text-xl"
-                  >Register new stock in the inventory.</span
+                  >{{ 'notFound.entryManagementDescription' | translate }}</span
                 >
               </span>
             </a>
@@ -95,15 +95,18 @@ import { ButtonModule } from 'primeng/button';
               <span class="ml-6 flex flex-col">
                 <span
                   class="text-surface-900 dark:text-surface-0 lg:text-xl font-medium mb-0"
-                  >Exit Management</span
+                  >{{ 'notFound.exitManagement' | translate }}</span
                 >
                 <span class="text-surface-600 dark:text-surface-200 lg:text-xl"
-                  >Control and register product exits.</span
+                  >{{ 'notFound.exitManagementDescription' | translate }}</span
                 >
               </span>
             </a>
 
-            <p-button label="Go to Main Panel" routerLink="/" />
+            <p-button
+              [label]="'notFound.goToMainPanel' | translate"
+              routerLink="/"
+            />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +18,7 @@ import { ProductTable } from '../product-table/product-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new product"
+          [pTooltip]="'inventory.tooltips.createProduct' | translate"
           tooltipPosition="top"
           (onClick)="productStore.openProductDialog()"
         />
@@ -28,7 +28,7 @@ import { ProductTable } from '../product-table/product-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected products"
+          [pTooltip]="'inventory.tooltips.deleteProducts' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedProducts()"
           [disabled]="productTable().selectedProducts().length === 0"
@@ -40,7 +40,7 @@ import { ProductTable } from '../product-table/product-table';
           [label]="'inventory.products.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Export products to CSV"
+          [pTooltip]="'inventory.tooltips.exportProducts' | translate"
           tooltipPosition="top"
           (onClick)="productTable().dt().exportCSV()"
           [disabled]="productStore.productsCount() === 0"
@@ -51,6 +51,7 @@ import { ProductTable } from '../product-table/product-table';
 })
 export class ProductToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly productStore = inject(ProductStore);
 
   readonly productTable = input.required<ProductTable>();
@@ -58,13 +59,13 @@ export class ProductToolbar {
   deleteSelectedProducts(): void {
     const products = this.productTable().selectedProducts();
     this.confirmationService.confirm({
-      header: 'Delete products',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'products' }),
       message: `
-          Are you sure you want to delete the ${products.length} selected products?
-          <ul class='mt-2 mb-0'>
-            ${products.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
-          </ul>
-        `,
+        ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: products.length, items: 'products' })}
+        <ul class='mt-2 mb-0'>
+          ${products.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
+        </ul>
+      `,
       accept: () => {
         const ids = products.map(({ id }) => id);
         this.productStore.deleteAllById(ids);

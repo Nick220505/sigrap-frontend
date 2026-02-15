@@ -3,7 +3,7 @@ import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.model';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -35,12 +35,12 @@ import { TooltipModule } from 'primeng/tooltip';
   template: `
     @let columns =
       [
-        { field: 'id', header: 'ID' },
-        { field: 'createdAt', header: 'Created Date' },
-        { field: 'deliveryDate', header: 'Delivery Date' },
-        { field: 'supplier.name', header: 'Supplier' },
-        { field: 'totalAmount', header: 'Total' },
-        { field: 'status', header: 'Status' },
+        { field: 'id', header: ('common.tableHeaders.id' | translate) },
+        { field: 'createdAt', header: ('common.tableHeaders.createdDate' | translate) },
+        { field: 'deliveryDate', header: ('common.tableHeaders.deliveryDate' | translate) },
+        { field: 'supplier.name', header: ('common.tableHeaders.supplier' | translate) },
+        { field: 'totalAmount', header: ('common.tableHeaders.total' | translate) },
+        { field: 'status', header: ('common.tableHeaders.status' | translate) },
       ];
 
     <p-table
@@ -52,7 +52,7 @@ import { TooltipModule } from 'primeng/tooltip';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orders"
+      [currentPageReportTemplate]="'common.pagination.showingOrders' | translate"
       [globalFilterFields]="['id', 'supplier.name', 'status']"
       [tableStyle]="{ 'min-width': '70rem' }"
       rowHover
@@ -159,13 +159,13 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p-tag severity="info" value="Confirmed" />
                   }
                   @case ('DRAFT') {
-                    <p-tag severity="warn" value="Draft" />
+                    <p-tag severity="warn" [value]="'common.statuses.draft' | translate" />
                   }
                   @case ('SUBMITTED') {
-                    <p-tag severity="warn" value="Submitted" />
+                    <p-tag severity="warn" [value]="'common.statuses.submitted' | translate" />
                   }
                   @case ('CANCELLED') {
-                    <p-tag severity="danger" value="Cancelled" />
+                    <p-tag severity="danger" [value]="'common.statuses.cancelled' | translate" />
                   }
                   @default {
                     <p-tag severity="info" value="{{ order[column.field] }}" />
@@ -184,7 +184,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               class="mr-2"
-              pTooltip="View details"
+              [pTooltip]="'suppliers.tooltips.viewDetails' | translate"
               tooltipPosition="top"
               (click)="purchaseOrderStore.openOrderDialog(order, true)"
               [disabled]="purchaseOrderStore.loading()"
@@ -194,7 +194,7 @@ import { TooltipModule } from 'primeng/tooltip';
               rounded
               outlined
               class="mr-2"
-              pTooltip="Edit order"
+              [pTooltip]="'suppliers.tooltips.editOrder' | translate"
               tooltipPosition="top"
               (click)="purchaseOrderStore.openOrderDialog(order, false)"
               [disabled]="purchaseOrderStore.loading()"
@@ -204,7 +204,7 @@ import { TooltipModule } from 'primeng/tooltip';
               severity="danger"
               rounded
               outlined
-              pTooltip="Delete order"
+              [pTooltip]="'suppliers.tooltips.deleteOrder' | translate"
               tooltipPosition="top"
               (click)="deleteOrder(order)"
               [disabled]="
@@ -222,7 +222,7 @@ import { TooltipModule } from 'primeng/tooltip';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading orders:</strong>
+                    <strong>{{ 'common.errors.errorLoadingOrders' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -236,7 +236,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 </p-message>
               </div>
             } @else {
-              <p>No orders found.</p>
+              <p>{{ 'common.emptyStates.noOrdersFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -246,6 +246,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class OrderTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly purchaseOrderStore = inject(PurchaseOrderStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -259,8 +260,8 @@ export class OrderTable {
 
   deleteOrder({ id }: PurchaseOrderInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete Order',
-      message: `Are you sure you want to delete order <b>#${id}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'order' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'order', name: `#${id}` }),
       accept: () => this.purchaseOrderStore.delete(id),
     });
   }

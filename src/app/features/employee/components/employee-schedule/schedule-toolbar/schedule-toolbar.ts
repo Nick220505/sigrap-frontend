@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -19,7 +19,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new schedule"
+          [pTooltip]="'employees.tooltips.createSchedule' | translate"
           tooltipPosition="top"
           (onClick)="scheduleStore.openScheduleDialog()"
         />
@@ -29,7 +29,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
           icon="pi pi-trash"
           severity="danger"
           outlined
-          pTooltip="Delete selected schedules"
+          [pTooltip]="'employees.tooltips.deleteSchedules' | translate"
           tooltipPosition="top"
           [disabled]="scheduleTable().selectedSchedules().length === 0"
           (onClick)="deleteSelectedSchedules()"
@@ -44,7 +44,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
           severity="secondary"
           (onClick)="scheduleTable().dt().exportCSV()"
           [disabled]="scheduleStore.entities().length === 0"
-          pTooltip="Export schedules to CSV"
+          [pTooltip]="'employees.tooltips.exportSchedules' | translate"
           tooltipPosition="top"
         />
       </ng-template>
@@ -53,15 +53,16 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
 })
 export class ScheduleToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly scheduleStore = inject(ScheduleStore);
   readonly scheduleTable = input.required<ScheduleTable>();
 
   deleteSelectedSchedules(): void {
     const schedules = this.scheduleTable().selectedSchedules();
     this.confirmationService.confirm({
-      header: 'Delete Schedules',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'schedules' }),
       message: `
-        Are you sure you want to delete the ${schedules.length} selected schedules?
+        ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: schedules.length, items: 'schedules' })}
         <ul class='mt-2 mb-0'>
           ${schedules
             .map(

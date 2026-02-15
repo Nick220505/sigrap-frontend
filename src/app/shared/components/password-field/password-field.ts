@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
-import { Component, input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DividerModule } from 'primeng/divider';
 import { PasswordModule } from 'primeng/password';
 
@@ -89,7 +89,7 @@ import { PasswordModule } from 'primeng/password';
       @if (showError()) {
         <small class="text-red-500">
           @if (control().hasError('required')) {
-            {{ 'validation.required' | translate: { field: 'Password' } }}
+            {{ 'validation.required' | translate: { field: label() } }}
           } @else if (control().hasError('pattern')) {
             {{ 'passwordField.requirementsNotMet' | translate }}
           }
@@ -99,9 +99,11 @@ import { PasswordModule } from 'primeng/password';
   `,
 })
 export class PasswordField implements OnInit {
+  private readonly translateService = inject(TranslateService);
+
   readonly id = input.required<string>();
-  readonly label = input<string>('Password');
-  readonly placeholder = input<string>('Enter password');
+  readonly label = input<string>(this.translateService.instant('passwordField.label'));
+  readonly placeholder = input<string>(this.translateService.instant('passwordField.placeholder'));
   readonly control = input.required<FormControl>();
   readonly feedback = input<boolean>(true);
   readonly required = input<boolean>(true);

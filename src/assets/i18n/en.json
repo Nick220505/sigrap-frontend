@@ -37,7 +37,128 @@
     "clearAllFilters": "Clear all filters",
     "filterBy": "Filter by {{field}}",
     "addProduct": "Add Product",
-    "selectLanguage": "Select Language"
+    "selectLanguage": "Select Language",
+    "tooltips": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View",
+      "viewDetails": "View details",
+      "exportPDF": "Export to PDF",
+      "clockOut": "Clock out",
+      "filterBy": "Filter by {{field}}"
+    },
+    "tableHeaders": {
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "createdDate": "Created Date",
+      "deliveryDate": "Delivery Date",
+      "supplier": "Supplier",
+      "total": "Total",
+      "customer": "Customer",
+      "baseTotal": "Base Total",
+      "discount": "Discount",
+      "tax": "Tax",
+      "finalAmount": "Final Amount",
+      "date": "Date",
+      "originalSale": "Original Sale",
+      "employee": "Employee",
+      "costPrice": "Cost Price",
+      "salePrice": "Sale Price",
+      "stock": "Stock",
+      "minimumStock": "Minimum Stock",
+      "category": "Category",
+      "day": "Day",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "type": "Type",
+      "clockIn": "Clock In",
+      "clockOut": "Clock Out",
+      "hoursWorked": "Hours Worked",
+      "status": "Status",
+      "amount": "Amount",
+      "reason": "Reason",
+      "contact": "Contact",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "confirmations": {
+      "deleteHeader": "Delete {{item}}",
+      "deleteHeaderPlural": "Delete {{items}}",
+      "deleteMessage": "Are you sure you want to delete {{item}} <b>{{name}}</b>?",
+      "deleteMessagePlural": "Are you sure you want to delete the {{count}} selected {{items}}?",
+      "clockOutHeader": "Clock Out",
+      "clockOutMessage": "Are you sure you want to clock out <b>{{name}}</b>?",
+      "operationNotAllowedHeader": "Operation Not Allowed",
+      "draftOnlyMessage": "Only orders in Draft status can be deleted."
+    },
+    "pagination": {
+      "showingOrders": "Showing {first} to {last} of {totalRecords} orders",
+      "showingSuppliers": "Showing {first} to {last} of {totalRecords} suppliers",
+      "showingSales": "Showing {first} to {last} of {totalRecords} sales",
+      "showingReturns": "Showing {first} to {last} of {totalRecords} returns",
+      "showingProducts": "Showing {first} to {last} of {totalRecords} products",
+      "showingCategories": "Showing {first} to {last} of {totalRecords} categories",
+      "showingSchedules": "Showing {first} to {last} of {totalRecords} schedules",
+      "showingRecords": "Showing {first} to {last} of {totalRecords} records"
+    },
+    "tableTitles": {
+      "employeeSchedules": "Employee Schedules",
+      "employeeAttendanceRecords": "Employee Attendance Records",
+      "auditLog": "Audit Log"
+    },
+    "errors": {
+      "errorLoadingOrders": "Error loading orders:",
+      "errorLoadingSuppliers": "Error loading suppliers:",
+      "errorLoadingSales": "Error loading sales:",
+      "errorLoadingReturns": "Error loading returns:",
+      "errorLoadingProducts": "Error loading products:",
+      "errorLoadingCategories": "Error loading categories:",
+      "errorLoadingSchedules": "Error loading schedules:",
+      "errorLoadingRecords": "Error loading records:",
+      "errorLoadingAuditLogs": "Error loading audit logs:",
+      "errorLoadingUsers": "Error loading users:"
+    },
+    "emptyStates": {
+      "noOrdersFound": "No orders found.",
+      "noSuppliersFound": "No suppliers found.",
+      "noSalesFound": "No sales found.",
+      "noReturnsFound": "No returns found.",
+      "noProductsFound": "No products found.",
+      "noCategoriesFound": "No categories found.",
+      "noSchedulesFound": "No schedules found.",
+      "noAttendanceRecordsFound": "No attendance records found.",
+      "noAuditLogsFound": "No audit logs found.",
+      "noUsersFound": "No users found."
+    },
+    "statuses": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "present": "Present",
+      "late": "Late",
+      "absent": "Absent",
+      "earlyDeparture": "Early Departure",
+      "onLeave": "On Leave",
+      "regular": "Regular",
+      "overtime": "Overtime",
+      "holiday": "Holiday"
+    },
+    "dialogs": {
+      "viewOrder": "View Order #{{id}}",
+      "editOrder": "Edit Order #{{id}}",
+      "registerNewOrder": "Register New Order",
+      "registerNewSale": "Register New Sale",
+      "viewSale": "Sale #{{id}}",
+      "editProduct": "Edit Product",
+      "createProduct": "Create Product",
+      "editCategory": "Edit Category",
+      "createCategory": "Create Category",
+      "editSchedule": "Edit Schedule",
+      "newSchedule": "New Schedule",
+      "descriptionPlaceholder": "Enter a description (optional)"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -62,12 +183,19 @@
     "category": "Category",
     "customer": "Customer",
     "amount": "Amount",
+    "amountAxis": "Amount ($)",
     "supplier": "Supplier",
     "orderDate": "Order Date",
     "viewAll": "View All",
     "sales": "Sales",
+    "salesByCustomer": "Sales by Customer",
     "profit": "Profit",
     "revenue": "Revenue",
+    "directSale": "Direct Sale",
+    "units": "Units",
+    "unitsSold": "Units Sold",
+    "unitsInStock": "Units in Stock",
+    "others": "Others",
     "noCriticalStock": "No products with critical stock.",
     "noRecentSales": "No recent sales."
   },
@@ -121,7 +249,23 @@
     "position": "Position",
     "qtySold": "Qty. Sold",
     "totalAmount": "Total Amount",
-    "percentOfTotal": "% of Total"
+    "percentOfTotal": "% of Total",
+    "critical": "Critical",
+    "stockStatus": {
+      "normal": "Normal",
+      "low": "Low",
+      "critical": "Critical"
+    },
+    "chartLabels": {
+      "productsByCategory": "Products by Category",
+      "totalStock": "Total Stock",
+      "productsOnAlert": "Products on Alert",
+      "units": "Units"
+    },
+    "tooltips": {
+      "exportPDF": "Export report to PDF",
+      "applyFilter": "Apply date filter"
+    }
   },
   "inventory": {
     "products": {
@@ -139,6 +283,19 @@
       "retryButton": "Retry",
       "searchPlaceholder": "Search...",
       "categoryNamePlaceholder": "Enter category name"
+    },
+    "tooltips": {
+      "createProduct": "Create new product",
+      "deleteProducts": "Delete selected products",
+      "exportProducts": "Export products to CSV",
+      "editProduct": "Edit product",
+      "deleteProduct": "Delete product",
+      "createCategory": "Create new category",
+      "deleteCategories": "Delete selected categories",
+      "exportCategories": "Export categories to CSV",
+      "editCategory": "Edit category",
+      "deleteCategory": "Delete category",
+      "filterBy": "Filter by {{field}}"
     },
     "productsLabel": "Products",
     "categoriesLabel": "Categories",
@@ -192,6 +349,21 @@
       "searchPlaceholder": "Search...",
       "selectOriginalSale": "Select Original Sale",
       "returnReasonPlaceholder": "Enter the detailed reason for the return..."
+    },
+    "tooltips": {
+      "createSale": "Create new sale",
+      "deleteSales": "Delete selected sales",
+      "selectDate": "Select report date",
+      "exportDaily": "Export daily sales (will open a save dialog)",
+      "viewDetails": "View details",
+      "exportPDF": "Export to PDF",
+      "deleteSale": "Delete sale",
+      "createReturn": "Register new return",
+      "deleteReturns": "Delete selected returns",
+      "exportReturns": "Export returns to CSV",
+      "viewReturnDetails": "View Details",
+      "deleteReturn": "Delete Return",
+      "filterBy": "Filter by {{field}}"
     },
     "createSale": "Create Sale",
     "editSale": "Edit Sale",
@@ -248,6 +420,14 @@
     "filterByAddress": "Filter by address",
     "notSpecified": "Not specified",
     "errorLoadingCustomers": "Error loading customers:",
+    "tooltips": {
+      "createCustomer": "Create new customer",
+      "deleteCustomers": "Delete selected customers",
+      "exportCustomers": "Export customers to CSV",
+      "editCustomer": "Edit customer",
+      "deleteCustomer": "Delete customer",
+      "filterBy": "Filter by {{field}}"
+    },
     "dialog": {
       "newCustomer": "New Customer",
       "editCustomer": "Edit Customer",
@@ -323,6 +503,20 @@
       "productsProvidedPlaceholder": "Describe the products or services offered",
       "paymentTermsLabel": "Payment terms",
       "daysLabel": "Days"
+    },
+    "tooltips": {
+      "createOrder": "Create new order",
+      "deleteOrders": "Delete selected orders",
+      "exportOrders": "Export orders to CSV",
+      "viewDetails": "View details",
+      "editOrder": "Edit order",
+      "deleteOrder": "Delete order",
+      "createSupplier": "Create new supplier",
+      "deleteSuppliers": "Delete selected suppliers",
+      "exportSuppliers": "Export suppliers to CSV",
+      "editSupplier": "Edit supplier",
+      "deleteSupplier": "Delete supplier",
+      "filterBy": "Filter by {{field}}"
     },
     "suppliersLabel": "Suppliers",
     "catalogLabel": "Catalog",
@@ -401,6 +595,15 @@
     "attendanceRecord": "Attendance Record",
     "viewAttendance": "View Attendance",
     "markAttendance": "Mark Attendance",
+    "tooltips": {
+      "clockIn": "Register employee clock-in",
+      "export": "Export records to CSV",
+      "createSchedule": "Create new schedule",
+      "deleteSchedules": "Delete selected schedules",
+      "exportSchedules": "Export schedules to CSV",
+      "editSchedule": "Edit schedule",
+      "deleteSchedule": "Delete schedule"
+    },
     "clockInDialog": {
       "title": "Clock In",
       "employeeLabel": "Employee",
@@ -454,6 +657,14 @@
     "permissions": "Permissions",
     "changePassword": "Change Password",
     "resetPassword": "Reset Password",
+    "tooltips": {
+      "createUser": "Create new user",
+      "deleteUsers": "Delete selected users",
+      "exportUsers": "Export users to CSV",
+      "editUser": "Edit user",
+      "deleteUser": "Delete user",
+      "filterBy": "Filter by {{field}}"
+    },
     "toolbar": {
       "newButton": "New",
       "createNewUser": "Create new user",
@@ -525,6 +736,14 @@
     "login": "Login",
     "logout": "Logout",
     "export": "Export",
+    "refreshButton": "Refresh",
+    "exportPDFButton": "Export PDF",
+    "exportCSVButton": "Export CSV",
+    "tooltips": {
+      "refresh": "Refresh records",
+      "exportPDF": "Export records to PDF",
+      "exportCSV": "Export records to CSV"
+    },
     "auditDialog": {
       "title": "Record Details",
       "entityLabel": "Entity",
@@ -538,14 +757,22 @@
     }
   },
   "nav": {
+    "calendar": "Calendar",
     "home": "Home",
     "dashboard": "Dashboard",
+    "messages": "Messages",
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
     "signOut": "Sign Out",
     "confirmSignOut": "Confirm Sign Out",
     "confirmSignOutMessage": "Are you sure you want to sign out?",
+    "themeMode": {
+      "auto": "Auto (Based on time)",
+      "dark": "Dark Mode",
+      "light": "Light Mode",
+      "system": "System preference"
+    },
     "menu": {
       "main": "MAIN",
       "settings": "SETTINGS",
@@ -576,10 +803,17 @@
   "auth": {
     "login": {
       "title": "Login",
+      "subtitle": "Enter your credentials to continue",
       "email": "Email",
+      "emailPlaceholder": "Enter your email",
       "password": "Password",
+      "passwordPlaceholder": "Enter your password",
       "submit": "Sign In",
       "forgotPassword": "Forgot Password?",
+      "testCredentials": "Test Credentials",
+      "testCredentialsDescription": "Use these accounts to explore each role. The admin credentials are prefilled above.",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register",
       "errors": {
         "invalidCredentials": "Invalid email or password",
         "required": "This field is required"
@@ -614,6 +848,8 @@
     "maxLength": "Maximum length is {{max}} characters"
   },
   "passwordField": {
+    "label": "Password",
+    "placeholder": "Enter password",
     "choosePassword": "Choose a password",
     "minLength": "Minimum 8 characters",
     "lowercase": "At least one lowercase letter",
@@ -621,6 +857,20 @@
     "number": "At least one number",
     "specialChar": "At least one special character",
     "requirementsNotMet": "Password must meet all requirements."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The requested resource does not exist or is not available in the inventory system.",
+    "generalInventory": "General Inventory",
+    "generalInventoryDescription": "View and manage registered products.",
+    "entryManagement": "Entry Management",
+    "entryManagementDescription": "Register new stock in the inventory.",
+    "exitManagement": "Exit Management",
+    "exitManagementDescription": "Control and register product exits.",
+    "goToMainPanel": "Go to Main Panel"
+  },
+  "footer": {
+    "appDescription": "Integrated Stationery Article Management and Registration System"
   },
   "messages": {
     "success": {

@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +18,7 @@ import { SupplierTable } from '../supplier-table/supplier-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new supplier"
+          [pTooltip]="'suppliers.tooltips.createSupplier' | translate"
           tooltipPosition="top"
           (onClick)="supplierStore.openSupplierDialog()"
         />
@@ -28,7 +28,7 @@ import { SupplierTable } from '../supplier-table/supplier-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected suppliers"
+          [pTooltip]="'suppliers.tooltips.deleteSuppliers' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedSuppliers()"
           [disabled]="supplierTable().selectedSuppliers().length === 0"
@@ -40,7 +40,7 @@ import { SupplierTable } from '../supplier-table/supplier-table';
           [label]="'suppliers.catalog.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Export suppliers to CSV"
+          [pTooltip]="'suppliers.tooltips.exportSuppliers' | translate"
           tooltipPosition="top"
           (onClick)="supplierTable().dt().exportCSV()"
           [disabled]="supplierStore.suppliersCount() === 0"
@@ -51,6 +51,7 @@ import { SupplierTable } from '../supplier-table/supplier-table';
 })
 export class SupplierToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly supplierStore = inject(SupplierStore);
 
   readonly supplierTable = input.required<SupplierTable>();
@@ -58,12 +59,12 @@ export class SupplierToolbar {
   deleteSelectedSuppliers(): void {
     const suppliers = this.supplierTable().selectedSuppliers();
     this.confirmationService.confirm({
-      header: 'Delete suppliers',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'suppliers' }),
       message: `
-      Are you sure you want to delete the ${suppliers.length} selected suppliers?
-      <ul class='mt-2 mb-0'>
+        ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: suppliers.length, items: 'suppliers' })}
+        <ul class='mt-2 mb-0'>
           ${suppliers.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
-      </ul>
+        </ul>
       `,
       accept: () => {
         const ids = suppliers.map(({ id }) => id);

@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +18,7 @@ import { CategoryTable } from '../category-table/category-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new category"
+          [pTooltip]="'inventory.tooltips.createCategory' | translate"
           tooltipPosition="top"
           (onClick)="categoryStore.openCategoryDialog()"
         />
@@ -28,7 +28,7 @@ import { CategoryTable } from '../category-table/category-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected categories"
+          [pTooltip]="'inventory.tooltips.deleteCategories' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedCategories()"
           [disabled]="categoryTable().selectedCategories().length === 0"
@@ -40,7 +40,7 @@ import { CategoryTable } from '../category-table/category-table';
           [label]="'inventory.categories.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Export categories to CSV"
+          [pTooltip]="'inventory.tooltips.exportCategories' | translate"
           tooltipPosition="top"
           (onClick)="categoryTable().dt().exportCSV()"
           [disabled]="categoryStore.categoriesCount() === 0"
@@ -51,6 +51,7 @@ import { CategoryTable } from '../category-table/category-table';
 })
 export class CategoryToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly categoryStore = inject(CategoryStore);
 
   readonly categoryTable = input.required<CategoryTable>();
@@ -58,12 +59,12 @@ export class CategoryToolbar {
   deleteSelectedCategories(): void {
     const categories = this.categoryTable().selectedCategories();
     this.confirmationService.confirm({
-      header: 'Delete categories',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'categories' }),
       message: `
-      Are you sure you want to delete the ${categories.length} selected categories?
-      <ul class='mt-2 mb-0'>
+        ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: categories.length, items: 'categories' })}
+        <ul class='mt-2 mb-0'>
           ${categories.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
-      </ul>
+        </ul>
       `,
       accept: () => {
         const ids = categories.map(({ id }) => id);

@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +18,7 @@ import { OrderTable } from '../order-table/order-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new order"
+          [pTooltip]="'suppliers.tooltips.createOrder' | translate"
           tooltipPosition="top"
           (onClick)="purchaseOrderStore.openOrderDialog()"
         />
@@ -28,7 +28,7 @@ import { OrderTable } from '../order-table/order-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected orders"
+          [pTooltip]="'suppliers.tooltips.deleteOrders' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedOrders()"
           [disabled]="orderTable().selectedOrders().length === 0"
@@ -40,7 +40,7 @@ import { OrderTable } from '../order-table/order-table';
           [label]="'suppliers.orders.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Export orders to CSV"
+          [pTooltip]="'suppliers.tooltips.exportOrders' | translate"
           tooltipPosition="top"
           (onClick)="orderTable().dt().exportCSV()"
           [disabled]="purchaseOrderStore.ordersCount() === 0"
@@ -51,6 +51,7 @@ import { OrderTable } from '../order-table/order-table';
 })
 export class OrderToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly purchaseOrderStore = inject(PurchaseOrderStore);
 
   readonly orderTable = input.required<OrderTable>();
@@ -61,8 +62,8 @@ export class OrderToolbar {
     const nonDraftOrders = orders.filter((order) => order.status !== 'DRAFT');
     if (nonDraftOrders.length > 0) {
       this.confirmationService.confirm({
-        header: 'Operation Not Allowed',
-        message: 'Only orders in Draft status can be deleted.',
+        header: this.translateService.instant('common.confirmations.operationNotAllowedHeader'),
+        message: this.translateService.instant('common.confirmations.draftOnlyMessage'),
         acceptVisible: false,
         rejectLabel: 'Understood',
       });
@@ -70,9 +71,9 @@ export class OrderToolbar {
     }
 
     this.confirmationService.confirm({
-      header: 'Delete Orders',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'orders' }),
       message: `
-          Are you sure you want to delete the ${orders.length} selected orders?
+          ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: orders.length, items: 'orders' })}
           <ul class='mt-2 mb-0'>
             ${orders.map(({ id }) => `<li>• <b>Order #${id}</b></li>`).join('')}
           </ul>

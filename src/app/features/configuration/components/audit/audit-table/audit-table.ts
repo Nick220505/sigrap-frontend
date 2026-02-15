@@ -2,7 +2,7 @@ import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { jsPDF } from 'jspdf';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -36,10 +36,10 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
   template: `
     @let columns =
       [
-        { field: 'timestamp', header: 'Date' },
-        { field: 'username', header: 'User' },
-        { field: 'action', header: 'Action' },
-        { field: 'entityName', header: 'Entity' },
+        { field: 'timestamp', header: ('common.tableHeaders.date' | translate) },
+        { field: 'username', header: ('common.tableHeaders.name' | translate) },
+        { field: 'action', header: ('common.actions' | translate) },
+        { field: 'entityName', header: ('auditLogs.logDetails' | translate) },
       ];
 
     <p-table
@@ -58,7 +58,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Audit Log</h5>
+            <h5 class="m-0 text-left">{{ 'common.tableTitles.auditLog' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -91,8 +91,8 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -148,7 +148,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading audit logs:</strong>
+                    <strong>{{ 'common.errors.errorLoadingAuditLogs' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -167,7 +167,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
                   class="pi pi-info-circle text-3xl text-gray-400 dark:text-gray-500 mb-2"
                 ></i>
                 <span class="text-gray-400 dark:text-gray-500"
-                  >No audit logs found.</span
+                  >{{ 'common.emptyStates.noAuditLogsFound' | translate }}</span
                 >
               </div>
             }
@@ -181,13 +181,14 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
       [totalRecords]="auditLogStore.totalRecords()"
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+      [currentPageReportTemplate]="'common.pagination.showingRecords' | translate"
       (onPageChange)="onPageChange($event)"
       styleClass="mt-3"
     ></p-paginator>
   `,
 })
 export class AuditTable {
+  private readonly translateService = inject(TranslateService);
   readonly auditLogStore = inject(AuditLogStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -318,7 +319,7 @@ export class AuditTable {
 
       pdf.setFontSize(16);
       pdf.setTextColor(0, 0, 0);
-      pdf.text('Audit Log', pdf.internal.pageSize.getWidth() / 2, 15, {
+      pdf.text(this.translateService.instant('common.tableTitles.auditLog'), pdf.internal.pageSize.getWidth() / 2, 15, {
         align: 'center',
       });
 

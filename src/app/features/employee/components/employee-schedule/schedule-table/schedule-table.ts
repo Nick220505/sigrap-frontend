@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -36,11 +36,11 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
   template: `
     @let columns =
       [
-        { field: 'userName', header: 'Employee' },
-        { field: 'day', header: 'Day' },
-        { field: 'startTime', header: 'Start Time' },
-        { field: 'endTime', header: 'End Time' },
-        { field: 'type', header: 'Type' },
+        { field: 'userName', header: ('common.tableHeaders.employee' | translate) },
+        { field: 'day', header: ('common.tableHeaders.day' | translate) },
+        { field: 'startTime', header: ('common.tableHeaders.startTime' | translate) },
+        { field: 'endTime', header: ('common.tableHeaders.endTime' | translate) },
+        { field: 'type', header: ('common.tableHeaders.type' | translate) },
       ];
 
     <p-table
@@ -52,7 +52,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} schedules"
+      [currentPageReportTemplate]="'common.pagination.showingSchedules' | translate"
       [globalFilterFields]="['userName', 'day', 'startTime', 'endTime', 'type']"
       [tableStyle]="{ 'min-width': '75rem' }"
       rowHover
@@ -64,7 +64,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Employee Schedules</h5>
+            <h5 class="m-0 text-left">{{ 'common.tableTitles.employeeSchedules' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -101,8 +101,8 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -156,21 +156,21 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
                       <span
                         class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
                       >
-                        Regular
+                        {{ 'common.statuses.regular' | translate }}
                       </span>
                     }
                     @case ('Horas Extra') {
                       <span
                         class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm"
                       >
-                        Overtime
+                        {{ 'common.statuses.overtime' | translate }}
                       </span>
                     }
                     @case ('Festivo') {
                       <span
                         class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
                       >
-                        Holiday
+                        {{ 'common.statuses.holiday' | translate }}
                       </span>
                     }
                     @default {
@@ -196,7 +196,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
               rounded
               outlined
               (click)="scheduleStore.openScheduleDialog(schedule)"
-              pTooltip="Edit schedule"
+              [pTooltip]="'employees.tooltips.editSchedule' | translate"
               tooltipPosition="top"
               [disabled]="scheduleStore.loading()"
             />
@@ -207,7 +207,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
               rounded
               outlined
               (click)="deleteSchedule(schedule)"
-              pTooltip="Delete schedule"
+              [pTooltip]="'employees.tooltips.deleteSchedule' | translate"
               tooltipPosition="top"
               [disabled]="scheduleStore.loading()"
             />
@@ -222,7 +222,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading schedules:</strong>
+                    <strong>{{ 'common.errors.errorLoadingSchedules' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -236,7 +236,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
                 </p-message>
               </div>
             } @else {
-              <p>No schedules found.</p>
+              <p>{{ 'common.emptyStates.noSchedulesFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -246,6 +246,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
 })
 export class ScheduleTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly scheduleStore = inject(ScheduleStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -266,8 +267,8 @@ export class ScheduleTable {
 
   deleteSchedule(schedule: ScheduleInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete Schedule',
-      message: `Are you sure you want to delete the schedule for <b>${schedule.userName}</b>?`,
+      header: this.translateService.instant('common.confirmations.deleteHeader', { item: 'schedule' }),
+      message: this.translateService.instant('common.confirmations.deleteMessage', { item: 'schedule', name: schedule.userName }),
       accept: () => this.scheduleStore.delete(schedule.id),
     });
   }

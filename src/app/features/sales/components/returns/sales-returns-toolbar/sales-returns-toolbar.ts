@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { ConfirmationService } from 'primeng/api';
@@ -19,7 +19,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Register new return"
+          [pTooltip]="'sales.tooltips.createReturn' | translate"
           tooltipPosition="top"
           (onClick)="saleReturnStore.openReturnDialog()"
         />
@@ -29,7 +29,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected returns"
+          [pTooltip]="'sales.tooltips.deleteReturns' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedSaleReturns()"
           [disabled]="salesReturnsTable().selectedSaleReturns().length === 0"
@@ -41,7 +41,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
           [label]="'sales.returns.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Export returns to CSV"
+          [pTooltip]="'sales.tooltips.exportReturns' | translate"
           tooltipPosition="top"
           (onClick)="exportCSV()"
           [disabled]="saleReturnStore.entities().length === 0"
@@ -53,6 +53,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
 export class SalesReturnsToolbar {
   readonly saleReturnStore = inject(SaleReturnStore);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
 
   readonly salesReturnsTable = input.required<SalesReturnsTable>();
 
@@ -63,13 +64,13 @@ export class SalesReturnsToolbar {
     }
 
     this.confirmationService.confirm({
-      header: 'Delete returns',
+      header: this.translateService.instant('common.confirmations.deleteHeaderPlural', { items: 'returns' }),
       message: `
-          Are you sure you want to delete the ${selection.length} selected returns?
-          <ul class='mt-2 mb-0'>
-            ${selection.map((item) => `<li>• <b>Return #${item.id}</b></li>`).join('')}
-          </ul>
-        `,
+        ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: selection.length, items: 'returns' })}
+        <ul class='mt-2 mb-0'>
+          ${selection.map((item) => `<li>• <b>Return #${item.id}</b></li>`).join('')}
+        </ul>
+      `,
       accept: () => {
         const ids = selection.map((item) => item.id);
         this.saleReturnStore.deleteAllById(ids);
