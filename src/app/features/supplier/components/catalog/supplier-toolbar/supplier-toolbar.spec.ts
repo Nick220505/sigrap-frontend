@@ -90,7 +90,7 @@ describe('SupplierToolbar', () => {
   describe('Create button', () => {
     it('should call openSupplierDialog when "New" button is clicked', () => {
       const newButton = fixture.debugElement.query(
-        By.css('p-button[label="New"]'),
+        By.css('p-button[icon="pi pi-plus"]'),
       );
       newButton.triggerEventHandler('onClick', null);
 
@@ -177,7 +177,7 @@ describe('SupplierToolbar', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Export"]'),
+        By.css('p-button[icon="pi pi-download"]'),
       );
       expect(exportButton.componentInstance.disabled).toBe(true);
     });

@@ -29,7 +29,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
       "
       [style]="{ width: '90vw', maxWidth: '800px' }"
       [header]="
-        customerStore.selectedCustomer() ? 'Edit Customer' : 'New Customer'
+        customerStore.selectedCustomer() ? ('customers.dialog.editCustomer' | translate) : ('customers.dialog.newCustomer' | translate)
       "
       modal
     >
@@ -48,7 +48,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
               class="flex flex-col gap-2"
               [class.p-invalid]="fullNameInvalid"
             >
-              <label for="fullName" class="font-bold">Full Name</label>
+              <label for="fullName" class="font-bold">{{ 'customers.dialog.fullNameLabel' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user"></i>
@@ -58,7 +58,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                   pInputText
                   id="fullName"
                   [formField]="customerForm.fullName"
-                  placeholder="Enter full name"
+                  [placeholder]="'customers.dialog.fullNamePlaceholder' | translate"
                   [class.ng-dirty]="fullNameInvalid"
                   [class.ng-invalid]="fullNameInvalid"
                   fluid
@@ -85,7 +85,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
               class="flex flex-col gap-2"
               [class.p-invalid]="documentIdInvalid"
             >
-              <label for="documentId" class="font-bold">Document</label>
+              <label for="documentId" class="font-bold">{{ 'customers.dialog.documentLabel' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-id-card"></i>
@@ -95,7 +95,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                   pInputText
                   id="documentId"
                   [formField]="customerForm.documentId"
-                  placeholder="Enter document number"
+                  [placeholder]="'customers.dialog.documentPlaceholder' | translate"
                   [class.ng-dirty]="documentIdInvalid"
                   [class.ng-invalid]="documentIdInvalid"
                   fluid
@@ -114,7 +114,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="phoneNumber" class="font-bold">Phone</label>
+              <label for="phoneNumber" class="font-bold">{{ 'customers.dialog.phoneLabel' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-phone"></i>
@@ -124,7 +124,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                   pInputText
                   id="phoneNumber"
                   [formField]="customerForm.phoneNumber"
-                  placeholder="Enter phone number (optional)"
+                  [placeholder]="'customers.dialog.phonePlaceholder' | translate"
                   fluid
                 />
               </p-inputgroup>
@@ -137,7 +137,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
             @let emailErrors = customerForm.email().errors();
 
             <div class="flex flex-col gap-2" [class.p-invalid]="emailInvalid">
-              <label for="email" class="font-bold">Email</label>
+              <label for="email" class="font-bold">{{ 'customers.dialog.emailLabel' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-envelope"></i>
@@ -147,7 +147,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                   pInputText
                   id="email"
                   [formField]="customerForm.email"
-                  placeholder="Enter email"
+                  [placeholder]="'customers.dialog.emailPlaceholder' | translate"
                   [class.ng-dirty]="emailInvalid"
                   [class.ng-invalid]="emailInvalid"
                   fluid
@@ -171,7 +171,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
             @let addressErrors = customerForm.address().errors();
 
             <div class="flex flex-col gap-2" [class.p-invalid]="addressInvalid">
-              <label for="address" class="font-bold">Address</label>
+              <label for="address" class="font-bold">{{ 'customers.dialog.addressLabel' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-map-marker"></i>
@@ -181,7 +181,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                   pInputText
                   id="address"
                   [formField]="customerForm.address"
-                  placeholder="Enter address"
+                  [placeholder]="'customers.dialog.addressPlaceholder' | translate"
                   [class.ng-dirty]="addressInvalid"
                   [class.ng-invalid]="addressInvalid"
                   fluid

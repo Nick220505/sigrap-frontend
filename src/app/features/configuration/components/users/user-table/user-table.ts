@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -36,12 +36,12 @@ import { UserStore } from '@features/configuration/stores/user-store';
   template: `
     @let columns =
       [
-        { field: 'name', header: 'Name' },
-        { field: 'email', header: 'Email' },
-        { field: 'phone', header: 'Phone' },
-        { field: 'documentId', header: 'ID Number' },
-        { field: 'lastLogin', header: 'Last Login' },
-        { field: 'role', header: 'Role' },
+        { field: 'name', header: 'users.table.columns.name' | translate },
+        { field: 'email', header: 'users.table.columns.email' | translate },
+        { field: 'phone', header: 'users.table.columns.phone' | translate },
+        { field: 'documentId', header: 'users.table.columns.documentId' | translate },
+        { field: 'lastLogin', header: 'users.table.columns.lastLogin' | translate },
+        { field: 'role', header: 'users.table.columns.role' | translate },
       ];
 
     <p-table
@@ -53,7 +53,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+      [currentPageReportTemplate]="'users.table.showingUsers' | translate"
       [globalFilterFields]="['name', 'email', 'role', 'phone', 'documentId']"
       [tableStyle]="{ 'min-width': '85rem' }"
       rowHover
@@ -65,7 +65,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Manage Users</h5>
+            <h5 class="m-0 text-left">{{ 'users.table.manageUsers' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -102,8 +102,8 @@ import { UserStore } from '@features/configuration/stores/user-store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -112,7 +112,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Actions</span>
+              <span>{{ 'users.table.columns.actions' | translate }}</span>
               <button
                 type="button"
                 pButton
@@ -146,10 +146,10 @@ import { UserStore } from '@features/configuration/stores/user-store';
                   >
                     @switch (user.role) {
                       @case (UserRole.ADMINISTRATOR) {
-                        Administrator
+                        {{ 'users.administrator' | translate }}
                       }
                       @case (UserRole.EMPLOYEE) {
-                        Employee
+                        {{ 'users.employee' | translate }}
                       }
                     }
                   </span>
@@ -168,7 +168,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               rounded
               outlined
               (click)="userStore.openUserDialog(user)"
-              pTooltip="Edit user"
+              [pTooltip]="'users.table.editUser' | translate"
               tooltipPosition="top"
               [disabled]="userStore.loading()"
             />
@@ -179,7 +179,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               rounded
               outlined
               (click)="deleteUser(user)"
-              pTooltip="Delete user"
+              [pTooltip]="'users.table.deleteUser' | translate"
               tooltipPosition="top"
               [disabled]="userStore.loading()"
             />
@@ -208,7 +208,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
                 </p-message>
               </div>
             } @else {
-              <p>No users found.</p>
+              <p>{{ 'users.table.noUsersFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -218,6 +218,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
 })
 export class UserTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly userStore = inject(UserStore);
   readonly UserRole = UserRole;
 
@@ -239,8 +240,8 @@ export class UserTable {
 
   deleteUser({ id, name }: UserInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete User',
-      message: `Are you sure you want to delete user <b>${name}</b>?`,
+      header: this.translateService.instant('users.confirmDelete.header'),
+      message: this.translateService.instant('users.confirmDelete.message', { name }),
       accept: () => this.userStore.delete(id),
     });
   }

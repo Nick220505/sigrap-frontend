@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormsModule, Validators } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PasswordField } from '@shared/components/password-field/password-field';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -40,7 +40,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
         $event ? userStore.openUserDialog() : userStore.closeUserDialog()
       "
       [style]="{ width: '500px' }"
-      [header]="userStore.selectedUser() ? 'Edit User' : 'Create User'"
+      [header]="userStore.selectedUser() ? ('users.dialog.editUserTitle' | translate) : ('users.dialog.createUserTitle' | translate)"
       modal
     >
       <form
@@ -51,7 +51,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
           userForm.name().invalid() && userForm.name().touched();
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameControlInvalid">
-          <label for="name" class="font-bold">Name</label>
+          <label for="name" class="font-bold">{{ 'users.dialog.nameLabel' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
@@ -61,7 +61,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               pInputText
               id="name"
               [formField]="userForm.name"
-              placeholder="Enter user name"
+              [placeholder]="'users.dialog.namePlaceholder' | translate"
               [class.ng-dirty]="nameControlInvalid"
               [class.ng-invalid]="nameControlInvalid"
               fluid
@@ -80,7 +80,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
           class="flex flex-col gap-2"
           [class.p-invalid]="emailControlInvalid"
         >
-          <label for="email" class="font-bold">Email</label>
+          <label for="email" class="font-bold">{{ 'users.dialog.emailLabel' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-envelope"></i>
@@ -90,7 +90,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               pInputText
               id="email"
               [formField]="userForm.email"
-              placeholder="Enter user email"
+              [placeholder]="'users.dialog.emailPlaceholder' | translate"
               [class.ng-dirty]="emailControlInvalid"
               [class.ng-invalid]="emailControlInvalid"
               fluid
@@ -109,7 +109,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="documentId" class="font-bold">ID Number (Optional)</label>
+          <label for="documentId" class="font-bold">{{ 'users.dialog.documentIdLabel' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-id-card"></i>
@@ -119,14 +119,14 @@ import { UserStore } from '@features/configuration/stores/user-store';
               pInputText
               id="documentId"
               [formField]="userForm.documentId"
-              placeholder="Enter ID number"
+              [placeholder]="'users.dialog.documentIdPlaceholder' | translate"
               fluid
             />
           </p-inputgroup>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="phone" class="font-bold">Phone (Optional)</label>
+          <label for="phone" class="font-bold">{{ 'users.dialog.phoneLabel' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-phone"></i>
@@ -136,7 +136,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               pInputText
               id="phone"
               [formField]="userForm.phone"
-              placeholder="Enter phone number"
+              [placeholder]="'users.dialog.phonePlaceholder' | translate"
               fluid
             />
           </p-inputgroup>
@@ -144,13 +144,13 @@ import { UserStore } from '@features/configuration/stores/user-store';
 
         <app-password-field
           id="password"
-          [label]="isEditMode() ? 'Password (Optional)' : 'Password'"
+          [label]="isEditMode() ? ('users.dialog.passwordOptionalLabel' | translate) : ('users.dialog.passwordLabel' | translate)"
           [control]="passwordControl"
           [required]="!isEditMode()"
         />
 
         <div class="flex flex-col gap-2">
-          <label for="role" class="font-bold">Role</label>
+          <label for="role" class="font-bold">{{ 'users.dialog.roleLabel' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-shield"></i>
@@ -163,7 +163,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               [options]="roleOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="Select a role"
+              [placeholder]="'users.dialog.rolePlaceholder' | translate"
               appendTo="body"
               styleClass="w-full"
             />
@@ -191,10 +191,11 @@ import { UserStore } from '@features/configuration/stores/user-store';
 })
 export class UserDialog {
   readonly userStore = inject(UserStore);
+  private readonly translateService = inject(TranslateService);
 
   readonly roleOptions = [
-    { label: 'Administrator', value: UserRole.ADMINISTRATOR },
-    { label: 'Employee', value: UserRole.EMPLOYEE },
+    { label: this.translateService.instant('users.administrator'), value: UserRole.ADMINISTRATOR },
+    { label: this.translateService.instant('users.employee'), value: UserRole.EMPLOYEE },
   ];
 
   readonly isEditMode = computed(() => !!this.userStore.selectedUser());

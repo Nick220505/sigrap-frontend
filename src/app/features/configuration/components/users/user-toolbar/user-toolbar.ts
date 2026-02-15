@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -14,11 +14,11 @@ import { UserTable } from '../user-table/user-table';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="New"
+          [label]="'users.toolbar.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new user"
+          [pTooltip]="'users.toolbar.createNewUser' | translate"
           tooltipPosition="top"
           (onClick)="userStore.openUserDialog()"
         />
@@ -28,7 +28,7 @@ import { UserTable } from '../user-table/user-table';
           [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
-          pTooltip="Delete selected users"
+          [pTooltip]="'users.toolbar.deleteSelectedUsers' | translate"
           tooltipPosition="top"
           (onClick)="deleteSelectedUsers()"
           [disabled]="userTable().selectedUsers().length === 0"
@@ -37,10 +37,10 @@ import { UserTable } from '../user-table/user-table';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'users.toolbar.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
-          pTooltip="Export users to CSV"
+          [pTooltip]="'users.toolbar.exportUsersToCSV' | translate"
           tooltipPosition="top"
           (onClick)="userTable().dt().exportCSV()"
           [disabled]="userStore.usersCount() === 0"
@@ -51,6 +51,7 @@ import { UserTable } from '../user-table/user-table';
 })
 export class UserToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly userStore = inject(UserStore);
 
   readonly userTable = input.required<UserTable>();
@@ -58,13 +59,11 @@ export class UserToolbar {
   deleteSelectedUsers(): void {
     const users = this.userTable().selectedUsers();
     this.confirmationService.confirm({
-      header: 'Delete Users',
-      message: `
-          Are you sure you want to delete the ${users.length} selected users?
-          <ul class='mt-2 mb-0'>
-            ${users.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
-          </ul>
-        `,
+      header: this.translateService.instant('users.confirmDelete.headerMultiple'),
+      message: this.translateService.instant('users.confirmDelete.messageMultiple', { count: users.length }) +
+        `<ul class='mt-2 mb-0'>
+          ${users.map(({ name }) => `<li>• <b>${name}</b></li>`).join('')}
+        </ul>`,
       accept: () => {
         const ids = users.map(({ id }) => id);
         this.userStore.deleteAllById(ids);

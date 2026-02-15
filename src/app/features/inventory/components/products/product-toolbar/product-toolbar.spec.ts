@@ -106,7 +106,7 @@ describe('ProductToolbar', () => {
 
   it('should call openProductDialog when new button is clicked', () => {
     const newButton = fixture.debugElement.query(
-      By.css('p-button[label="New"]'),
+      By.css('p-button[icon="pi pi-plus"]'),
     );
     newButton.triggerEventHandler('onClick', null);
 
@@ -138,7 +138,7 @@ describe('ProductToolbar', () => {
     fixture.detectChanges();
 
     const exportButton = fixture.debugElement.query(
-      By.css('p-button[label="Export"]'),
+      By.css('p-button[icon="pi pi-download"]'),
     );
     expect(exportButton.componentInstance.disabled).toBe(true);
   });

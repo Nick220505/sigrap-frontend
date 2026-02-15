@@ -212,7 +212,6 @@
     "cash": "Cash",
     "card": "Card",
     "transfer": "Transfer",
-    "returns": "Returns",
     "createReturn": "Create Return",
     "returnDetails": "Return Details",
     "returnReason": "Return Reason",
@@ -231,10 +230,54 @@
     "emailReceipt": "Email Receipt"
   },
   "customers": {
+    "newButton": "New",
+    "exportButton": "Export",
+    "deleteButton": "Delete",
+    "manageCustomers": "Manage Customers",
+    "showingCustomers": "Showing {first} to {last} of {totalRecords} customers",
+    "noCustomersFound": "No customers found.",
+    "createNewCustomer": "Create new customer",
+    "deleteSelectedCustomers": "Delete selected customers",
+    "exportCustomersToCSV": "Export customers to CSV",
+    "editCustomer": "Edit customer",
+    "deleteCustomer": "Delete customer",
+    "filterByName": "Filter by name",
+    "filterByDocument": "Filter by document",
+    "filterByEmail": "Filter by email",
+    "filterByPhone": "Filter by phone",
+    "filterByAddress": "Filter by address",
+    "notSpecified": "Not specified",
+    "errorLoadingCustomers": "Error loading customers:",
+    "dialog": {
+      "newCustomer": "New Customer",
+      "editCustomer": "Edit Customer",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "Enter full name",
+      "documentLabel": "Document",
+      "documentPlaceholder": "Enter document number",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "Enter phone number (optional)",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter email",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Enter address"
+    },
+    "confirmDelete": {
+      "header": "Delete Customer",
+      "message": "Are you sure you want to delete customer <b>{{name}}</b>?",
+      "headerMultiple": "Delete Customers",
+      "messageMultiple": "Are you sure you want to delete the {{count}} selected customers?"
+    },
+    "columns": {
+      "name": "Name",
+      "document": "Document",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "actions": "Actions"
+    },
     "customers": "Customers",
     "createCustomer": "Create Customer",
-    "editCustomer": "Edit Customer",
-    "deleteCustomer": "Delete Customer",
     "customerDetails": "Customer Details",
     "customerName": "Customer Name",
     "fullName": "Full Name",
@@ -410,7 +453,58 @@
     "updatedAt": "Updated At",
     "permissions": "Permissions",
     "changePassword": "Change Password",
-    "resetPassword": "Reset Password"
+    "resetPassword": "Reset Password",
+    "toolbar": {
+      "newButton": "New",
+      "createNewUser": "Create new user",
+      "deleteSelectedUsers": "Delete selected users",
+      "exportButton": "Export",
+      "exportUsersToCSV": "Export users to CSV"
+    },
+    "dialog": {
+      "createUserTitle": "Create User",
+      "editUserTitle": "Edit User",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter user name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter user email",
+      "documentIdLabel": "ID Number (Optional)",
+      "documentIdPlaceholder": "Enter ID number",
+      "phoneLabel": "Phone (Optional)",
+      "phonePlaceholder": "Enter phone number",
+      "passwordLabel": "Password",
+      "passwordOptionalLabel": "Password (Optional)",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Select a role"
+    },
+    "table": {
+      "manageUsers": "Manage Users",
+      "showingUsers": "Showing {first} to {last} of {totalRecords} users",
+      "noUsersFound": "No users found.",
+      "editUser": "Edit user",
+      "deleteUser": "Delete user",
+      "filterByName": "Filter by name",
+      "filterByEmail": "Filter by email",
+      "filterByPhone": "Filter by phone",
+      "filterByDocumentId": "Filter by id number",
+      "filterByLastLogin": "Filter by last login",
+      "filterByRole": "Filter by role",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "documentId": "ID Number",
+        "lastLogin": "Last Login",
+        "role": "Role",
+        "actions": "Actions"
+      }
+    },
+    "confirmDelete": {
+      "header": "Delete User",
+      "message": "Are you sure you want to delete user <b>{{name}}</b>?",
+      "headerMultiple": "Delete Users",
+      "messageMultiple": "Are you sure you want to delete the {{count}} selected users?"
+    }
   },
   "auditLogs": {
     "auditLogs": "Audit Logs",
@@ -430,7 +524,18 @@
     "delete": "Delete",
     "login": "Login",
     "logout": "Logout",
-    "export": "Export"
+    "export": "Export",
+    "auditDialog": {
+      "title": "Record Details",
+      "entityLabel": "Entity",
+      "entityIdLabel": "Entity ID",
+      "actionLabel": "Action",
+      "userLabel": "User",
+      "dateTimeLabel": "Date and Time",
+      "previousDataLabel": "Previous Data",
+      "newDataLabel": "New Data",
+      "systemDefault": "System"
+    }
   },
   "nav": {
     "home": "Home",

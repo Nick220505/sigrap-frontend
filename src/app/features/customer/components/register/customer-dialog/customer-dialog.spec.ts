@@ -92,7 +92,7 @@ describe('CustomerDialog', () => {
     fixture.detectChanges();
 
     const dialogHeader = fixture.debugElement.query(By.css('.p-dialog-title'));
-    expect(dialogHeader.nativeElement.textContent.trim()).toBe('New Customer');
+    expect(dialogHeader.nativeElement.textContent.trim()).toBe('customers.dialog.newCustomer');
   });
 
   it('should show "Edit Customer" header when a customer is selected', () => {
@@ -103,7 +103,7 @@ describe('CustomerDialog', () => {
     fixture.detectChanges();
 
     const dialogHeader = fixture.debugElement.query(By.css('.p-dialog-title'));
-    expect(dialogHeader.nativeElement.textContent.trim()).toBe('Edit Customer');
+    expect(dialogHeader.nativeElement.textContent.trim()).toBe('customers.dialog.editCustomer');
   });
 
   it('should patch form with customer data when editing', () => {

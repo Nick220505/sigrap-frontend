@@ -6,7 +6,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -34,11 +34,11 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
   template: `
     @let columns =
       [
-        { field: 'fullName', header: 'Name' },
-        { field: 'documentId', header: 'Document' },
-        { field: 'email', header: 'Email' },
-        { field: 'phoneNumber', header: 'Phone' },
-        { field: 'address', header: 'Address' },
+        { field: 'fullName', header: 'customers.columns.name' | translate },
+        { field: 'documentId', header: 'customers.columns.document' | translate },
+        { field: 'email', header: 'customers.columns.email' | translate },
+        { field: 'phoneNumber', header: 'customers.columns.phone' | translate },
+        { field: 'address', header: 'customers.columns.address' | translate },
       ];
 
     <p-table
@@ -50,7 +50,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
       paginator
       [rowsPerPageOptions]="[10, 25, 50]"
       showCurrentPageReport
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customers"
+      [currentPageReportTemplate]="'customers.showingCustomers' | translate"
       [globalFilterFields]="['fullName', 'documentId', 'email', 'address']"
       [tableStyle]="{ 'min-width': '75rem' }"
       rowHover
@@ -62,7 +62,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Manage Customers</h5>
+            <h5 class="m-0 text-left">{{ 'customers.manageCustomers' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -99,8 +99,8 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                   field="{{ column.field }}"
                   display="menu"
                   class="ml-auto"
-                  placeholder="Filter by {{ column.header.toLowerCase() }}"
-                  pTooltip="Filter by {{ column.header.toLowerCase() }}"
+                  [placeholder]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
+                  [pTooltip]="'common.filterBy' | translate: {field: column.header.toLowerCase()}"
                   tooltipPosition="top"
                 />
               </div>
@@ -109,7 +109,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Actions</span>
+              <span>{{ 'customers.columns.actions' | translate }}</span>
               <button
                 type="button"
                 pButton
@@ -134,7 +134,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
           @for (column of columns; track column.field) {
             <td>
               @if (column.field === 'phoneNumber') {
-                {{ customer[column.field] || 'Not specified' }}
+                {{ customer[column.field] || ('customers.notSpecified' | translate) }}
               } @else {
                 {{ customer[column.field] }}
               }
@@ -148,7 +148,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
               rounded
               outlined
               (click)="customerStore.openCustomerDialog(customer)"
-              pTooltip="Edit customer"
+              [pTooltip]="'customers.editCustomer' | translate"
               tooltipPosition="top"
               [disabled]="customerStore.loading()"
             />
@@ -159,7 +159,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
               rounded
               outlined
               (click)="deleteCustomer(customer)"
-              pTooltip="Delete customer"
+              [pTooltip]="'customers.deleteCustomer' | translate"
               tooltipPosition="top"
               [disabled]="customerStore.loading()"
             />
@@ -174,7 +174,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading customers:</strong>
+                    <strong>{{ 'customers.errorLoadingCustomers' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
@@ -188,7 +188,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
                 </p-message>
               </div>
             } @else {
-              <p>No customers found.</p>
+              <p>{{ 'customers.noCustomersFound' | translate }}</p>
             }
           </td>
         </tr>
@@ -198,6 +198,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
 })
 export class CustomerTable {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly customerStore = inject(CustomerStore);
 
   readonly dt = viewChild.required<Table>('dt');
@@ -218,8 +219,8 @@ export class CustomerTable {
 
   deleteCustomer({ id, fullName }: CustomerInfo): void {
     this.confirmationService.confirm({
-      header: 'Delete Customer',
-      message: `Are you sure you want to delete customer <b>${fullName}</b>?`,
+      header: this.translateService.instant('customers.confirmDelete.header'),
+      message: this.translateService.instant('customers.confirmDelete.message', { name: fullName }),
       accept: () => this.customerStore.delete(id),
     });
   }

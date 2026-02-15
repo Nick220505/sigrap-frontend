@@ -212,7 +212,6 @@
     "cash": "Efectivo",
     "card": "Tarjeta",
     "transfer": "Transferencia",
-    "returns": "Devoluciones",
     "createReturn": "Crear Devolución",
     "returnDetails": "Detalles de Devolución",
     "returnReason": "Motivo de Devolución",
@@ -231,10 +230,54 @@
     "emailReceipt": "Enviar Recibo por Email"
   },
   "customers": {
+    "newButton": "Nuevo",
+    "exportButton": "Exportar",
+    "deleteButton": "Eliminar",
+    "manageCustomers": "Gestionar Clientes",
+    "showingCustomers": "Mostrando {first} a {last} de {totalRecords} clientes",
+    "noCustomersFound": "No se encontraron clientes.",
+    "createNewCustomer": "Crear nuevo cliente",
+    "deleteSelectedCustomers": "Eliminar clientes seleccionados",
+    "exportCustomersToCSV": "Exportar clientes a CSV",
+    "editCustomer": "Editar cliente",
+    "deleteCustomer": "Eliminar cliente",
+    "filterByName": "Filtrar por nombre",
+    "filterByDocument": "Filtrar por documento",
+    "filterByEmail": "Filtrar por correo",
+    "filterByPhone": "Filtrar por teléfono",
+    "filterByAddress": "Filtrar por dirección",
+    "notSpecified": "No especificado",
+    "errorLoadingCustomers": "Error al cargar clientes:",
+    "dialog": {
+      "newCustomer": "Nuevo Cliente",
+      "editCustomer": "Editar Cliente",
+      "fullNameLabel": "Nombre Completo",
+      "fullNamePlaceholder": "Ingrese el nombre completo",
+      "documentLabel": "Documento",
+      "documentPlaceholder": "Ingrese el número de documento",
+      "phoneLabel": "Teléfono",
+      "phonePlaceholder": "Ingrese el número de teléfono (opcional)",
+      "emailLabel": "Correo Electrónico",
+      "emailPlaceholder": "Ingrese el correo electrónico",
+      "addressLabel": "Dirección",
+      "addressPlaceholder": "Ingrese la dirección"
+    },
+    "confirmDelete": {
+      "header": "Eliminar Cliente",
+      "message": "¿Está seguro de que desea eliminar el cliente <b>{{name}}</b>?",
+      "headerMultiple": "Eliminar Clientes",
+      "messageMultiple": "¿Está seguro de que desea eliminar los {{count}} clientes seleccionados?"
+    },
+    "columns": {
+      "name": "Nombre",
+      "document": "Documento",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "actions": "Acciones"
+    },
     "customers": "Clientes",
     "createCustomer": "Crear Cliente",
-    "editCustomer": "Editar Cliente",
-    "deleteCustomer": "Eliminar Cliente",
     "customerDetails": "Detalles del Cliente",
     "customerName": "Nombre del Cliente",
     "fullName": "Nombre Completo",
@@ -410,7 +453,58 @@
     "updatedAt": "Actualizado En",
     "permissions": "Permisos",
     "changePassword": "Cambiar Contraseña",
-    "resetPassword": "Restablecer Contraseña"
+    "resetPassword": "Restablecer Contraseña",
+    "toolbar": {
+      "newButton": "Nuevo",
+      "createNewUser": "Crear nuevo usuario",
+      "deleteSelectedUsers": "Eliminar usuarios seleccionados",
+      "exportButton": "Exportar",
+      "exportUsersToCSV": "Exportar usuarios a CSV"
+    },
+    "dialog": {
+      "createUserTitle": "Crear Usuario",
+      "editUserTitle": "Editar Usuario",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Ingrese el nombre del usuario",
+      "emailLabel": "Correo Electrónico",
+      "emailPlaceholder": "Ingrese el correo del usuario",
+      "documentIdLabel": "Número de Identificación (Opcional)",
+      "documentIdPlaceholder": "Ingrese el número de identificación",
+      "phoneLabel": "Teléfono (Opcional)",
+      "phonePlaceholder": "Ingrese el número de teléfono",
+      "passwordLabel": "Contraseña",
+      "passwordOptionalLabel": "Contraseña (Opcional)",
+      "roleLabel": "Rol",
+      "rolePlaceholder": "Seleccione un rol"
+    },
+    "table": {
+      "manageUsers": "Gestionar Usuarios",
+      "showingUsers": "Mostrando {first} a {last} de {totalRecords} usuarios",
+      "noUsersFound": "No se encontraron usuarios.",
+      "editUser": "Editar usuario",
+      "deleteUser": "Eliminar usuario",
+      "filterByName": "Filtrar por nombre",
+      "filterByEmail": "Filtrar por correo",
+      "filterByPhone": "Filtrar por teléfono",
+      "filterByDocumentId": "Filtrar por número de identificación",
+      "filterByLastLogin": "Filtrar por último inicio de sesión",
+      "filterByRole": "Filtrar por rol",
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo Electrónico",
+        "phone": "Teléfono",
+        "documentId": "Número de Identificación",
+        "lastLogin": "Último Inicio de Sesión",
+        "role": "Rol",
+        "actions": "Acciones"
+      }
+    },
+    "confirmDelete": {
+      "header": "Eliminar Usuario",
+      "message": "¿Está seguro de que desea eliminar el usuario <b>{{name}}</b>?",
+      "headerMultiple": "Eliminar Usuarios",
+      "messageMultiple": "¿Está seguro de que desea eliminar los {{count}} usuarios seleccionados?"
+    }
   },
   "auditLogs": {
     "auditLogs": "Registros de Auditoría",
@@ -430,7 +524,18 @@
     "delete": "Eliminar",
     "login": "Iniciar Sesión",
     "logout": "Cerrar Sesión",
-    "export": "Exportar"
+    "export": "Exportar",
+    "auditDialog": {
+      "title": "Detalles del Registro",
+      "entityLabel": "Entidad",
+      "entityIdLabel": "ID de Entidad",
+      "actionLabel": "Acción",
+      "userLabel": "Usuario",
+      "dateTimeLabel": "Fecha y Hora",
+      "previousDataLabel": "Datos Anteriores",
+      "newDataLabel": "Datos Nuevos",
+      "systemDefault": "Sistema"
+    }
   },
   "nav": {
     "home": "Inicio",

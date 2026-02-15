@@ -148,7 +148,7 @@ describe('SupplierDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'New Supplier',
+        'suppliers.createSupplier',
       );
     });
 
@@ -163,7 +163,7 @@ describe('SupplierDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Edit Supplier',
+        'suppliers.editSupplier',
       );
     });
   });

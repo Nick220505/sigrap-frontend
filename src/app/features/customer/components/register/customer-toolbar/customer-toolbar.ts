@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -15,11 +15,11 @@ import { CustomerTable } from '../customer-table/customer-table';
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
         <p-button
-          label="New"
+          [label]="'customers.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
-          pTooltip="Create new customer"
+          [pTooltip]="'customers.createNewCustomer' | translate"
           tooltipPosition="top"
           (onClick)="customerStore.openCustomerDialog()"
         />
@@ -29,7 +29,7 @@ import { CustomerTable } from '../customer-table/customer-table';
           icon="pi pi-trash"
           severity="danger"
           outlined
-          pTooltip="Delete selected customers"
+          [pTooltip]="'customers.deleteSelectedCustomers' | translate"
           tooltipPosition="top"
           [disabled]="customerTable().selectedCustomers().length === 0"
           (onClick)="deleteSelectedCustomers()"
@@ -39,12 +39,12 @@ import { CustomerTable } from '../customer-table/customer-table';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'customers.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           (onClick)="customerTable().dt().exportCSV()"
           [disabled]="customerStore.entities().length === 0"
-          pTooltip="Export customers to CSV"
+          [pTooltip]="'customers.exportCustomersToCSV' | translate"
           tooltipPosition="top"
         />
       </ng-template>
@@ -53,15 +53,16 @@ import { CustomerTable } from '../customer-table/customer-table';
 })
 export class CustomerToolbar {
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly translateService = inject(TranslateService);
   readonly customerStore = inject(CustomerStore);
   readonly customerTable = input.required<CustomerTable>();
 
   deleteSelectedCustomers(): void {
     const customers = this.customerTable().selectedCustomers();
     this.confirmationService.confirm({
-      header: 'Delete Customers',
+      header: this.translateService.instant('customers.confirmDelete.headerMultiple'),
       message: `
-        Are you sure you want to delete the ${customers.length} selected customers?
+        ${this.translateService.instant('customers.confirmDelete.messageMultiple', { count: customers.length })}
         <ul class='mt-2 mb-0'>
           ${customers
             .map(
