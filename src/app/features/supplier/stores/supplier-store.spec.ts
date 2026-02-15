@@ -18,6 +18,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { SupplierData, SupplierInfo } from '../models/supplier.model';
 import { SupplierService } from '../services/supplier';
@@ -33,6 +34,7 @@ describe('SupplierStore', () => {
     deleteAllById: Mock;
   };
   let messageService: { add: Mock };
+  let translateService: { instant: Mock };
   let httpMock: HttpTestingController;
 
   const mockSupplier: SupplierInfo = {
@@ -75,6 +77,28 @@ describe('SupplierStore', () => {
     messageService = {
       add: vi.fn().mockName('MessageService.add'),
     };
+    translateService = {
+      instant: vi.fn().mockName('TranslateService.instant').mockImplementation((key: string, params?: Record<string, string>) => {
+        // Mock translation keys
+        const translations: Record<string, string> = {
+          'messages.success.supplierCreated': 'Supplier created',
+          'messages.success.supplierCreatedDetail': `The supplier ${params?.name} has been created successfully`,
+          'messages.success.supplierUpdated': 'Supplier updated',
+          'messages.success.supplierUpdatedDetail': `The supplier ${params?.name} has been updated successfully`,
+          'messages.success.supplierDeleted': 'Supplier deleted',
+          'messages.success.supplierDeletedDetail': 'The supplier has been deleted successfully',
+          'messages.success.suppliersDeleted': 'Suppliers deleted',
+          'messages.success.suppliersDeletedDetail': 'The selected suppliers have been deleted successfully',
+          'messages.errors.error': 'Error',
+          'messages.errors.supplierCreateError': 'Error creating supplier',
+          'messages.errors.supplierUpdateError': 'Error updating supplier',
+          'messages.errors.supplierDeleteError': 'Error deleting supplier',
+          'messages.errors.supplierDeleteErrorDetail': `Cannot delete supplier "${params?.name}" because it is being used.`,
+          'messages.errors.suppliersDeleteError': 'Error deleting suppliers',
+        };
+        return translations[key] || key;
+      }),
+    };
 
     supplierService.findAll.mockReturnValue(of([mockSupplier]));
     supplierService.create.mockReturnValue(of(mockSupplier));
@@ -89,6 +113,7 @@ describe('SupplierStore', () => {
         provideHttpClientTesting(),
         { provide: SupplierService, useValue: supplierService },
         { provide: MessageService, useValue: messageService },
+        { provide: TranslateService, useValue: translateService },
       ],
     });
 

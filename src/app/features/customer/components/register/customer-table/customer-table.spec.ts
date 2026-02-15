@@ -8,6 +8,7 @@ import { CustomerInfo } from '@features/customer/models/customer.model';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { ConfirmationService } from 'primeng/api';
 import { CustomerTable } from './customer-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CustomerTable', () => {
   let component: CustomerTable;
@@ -66,11 +67,13 @@ describe('CustomerTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CustomerTable, FormsModule, DatePipe],
+      imports: [
+        TranslateModule.forRoot(),
+        CustomerTable, FormsModule, DatePipe],
       providers: [
         { provide: CustomerStore, useValue: customerStore },
         { provide: ConfirmationService, useValue: confirmationService },
-      ],
+        ],
     })
       .overrideComponent(CustomerTable, {
         set: {

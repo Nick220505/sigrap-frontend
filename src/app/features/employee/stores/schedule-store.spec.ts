@@ -14,6 +14,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { ScheduleData, ScheduleInfo } from '../models/schedule.model';
 import { ScheduleService } from '../services/schedule';
@@ -78,6 +79,7 @@ describe('ScheduleStore', () => {
     scheduleService.deleteAllById.mockReturnValue(of(void 0));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         ScheduleStore,
         provideHttpClient(),
@@ -89,6 +91,32 @@ describe('ScheduleStore', () => {
 
     store = TestBed.inject(ScheduleStore);
     httpMock = TestBed.inject(HttpTestingController);
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    
+    translateService.setTranslation('en', {
+      messages: {
+        success: {
+          scheduleCreated: 'Schedule created',
+          scheduleCreatedDetail: 'Schedule created successfully',
+          scheduleUpdated: 'Schedule updated',
+          scheduleUpdatedDetail: 'Schedule updated successfully',
+          scheduleDeleted: 'Schedule deleted',
+          scheduleDeletedDetail: 'Schedule deleted successfully',
+          schedulesDeleted: 'Schedules deleted',
+          schedulesDeletedDetail: 'Schedules deleted successfully',
+        },
+        errors: {
+          error: 'Error',
+          scheduleCreateError: 'Error creating schedule',
+          scheduleUpdateError: 'Error updating schedule',
+          scheduleDeleteError: 'Error deleting schedule',
+          schedulesDeleteError: 'Error deleting schedules',
+        },
+      },
+    });
   });
 
   afterEach(() => {
@@ -169,7 +197,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Schedule created',
-        detail: 'The schedule has been created successfully',
+        detail: 'Schedule created successfully',
       });
       expect(store.dialogVisible()).toBe(false);
     });
@@ -198,7 +226,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Schedule updated',
-        detail: 'The schedule has been updated successfully',
+        detail: 'Schedule updated successfully',
       });
       expect(store.dialogVisible()).toBe(false);
     });
@@ -227,7 +255,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Schedule deleted',
-        detail: 'The schedule has been deleted successfully',
+        detail: 'Schedule deleted successfully',
       });
     });
 
@@ -255,7 +283,7 @@ describe('ScheduleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Schedules deleted',
-        detail: 'The selected schedules have been deleted successfully',
+        detail: 'Schedules deleted successfully',
       });
     });
 

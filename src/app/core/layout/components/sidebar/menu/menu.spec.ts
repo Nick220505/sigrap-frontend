@@ -11,6 +11,8 @@ import { providePrimeNG } from 'primeng/config';
 import { UserRole } from '@features/configuration/models/user.model';
 import { MenuItem } from './menu-item/menu-item';
 import { Menu } from './menu';
+import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 describe('Menu', () => {
   let component: Menu;
@@ -24,6 +26,16 @@ describe('Menu', () => {
       email: 'test@example.com',
       role: UserRole.ADMINISTRATOR,
     }),
+  };
+
+  const mockTranslateService = {
+    instant: vi.fn((key: string) => key),
+    get: vi.fn((key: string) => of(key)),
+    use: vi.fn().mockReturnValue(of({})),
+    getBrowserLang: vi.fn().mockReturnValue('en'),
+    onLangChange: {
+      subscribe: vi.fn()
+    }
   };
 
   beforeEach(async () => {
@@ -71,6 +83,7 @@ describe('Menu', () => {
         ConfirmationService,
         MessageService,
         { provide: AuthStore, useValue: mockAuthStore },
+        { provide: TranslateService, useValue: mockTranslateService },
       ],
     }).compileComponents();
 

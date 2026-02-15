@@ -16,6 +16,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { ProductDialog } from './product-dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('ProductDialog', () => {
   let component: ProductDialog;
@@ -61,7 +62,7 @@ describe('ProductDialog', () => {
     await TestBed.configureTestingModule({
       imports: [
         ProductDialog,
-        
+        TranslateModule.forRoot(),
         DialogModule,
         ButtonModule,
         InputTextModule,
@@ -80,6 +81,17 @@ describe('ProductDialog', () => {
 
     fixture = TestBed.createComponent(ProductDialog);
     component = fixture.componentInstance;
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    translateService.setTranslation('en', {
+      validation: {
+        required: 'Name is required',
+        email: 'Invalid email',
+      },
+    });
+    
     fixture.detectChanges();
   });
 
@@ -471,7 +483,7 @@ describe('ProductDialog', () => {
       component.productForm.minimumStockThreshold().value.set(10);
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Save"]'),
+        By.css('p-button[icon="pi pi-check"]'),
       );
       saveButton.triggerEventHandler('onClick', null);
 
@@ -491,7 +503,7 @@ describe('ProductDialog', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Name is required',
+        'validation.required',
       );
     });
 
@@ -506,7 +518,7 @@ describe('ProductDialog', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Cost price is required',
+        'validation.required',
       );
     });
 
@@ -521,7 +533,7 @@ describe('ProductDialog', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Sale price is required',
+        'validation.required',
       );
     });
 
@@ -556,7 +568,7 @@ describe('ProductDialog', () => {
       fixture.detectChanges();
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Save"]'),
+        By.css('p-button[icon="pi pi-check"]'),
       );
       expect(saveButton.componentInstance.disabled).toBe(true);
     });
@@ -568,7 +580,7 @@ describe('ProductDialog', () => {
       fixture.detectChanges();
 
       const cancelButton = fixture.debugElement.query(
-        By.css('p-button[label="Cancel"]'),
+        By.css('p-button[icon="pi pi-times"]'),
       );
       cancelButton.triggerEventHandler('onClick', null);
 
@@ -582,7 +594,7 @@ describe('ProductDialog', () => {
       vi.spyOn(component, 'onSubmit');
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Save"]'),
+        By.css('p-button[icon="pi pi-check"]'),
       );
       saveButton.triggerEventHandler('onClick', null);
 
@@ -610,3 +622,6 @@ describe('ProductDialog', () => {
     });
   });
 });
+
+
+

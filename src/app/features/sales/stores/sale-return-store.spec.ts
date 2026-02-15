@@ -15,6 +15,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { UserRole } from '@features/configuration/models/user.model';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { SaleReturnData, SaleReturnInfo } from '../models/sale-return.model';
 import { SaleReturnService } from '../services/sale-return';
@@ -101,6 +102,7 @@ describe('SaleReturnStore', () => {
     saleReturnService.deleteAllById.mockReturnValue(of(void 0));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         SaleReturnStore,
         provideHttpClient(),
@@ -112,6 +114,32 @@ describe('SaleReturnStore', () => {
 
     store = TestBed.inject(SaleReturnStore);
     httpMock = TestBed.inject(HttpTestingController);
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    
+    translateService.setTranslation('en', {
+      messages: {
+        success: {
+          returnCreated: 'Success',
+          returnCreatedDetail: 'Return created successfully.',
+          returnUpdated: 'Success',
+          returnUpdatedDetail: 'Return updated successfully.',
+          returnDeleted: 'Success',
+          returnDeletedDetail: 'Return deleted successfully.',
+          returnsDeleted: 'Success',
+          returnsDeletedDetail: 'Returns deleted successfully.',
+        },
+        errors: {
+          error: 'Error',
+          returnCreateError: 'Error creating sale return',
+          returnUpdateError: 'Error updating sale return',
+          returnDeleteError: 'Error deleting sale return',
+          returnsDeleteError: 'Error deleting sale returns',
+        },
+      },
+    });
   });
 
   afterEach(() => {

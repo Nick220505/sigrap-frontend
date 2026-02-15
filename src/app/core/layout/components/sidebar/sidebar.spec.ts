@@ -4,6 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Menu } from './menu/menu';
+import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 import { Sidebar } from './sidebar';
 
@@ -11,6 +13,16 @@ describe('Sidebar', () => {
   let component: Sidebar;
   let fixture: ComponentFixture<Sidebar>;
   let originalMatchMedia: typeof window.matchMedia;
+
+  const mockTranslateService = {
+    instant: vi.fn((key: string) => key),
+    get: vi.fn((key: string) => of(key)),
+    use: vi.fn().mockReturnValue(of({})),
+    getBrowserLang: vi.fn().mockReturnValue('en'),
+    onLangChange: {
+      subscribe: vi.fn()
+    }
+  };
 
   beforeEach(async () => {
     originalMatchMedia = window.matchMedia;
@@ -31,7 +43,12 @@ describe('Sidebar', () => {
 
     await TestBed.configureTestingModule({
       imports: [Sidebar, Menu],
-      providers: [provideRouter([]), provideHttpClient(), MessageService],
+      providers: [
+        provideRouter([]), 
+        provideHttpClient(), 
+        MessageService,
+        { provide: TranslateService, useValue: mockTranslateService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Sidebar);

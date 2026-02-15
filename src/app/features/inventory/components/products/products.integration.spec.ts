@@ -13,6 +13,7 @@ import {
   ProductInfo,
 } from '@features/inventory/models/product.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductDialog } from './product-dialog/product-dialog';
 import { ProductTable } from './product-table/product-table';
 import { ProductToolbar } from './product-toolbar/product-toolbar';
@@ -69,7 +70,7 @@ describe('Products Feature Integration', () => {
     await TestBed.configureTestingModule({
       imports: [
         Products,
-        
+        TranslateModule.forRoot(),
         ProductTable,
         ProductToolbar,
         ProductDialog,

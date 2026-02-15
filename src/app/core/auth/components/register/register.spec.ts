@@ -17,6 +17,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
 import { PasswordField } from '@shared/components/password-field/password-field';
@@ -54,6 +55,7 @@ describe('Register', () => {
         Register,
         ReactiveFormsModule,
         RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
         ButtonModule,
         InputTextModule,
         PasswordModule,
@@ -108,6 +110,36 @@ describe('Register', () => {
 
     fixture = TestBed.createComponent(Register);
     component = fixture.componentInstance;
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    translateService.setTranslation('en', {
+      auth: {
+        register: {
+          title: 'Create Account',
+          subtitle: 'Sign up to get started',
+          name: 'Name',
+          namePlaceholder: 'Enter your name',
+          email: 'Email',
+          emailPlaceholder: 'Enter your email',
+          password: 'Password',
+          passwordPlaceholder: 'Enter your password',
+          confirmPassword: 'Confirm Password',
+          confirmPasswordPlaceholder: 'Confirm your password',
+          submit: 'Sign Up',
+          alreadyHaveAccount: 'Already have an account?',
+          loginLink: 'Log in',
+          errors: {
+            nameRequired: 'Name is required',
+            emailRequired: 'Email is required',
+            emailInvalid: 'Enter a valid email',
+            passwordMismatch: 'Passwords do not match',
+          },
+        },
+      },
+    });
+    
     fixture.detectChanges();
   });
 

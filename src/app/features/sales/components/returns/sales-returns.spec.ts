@@ -4,6 +4,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { SalesReturnsDialog } from './sales-returns-dialog/sales-returns-dialog';
 import { SalesReturnsTable } from './sales-returns-table/sales-returns-table';
 import { SalesReturnsToolbar } from './sales-returns-toolbar/sales-returns-toolbar';
@@ -20,6 +21,7 @@ describe('SalesReturns', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         SalesReturns,
         SalesReturnsTable,
         SalesReturnsToolbar,
@@ -32,7 +34,7 @@ describe('SalesReturns', () => {
         provideRouter([]),
         MessageService,
         ConfirmationService,
-      ],
+        ],
     })
       .overrideComponent(SalesReturnsTable, {
         set: {

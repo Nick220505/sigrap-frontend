@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { form, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ButtonModule } from 'primeng/button';
@@ -18,6 +19,7 @@ import { Select } from 'primeng/select';
     FormsModule,
     InputGroupModule,
     InputGroupAddonModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -73,7 +75,7 @@ import { Select } from 'primeng/select';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           text
           (onClick)="attendanceStore.closeClockInDialog()"
@@ -97,7 +99,7 @@ export class ClockInDialog {
   });
 
   readonly clockInForm = form(this.clockInModel, (clockIn) => {
-    required(clockIn.userId, { message: 'Employee is required.' });
+    required(clockIn.userId, { message: 'validation.required' });
   });
 
   onSubmit(): void {

@@ -1,12 +1,13 @@
 import { NgClass } from '@angular/common';
 import { Component, input, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { DividerModule } from 'primeng/divider';
 import { PasswordModule } from 'primeng/password';
 
 @Component({
   selector: 'app-password-field',
-  imports: [PasswordModule, ReactiveFormsModule, DividerModule, NgClass],
+  imports: [PasswordModule, ReactiveFormsModule, DividerModule, NgClass, TranslateModule],
   template: `
     <div class="flex flex-col gap-2" [class.p-invalid]="showError()">
       <label [for]="id()" class="font-bold">{{ label() }}</label>
@@ -88,7 +89,7 @@ import { PasswordModule } from 'primeng/password';
       @if (showError()) {
         <small class="text-red-500">
           @if (control().hasError('required')) {
-            Password is required.
+            {{ 'validation.required' | translate: { field: 'Password' } }}
           } @else if (control().hasError('pattern')) {
             Password must meet all requirements.
           }

@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { SalesReturnsToolbar } from './sales-returns-toolbar';
+import { TranslateModule } from '@ngx-translate/core';
 
 class MockSaleReturnsTable {
   selectedSaleReturns = signal<SaleReturnInfo[]>([]);
@@ -95,6 +96,7 @@ describe('SalesReturnsToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         SalesReturnsToolbar,
         
         ButtonModule,
@@ -104,7 +106,7 @@ describe('SalesReturnsToolbar', () => {
       providers: [
         { provide: SaleReturnStore, useValue: saleReturnStore },
         { provide: ConfirmationService, useValue: confirmationService },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SalesReturnsToolbar);
@@ -135,7 +137,7 @@ describe('SalesReturnsToolbar', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
+        By.css('p-button[icon="pi pi-trash"]'),
       );
       expect(deleteButton.componentInstance.disabled).toBe(true);
     });
@@ -145,7 +147,7 @@ describe('SalesReturnsToolbar', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
+        By.css('p-button[icon="pi pi-trash"]'),
       );
       expect(deleteButton.componentInstance.disabled).toBe(false);
     });
@@ -156,7 +158,7 @@ describe('SalesReturnsToolbar', () => {
 
       vi.spyOn(component, 'deleteSelectedSaleReturns');
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
+        By.css('p-button[icon="pi pi-trash"]'),
       );
       deleteButton.triggerEventHandler('onClick', null);
 
@@ -221,3 +223,4 @@ describe('SalesReturnsToolbar', () => {
     });
   });
 });
+

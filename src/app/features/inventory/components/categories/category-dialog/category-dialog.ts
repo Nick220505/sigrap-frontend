@@ -1,5 +1,6 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { CategoryData } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ButtonModule } from 'primeng/button';
@@ -19,6 +20,7 @@ import { TextareaModule } from 'primeng/textarea';
     FormField,
     InputGroupModule,
     InputGroupAddonModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -89,14 +91,14 @@ import { TextareaModule } from 'primeng/textarea';
 
       <ng-template #footer>
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           text
           (click)="categoryStore.closeCategoryDialog()"
         />
 
         <p-button
-          label="Save"
+          [label]="'common.save' | translate"
           icon="pi pi-check"
           type="submit"
           (click)="onSubmit()"
@@ -115,7 +117,7 @@ export class CategoryDialog {
   });
 
   readonly categoryForm = form(this.categoryModel, (category) => {
-    required(category.name, { message: 'Name is required.' });
+    required(category.name, { message: 'validation.required' });
   });
 
   constructor() {

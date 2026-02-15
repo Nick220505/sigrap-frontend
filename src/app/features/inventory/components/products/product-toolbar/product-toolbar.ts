@@ -1,4 +1,5 @@
 import { Component, inject, input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -8,7 +9,7 @@ import { ProductTable } from '../product-table/product-table';
 
 @Component({
   selector: 'app-product-toolbar',
-  imports: [ToolbarModule, ButtonModule, TooltipModule],
+  imports: [ToolbarModule, ButtonModule, TooltipModule, TranslateModule],
   template: `
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
@@ -24,7 +25,7 @@ import { ProductTable } from '../product-table/product-table';
 
         <p-button
           severity="danger"
-          label="Delete"
+          [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
           pTooltip="Delete selected products"

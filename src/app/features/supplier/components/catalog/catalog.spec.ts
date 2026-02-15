@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { Catalog } from './catalog';
 
 describe('Catalog', () => {
@@ -10,8 +11,14 @@ describe('Catalog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Catalog],
-      providers: [provideHttpClient(), MessageService, ConfirmationService],
+      imports: [
+        TranslateModule.forRoot(),
+        Catalog],
+      providers: [
+        provideHttpClient(),
+        MessageService,
+        ConfirmationService,
+        ],
     })
       .overrideComponent(Catalog, {
         set: {

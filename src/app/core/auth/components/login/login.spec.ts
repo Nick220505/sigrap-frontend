@@ -3,6 +3,8 @@ import { Signal, signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
@@ -34,6 +36,7 @@ describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
   let authStoreMock: MockAuthStore;
+  let translateService: TranslateService;
 
   beforeEach(async () => {
     authStoreMock = {
@@ -48,6 +51,7 @@ describe('Login', () => {
       imports: [
         Login,
         RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
         ButtonModule,
         InputTextModule,
         PasswordModule,
@@ -78,6 +82,12 @@ describe('Login', () => {
 
     fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
+    translateService = TestBed.inject(TranslateService);
+    
+    // Mock translation service to return the key itself
+    translateService.get = vi.fn((key: string) => of(key));
+    translateService.instant = vi.fn((key: string) => key);
+    
     fixture.detectChanges();
   });
 
@@ -140,7 +150,7 @@ describe('Login', () => {
     const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
     expect(errorMessage).toBeTruthy();
     expect(errorMessage.nativeElement.textContent).toContain(
-      'Email is required',
+      'validation.required',
     );
   });
 
@@ -152,7 +162,7 @@ describe('Login', () => {
     const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
     expect(errorMessage).toBeTruthy();
     expect(errorMessage.nativeElement.textContent).toContain(
-      'Enter a valid email',
+      'validation.email',
     );
   });
 
@@ -164,7 +174,7 @@ describe('Login', () => {
     const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
     expect(errorMessage).toBeTruthy();
     expect(errorMessage.nativeElement.textContent).toContain(
-      'Password is required',
+      'validation.required',
     );
   });
 

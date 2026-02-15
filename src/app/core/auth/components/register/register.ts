@@ -11,6 +11,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 import { AuthStore } from '@core/auth/stores/auth-store';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
@@ -25,6 +26,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
     DividerModule,
     PasswordField,
     FormField,
+    TranslateModule,
   ],
   template: `
     <app-floating-configurator />
@@ -49,11 +51,11 @@ import { AuthStore } from '@core/auth/stores/auth-store';
               <div
                 class="mb-4 text-3xl font-medium text-surface-900 dark:text-surface-0"
               >
-                Create Account
+                {{ 'auth.register.title' | translate }}
               </div>
 
               <span class="font-medium text-muted-color">
-                Enter your details to get started
+                {{ 'auth.register.subtitle' | translate }}
               </span>
             </div>
 
@@ -69,7 +71,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                   for="name"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
                 >
-                  Full Name
+                  {{ 'auth.register.name' | translate }}
                 </label>
 
                 <div class="w-full md:w-[30rem] mb-2">
@@ -80,7 +82,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                       id="name"
                       type="text"
                       [formField]="registerForm.name"
-                      placeholder="Enter your full name"
+                      [placeholder]="'auth.register.namePlaceholder' | translate"
                       [class.ng-dirty]="nameControlInvalid"
                       [class.ng-invalid]="nameControlInvalid"
                       fluid
@@ -89,7 +91,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                 </div>
 
                 @if (nameControlInvalid) {
-                  <small class="text-red-500">Name is required.</small>
+                  <small class="text-red-500">{{ 'auth.register.errors.nameRequired' | translate }}</small>
                 }
               </div>
 
@@ -105,7 +107,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                   for="email"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
                 >
-                  Email
+                  {{ 'auth.register.email' | translate }}
                 </label>
 
                 <div class="w-full md:w-[30rem] mb-2">
@@ -116,7 +118,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                       id="email"
                       type="text"
                       [formField]="registerForm.email"
-                      placeholder="Enter your email"
+                      [placeholder]="'auth.register.emailPlaceholder' | translate"
                       [class.ng-dirty]="emailControlInvalid"
                       [class.ng-invalid]="emailControlInvalid"
                       fluid
@@ -126,11 +128,9 @@ import { AuthStore } from '@core/auth/stores/auth-store';
 
                 @if (emailControlInvalid) {
                   @if (emailHasRequiredError()) {
-                    <small class="text-red-500">Email is required.</small>
+                    <small class="text-red-500">{{ 'auth.register.errors.emailRequired' | translate }}</small>
                   } @else if (emailHasEmailError()) {
-                    <small class="text-red-500"
-                      >Enter a valid email address.</small
-                    >
+                    <small class="text-red-500">{{ 'auth.register.errors.emailInvalid' | translate }}</small>
                   }
                 }
               </div>
@@ -139,8 +139,8 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                 <app-password-field
                   id="password"
                   [control]="passwordControl"
-                  label="Password"
-                  placeholder="Choose a password"
+                  [label]="'auth.register.password' | translate"
+                  [placeholder]="'auth.register.passwordPlaceholder' | translate"
                 />
               </div>
 
@@ -148,8 +148,8 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                 <app-password-field
                   id="confirmPassword"
                   [control]="confirmPasswordControl"
-                  label="Confirm Password"
-                  placeholder="Confirm your password"
+                  [label]="'auth.register.confirmPassword' | translate"
+                  [placeholder]="'auth.register.confirmPasswordPlaceholder' | translate"
                   [feedback]="false"
                 />
 
@@ -157,15 +157,13 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                   confirmPasswordControl.touched &&
                   confirmPasswordControl.hasError('passwordMismatch')
                 ) {
-                  <small class="text-red-500 mt-2 block"
-                    >Passwords do not match.</small
-                  >
+                  <small class="text-red-500 mt-2 block">{{ 'auth.register.errors.passwordMismatch' | translate }}</small>
                 }
               </div>
 
               <div class="mt-8">
                 <p-button
-                  label="Sign Up"
+                  [label]="'auth.register.submit' | translate"
                   type="button"
                   styleClass="w-full"
                   [loading]="authStore.loading()"
@@ -175,14 +173,14 @@ import { AuthStore } from '@core/auth/stores/auth-store';
 
               <div class="mt-8 text-center">
                 <span class="text-surface-600 dark:text-surface-200">
-                  Already have an account?
+                  {{ 'auth.register.alreadyHaveAccount' | translate }}
                 </span>
 
                 <a
                   routerLink="/login"
                   class="ml-2 font-medium text-primary cursor-pointer"
                 >
-                  Log in
+                  {{ 'auth.register.loginLink' | translate }}
                 </a>
               </div>
             </form>
@@ -216,9 +214,9 @@ export class Register {
   });
 
   readonly registerForm = form(this.model, (m) => {
-    required(m.name, { message: 'Name is required' });
-    required(m.email, { message: 'Email is required' });
-    email(m.email, { message: 'Enter a valid email address' });
+    required(m.name, { message: 'validation.required' });
+    required(m.email, { message: 'validation.required' });
+    email(m.email, { message: 'validation.email' });
   });
 
   readonly emailHasRequiredError = computed(() =>

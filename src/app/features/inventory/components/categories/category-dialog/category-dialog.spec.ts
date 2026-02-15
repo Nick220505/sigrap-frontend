@@ -13,6 +13,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CategoryDialog } from './category-dialog';
 
 describe('CategoryDialog', () => {
@@ -47,6 +48,7 @@ describe('CategoryDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         CategoryDialog,
 
         DialogModule,
@@ -71,11 +73,22 @@ describe('CategoryDialog', () => {
         }),
         MessageService,
         { provide: CategoryStore, useValue: categoryStore },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CategoryDialog);
     component = fixture.componentInstance;
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    translateService.setTranslation('en', {
+      validation: {
+        required: 'Name is required',
+        email: 'Invalid email',
+      },
+    });
+    
     fixture.detectChanges();
   });
 
@@ -369,7 +382,7 @@ describe('CategoryDialog', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Name is required',
+        'validation.required',
       );
     });
 
@@ -442,3 +455,5 @@ describe('CategoryDialog', () => {
     });
   });
 });
+
+

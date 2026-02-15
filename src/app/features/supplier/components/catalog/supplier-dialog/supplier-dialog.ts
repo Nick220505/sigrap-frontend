@@ -1,6 +1,7 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { SupplierData } from '@features/supplier/models/supplier.model';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ButtonModule } from 'primeng/button';
@@ -23,6 +24,7 @@ import { TextareaModule } from 'primeng/textarea';
     InputNumberModule,
     FormField,
     FormsModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -276,13 +278,13 @@ import { TextareaModule } from 'primeng/textarea';
       <ng-template pTemplate="footer">
         <div class="flex justify-end gap-2">
           <p-button
-            label="Cancel"
+            [label]="'common.cancel' | translate"
             icon="pi pi-times"
             text
             (onClick)="supplierStore.closeSupplierDialog()"
           />
           <p-button
-            label="Save"
+            [label]="'common.save' | translate"
             icon="pi pi-check"
             type="submit"
             (onClick)="onSubmit()"
@@ -309,8 +311,8 @@ export class SupplierDialog {
   });
 
   readonly supplierForm = form(this.supplierModel, (supplier) => {
-    required(supplier.name, { message: 'Name is required.' });
-    email(supplier.email, { message: 'Invalid email.' });
+    required(supplier.name, { message: 'validation.required' });
+    email(supplier.email, { message: 'validation.email' });
   });
 
   constructor() {

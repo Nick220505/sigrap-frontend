@@ -6,6 +6,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Table } from 'primeng/table';
+import { TranslateModule } from '@ngx-translate/core';
 import { CustomerToolbar } from './customer-toolbar';
 
 interface MockTable {
@@ -73,11 +74,13 @@ describe('CustomerToolbar', () => {
     mockCustomerTable.dt.mockReturnValue(mockTable as unknown as Table);
 
     await TestBed.configureTestingModule({
-      imports: [CustomerToolbar, ButtonModule],
+      imports: [
+        TranslateModule.forRoot(),
+        CustomerToolbar, ButtonModule],
       providers: [
         { provide: CustomerStore, useValue: customerStore },
         { provide: ConfirmationService, useValue: confirmationService },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomerToolbar);

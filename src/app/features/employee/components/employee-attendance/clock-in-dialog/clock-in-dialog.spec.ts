@@ -13,6 +13,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { Select } from 'primeng/select';
 import { ClockInDialog } from './clock-in-dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ClockInDialog', () => {
   let component: ClockInDialog;
@@ -37,6 +38,7 @@ describe('ClockInDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         DialogModule,
         ButtonModule,
         InputGroupModule,
@@ -62,7 +64,7 @@ describe('ClockInDialog', () => {
         ConfirmationService,
         { provide: AttendanceStore, useValue: attendanceStoreSpy },
         { provide: UserStore, useValue: userStoreSpy },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ClockInDialog);

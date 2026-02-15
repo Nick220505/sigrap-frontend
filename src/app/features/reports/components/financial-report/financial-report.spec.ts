@@ -5,6 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { FinancialReport } from './financial-report';
 
@@ -14,7 +15,9 @@ describe('FinancialReport', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinancialReport],
+      imports: [
+        TranslateModule.forRoot(),
+        FinancialReport],
       providers: [
         providePrimeNG({
           theme: {
@@ -31,7 +34,7 @@ describe('FinancialReport', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         MessageService,
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinancialReport);

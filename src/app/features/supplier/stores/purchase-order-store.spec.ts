@@ -14,6 +14,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import {
   PurchaseOrderData,
@@ -145,6 +146,7 @@ describe('PurchaseOrderStore', () => {
     purchaseOrderService.delete.mockReturnValue(of(void 0));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         PurchaseOrderStore,
         provideHttpClient(),
@@ -156,6 +158,48 @@ describe('PurchaseOrderStore', () => {
 
     store = TestBed.inject(PurchaseOrderStore);
     httpMock = TestBed.inject(HttpTestingController);
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    
+    // Set up translations
+    translateService.setTranslation('en', {
+      messages: {
+        success: {
+          orderCreated: 'Order created',
+          orderCreatedDetail: 'Order #{{id}} has been created successfully',
+          orderUpdated: 'Order updated',
+          orderUpdatedDetail: 'Order #{{id}} has been updated successfully',
+          orderDeleted: 'Order deleted',
+          orderDeletedDetail: 'The purchase order has been deleted successfully',
+          ordersDeleted: 'Orders deleted',
+          ordersDeletedDetail: 'The selected orders have been deleted successfully',
+          orderSubmitted: 'Order submitted',
+          orderSubmittedDetail: 'Order #{{id}} has been submitted successfully',
+          orderConfirmed: 'Order confirmed',
+          orderConfirmedDetail: 'Order #{{id}} has been confirmed successfully',
+          orderShipped: 'Order shipped',
+          orderShippedDetail: 'Order #{{id}} has been marked as shipped',
+          orderDelivered: 'Order delivered',
+          orderDeliveredDetail: 'Order #{{id}} has been marked as delivered',
+          orderCancelled: 'Order cancelled',
+          orderCancelledDetail: 'Order #{{id}} has been cancelled successfully',
+        },
+        errors: {
+          error: 'Error',
+          orderCreateError: 'Error creating purchase order',
+          orderUpdateError: 'Error updating purchase order',
+          orderDeleteError: 'Error deleting purchase order',
+          ordersDeleteError: 'Error deleting orders',
+          orderSubmitError: 'Error submitting purchase order',
+          orderConfirmError: 'Error confirming purchase order',
+          orderShipError: 'Error marking order as shipped',
+          orderDeliverError: 'Error marking order as delivered',
+          orderCancelError: 'Error cancelling purchase order',
+        },
+      },
+    });
   });
 
   afterEach(() => {

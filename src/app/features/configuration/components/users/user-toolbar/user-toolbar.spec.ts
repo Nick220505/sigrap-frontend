@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { UserTable } from '../user-table/user-table';
 import { UserToolbar } from './user-toolbar';
+import { TranslateModule } from '@ngx-translate/core';
 
 class MockUserTable {
   isExporting = signal(false);
@@ -24,7 +25,10 @@ class MockUserTable {
 @Component({
   selector: 'app-test-host',
   template: `<app-user-toolbar [userTable]="mockTableComponent" />`,
-  imports: [UserToolbar],
+  imports: [
+    TranslateModule,
+    UserToolbar
+  ],
   standalone: true,
 })
 class TestHost {
@@ -49,6 +53,7 @@ describe('UserToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         ButtonModule,
         ToolbarModule,
         TooltipModule,
@@ -60,7 +65,7 @@ describe('UserToolbar', () => {
         MessageService,
         ConfirmationService,
         { provide: UserStore, useValue: mockStore },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHost);

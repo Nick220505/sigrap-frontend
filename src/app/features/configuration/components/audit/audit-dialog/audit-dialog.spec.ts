@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditDialog } from './audit-dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AuditDialog', () => {
   let component: AuditDialog;
@@ -24,7 +25,9 @@ describe('AuditDialog', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [DialogModule, ButtonModule, DatePipe, JsonPipe, AuditDialog],
+      imports: [
+        TranslateModule.forRoot(),
+        DialogModule, ButtonModule, DatePipe, JsonPipe, AuditDialog],
       providers: [
         providePrimeNG({
           theme: {
@@ -41,7 +44,7 @@ describe('AuditDialog', () => {
         provideHttpClient(),
         MessageService,
         { provide: AuditLogStore, useValue: mockStore },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuditDialog);

@@ -7,6 +7,7 @@ import { CategoryInfo } from '@features/inventory/models/category.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ConfirmationService } from 'primeng/api';
 import { CategoryTable } from './category-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CategoryTable', () => {
   let component: CategoryTable;
@@ -61,11 +62,13 @@ describe('CategoryTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CategoryTable, FormsModule],
+      imports: [
+        TranslateModule.forRoot(),
+        CategoryTable, FormsModule],
       providers: [
         { provide: CategoryStore, useValue: categoryStore },
         { provide: ConfirmationService, useValue: confirmationService },
-      ],
+        ],
     })
       .overrideComponent(CategoryTable, {
         set: {

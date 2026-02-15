@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { Dashboard } from './dashboard';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('Dashboard', () => {
   let component: Dashboard;
@@ -10,8 +11,13 @@ describe('Dashboard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Dashboard],
-      providers: [provideHttpClient(), MessageService],
+      imports: [
+        TranslateModule.forRoot(),
+        Dashboard],
+      providers: [
+        provideHttpClient(),
+        MessageService,
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Dashboard);

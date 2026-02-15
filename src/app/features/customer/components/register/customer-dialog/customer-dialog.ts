@@ -1,5 +1,6 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { FormField, email, form, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -16,6 +17,7 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
     InputGroupModule,
     InputGroupAddonModule,
     FormField,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -200,14 +202,14 @@ import { CustomerStore } from '@features/customer/stores/customer-store';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           text
           (click)="customerStore.closeCustomerDialog()"
         />
 
         <p-button
-          label="Save"
+          [label]="'common.save' | translate"
           icon="pi pi-check"
           type="submit"
           (onClick)="onSubmit()"
@@ -229,11 +231,11 @@ export class CustomerDialog {
   });
 
   readonly customerForm = form(this.customerModel, (customer) => {
-    required(customer.fullName, { message: 'Full name is required.' });
-    required(customer.documentId, { message: 'Document is required.' });
-    required(customer.email, { message: 'Email is required.' });
-    email(customer.email, { message: 'Enter a valid email.' });
-    required(customer.address, { message: 'Address is required.' });
+    required(customer.fullName, { message: 'validation.required' });
+    required(customer.documentId, { message: 'validation.required' });
+    required(customer.email, { message: 'validation.required' });
+    email(customer.email, { message: 'validation.email' });
+    required(customer.address, { message: 'validation.required' });
   });
 
   constructor() {

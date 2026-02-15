@@ -8,6 +8,7 @@ import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { ConfirmationService } from 'primeng/api';
 import { PrimeNG } from 'primeng/config';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { ProductTable } from './product-table';
 
@@ -111,12 +112,17 @@ describe('ProductTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [FormsModule, CurrencyPipe, ProductTable],
+      imports: [
+        TranslateModule.forRoot(),
+        FormsModule,
+        CurrencyPipe,
+        ProductTable
+      ],
       providers: [
         { provide: ProductStore, useValue: productStore },
         { provide: ConfirmationService, useValue: confirmationService },
         { provide: PrimeNG, useValue: primengConfigStub },
-      ],
+        ],
     })
       .overrideComponent(ProductTable, {
         set: {

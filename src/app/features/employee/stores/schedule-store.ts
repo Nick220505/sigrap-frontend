@@ -18,6 +18,7 @@ import {
   withEntities,
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { ScheduleData, ScheduleInfo } from '../models/schedule.model';
@@ -58,8 +59,9 @@ export const ScheduleStore = signalStore(
   withProps(() => ({
     scheduleService: inject(ScheduleService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ scheduleService, messageService, ...store }) => ({
+  withMethods(({ scheduleService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -127,8 +129,8 @@ export const ScheduleStore = signalStore(
                 patchState(store, addEntity(createdSchedule));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Schedule created',
-                  detail: `The schedule has been created successfully`,
+                  summary: translateService.instant('messages.success.scheduleCreated'),
+                  detail: translateService.instant('messages.success.scheduleCreatedDetail'),
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -136,8 +138,8 @@ export const ScheduleStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating schedule',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.scheduleCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -163,8 +165,8 @@ export const ScheduleStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Schedule updated',
-                  detail: `The schedule has been updated successfully`,
+                  summary: translateService.instant('messages.success.scheduleUpdated'),
+                  detail: translateService.instant('messages.success.scheduleUpdatedDetail'),
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -172,8 +174,8 @@ export const ScheduleStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating schedule',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.scheduleUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -193,16 +195,16 @@ export const ScheduleStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Schedule deleted',
-                  detail: 'The schedule has been deleted successfully',
+                  summary: translateService.instant('messages.success.scheduleDeleted'),
+                  detail: translateService.instant('messages.success.scheduleDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting schedule',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.scheduleDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -222,17 +224,16 @@ export const ScheduleStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Schedules deleted',
-                  detail:
-                    'The selected schedules have been deleted successfully',
+                  summary: translateService.instant('messages.success.schedulesDeleted'),
+                  detail: translateService.instant('messages.success.schedulesDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting schedules',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.schedulesDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

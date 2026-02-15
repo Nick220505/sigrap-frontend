@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormsModule, Validators } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { PasswordField } from '@shared/components/password-field/password-field';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -25,11 +26,12 @@ import { UserStore } from '@features/configuration/stores/user-store';
     ButtonModule,
     InputTextModule,
     Select,
+    FormField,
+    FormsModule,
     InputGroupModule,
     InputGroupAddonModule,
     PasswordField,
-    FormField,
-    FormsModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -67,7 +69,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
           </p-inputgroup>
 
           @if (nameControlInvalid) {
-            <small class="text-red-500">Name is required.</small>
+            <small class="text-red-500">{{ 'validation.required' | translate: { field: 'Name' } }}</small>
           }
         </div>
 
@@ -98,9 +100,9 @@ import { UserStore } from '@features/configuration/stores/user-store';
           @if (emailControlInvalid) {
             <small class="text-red-500">
               @if (emailHasRequiredError()) {
-                Email is required.
+                {{ 'validation.required' | translate: { field: 'Email' } }}
               } @else if (emailHasEmailError()) {
-                Email is not valid.
+                {{ 'validation.email' | translate }}
               }
             </small>
           }
@@ -171,14 +173,14 @@ import { UserStore } from '@features/configuration/stores/user-store';
 
       <ng-template #footer>
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           text
           (click)="userStore.closeUserDialog()"
         />
 
         <p-button
-          label="Save"
+          [label]="'common.save' | translate"
           icon="pi pi-check"
           (click)="onSubmit()"
           [disabled]="userStore.loading()"
@@ -210,10 +212,10 @@ export class UserDialog {
   });
 
   readonly userForm = form(this.model, (m) => {
-    required(m.name, { message: 'Name is required' });
-    required(m.email, { message: 'Email is required' });
-    email(m.email, { message: 'Email is not valid' });
-    required(m.role, { message: 'Role is required' });
+    required(m.name, { message: 'validation.required' });
+    required(m.email, { message: 'validation.required' });
+    email(m.email, { message: 'validation.email' });
+    required(m.role, { message: 'validation.required' });
   });
 
   readonly emailHasRequiredError = computed(() =>

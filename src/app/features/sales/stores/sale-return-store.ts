@@ -18,6 +18,7 @@ import {
   withEntities,
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { pipe, switchMap, tap } from 'rxjs';
 import { SaleReturnData, SaleReturnInfo } from '../models/sale-return.model';
@@ -53,6 +54,7 @@ export const SaleReturnStore = signalStore(
       store,
       saleReturnService = inject(SaleReturnService),
       messageService = inject(MessageService),
+      translateService = inject(TranslateService),
     ) => ({
       loadAll: rxMethod<void>(
         pipe(
@@ -64,11 +66,11 @@ export const SaleReturnStore = signalStore(
                   patchState(store, setAllEntities(saleReturns)),
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error loading returns.';
+                    error.error?.message ?? translateService.instant('messages.errors.returnCreateError');
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMsg,
                   });
                 },
@@ -90,17 +92,17 @@ export const SaleReturnStore = signalStore(
                   });
                   messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Return created successfully.',
+                    summary: translateService.instant('messages.success.returnCreated'),
+                    detail: translateService.instant('messages.success.returnCreatedDetail'),
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error creating return.';
+                    error.error?.message ?? translateService.instant('messages.errors.returnCreateError');
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMsg,
                   });
                 },
@@ -127,17 +129,17 @@ export const SaleReturnStore = signalStore(
                   );
                   messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Return updated successfully.',
+                    summary: translateService.instant('messages.success.returnUpdated'),
+                    detail: translateService.instant('messages.success.returnUpdatedDetail'),
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error updating return.';
+                    error.error?.message ?? translateService.instant('messages.errors.returnUpdateError');
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMsg,
                   });
                 },
@@ -159,17 +161,17 @@ export const SaleReturnStore = signalStore(
                   });
                   messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Return deleted successfully.',
+                    summary: translateService.instant('messages.success.returnDeleted'),
+                    detail: translateService.instant('messages.success.returnDeletedDetail'),
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error deleting return.';
+                    error.error?.message ?? translateService.instant('messages.errors.returnDeleteError');
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMsg,
                   });
                 },
@@ -191,17 +193,17 @@ export const SaleReturnStore = signalStore(
                   });
                   messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Returns deleted successfully.',
+                    summary: translateService.instant('messages.success.returnsDeleted'),
+                    detail: translateService.instant('messages.success.returnsDeletedDetail'),
                   });
                 },
                 error: (error: HttpErrorResponse) => {
                   const errorMsg =
-                    error.error?.message ?? 'Error deleting returns.';
+                    error.error?.message ?? translateService.instant('messages.errors.returnsDeleteError');
                   patchState(store, { error: errorMsg });
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMsg,
                   });
                 },

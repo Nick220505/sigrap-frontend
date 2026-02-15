@@ -1,4 +1,5 @@
 import { Component, inject, input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { ConfirmationService } from 'primeng/api';
@@ -9,7 +10,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
 
 @Component({
   selector: 'app-sales-returns-toolbar',
-  imports: [ToolbarModule, ButtonModule, TooltipModule],
+  imports: [ToolbarModule, ButtonModule, TooltipModule, TranslateModule],
   template: `
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
@@ -25,7 +26,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
 
         <p-button
           severity="danger"
-          label="Delete"
+          [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
           pTooltip="Delete selected returns"

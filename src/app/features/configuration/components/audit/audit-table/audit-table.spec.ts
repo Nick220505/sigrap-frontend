@@ -9,6 +9,7 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { PrimeNG } from 'primeng/config';
 import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditTable } from './audit-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 const primengConfigStub: PrimeNG = new Proxy(
   {
@@ -54,13 +55,15 @@ describe('AuditTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [FormsModule, DatePipe, PaginatorModule, NgClass, AuditTable],
+      imports: [
+        TranslateModule.forRoot(),
+        FormsModule, DatePipe, PaginatorModule, NgClass, AuditTable],
       providers: [
         provideHttpClient(),
         MessageService,
         { provide: AuditLogStore, useValue: mockStore },
         { provide: PrimeNG, useValue: primengConfigStub },
-      ],
+        ],
     })
       .overrideComponent(AuditTable, {
         set: {

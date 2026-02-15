@@ -7,6 +7,7 @@ import { Confirmation, ConfirmationService, MessageService } from 'primeng/api';
 import { ScheduleInfo } from '@features/employee/models/schedule.model';
 import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleTable } from './schedule-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MockScheduleStore {
   entities: WritableSignal<ScheduleInfo[]>;
@@ -51,13 +52,15 @@ describe('ScheduleTable', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [NgClass, DatePipe, ScheduleTable],
+      imports: [
+        TranslateModule.forRoot(),
+        NgClass, DatePipe, ScheduleTable],
       providers: [
         provideHttpClient(),
         MessageService,
         { provide: ConfirmationService, useValue: confirmationService },
         { provide: ScheduleStore, useValue: scheduleStore },
-      ],
+        ],
     })
       .overrideComponent(ScheduleTable, {
         set: {

@@ -9,6 +9,7 @@ import {
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { applyEach, form, max, min, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { CustomerStore } from '@features/customer/stores/customer-store';
@@ -37,6 +38,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
     InputGroupAddonModule,
     FormsModule,
     CurrencyPipe,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -311,14 +313,14 @@ import { SaleStore } from '@features/sales/stores/sale-store';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           styleClass="p-button-text"
           (click)="saleStore.closeSaleDialog()"
         />
         @if (!viewMode()) {
           <p-button
-            label="Save"
+            [label]="'common.save' | translate"
             icon="pi pi-check"
             (click)="
               saleForm().valid() ? saveSale() : saleForm().markAsTouched()
@@ -383,8 +385,8 @@ export class SalesDialog {
   });
 
   readonly saleForm = form(this.model, (m) => {
-    required(m.customerId, { message: 'Customer is required' });
-    required(m.employeeId, { message: 'Employee is required' });
+    required(m.customerId, { message: 'validation.required' });
+    required(m.employeeId, { message: 'validation.required' });
     min(m.totalAmount, 0);
     min(m.taxAmount, 0);
     min(m.discountAmount, 0);

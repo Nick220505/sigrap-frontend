@@ -7,6 +7,7 @@ import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { PasswordModule } from 'primeng/password';
 import { PasswordField } from './password-field';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   template: `
@@ -36,7 +37,7 @@ describe('PasswordField', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestHost, PasswordField, ReactiveFormsModule, PasswordModule],
+      imports: [TestHost, PasswordField, ReactiveFormsModule, PasswordModule, TranslateModule.forRoot()],
       providers: [
         providePrimeNG({
           theme: {
@@ -55,6 +56,17 @@ describe('PasswordField', () => {
 
     fixture = TestBed.createComponent(TestHost);
     hostComponent = fixture.componentInstance;
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    translateService.setTranslation('en', {
+      validation: {
+        required: 'Password is required',
+        pattern: 'Password must contain at least 8 characters, including uppercase, lowercase, number and special character',
+      },
+    });
+    
     fixture.detectChanges();
     passwordFieldElement =
       fixture.nativeElement.querySelector('app-password-field');

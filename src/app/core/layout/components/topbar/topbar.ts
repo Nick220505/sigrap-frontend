@@ -10,10 +10,12 @@ import {
 import { RouterModule } from '@angular/router';
 import { AuthStore } from '@core/auth/stores/auth-store';
 import { LayoutService } from '@core/layout/services/layout';
+import { LanguageSwitcher } from '@shared/components/language-switcher/language-switcher';
 import { ConfirmationService } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
 import { TooltipModule } from 'primeng/tooltip';
 import { Configurator } from './floating-configurator/configurator/configurator';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-topbar',
@@ -23,6 +25,8 @@ import { Configurator } from './floating-configurator/configurator/configurator'
     StyleClassModule,
     Configurator,
     TooltipModule,
+    LanguageSwitcher,
+    TranslateModule,
   ],
   template: `
     <div
@@ -51,6 +55,8 @@ import { Configurator } from './floating-configurator/configurator/configurator'
 
       <div class="layout-topbar-actions ml-auto flex gap-4">
         <div class="layout-config-menu flex gap-4">
+          <app-language-switcher />
+
           <button
             type="button"
             class="flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
@@ -166,7 +172,7 @@ import { Configurator } from './floating-configurator/configurator/configurator'
                     class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--surface-hover)] flex items-center gap-2 text-[var(--text-color)]"
                     (click)="confirmLogout()"
                   >
-                    <i class="pi pi-sign-out"></i> Sign Out
+                    <i class="pi pi-sign-out"></i> {{ 'nav.signOut' | translate }}
                   </button>
                 </div>
               }
@@ -182,6 +188,7 @@ export class Topbar {
   readonly authStore = inject(AuthStore);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly elementRef = inject(ElementRef);
+  private readonly translate = inject(TranslateService);
 
   readonly themeMode = computed(
     () => this.layoutService.layoutConfig().themeMode,
@@ -240,8 +247,8 @@ export class Topbar {
 
   confirmLogout(): void {
     this.confirmationService.confirm({
-      header: 'Confirm Sign Out',
-      message: 'Are you sure you want to sign out?',
+      header: this.translate.instant('nav.confirmSignOut'),
+      message: this.translate.instant('nav.confirmSignOutMessage'),
       accept: this.authStore.logout,
     });
   }

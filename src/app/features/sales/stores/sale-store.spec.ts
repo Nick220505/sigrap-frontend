@@ -16,6 +16,7 @@ import { TestBed } from '@angular/core/testing';
 import { UserRole } from '@features/configuration/models/user.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { MessageService } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { SaleData, SaleInfo } from '../models/sale.model';
 import { SaleService } from '../services/sale';
@@ -139,6 +140,7 @@ describe('SaleStore', () => {
     productStore.entities.mockReturnValue([]);
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         SaleStore,
         provideHttpClient(),
@@ -151,6 +153,37 @@ describe('SaleStore', () => {
 
     store = TestBed.inject(SaleStore);
     httpMock = TestBed.inject(HttpTestingController);
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    
+    translateService.setTranslation('en', {
+      messages: {
+        success: {
+          saleRegistered: 'Success',
+          saleRegisteredDetail: 'Sale #{{id}} has been created successfully',
+          saleUpdated: 'Success',
+          saleUpdatedDetail: 'Sale #{{id}} has been updated successfully',
+          saleDeleted: 'Success',
+          saleDeletedDetail: 'Sale deleted successfully.',
+          salesDeleted: 'Success',
+          salesDeletedDetail: 'Sales deleted successfully.',
+          reportGenerated: 'Success',
+          reportGeneratedDetail: 'Report generated successfully.',
+        },
+        errors: {
+          error: 'Error',
+          inventoryError: 'Insufficient stock',
+          insufficientStock: 'Insufficient stock for {{product}}',
+          saleRegisterError: 'Error creating sale',
+          saleUpdateError: 'Error updating sale',
+          saleDeleteError: 'Error deleting sale',
+          salesDeleteError: 'Error deleting sales',
+          reportGenerateError: 'Error generating report',
+        },
+      },
+    });
   });
 
   afterEach(() => {
@@ -190,8 +223,8 @@ describe('SaleStore', () => {
       expect(productStore.findAll).toHaveBeenCalled();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Sale registered',
-        detail: `Sale #${mockSale.id} has been registered successfully`,
+        summary: 'Success',
+        detail: `Sale #${mockSale.id} has been created successfully`,
       });
     });
 
@@ -206,8 +239,8 @@ describe('SaleStore', () => {
 
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Inventory error',
-        detail: 'Insufficient stock for product: Test Product',
+        summary: 'Insufficient stock',
+        detail: 'Insufficient stock for Test Product',
       });
     });
   });
@@ -220,7 +253,7 @@ describe('SaleStore', () => {
       expect(productStore.findAll).toHaveBeenCalled();
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Sale updated',
+        summary: 'Success',
         detail: `Sale #${mockSale.id} has been updated successfully`,
       });
     });
@@ -233,8 +266,8 @@ describe('SaleStore', () => {
       expect(saleService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Sale deleted',
-        detail: 'The sale has been deleted successfully',
+        summary: 'Success',
+        detail: 'Sale deleted successfully.',
       });
     });
   });
@@ -246,8 +279,8 @@ describe('SaleStore', () => {
       expect(saleService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Sales deleted',
-        detail: 'The selected sales have been deleted successfully',
+        summary: 'Success',
+        detail: 'Sales deleted successfully.',
       });
     });
   });
@@ -300,7 +333,7 @@ describe('SaleStore', () => {
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
         summary: 'Success',
-        detail: 'Daily sales report generated successfully',
+        detail: 'Report generated successfully.',
       });
     });
   });

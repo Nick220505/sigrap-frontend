@@ -12,6 +12,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { SupplierDialog } from './supplier-dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('SupplierDialog', () => {
   let component: SupplierDialog;
@@ -54,6 +55,7 @@ describe('SupplierDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         SupplierDialog,
         
         DialogModule,
@@ -64,11 +66,24 @@ describe('SupplierDialog', () => {
         TextareaModule,
         InputNumberModule,
       ],
-      providers: [{ provide: SupplierStore, useValue: supplierStore }],
+      providers: [
+        { provide: SupplierStore, useValue: supplierStore },
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SupplierDialog);
     component = fixture.componentInstance;
+    
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    translateService.setTranslation('en', {
+      validation: {
+        required: 'Name is required',
+        email: 'Invalid email',
+      },
+    });
+    
     fixture.detectChanges();
   });
 
@@ -246,7 +261,7 @@ describe('SupplierDialog', () => {
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
       expect(errorMessage.nativeElement.textContent).toContain(
-        'Name is required',
+        'validation.required',
       );
     });
 
@@ -260,7 +275,7 @@ describe('SupplierDialog', () => {
 
       const errorMessage = fixture.debugElement.query(By.css('.text-red-500'));
       expect(errorMessage).toBeTruthy();
-      expect(errorMessage.nativeElement.textContent).toContain('Invalid email');
+      expect(errorMessage.nativeElement.textContent).toContain('validation.email');
     });
   });
 
@@ -270,7 +285,7 @@ describe('SupplierDialog', () => {
       fixture.detectChanges();
 
       const cancelButton = fixture.debugElement.query(
-        By.css('p-button[label="Cancel"]'),
+        By.css('p-button[icon="pi pi-times"]'),
       );
       cancelButton.triggerEventHandler('onClick', null);
 
@@ -284,7 +299,7 @@ describe('SupplierDialog', () => {
       component.supplierForm.name().value.set('Valid Supplier');
 
       const saveButton = fixture.debugElement.query(
-        By.css('p-button[label="Save"]'),
+        By.css('p-button[icon="pi pi-check"]'),
       );
       saveButton.triggerEventHandler('onClick', null);
 
@@ -292,3 +307,6 @@ describe('SupplierDialog', () => {
     });
   });
 });
+
+
+

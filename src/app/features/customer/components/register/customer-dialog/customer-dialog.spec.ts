@@ -7,6 +7,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { TranslateModule } from '@ngx-translate/core';
 import { CustomerInfo } from '@features/customer/models/customer.model';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { CustomerDialog } from './customer-dialog';
@@ -52,6 +53,7 @@ describe('CustomerDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         CustomerDialog,
 
         DialogModule,
@@ -60,7 +62,9 @@ describe('CustomerDialog', () => {
         InputGroupModule,
         InputGroupAddonModule,
       ],
-      providers: [{ provide: CustomerStore, useValue: customerStore }],
+      providers: [
+        { provide: CustomerStore, useValue: customerStore },
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomerDialog);

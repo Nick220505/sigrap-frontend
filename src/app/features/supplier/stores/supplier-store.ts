@@ -20,6 +20,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { SupplierData, SupplierInfo } from '../models/supplier.model';
 import { SupplierService } from '../services/supplier';
@@ -46,8 +47,9 @@ export const SupplierStore = signalStore(
   withProps(() => ({
     supplierService: inject(SupplierService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ supplierService, messageService, ...store }) => ({
+  withMethods(({ supplierService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -76,8 +78,8 @@ export const SupplierStore = signalStore(
                 patchState(store, addEntity(createdSupplier));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Supplier created',
-                  detail: `The supplier ${createdSupplier.name} has been created successfully`,
+                  summary: translateService.instant('messages.success.supplierCreated'),
+                  detail: translateService.instant('messages.success.supplierCreatedDetail', { name: createdSupplier.name }),
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -85,8 +87,8 @@ export const SupplierStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating supplier',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.supplierCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -108,8 +110,8 @@ export const SupplierStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Supplier updated',
-                  detail: `The supplier ${updatedSupplier.name} has been updated successfully`,
+                  summary: translateService.instant('messages.success.supplierUpdated'),
+                  detail: translateService.instant('messages.success.supplierUpdatedDetail', { name: updatedSupplier.name }),
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -117,8 +119,8 @@ export const SupplierStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating supplier',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.supplierUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -137,8 +139,8 @@ export const SupplierStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Supplier deleted',
-                  detail: 'The supplier has been deleted successfully',
+                  summary: translateService.instant('messages.success.supplierDeleted'),
+                  detail: translateService.instant('messages.success.supplierDeletedDetail'),
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -151,14 +153,14 @@ export const SupplierStore = signalStore(
                   const supplier = store.entities().find((s) => s.id === id);
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: `Cannot delete supplier "${supplier?.name}" because it is being used.`,
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.supplierDeleteErrorDetail', { name: supplier?.name || '' }),
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error deleting supplier',
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.supplierDeleteError'),
                   });
                 }
               },
@@ -178,9 +180,8 @@ export const SupplierStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Suppliers deleted',
-                  detail:
-                    'The selected suppliers have been deleted successfully',
+                  summary: translateService.instant('messages.success.suppliersDeleted'),
+                  detail: translateService.instant('messages.success.suppliersDeletedDetail'),
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -208,14 +209,14 @@ export const SupplierStore = signalStore(
                   }
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: `Cannot delete supplier "${supplierName}" because it is being used.`,
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.supplierDeleteErrorDetail', { name: supplierName }),
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error deleting suppliers',
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.suppliersDeleteError'),
                   });
                 }
               },

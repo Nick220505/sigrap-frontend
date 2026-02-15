@@ -25,6 +25,7 @@ import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { SalesReturnsDialog } from './sales-returns-dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SalesReturnsDialog', () => {
   let component: SalesReturnsDialog;
@@ -195,6 +196,7 @@ describe('SalesReturnsDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         SalesReturnsDialog,
         
         DialogModule,
@@ -215,7 +217,7 @@ describe('SalesReturnsDialog', () => {
         { provide: UserStore, useValue: userStore },
         { provide: AuthStore, useValue: authStore },
         { provide: MessageService, useValue: messageService },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SalesReturnsDialog);

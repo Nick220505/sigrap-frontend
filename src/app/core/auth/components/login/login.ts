@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
 import { RouterModule } from '@angular/router';
 import { FloatingConfigurator } from '@core/layout/components/topbar/floating-configurator/floating-configurator';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -24,6 +25,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
     FloatingConfigurator,
     IconFieldModule,
     InputIconModule,
+    TranslateModule,
   ],
   template: `
     <app-floating-configurator />
@@ -48,7 +50,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
               <div
                 class="mb-4 text-3xl font-medium text-surface-900 dark:text-surface-0"
               >
-                Sign In
+                {{ 'auth.login.title' | translate }}
               </div>
 
               <span class="font-medium text-muted-color">
@@ -80,7 +82,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                   for="email"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
                 >
-                  Email
+                  {{ 'auth.login.email' | translate }}
                 </label>
 
                 <div class="w-full mb-2">
@@ -102,7 +104,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                 @if (emailInvalid) {
                   <ul>
                     @for (error of emailErrors; track error.kind) {
-                      <li class="text-red-500">{{ error.message }}</li>
+                      <li class="text-red-500">{{ error.message | translate }}</li>
                     }
                   </ul>
                 }
@@ -120,7 +122,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                   for="password"
                   class="block mb-2 text-xl font-medium text-surface-900 dark:text-surface-0"
                 >
-                  Password
+                  {{ 'auth.login.password' | translate }}
                 </label>
 
                 <div class="w-full mb-2 relative">
@@ -149,7 +151,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
                       error of loginForm.password().errors();
                       track error.kind
                     ) {
-                      <li class="text-red-500">{{ error.message }}</li>
+                      <li class="text-red-500">{{ error.message | translate }}</li>
                     }
                   </ul>
                 }
@@ -157,7 +159,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
 
               <div class="mt-8">
                 <p-button
-                  label="Sign In"
+                  [label]="'auth.login.submit' | translate"
                   type="submit"
                   styleClass="w-full"
                   [loading]="authStore.loading()"
@@ -230,9 +232,9 @@ export class Login {
   });
 
   readonly loginForm = form(this.loginModel, (login) => {
-    required(login.email, { message: 'Email is required.' });
-    email(login.email, { message: 'Enter a valid email address.' });
-    required(login.password, { message: 'Password is required.' });
+    required(login.email, { message: 'validation.required' });
+    email(login.email, { message: 'validation.email' });
+    required(login.password, { message: 'validation.required' });
   });
 
   onSubmit(): void {

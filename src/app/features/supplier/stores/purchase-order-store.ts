@@ -19,6 +19,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, forkJoin, of, pipe, switchMap, tap } from 'rxjs';
 import {
   PurchaseOrderData,
@@ -52,8 +53,9 @@ export const PurchaseOrderStore = signalStore(
   withProps(() => ({
     purchaseOrderService: inject(PurchaseOrderService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ purchaseOrderService, messageService, ...store }) => ({
+  withMethods(({ purchaseOrderService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -121,16 +123,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, addEntity(createdOrder));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order created',
-                  detail: `Order #${createdOrder.id} has been created successfully`,
+                  summary: translateService.instant('messages.success.orderCreated'),
+                  detail: translateService.instant('messages.success.orderCreatedDetail', { id: createdOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating purchase order',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -150,16 +152,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedOrder }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order updated',
-                  detail: `Order #${updatedOrder.id} has been updated successfully`,
+                  summary: translateService.instant('messages.success.orderUpdated'),
+                  detail: translateService.instant('messages.success.orderUpdatedDetail', { id: updatedOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating purchase order',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -179,16 +181,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order deleted',
-                  detail: 'The purchase order has been deleted successfully',
+                  summary: translateService.instant('messages.success.orderDeleted'),
+                  detail: translateService.instant('messages.success.orderDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting purchase order',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -216,16 +218,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Orders deleted',
-                  detail: 'The selected orders have been deleted successfully',
+                  summary: translateService.instant('messages.success.ordersDeleted'),
+                  detail: translateService.instant('messages.success.ordersDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting orders',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.ordersDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -245,16 +247,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedOrder }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order submitted',
-                  detail: `Order #${updatedOrder.id} has been submitted successfully`,
+                  summary: translateService.instant('messages.success.orderSubmitted'),
+                  detail: translateService.instant('messages.success.orderSubmittedDetail', { id: updatedOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error submitting purchase order',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderSubmitError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -274,16 +276,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedOrder }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order confirmed',
-                  detail: `Order #${updatedOrder.id} has been confirmed successfully`,
+                  summary: translateService.instant('messages.success.orderConfirmed'),
+                  detail: translateService.instant('messages.success.orderConfirmedDetail', { id: updatedOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error confirming purchase order',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderConfirmError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -303,16 +305,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedOrder }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order shipped',
-                  detail: `Order #${updatedOrder.id} has been marked as shipped`,
+                  summary: translateService.instant('messages.success.orderShipped'),
+                  detail: translateService.instant('messages.success.orderShippedDetail', { id: updatedOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error marking order as shipped',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderShipError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -332,16 +334,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedOrder }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order delivered',
-                  detail: `Order #${updatedOrder.id} has been marked as delivered`,
+                  summary: translateService.instant('messages.success.orderDelivered'),
+                  detail: translateService.instant('messages.success.orderDeliveredDetail', { id: updatedOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error marking order as delivered',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderDeliverError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -361,16 +363,16 @@ export const PurchaseOrderStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedOrder }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Order cancelled',
-                  detail: `Order #${updatedOrder.id} has been cancelled successfully`,
+                  summary: translateService.instant('messages.success.orderCancelled'),
+                  detail: translateService.instant('messages.success.orderCancelledDetail', { id: updatedOrder.id }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error cancelling purchase order',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.orderCancelError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

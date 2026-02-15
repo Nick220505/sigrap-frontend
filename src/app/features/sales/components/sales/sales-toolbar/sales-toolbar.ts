@@ -1,5 +1,6 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -23,6 +24,7 @@ import { SalesTable } from '../sales-table/sales-table';
     InputGroupAddonModule,
     InputTextModule,
     FormsModule,
+    TranslateModule,
   ],
   template: `
     <p-toolbar styleClass="mb-6">
@@ -39,7 +41,7 @@ import { SalesTable } from '../sales-table/sales-table';
 
         <p-button
           severity="danger"
-          label="Delete"
+          [label]="'common.delete' | translate"
           icon="pi pi-trash"
           outlined
           pTooltip="Delete selected sales"

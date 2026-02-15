@@ -1,12 +1,13 @@
 import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 
 @Component({
   selector: 'app-audit-dialog',
-  imports: [DialogModule, ButtonModule, DatePipe, JsonPipe],
+  imports: [DialogModule, ButtonModule, DatePipe, JsonPipe, TranslateModule],
   template: `
     <p-dialog
       [visible]="auditLogStore.dialogVisible()"
@@ -71,7 +72,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 
       <ng-template #footer>
         <p-button
-          label="Close"
+          [label]="'common.close' | translate"
           icon="pi pi-times"
           (click)="auditLogStore.closeAuditLogDialog()"
         />

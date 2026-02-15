@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleDialog } from './schedule-dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ScheduleDialog', () => {
   let component: ScheduleDialog;
@@ -36,6 +37,7 @@ describe('ScheduleDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         DialogModule,
         ButtonModule,
         InputTextModule,
@@ -50,7 +52,7 @@ describe('ScheduleDialog', () => {
         ConfirmationService,
         { provide: ScheduleStore, useValue: scheduleStoreMock },
         { provide: UserStore, useValue: userStoreMock },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ScheduleDialog);

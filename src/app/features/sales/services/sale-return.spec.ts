@@ -59,7 +59,7 @@ describe('SaleReturnService', () => {
         SaleReturnService,
         provideHttpClient(),
         provideHttpClientTesting(),
-      ],
+        ],
     });
     service = TestBed.inject(SaleReturnService);
     httpMock = TestBed.inject(HttpTestingController);

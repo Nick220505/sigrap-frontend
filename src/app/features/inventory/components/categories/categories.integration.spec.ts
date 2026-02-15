@@ -12,6 +12,7 @@ import {
   CategoryInfo,
 } from '@features/inventory/models/category.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { Categories } from './categories';
 import { CategoryDialog } from './category-dialog/category-dialog';
 import { CategoryTable } from './category-table/category-table';
@@ -39,7 +40,7 @@ describe('Categories Feature Integration', () => {
     await TestBed.configureTestingModule({
       imports: [
         Categories,
-        
+        TranslateModule.forRoot(),
         CategoryTable,
         CategoryToolbar,
         CategoryDialog,

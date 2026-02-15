@@ -1,6 +1,7 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -22,6 +23,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
     FormsModule,
     InputGroupModule,
     InputGroupAddonModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -222,13 +224,13 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
 
       <ng-template #footer>
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           text
           (click)="scheduleStore.closeScheduleDialog()"
         />
         <p-button
-          label="Save"
+          [label]="'common.save' | translate"
           icon="pi pi-check"
           type="submit"
           (onClick)="onSubmit()"
@@ -252,11 +254,11 @@ export class ScheduleDialog {
   });
 
   readonly scheduleForm = form(this.scheduleModel, (schedule) => {
-    required(schedule.userId, { message: 'Employee is required.' });
-    required(schedule.day, { message: 'Day of week is required.' });
-    required(schedule.type, { message: 'Schedule type is required.' });
-    required(schedule.startTime, { message: 'Start time is required.' });
-    required(schedule.endTime, { message: 'End time is required.' });
+    required(schedule.userId, { message: 'validation.required' });
+    required(schedule.day, { message: 'validation.required' });
+    required(schedule.type, { message: 'validation.required' });
+    required(schedule.startTime, { message: 'validation.required' });
+    required(schedule.endTime, { message: 'validation.required' });
   });
 
   constructor() {

@@ -8,6 +8,7 @@ import {
   untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   FormField,
   applyEach,
@@ -53,6 +54,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
     InputGroupAddonModule,
     FormField,
     FormsModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -166,9 +168,9 @@ import { SaleInfo } from '@features/sales/models/sale.model';
             @if (reasonInvalid()) {
               <small class="p-error">
                 @if (reasonHasRequiredError()) {
-                  Return reason is required.
+                  {{ 'validation.required' | translate: { field: 'Return reason' } }}
                 } @else if (reasonHasMinLengthError()) {
-                  Reason must have at least 5 characters.
+                  {{ 'validation.minLength' | translate: { min: 5 } }}
                 }
               </small>
             }
@@ -251,14 +253,14 @@ import { SaleInfo } from '@features/sales/models/sale.model';
 
       <ng-template pTemplate="footer">
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           styleClass="p-button-text"
           (click)="saleReturnStore.closeReturnDialog()"
         />
         @if (!viewMode()) {
           <p-button
-            label="Save"
+            [label]="'common.save' | translate"
             icon="pi pi-check"
             (click)="
               returnForm().valid() ? saveReturn() : returnForm().markAsTouched()
@@ -341,7 +343,7 @@ export class SalesReturnsDialog {
     required(m.originalSaleId);
     required(m.employeeId);
     required(m.reason);
-    minLength(m.reason, 5);
+    minLength(m.reason, 5, { message: 'validation.minLength' });
     min(m.totalReturnAmount, 0);
 
     applyEach(m.items, (i) => {

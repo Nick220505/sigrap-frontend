@@ -19,6 +19,7 @@ import {
   withEntities,
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { ProductStore } from '@features/inventory/stores/product-store';
@@ -49,9 +50,10 @@ export const SaleStore = signalStore(
   withProps(() => ({
     saleService: inject(SaleService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
     productStore: inject(ProductStore),
   })),
-  withMethods(({ saleService, messageService, productStore, ...store }) => ({
+  withMethods(({ saleService, messageService, translateService, productStore, ...store }) => ({
     generateDailySalesReport: rxMethod<{ date?: Date; exportPath: string }>(
       pipe(
         tap(() =>
@@ -68,16 +70,16 @@ export const SaleStore = signalStore(
                 patchState(store, { exportFilePath: filePath });
                 messageService.add({
                   severity: 'success',
-                  summary: 'Success',
-                  detail: 'Daily sales report generated successfully',
+                  summary: translateService.instant('messages.success.reportGenerated'),
+                  detail: translateService.instant('messages.success.reportGeneratedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error, exportFilePath: null });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error generating daily sales report',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.reportGenerateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -100,8 +102,8 @@ export const SaleStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading sales',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.salesLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -135,25 +137,23 @@ export const SaleStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Sale registered',
-                  detail: `Sale #${createdSale.id} has been registered successfully`,
+                  summary: translateService.instant('messages.success.saleRegistered'),
+                  detail: translateService.instant('messages.success.saleRegisteredDetail', { id: createdSale.id }),
                 });
               },
               error: (error: HttpErrorResponse) => {
                 let errorMessage = '';
+                let productName = '';
 
-                if (error.error?.message) {
-                  errorMessage = error.error.message.replace(
-                    /Insufficient stock for product: (.*)/,
-                    'Insufficient stock for product: $1',
-                  );
-                } else if (error.message) {
-                  errorMessage = error.message.replace(
-                    /Insufficient stock for product: (.*)/,
-                    'Insufficient stock for product: $1',
-                  );
+                // Extract product name from error message
+                const stockMatch = error.error?.message?.match(/Insufficient stock for product: (.*)/) ||
+                                   error.message?.match(/Insufficient stock for product: (.*)/);
+                
+                if (stockMatch) {
+                  productName = stockMatch[1];
+                  errorMessage = translateService.instant('messages.errors.insufficientStock', { product: productName });
                 } else {
-                  errorMessage = 'Error registering sale';
+                  errorMessage = translateService.instant('messages.errors.saleRegisterError');
                 }
 
                 patchState(store, {
@@ -170,13 +170,13 @@ export const SaleStore = signalStore(
                 ) {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Inventory error',
+                    summary: translateService.instant('messages.errors.inventoryError'),
                     detail: errorMessage,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMessage,
                   });
                 }
@@ -216,25 +216,23 @@ export const SaleStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Sale updated',
-                  detail: `Sale #${updatedSale.id} has been updated successfully`,
+                  summary: translateService.instant('messages.success.saleUpdated'),
+                  detail: translateService.instant('messages.success.saleUpdatedDetail', { id: updatedSale.id }),
                 });
               },
               error: (error: HttpErrorResponse) => {
                 let errorMessage = '';
+                let productName = '';
 
-                if (error.error?.message) {
-                  errorMessage = error.error.message.replace(
-                    /Insufficient stock for product: (.*)/,
-                    'Insufficient stock for product: $1',
-                  );
-                } else if (error.message) {
-                  errorMessage = error.message.replace(
-                    /Insufficient stock for product: (.*)/,
-                    'Insufficient stock for product: $1',
-                  );
+                // Extract product name from error message
+                const stockMatch = error.error?.message?.match(/Insufficient stock for product: (.*)/) ||
+                                   error.message?.match(/Insufficient stock for product: (.*)/);
+                
+                if (stockMatch) {
+                  productName = stockMatch[1];
+                  errorMessage = translateService.instant('messages.errors.insufficientStock', { product: productName });
                 } else {
-                  errorMessage = 'Error updating sale';
+                  errorMessage = translateService.instant('messages.errors.saleUpdateError');
                 }
 
                 patchState(store, {
@@ -251,13 +249,13 @@ export const SaleStore = signalStore(
                 ) {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Inventory Error',
+                    summary: translateService.instant('messages.errors.inventoryError'),
                     detail: errorMessage,
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
+                    summary: translateService.instant('messages.errors.error'),
                     detail: errorMessage,
                   });
                 }
@@ -283,16 +281,16 @@ export const SaleStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Sale deleted',
-                  detail: 'The sale has been deleted successfully',
+                  summary: translateService.instant('messages.success.saleDeleted'),
+                  detail: translateService.instant('messages.success.saleDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting sale',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.saleDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -312,16 +310,16 @@ export const SaleStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Sales deleted',
-                  detail: 'The selected sales have been deleted successfully',
+                  summary: translateService.instant('messages.success.salesDeleted'),
+                  detail: translateService.instant('messages.success.salesDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting sales',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.salesDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -344,8 +342,8 @@ export const SaleStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading customer sales',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.customerSalesLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -368,8 +366,8 @@ export const SaleStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading employee sales',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.employeeSalesLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -392,8 +390,8 @@ export const SaleStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading sales by date range',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.salesDateRangeLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

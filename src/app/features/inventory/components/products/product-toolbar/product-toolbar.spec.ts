@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ProductToolbar } from './product-toolbar';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ProductToolbar', () => {
   let component: ProductToolbar;
@@ -77,7 +78,7 @@ describe('ProductToolbar', () => {
     await TestBed.configureTestingModule({
       imports: [
         ProductToolbar,
-        
+        TranslateModule.forRoot(),
         ToolbarModule,
         ButtonModule,
         TooltipModule,
@@ -117,7 +118,7 @@ describe('ProductToolbar', () => {
     fixture.detectChanges();
 
     const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Delete"]'),
+      By.css('p-button[icon="pi pi-trash"]'),
     );
     expect(deleteButton.componentInstance.disabled).toBe(true);
   });
@@ -127,7 +128,7 @@ describe('ProductToolbar', () => {
     fixture.detectChanges();
 
     const deleteButton = fixture.debugElement.query(
-      By.css('p-button[label="Delete"]'),
+      By.css('p-button[icon="pi pi-trash"]'),
     );
     expect(deleteButton.componentInstance.disabled).toBe(false);
   });
@@ -154,7 +155,7 @@ describe('ProductToolbar', () => {
       fixture.detectChanges();
 
       const deleteButton = fixture.debugElement.query(
-        By.css('p-button[label="Delete"]'),
+        By.css('p-button[icon="pi pi-trash"]'),
       );
       deleteButton.triggerEventHandler('onClick', null);
 
@@ -231,3 +232,4 @@ describe('ProductToolbar', () => {
     });
   });
 });
+

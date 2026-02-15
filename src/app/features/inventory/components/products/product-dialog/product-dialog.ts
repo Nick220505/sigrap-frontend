@@ -1,6 +1,7 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, min, required } from '@angular/forms/signals';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductData } from '@features/inventory/models/product.model';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
@@ -26,6 +27,7 @@ import { TextareaModule } from 'primeng/textarea';
     InputGroupAddonModule,
     FormField,
     FormsModule,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -256,14 +258,14 @@ import { TextareaModule } from 'primeng/textarea';
 
       <ng-template #footer>
         <p-button
-          label="Cancel"
+          [label]="'common.cancel' | translate"
           icon="pi pi-times"
           text
           (onClick)="productStore.closeProductDialog()"
         />
 
         <p-button
-          label="Save"
+          [label]="'common.save' | translate"
           icon="pi pi-check"
           type="submit"
           (onClick)="onSubmit()"
@@ -288,19 +290,19 @@ export class ProductDialog {
   });
 
   readonly productForm = form(this.productModel, (product) => {
-    required(product.name, { message: 'Name is required.' });
+    required(product.name, { message: 'validation.required' });
 
-    required(product.costPrice, { message: 'Cost price is required.' });
+    required(product.costPrice, { message: 'validation.required' });
     min(product.costPrice, 0, { message: 'Cost price must be at least 0.' });
 
-    required(product.salePrice, { message: 'Sale price is required.' });
+    required(product.salePrice, { message: 'validation.required' });
     min(product.salePrice, 0, { message: 'Sale price must be at least 0.' });
 
-    required(product.stock, { message: 'Stock is required.' });
+    required(product.stock, { message: 'validation.required' });
     min(product.stock, 0, { message: 'Stock must be at least 0.' });
 
     required(product.minimumStockThreshold, {
-      message: 'Minimum stock is required.',
+      message: 'validation.required',
     });
     min(product.minimumStockThreshold, 0, {
       message: 'Minimum stock must be at least 0.',

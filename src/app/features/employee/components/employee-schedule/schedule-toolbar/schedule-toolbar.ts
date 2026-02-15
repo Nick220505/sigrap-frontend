@@ -1,4 +1,5 @@
 import { Component, inject, input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -9,7 +10,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
 
 @Component({
   selector: 'app-schedule-toolbar',
-  imports: [ButtonModule, ToolbarModule, TooltipModule],
+  imports: [ButtonModule, ToolbarModule, TooltipModule, TranslateModule],
   template: `
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
@@ -24,7 +25,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
         />
 
         <p-button
-          label="Delete"
+          [label]="'common.delete' | translate"
           icon="pi pi-trash"
           severity="danger"
           outlined

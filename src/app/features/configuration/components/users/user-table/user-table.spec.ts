@@ -9,6 +9,7 @@ import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserTable } from './user-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MockUserStore {
   entities: WritableSignal<UserInfo[]>;
@@ -73,6 +74,7 @@ describe('UserTable', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         UserTable,
         
         FormsModule,
@@ -84,7 +86,7 @@ describe('UserTable', () => {
         { provide: ConfirmationService, useValue: confirmationService },
         provideHttpClient(),
         MessageService,
-      ],
+        ],
     })
       .overrideComponent(UserTable, {
         set: {

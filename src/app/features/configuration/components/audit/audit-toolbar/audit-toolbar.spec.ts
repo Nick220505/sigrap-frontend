@@ -9,6 +9,7 @@ import { providePrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { AuditTable } from '../audit-table/audit-table';
 import { AuditToolbar } from './audit-toolbar';
@@ -16,7 +17,10 @@ import { AuditToolbar } from './audit-toolbar';
 @Component({
   selector: 'app-test-host',
   template: `<app-audit-toolbar [auditTable]="mockTableComponent" />`,
-  imports: [AuditToolbar],
+  imports: [
+    TranslateModule,
+    AuditToolbar
+  ],
   standalone: true,
 })
 class TestHost {
@@ -41,6 +45,7 @@ describe('AuditToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         ButtonModule,
         ToolbarModule,
         TooltipModule,
@@ -63,7 +68,7 @@ describe('AuditToolbar', () => {
         provideHttpClient(),
         MessageService,
         { provide: AuditLogStore, useValue: mockStore },
-      ],
+        ],
     }).compileComponents();
 
     hostFixture = TestBed.createComponent(TestHost);

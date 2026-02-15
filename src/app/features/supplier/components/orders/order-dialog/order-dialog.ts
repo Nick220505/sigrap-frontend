@@ -7,6 +7,7 @@ import {
   untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { applyEach, form, min, required } from '@angular/forms/signals';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
@@ -40,6 +41,7 @@ import { TooltipModule } from 'primeng/tooltip';
     InputGroupAddonModule,
     FormsModule,
     CurrencyPipe,
+    TranslateModule,
   ],
   template: `
     <p-dialog
@@ -90,7 +92,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.supplierId().invalid() &&
               orderForm.supplierId().touched()
             ) {
-              <small class="text-red-500">Supplier is required.</small>
+              <small class="text-red-500">{{ 'validation.required' | translate: { field: 'Supplier' } }}</small>
             }
           </div>
 
@@ -117,7 +119,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.deliveryDate().invalid() &&
               orderForm.deliveryDate().touched()
             ) {
-              <small class="text-red-500">Delivery date is required.</small>
+              <small class="text-red-500">{{ 'validation.required' | translate: { field: 'Delivery date' } }}</small>
             }
           </div>
         </div>
@@ -240,7 +242,7 @@ import { TooltipModule } from 'primeng/tooltip';
         <div class="flex justify-end gap-2">
           @if (!viewMode()) {
             <p-button
-              label="Save"
+              [label]="'common.save' | translate"
               icon="pi pi-check"
               (onClick)="
                 orderForm().valid() ? saveOrder() : orderForm().markAsTouched()
@@ -303,8 +305,8 @@ export class OrderDialog {
   });
 
   readonly orderForm = form(this.model, (m) => {
-    required(m.supplierId, { message: 'Supplier is required' });
-    required(m.deliveryDate, { message: 'Delivery date is required' });
+    required(m.supplierId, { message: 'validation.required' });
+    required(m.deliveryDate, { message: 'validation.required' });
     min(m.totalAmount, 0);
 
     applyEach(m.items, (i) => {

@@ -5,11 +5,22 @@ import {
   withInMemoryScrolling,
   withViewTransitions,
 } from '@angular/router';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
+
+// HttpLoaderFactory: Configures the translation file loader
+// In ngx-translate v17+, we use provideTranslateHttpLoader instead of the traditional factory pattern
+export function HttpLoaderFactory() {
+  return provideTranslateHttpLoader({
+    prefix: './assets/i18n/',
+    suffix: '.json'
+  });
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,6 +44,11 @@ export const appConfig: ApplicationConfig = {
           },
         },
       },
+    }),
+    provideTranslateService({
+      defaultLanguage: 'en',
+      fallbackLang: 'en',
+      loader: HttpLoaderFactory()
     }),
     MessageService,
     ConfirmationService,

@@ -12,6 +12,7 @@ import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { ConfirmationService } from 'primeng/api';
 import { PrimeNG } from 'primeng/config';
 import { SalesReturnsTable } from './sales-returns-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 const primengConfigStub: PrimeNG = new Proxy(
   {
@@ -144,6 +145,7 @@ describe('SalesReturnsTable', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         SalesReturnsTable,
         
         FormsModule,
@@ -154,7 +156,7 @@ describe('SalesReturnsTable', () => {
         { provide: SaleReturnStore, useValue: saleReturnStore },
         { provide: ConfirmationService, useValue: confirmationService },
         { provide: PrimeNG, useValue: primengConfigStub },
-      ],
+        ],
     })
       .overrideComponent(SalesReturnsTable, {
         set: {

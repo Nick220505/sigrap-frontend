@@ -21,6 +21,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { NEVER } from 'rxjs';
 import { Configurator } from './floating-configurator/configurator/configurator';
 import { Topbar } from './topbar';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MockConfirmation {
   accept?: () => void;
@@ -90,6 +91,7 @@ describe('Topbar', () => {
       imports: [
         Topbar,
         RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
         CommonModule,
         StyleClassModule,
         TooltipModule,

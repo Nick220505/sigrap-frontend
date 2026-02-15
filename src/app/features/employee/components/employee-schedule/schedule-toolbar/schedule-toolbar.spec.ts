@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { ScheduleTable } from '../schedule-table/schedule-table';
 import { ScheduleToolbar } from './schedule-toolbar';
+import { TranslateModule } from '@ngx-translate/core';
 
 class MockScheduleTable {
   isExporting = signal(false);
@@ -24,7 +25,10 @@ class MockScheduleTable {
 @Component({
   selector: 'app-test-host',
   template: `<app-schedule-toolbar [scheduleTable]="mockTableComponent" />`,
-  imports: [ScheduleToolbar],
+  imports: [
+    TranslateModule,
+    ScheduleToolbar
+  ],
   standalone: true,
 })
 class TestHost {
@@ -48,6 +52,7 @@ describe('ScheduleToolbar', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         ButtonModule,
         ToolbarModule,
         TooltipModule,
@@ -59,7 +64,7 @@ describe('ScheduleToolbar', () => {
         MessageService,
         ConfirmationService,
         { provide: ScheduleStore, useValue: mockStore },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHost);

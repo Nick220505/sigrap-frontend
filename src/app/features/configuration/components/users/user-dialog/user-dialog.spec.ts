@@ -11,6 +11,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserInfo, UserRole } from '@features/configuration/models/user.model';
 import { UserStore } from '@features/configuration/stores/user-store';
 import { UserDialog } from './user-dialog';
@@ -41,6 +42,7 @@ describe('UserDialog', () => {
 
     await TestBed.configureTestingModule({
       imports: [
+        TranslateModule.forRoot(),
         DialogModule,
         ButtonModule,
         InputTextModule,
@@ -66,7 +68,7 @@ describe('UserDialog', () => {
         MessageService,
         ConfirmationService,
         { provide: UserStore, useValue: userStoreMock },
-      ],
+        ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserDialog);
