@@ -293,19 +293,19 @@ export class ProductDialog {
     required(product.name, { message: 'validation.required' });
 
     required(product.costPrice, { message: 'validation.required' });
-    min(product.costPrice, 0, { message: 'Cost price must be at least 0.' });
+    min(product.costPrice, 0, { message: 'validation.costPriceMin' });
 
     required(product.salePrice, { message: 'validation.required' });
-    min(product.salePrice, 0, { message: 'Sale price must be at least 0.' });
+    min(product.salePrice, 0, { message: 'validation.salePriceMin' });
 
     required(product.stock, { message: 'validation.required' });
-    min(product.stock, 0, { message: 'Stock must be at least 0.' });
+    min(product.stock, 0, { message: 'validation.stockMin' });
 
     required(product.minimumStockThreshold, {
       message: 'validation.required',
     });
     min(product.minimumStockThreshold, 0, {
-      message: 'Minimum stock must be at least 0.',
+      message: 'validation.minimumStockMin',
     });
   });
 

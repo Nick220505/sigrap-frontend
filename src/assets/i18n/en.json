@@ -385,8 +385,8 @@
     "card": "Card",
     "transfer": "Transfer",
     "createReturn": "Create Return",
+    "newReturn": "New Return",
     "returnDetails": "Return Details",
-    "returnReason": "Return Reason",
     "returnDate": "Return Date",
     "refundAmount": "Refund Amount",
     "originalSale": "Original Sale",
@@ -845,7 +845,13 @@
     "required": "{{field}} is required",
     "email": "Please enter a valid email",
     "minLength": "Minimum length is {{min}} characters",
-    "maxLength": "Maximum length is {{max}} characters"
+    "maxLength": "Maximum length is {{max}} characters",
+    "costPriceMin": "Cost price must be at least 0.",
+    "salePriceMin": "Sale price must be at least 0.",
+    "stockMin": "Stock must be at least 0.",
+    "minimumStockMin": "Minimum stock must be at least 0.",
+    "selectDateToExport": "Please select a date to export",
+    "invalidForm": "Invalid form. Please check the fields."
   },
   "passwordField": {
     "label": "Password",

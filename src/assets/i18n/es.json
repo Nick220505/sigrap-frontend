@@ -385,8 +385,8 @@
     "card": "Tarjeta",
     "transfer": "Transferencia",
     "createReturn": "Crear Devolución",
+    "newReturn": "Nueva Devolución",
     "returnDetails": "Detalles de Devolución",
-    "returnReason": "Motivo de Devolución",
     "returnDate": "Fecha de Devolución",
     "refundAmount": "Monto de Reembolso",
     "originalSale": "Venta Original",
@@ -845,7 +845,13 @@
     "required": "{{field}} es obligatorio",
     "email": "Por favor ingrese un correo válido",
     "minLength": "La longitud mínima es {{min}} caracteres",
-    "maxLength": "La longitud máxima es {{max}} caracteres"
+    "maxLength": "La longitud máxima es {{max}} caracteres",
+    "costPriceMin": "El precio de costo debe ser al menos 0.",
+    "salePriceMin": "El precio de venta debe ser al menos 0.",
+    "stockMin": "El stock debe ser al menos 0.",
+    "minimumStockMin": "El stock mínimo debe ser al menos 0.",
+    "selectDateToExport": "Por favor seleccione una fecha para exportar",
+    "invalidForm": "Formulario inválido. Por favor revise los campos."
   },
   "passwordField": {
     "label": "Contraseña",

@@ -128,8 +128,8 @@ export class SalesToolbar {
     if (!this.exportDate) {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Please select a date to export',
+        summary: this.translateService.instant('common.errors.errorLoadingSales'),
+        detail: this.translateService.instant('validation.selectDateToExport'),
       });
       return;
     }

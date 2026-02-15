@@ -8,7 +8,7 @@ import {
   untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   FormField,
   applyEach,
@@ -283,6 +283,7 @@ export class SalesReturnsDialog {
   private readonly authStore = inject(AuthStore);
   private readonly userStore = inject(UserStore);
   private readonly messageService = inject(MessageService);
+  private readonly translateService = inject(TranslateService);
 
   readonly selectedOriginalSale = signal<SaleInfo | null>(null);
 
@@ -310,7 +311,9 @@ export class SalesReturnsDialog {
     () => this.saleReturnStore.selectedSaleReturn() !== null,
   );
   readonly dialogHeader = computed(() =>
-    this.viewMode() ? 'Return Details' : 'New Return',
+    this.viewMode() 
+      ? this.translateService.instant('sales.returnDetails') 
+      : this.translateService.instant('sales.newReturn'),
   );
 
   readonly itemIndexes = computed(() =>
@@ -542,8 +545,8 @@ export class SalesReturnsDialog {
     if (this.returnForm().invalid()) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Warning',
-        detail: 'Invalid form. Please check the fields.',
+        summary: this.translateService.instant('common.errors.errorLoadingReturns'),
+        detail: this.translateService.instant('validation.invalidForm'),
       });
       return;
     }
