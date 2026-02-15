@@ -504,6 +504,26 @@
       "paymentTermsLabel": "Términos de pago",
       "daysLabel": "Días"
     },
+    "labels": {
+      "basicInformation": "Información Básica",
+      "contactInformation": "Información de Contacto",
+      "businessInformation": "Información del Negocio",
+      "name": "Nombre",
+      "address": "Dirección",
+      "contactPerson": "Persona de Contacto",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "alternativePhone": "Teléfono Alternativo",
+      "website": "Sitio Web",
+      "productsServices": "Productos/Servicios",
+      "paymentTerms": "Términos de Pago",
+      "deliveryTimeDays": "Tiempo de Entrega (días)",
+      "customer": "Cliente",
+      "employee": "Empleado",
+      "category": "Categoría",
+      "description": "Descripción",
+      "stock": "Stock"
+    },
     "tooltips": {
       "createOrder": "Crear nueva orden",
       "deleteOrders": "Eliminar órdenes seleccionadas",

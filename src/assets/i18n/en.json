@@ -504,6 +504,26 @@
       "paymentTermsLabel": "Payment terms",
       "daysLabel": "Days"
     },
+    "labels": {
+      "basicInformation": "Basic Information",
+      "contactInformation": "Contact Information",
+      "businessInformation": "Business Information",
+      "name": "Name",
+      "address": "Address",
+      "contactPerson": "Contact Person",
+      "email": "Email",
+      "phone": "Phone",
+      "alternativePhone": "Alternative Phone",
+      "website": "Website",
+      "productsServices": "Products/Services",
+      "paymentTerms": "Payment Terms",
+      "deliveryTimeDays": "Delivery Time (days)",
+      "customer": "Customer",
+      "employee": "Employee",
+      "category": "Category",
+      "description": "Description",
+      "stock": "Stock"
+    },
     "tooltips": {
       "createOrder": "Create new order",
       "deleteOrders": "Delete selected orders",

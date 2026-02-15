@@ -141,8 +141,8 @@ export class SalesToolbar {
         next: () => {
           this.messageService.add({
             severity: 'success',
-            summary: 'Report Generated',
-            detail: 'File has been downloaded successfully',
+            summary: this.translateService.instant('messages.success.reportGenerated'),
+            detail: this.translateService.instant('messages.success.reportGeneratedDetail'),
           });
           this.exporting.set(false);
         },
@@ -150,9 +150,8 @@ export class SalesToolbar {
           console.error('Error downloading file', err);
           this.messageService.add({
             severity: 'error',
-            summary: 'Error',
-            detail:
-              'Error generating report: ' + (err.message ?? 'Unknown error'),
+            summary: this.translateService.instant('messages.errors.error'),
+            detail: this.translateService.instant('messages.errors.reportGenerateError'),
           });
           this.exporting.set(false);
         },

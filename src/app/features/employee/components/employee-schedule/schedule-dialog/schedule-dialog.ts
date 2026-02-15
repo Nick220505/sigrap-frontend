@@ -49,7 +49,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
         @let userIdErrors = scheduleForm.userId().errors();
 
         <div class="flex flex-col gap-2" [class.p-invalid]="userIdInvalid">
-          <label for="userId" class="font-bold">Employee</label>
+          <label for="userId" class="font-bold">{{ 'suppliers.labels.employee' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>

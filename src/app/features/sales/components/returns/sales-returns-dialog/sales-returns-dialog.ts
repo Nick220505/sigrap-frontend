@@ -104,7 +104,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
         @if (selectedOriginalSale(); as originalSale) {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
-              <label for="customerName" class="font-bold">Customer</label>
+              <label for="customerName" class="font-bold">{{ 'suppliers.labels.customer' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user"></i>

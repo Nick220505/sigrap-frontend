@@ -57,7 +57,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col gap-2">
-            <label for="customerId" class="font-bold">Customer</label>
+            <label for="customerId" class="font-bold">{{ 'suppliers.labels.customer' | translate }}</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-users"></i>
@@ -81,7 +81,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="employeeId" class="font-bold">Employee</label>
+            <label for="employeeId" class="font-bold">{{ 'suppliers.labels.employee' | translate }}</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-user"></i>

@@ -40,7 +40,7 @@ import { TextareaModule } from 'primeng/textarea';
         (submit)="$event.preventDefault(); onSubmit()"
         class="flex flex-col gap-4 py-4"
       >
-        <h3 class="text-lg font-semibold mb-2">Basic Information</h3>
+        <h3 class="text-lg font-semibold mb-2">{{ 'suppliers.labels.basicInformation' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
             @let nameInvalid =
@@ -48,7 +48,7 @@ import { TextareaModule } from 'primeng/textarea';
             @let nameErrors = supplierForm.name().errors();
 
             <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
-              <label for="name" class="font-bold">Name*</label>
+              <label for="name" class="font-bold">{{ 'suppliers.labels.name' | translate }}*</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-building"></i>
@@ -76,7 +76,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1 md:col-span-2">
             <div class="flex flex-col gap-2">
-              <label for="address" class="font-bold">Address</label>
+              <label for="address" class="font-bold">{{ 'suppliers.labels.address' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-map-marker"></i>
@@ -93,13 +93,11 @@ import { TextareaModule } from 'primeng/textarea';
           </div>
         </div>
 
-        <h3 class="text-lg font-semibold mt-4 mb-2">Contact Information</h3>
+        <h3 class="text-lg font-semibold mt-4 mb-2">{{ 'suppliers.labels.contactInformation' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="contactPerson" class="font-bold"
-                >Contact Person</label
-              >
+              <label for="contactPerson" class="font-bold">{{ 'suppliers.labels.contactPerson' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user"></i>
@@ -122,7 +120,7 @@ import { TextareaModule } from 'primeng/textarea';
             @let emailErrors = supplierForm.email().errors();
 
             <div class="flex flex-col gap-2" [class.p-invalid]="emailInvalid">
-              <label for="email" class="font-bold">Email</label>
+              <label for="email" class="font-bold">{{ 'suppliers.labels.email' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-envelope"></i>
@@ -150,7 +148,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="phone" class="font-bold">Phone</label>
+              <label for="phone" class="font-bold">{{ 'suppliers.labels.phone' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-phone"></i>
@@ -169,9 +167,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="alternativePhone" class="font-bold"
-                >Alternative Phone</label
-              >
+              <label for="alternativePhone" class="font-bold">{{ 'suppliers.labels.alternativePhone' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-mobile"></i>
@@ -190,7 +186,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="website" class="font-bold">Website</label>
+              <label for="website" class="font-bold">{{ 'suppliers.labels.website' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-globe"></i>
@@ -208,13 +204,11 @@ import { TextareaModule } from 'primeng/textarea';
           </div>
         </div>
 
-        <h3 class="text-lg font-semibold mt-4 mb-2">Business Information</h3>
+        <h3 class="text-lg font-semibold mt-4 mb-2">{{ 'suppliers.labels.businessInformation' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
             <div class="flex flex-col gap-2">
-              <label for="productsProvided" class="font-bold"
-                >Products/Services</label
-              >
+              <label for="productsProvided" class="font-bold">{{ 'suppliers.labels.productsServices' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-shopping-cart"></i>
@@ -232,7 +226,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="paymentTerms" class="font-bold">Payment Terms</label>
+              <label for="paymentTerms" class="font-bold">{{ 'suppliers.labels.paymentTerms' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-wallet"></i>
@@ -251,9 +245,7 @@ import { TextareaModule } from 'primeng/textarea';
 
           <div class="col-span-1">
             <div class="flex flex-col gap-2">
-              <label for="averageDeliveryTime" class="font-bold"
-                >Delivery Time (days)</label
-              >
+              <label for="averageDeliveryTime" class="font-bold">{{ 'suppliers.labels.deliveryTimeDays' | translate }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-clock"></i>

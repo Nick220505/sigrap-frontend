@@ -45,7 +45,7 @@ import { TextareaModule } from 'primeng/textarea';
         @let nameErrors = categoryForm.name().errors();
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
-          <label for="name" class="font-bold">Name</label>
+          <label for="name" class="font-bold">{{ 'suppliers.labels.name' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-tag"></i>
@@ -72,7 +72,7 @@ import { TextareaModule } from 'primeng/textarea';
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="description" class="font-bold">Description</label>
+          <label for="description" class="font-bold">{{ 'suppliers.labels.description' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-align-left"></i>

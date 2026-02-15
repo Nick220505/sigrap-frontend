@@ -52,7 +52,7 @@ import { TextareaModule } from 'primeng/textarea';
         @let nameErrors = productForm.name().errors();
 
         <div class="flex flex-col gap-2" [class.p-invalid]="nameInvalid">
-          <label for="name" class="font-bold">Name</label>
+          <label for="name" class="font-bold">{{ 'suppliers.labels.name' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-box"></i>
@@ -79,7 +79,7 @@ import { TextareaModule } from 'primeng/textarea';
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="description" class="font-bold">Description</label>
+          <label for="description" class="font-bold">{{ 'suppliers.labels.description' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-align-left"></i>
@@ -172,7 +172,7 @@ import { TextareaModule } from 'primeng/textarea';
             productForm.stock().invalid() && productForm.stock().touched();
           @let stockErrors = productForm.stock().errors();
           <div class="flex flex-col gap-2" [class.p-invalid]="stockInvalid">
-            <label for="stock" class="font-bold">Stock</label>
+            <label for="stock" class="font-bold">{{ 'suppliers.labels.stock' | translate }}</label>
             <p-inputNumber
               id="stock"
               [ngModel]="productForm.stock().value()"
@@ -233,7 +233,7 @@ import { TextareaModule } from 'primeng/textarea';
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="category" class="font-bold">Category</label>
+          <label for="category" class="font-bold">{{ 'suppliers.labels.category' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-tag"></i>
