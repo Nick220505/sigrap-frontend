@@ -30,7 +30,7 @@ import { SalesTable } from '../sales-table/sales-table';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="New Sale"
+          [label]="'sales.sales.newSale' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -63,12 +63,12 @@ import { SalesTable } from '../sales-table/sales-table';
               [showIcon]="true"
               [maxDate]="today()"
               dateFormat="dd/mm/yy"
-              placeholder="Select date"
+              [placeholder]="'sales.sales.selectDate' | translate"
             ></p-datePicker>
           </div>
 
           <p-button
-            label="Export Sales"
+            [label]="'sales.sales.exportSales' | translate"
             icon="pi pi-file-export"
             severity="secondary"
             pTooltip="Export daily sales (will open a save dialog)"

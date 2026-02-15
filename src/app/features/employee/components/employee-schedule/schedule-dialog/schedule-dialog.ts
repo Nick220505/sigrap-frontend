@@ -62,7 +62,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
-              placeholder="Select an employee"
+              [placeholder]="'employees.schedule.selectEmployee' | translate"
               [class.ng-dirty]="userIdInvalid"
               [class.ng-invalid]="userIdInvalid"
               appendTo="body"
@@ -96,17 +96,17 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
                 (ngModelChange)="scheduleForm.day().value.set($event)"
                 [ngModelOptions]="{ standalone: true }"
                 [options]="[
-                  { label: 'Monday', value: 'Monday' },
-                  { label: 'Tuesday', value: 'Tuesday' },
-                  { label: 'Wednesday', value: 'Wednesday' },
-                  { label: 'Thursday', value: 'Thursday' },
-                  { label: 'Friday', value: 'Friday' },
-                  { label: 'Saturday', value: 'Saturday' },
-                  { label: 'Sunday', value: 'Sunday' },
+                  { label: ('employees.days.monday' | translate), value: 'Monday' },
+                  { label: ('employees.days.tuesday' | translate), value: 'Tuesday' },
+                  { label: ('employees.days.wednesday' | translate), value: 'Wednesday' },
+                  { label: ('employees.days.thursday' | translate), value: 'Thursday' },
+                  { label: ('employees.days.friday' | translate), value: 'Friday' },
+                  { label: ('employees.days.saturday' | translate), value: 'Saturday' },
+                  { label: ('employees.days.sunday' | translate), value: 'Sunday' },
                 ]"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="Select a day"
+                [placeholder]="'employees.schedule.selectDay' | translate"
                 [class.ng-dirty]="dayInvalid"
                 [class.ng-invalid]="dayInvalid"
                 appendTo="body"
@@ -138,13 +138,13 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
                 (ngModelChange)="scheduleForm.type().value.set($event)"
                 [ngModelOptions]="{ standalone: true }"
                 [options]="[
-                  { label: 'Regular', value: 'Regular' },
-                  { label: 'Overtime', value: 'Horas Extra' },
-                  { label: 'Holiday', value: 'Festivo' },
+                  { label: ('employees.shiftTypes.morning' | translate), value: 'Regular' },
+                  { label: ('employees.shiftTypes.afternoon' | translate), value: 'Horas Extra' },
+                  { label: ('employees.shiftTypes.holiday' | translate), value: 'Festivo' },
                 ]"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="Select a type"
+                [placeholder]="'employees.schedule.selectType' | translate"
                 [class.ng-dirty]="typeInvalid"
                 [class.ng-invalid]="typeInvalid"
                 appendTo="body"

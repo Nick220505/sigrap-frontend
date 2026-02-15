@@ -82,9 +82,9 @@ describe('SupplierStore', () => {
         // Mock translation keys
         const translations: Record<string, string> = {
           'messages.success.supplierCreated': 'Supplier created',
-          'messages.success.supplierCreatedDetail': `The supplier ${params?.name} has been created successfully`,
+          'messages.success.supplierCreatedDetail': `The supplier ${params?.['name']} has been created successfully`,
           'messages.success.supplierUpdated': 'Supplier updated',
-          'messages.success.supplierUpdatedDetail': `The supplier ${params?.name} has been updated successfully`,
+          'messages.success.supplierUpdatedDetail': `The supplier ${params?.['name']} has been updated successfully`,
           'messages.success.supplierDeleted': 'Supplier deleted',
           'messages.success.supplierDeletedDetail': 'The supplier has been deleted successfully',
           'messages.success.suppliersDeleted': 'Suppliers deleted',
@@ -93,7 +93,7 @@ describe('SupplierStore', () => {
           'messages.errors.supplierCreateError': 'Error creating supplier',
           'messages.errors.supplierUpdateError': 'Error updating supplier',
           'messages.errors.supplierDeleteError': 'Error deleting supplier',
-          'messages.errors.supplierDeleteErrorDetail': `Cannot delete supplier "${params?.name}" because it is being used.`,
+          'messages.errors.supplierDeleteErrorDetail': `Cannot delete supplier "${params?.['name']}" because it is being used.`,
           'messages.errors.suppliersDeleteError': 'Error deleting suppliers',
         };
         return translations[key] || key;

@@ -10,6 +10,7 @@ import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -55,14 +56,15 @@ interface ProductWithStock {
     SkeletonModule,
     ProgressBarModule,
     CurrencyPipe,
+    TranslateModule,
   ],
   template: `
     <div class="p-4">
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold">Dashboard</h1>
+        <h1 class="text-3xl font-bold">{{ 'dashboard.title' | translate }}</h1>
         <div class="flex gap-2">
           <p-button
-            label="Refresh Data"
+            [label]="'dashboard.refreshData' | translate"
             icon="pi pi-refresh"
             (onClick)="refreshData()"
             [loading]="isLoading()"
@@ -76,7 +78,7 @@ interface ProductWithStock {
             <span
               class="text-blue-600 dark:text-blue-300 text-sm font-medium mb-1"
             >
-              SALES THIS MONTH
+              {{ 'dashboard.salesThisMonth' | translate }}
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -86,8 +88,7 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ salesTrend() >= 0 ? '+' : '' }}{{ salesTrend() }}% vs last
-              month
+              {{ salesTrend() >= 0 ? '+' : '' }}{{ salesTrend() }}% {{ 'dashboard.vsLastMonth' | translate }}
             </div>
           </div>
         </p-card>
@@ -97,7 +98,7 @@ interface ProductWithStock {
             <span
               class="text-green-600 dark:text-green-300 text-sm font-medium mb-1"
             >
-              AVAILABLE PRODUCTS
+              {{ 'dashboard.availableProducts' | translate }}
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -107,7 +108,7 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ productWithLowStock() }} with low stock
+              {{ productWithLowStock() }} {{ 'dashboard.withLowStock' | translate }}
             </div>
           </div>
         </p-card>
@@ -117,7 +118,7 @@ interface ProductWithStock {
             <span
               class="text-amber-600 dark:text-amber-300 text-sm font-medium mb-1"
             >
-              PENDING ORDERS
+              {{ 'dashboard.pendingOrders' | translate }}
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -127,7 +128,7 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Value:
+              {{ 'dashboard.value' | translate }}:
               {{
                 pendingOrdersValue() | currency: undefined : undefined : '1.0-0'
               }}
@@ -140,7 +141,7 @@ interface ProductWithStock {
             <span
               class="text-indigo-600 dark:text-indigo-300 text-sm font-medium mb-1"
             >
-              ACTIVE CUSTOMERS
+              {{ 'dashboard.activeCustomers' | translate }}
             </span>
             @if (isLoading()) {
               <p-skeleton height="2.5rem" width="80%"></p-skeleton>
@@ -150,14 +151,14 @@ interface ProductWithStock {
               </span>
             }
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ newCustomers() }} new this month
+              {{ newCustomers() }} {{ 'dashboard.newThisMonth' | translate }}
             </div>
           </div>
         </p-card>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <p-card header="Sales vs Profit" styleClass="h-full">
+        <p-card [header]="'dashboard.salesVsProfit' | translate" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -173,7 +174,7 @@ interface ProductWithStock {
           }
         </p-card>
 
-        <p-card header="Top Selling Products" styleClass="h-full">
+        <p-card [header]="'dashboard.topSellingProducts' | translate" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -191,7 +192,7 @@ interface ProductWithStock {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <p-card header="Inventory Levels by Category" styleClass="h-full">
+        <p-card [header]="'dashboard.inventoryLevelsByCategory' | translate" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -207,7 +208,7 @@ interface ProductWithStock {
           }
         </p-card>
 
-        <p-card header="Sales by Customer" styleClass="h-full">
+        <p-card [header]="'reports.salesByCustomer' | translate" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -225,7 +226,7 @@ interface ProductWithStock {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <p-card header="Products with Critical Stock" styleClass="h-full">
+        <p-card [header]="'dashboard.lowStockProducts' | translate" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex flex-col gap-2 py-2">
               <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
@@ -242,10 +243,10 @@ interface ProductWithStock {
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Product</th>
-                  <th>Category</th>
-                  <th>Current Stock</th>
-                  <th>Stock Level</th>
+                  <th>{{ 'dashboard.product' | translate }}</th>
+                  <th>{{ 'dashboard.category' | translate }}</th>
+                  <th>{{ 'inventory.currentStock' | translate }}</th>
+                  <th>{{ 'inventory.stockLevel' | translate }}</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-product>
@@ -265,14 +266,14 @@ interface ProductWithStock {
               <ng-template pTemplate="emptymessage">
                 <tr>
                   <td colspan="4" class="text-center p-4">
-                    No products with critical stock.
+                    {{ 'dashboard.noCriticalStock' | translate }}
                   </td>
                 </tr>
               </ng-template>
             </p-table>
             <div class="flex justify-end mt-4">
               <p-button
-                label="View Inventory Report"
+                [label]="'dashboard.viewAll' | translate"
                 styleClass="p-button-sm p-button-outlined"
                 (onClick)="navigateToReport('inventory')"
               ></p-button>
@@ -280,7 +281,7 @@ interface ProductWithStock {
           }
         </p-card>
 
-        <p-card header="Recent Sales" styleClass="h-full">
+        <p-card [header]="'dashboard.recentSales' | translate" styleClass="h-full">
           @if (isLoading()) {
             <div class="flex flex-col gap-2 py-2">
               <p-skeleton height="2rem" styleClass="mb-2"></p-skeleton>
@@ -297,10 +298,10 @@ interface ProductWithStock {
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Date</th>
-                  <th>Customer</th>
-                  <th>Items</th>
-                  <th>Total</th>
+                  <th>{{ 'common.date' | translate }}</th>
+                  <th>{{ 'dashboard.customer' | translate }}</th>
+                  <th>{{ 'sales.items' | translate }}</th>
+                  <th>{{ 'common.total' | translate }}</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-sale>
@@ -318,13 +319,13 @@ interface ProductWithStock {
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td colspan="4" class="text-center p-4">No recent sales.</td>
+                  <td colspan="4" class="text-center p-4">{{ 'dashboard.noRecentSales' | translate }}</td>
                 </tr>
               </ng-template>
             </p-table>
             <div class="flex justify-end mt-4">
               <p-button
-                label="View Sales Report"
+                [label]="'dashboard.viewAll' | translate"
                 styleClass="p-button-sm p-button-outlined"
                 (onClick)="navigateToReport('sales')"
               ></p-button>
@@ -335,31 +336,31 @@ interface ProductWithStock {
 
       <div class="flex flex-wrap justify-center gap-4 mt-8">
         <p-button
-          label="Sales Report"
+          [label]="'nav.menu.salesReport' | translate"
           icon="pi pi-chart-line"
           (onClick)="navigateToReport('sales')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Inventory Report"
+          [label]="'nav.menu.inventoryReport' | translate"
           icon="pi pi-box"
           (onClick)="navigateToReport('inventory')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Financial Report"
+          [label]="'nav.menu.financialReport' | translate"
           icon="pi pi-dollar"
           (onClick)="navigateToReport('financial')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Employees Report"
+          [label]="'nav.menu.employeesReport' | translate"
           icon="pi pi-users"
           (onClick)="navigateToReport('employees')"
           styleClass="p-button-outlined"
         ></p-button>
         <p-button
-          label="Customers Report"
+          [label]="'nav.menu.customersReport' | translate"
           icon="pi pi-user"
           (onClick)="navigateToReport('customers')"
           styleClass="p-button-outlined"

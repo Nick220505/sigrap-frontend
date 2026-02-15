@@ -1,4 +1,4 @@
-import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DecimalPipe, LowerCasePipe, NgClass } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserInfo } from '@features/configuration/models/user.model';
@@ -9,6 +9,7 @@ import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import { TranslateModule } from '@ngx-translate/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
@@ -64,22 +65,24 @@ interface ChartTooltipContext {
     FormsModule,
     CurrencyPipe,
     DecimalPipe,
+    LowerCasePipe,
     NgClass,
     TableModule,
     SkeletonModule,
     TooltipModule,
     ToolbarModule,
+    TranslateModule,
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Employee Performance</h2>
+      <h2 class="text-2xl font-bold mb-4">{{ 'reports.employeePerformance' | translate }}</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template pTemplate="start">
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Start Date:</span
+                >{{ 'reports.from' | translate }}:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -94,7 +97,7 @@ interface ChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >End Date:</span
+                >{{ 'reports.to' | translate }}:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -112,29 +115,29 @@ interface ChartTooltipContext {
         <ng-template pTemplate="end">
           <div class="flex gap-2">
             <p-button
-              label="Export PDF"
+              [label]="'reports.exportPDF' | translate"
               icon="pi pi-file-pdf"
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
               [loading]="isExporting()"
-              pTooltip="Export report to PDF"
+              [pTooltip]="'reports.exportPDF' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Apply"
+              [label]="'common.apply' | translate"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Apply date filter"
+              [pTooltip]="'common.apply' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Clear"
+              [label]="'common.clear' | translate"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Clear all filters"
+              [pTooltip]="'common.clear' | translate"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -144,7 +147,7 @@ interface ChartTooltipContext {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Total Sales</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.totalSales' | translate }}</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -161,7 +164,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Sales Made</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.salesAmount' | translate }}</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -170,7 +173,7 @@ interface ChartTooltipContext {
               ></p-skeleton>
             } @else {
               <span class="text-3xl font-bold text-indigo-600"
-                >{{ totalSalesCount() }} sales</span
+                >{{ totalSalesCount() }} {{ 'sales.sales' | translate | lowercase }}</span
               >
             }
           </div>
@@ -178,7 +181,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Average Value</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.averageSale' | translate }}</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -195,7 +198,7 @@ interface ChartTooltipContext {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <p-card styleClass="h-full" header="Sales by Employee">
+        <p-card styleClass="h-full" [header]="'reports.salesByEmployee' | translate">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -214,7 +217,7 @@ interface ChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Performance by Employee">
+        <p-card styleClass="h-full" [header]="'reports.employeePerformance' | translate">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -234,7 +237,7 @@ interface ChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Employee Performance">
+      <p-card [header]="'reports.employeePerformance' | translate">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -255,25 +258,25 @@ interface ChartTooltipContext {
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="employee.name">
-                  Employee <p-sortIcon field="employee.name"></p-sortIcon>
+                  {{ 'employees.employeeName' | translate }} <p-sortIcon field="employee.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="salesCount">
-                  Sales <p-sortIcon field="salesCount"></p-sortIcon>
+                  {{ 'sales.sales' | translate }} <p-sortIcon field="salesCount"></p-sortIcon>
                 </th>
                 <th pSortableColumn="totalSalesAmount">
-                  Total Sales
+                  {{ 'reports.totalSales' | translate }}
                   <p-sortIcon field="totalSalesAmount"></p-sortIcon>
                 </th>
                 <th pSortableColumn="averageSaleValue">
-                  Average Value
+                  {{ 'reports.averageSale' | translate }}
                   <p-sortIcon field="averageSaleValue"></p-sortIcon>
                 </th>
                 <th pSortableColumn="scheduledHours">
-                  Scheduled Hours
+                  {{ 'employees.hoursWorked' | translate }}
                   <p-sortIcon field="scheduledHours"></p-sortIcon>
                 </th>
                 <th pSortableColumn="productivityIndex">
-                  Productivity Index
+                  {{ 'reports.employeePerformance' | translate }}
                   <p-sortIcon field="productivityIndex"></p-sortIcon>
                 </th>
               </tr>
@@ -317,7 +320,7 @@ interface ChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center p-4">
-                  No employee data available for the selected period.
+                  {{ 'common.noDataFound' | translate }}
                 </td>
               </tr>
             </ng-template>
@@ -326,12 +329,12 @@ interface ChartTooltipContext {
       </p-card>
 
       <div class="p-4" id="exportContent" style="display: none;">
-        <h2 class="text-2xl font-bold mb-4">Employee Performance</h2>
+        <h2 class="text-2xl font-bold mb-4">{{ 'reports.employeePerformance' | translate }}</h2>
 
         <div class="mb-6 border rounded-lg bg-white">
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
             <div class="flex flex-col items-center border rounded-lg p-4">
-              <h3 class="text-xl font-semibold mb-2">Total Sales</h3>
+              <h3 class="text-xl font-semibold mb-2">{{ 'reports.totalSales' | translate }}</h3>
               <span class="text-3xl font-bold text-blue-600">
                 {{
                   totalSalesAmount() | currency: undefined : undefined : '1.0-0'
@@ -340,14 +343,14 @@ interface ChartTooltipContext {
             </div>
 
             <div class="flex flex-col items-center border rounded-lg p-4">
-              <h3 class="text-xl font-semibold mb-2">Sales Made</h3>
+              <h3 class="text-xl font-semibold mb-2">{{ 'reports.salesAmount' | translate }}</h3>
               <span class="text-3xl font-bold text-indigo-600">
-                {{ totalSalesCount() }} sales
+                {{ totalSalesCount() }} {{ 'sales.sales' | translate | lowercase }}
               </span>
             </div>
 
             <div class="flex flex-col items-center border rounded-lg p-4">
-              <h3 class="text-xl font-semibold mb-2">Average Value</h3>
+              <h3 class="text-xl font-semibold mb-2">{{ 'reports.averageSale' | translate }}</h3>
               <span class="text-3xl font-bold text-green-600">
                 {{
                   averageSaleValue() | currency: undefined : undefined : '1.0-0'
@@ -358,7 +361,7 @@ interface ChartTooltipContext {
         </div>
 
         <div class="border rounded-lg bg-white p-4">
-          <h3 class="text-xl font-semibold mb-4">Employee Performance</h3>
+          <h3 class="text-xl font-semibold mb-4">{{ 'reports.employeePerformance' | translate }}</h3>
           <table
             class="w-full border-collapse"
             style="border: 1px solid #dee2e6;"
@@ -368,32 +371,32 @@ interface ChartTooltipContext {
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Employee
+                  {{ 'employees.employeeName' | translate }}
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Sales
+                  {{ 'sales.sales' | translate }}
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Total Sales
+                  {{ 'reports.totalSales' | translate }}
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Average Value
+                  {{ 'reports.averageSale' | translate }}
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Scheduled Hours
+                  {{ 'employees.hoursWorked' | translate }}
                 </th>
                 <th
                   style="border: 1px solid #dee2e6; padding: 0.75rem; text-align: left;"
                 >
-                  Productivity Index
+                  {{ 'reports.employeePerformance' | translate }}
                 </th>
               </tr>
             </thead>
@@ -451,7 +454,7 @@ interface ChartTooltipContext {
                     class="text-center p-4"
                     style="border: 1px solid #dee2e6;"
                   >
-                    No employee data available for the selected period.
+                    {{ 'common.noDataFound' | translate }}
                   </td>
                 </tr>
               }

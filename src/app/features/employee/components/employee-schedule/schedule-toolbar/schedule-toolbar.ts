@@ -15,7 +15,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
     <p-toolbar styleClass="mb-4">
       <ng-template #start>
         <p-button
-          label="New"
+          [label]="'employees.schedule.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -39,7 +39,7 @@ import { ScheduleTable } from '../schedule-table/schedule-table';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'employees.schedule.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           (onClick)="scheduleTable().dt().exportCSV()"

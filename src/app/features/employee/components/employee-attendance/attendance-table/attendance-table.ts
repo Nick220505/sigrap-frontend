@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { AttendanceInfo } from '@features/employee/models/attendance.model';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -31,6 +32,7 @@ import { TooltipModule } from 'primeng/tooltip';
     InputIconModule,
     TooltipModule,
     MessageModule,
+    TranslateModule,
   ],
   template: `
     @let columns =
@@ -84,7 +86,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Search..."
+                [placeholder]="'common.searchPlaceholder' | translate"
                 class="w-full"
               />
             </p-iconfield>
@@ -120,10 +122,10 @@ import { TooltipModule } from 'primeng/tooltip';
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Clear all filters"
+                [pTooltip]="'common.clearAllFilters' | translate"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Clear all filters"
+                [attr.aria-label]="'common.clearAllFilters' | translate"
               ></button>
             </div>
           </th>
@@ -224,7 +226,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Retry"
+                        [label]="'common.retry' | translate"
                         (onClick)="attendanceStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="attendanceStore.loading()"

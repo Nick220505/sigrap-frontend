@@ -55,7 +55,7 @@ import { TextareaModule } from 'primeng/textarea';
               pInputText
               id="name"
               [formField]="categoryForm.name"
-              placeholder="Enter category name"
+              [placeholder]="'inventory.categories.categoryNamePlaceholder' | translate"
               [class.ng-dirty]="nameInvalid"
               [class.ng-invalid]="nameInvalid"
               fluid

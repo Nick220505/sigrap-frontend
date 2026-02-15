@@ -2,6 +2,7 @@ import { DatePipe, NgClass } from '@angular/common';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { jsPDF } from 'jspdf';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -30,6 +31,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
     InputIconModule,
     MessageModule,
     IconFieldModule,
+    TranslateModule,
   ],
   template: `
     @let columns =
@@ -69,7 +71,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Search..."
+                [placeholder]="'common.searchPlaceholder' | translate"
                 class="w-full"
               />
             </p-iconfield>
@@ -150,7 +152,7 @@ import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Retry"
+                        [label]="'common.retry' | translate"
                         (onClick)="auditLogStore.findAll({})"
                         styleClass="p-button-sm"
                         [loading]="auditLogStore.loading()"

@@ -14,7 +14,7 @@ import { ProductTable } from '../product-table/product-table';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="New"
+          [label]="'inventory.products.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -37,7 +37,7 @@ import { ProductTable } from '../product-table/product-table';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'inventory.products.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           pTooltip="Export products to CSV"

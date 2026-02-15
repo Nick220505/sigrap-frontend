@@ -65,6 +65,9 @@ describe('PasswordField', () => {
         required: 'Password is required',
         pattern: 'Password must contain at least 8 characters, including uppercase, lowercase, number and special character',
       },
+      passwordField: {
+        requirementsNotMet: 'Password must meet all requirements.',
+      },
     });
     
     fixture.detectChanges();
@@ -122,7 +125,7 @@ describe('PasswordField', () => {
     const errorText = passwordFieldElement.querySelector('.text-red-500');
     expect(errorText).toBeTruthy();
     expect(errorText?.textContent?.trim()).toContain(
-      'Password must meet all requirements',
+      'Password must meet all requirements.',
     );
 
     control.setValue('StrongP@ss123');
@@ -221,7 +224,7 @@ describe('PasswordField', () => {
     const errorText = passwordFieldElement.querySelector('.text-red-500');
     expect(errorText).toBeTruthy();
     expect(errorText?.textContent?.trim()).toContain(
-      'Password must meet all requirements',
+      'Password must meet all requirements.',
     );
   });
 

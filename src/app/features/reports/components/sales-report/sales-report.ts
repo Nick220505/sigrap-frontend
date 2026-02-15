@@ -5,6 +5,7 @@ import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
@@ -86,17 +87,18 @@ interface PieChartTooltipContext {
     TooltipModule,
     SelectModule,
     ToolbarModule,
+    TranslateModule,
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Sales Trend</h2>
+      <h2 class="text-2xl font-bold mb-4">{{ 'reports.salesTrend' | translate }}</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Start Date:</span
+                >{{ 'reports.from' | translate }}:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -111,7 +113,7 @@ interface PieChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >End Date:</span
+                >{{ 'reports.to' | translate }}:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -129,7 +131,7 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
-              label="Export PDF"
+              [label]="'reports.exportPDF' | translate"
               icon="pi pi-file-pdf"
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
@@ -138,7 +140,7 @@ interface PieChartTooltipContext {
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Apply"
+              [label]="'common.apply' | translate"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
@@ -146,12 +148,12 @@ interface PieChartTooltipContext {
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Clear"
+              [label]="'common.clear' | translate"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Clear all filters"
+              [pTooltip]="'common.clearAllFilters' | translate"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -159,10 +161,14 @@ interface PieChartTooltipContext {
       </p-toolbar>
 
       <div class="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <p-card styleClass="h-full" header="Daily Sales">
+        <p-card styleClass="h-full" [header]="'reports.dailySales' | translate">
           @if (saleStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
+            </div>
+          } @else if (dailySalesChartData().labels.length === 0) {
+            <div class="flex justify-center items-center py-8 text-gray-500">
+              {{ 'common.noDataFound' | translate }}
             </div>
           } @else {
             <div
@@ -178,10 +184,14 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Weekly Sales">
+        <p-card styleClass="h-full" [header]="'reports.weeklySales' | translate">
           @if (saleStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
+            </div>
+          } @else if (weeklySalesChartData().labels.length === 0) {
+            <div class="flex justify-center items-center py-8 text-gray-500">
+              {{ 'common.noDataFound' | translate }}
             </div>
           } @else {
             <div
@@ -197,10 +207,14 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Monthly Sales">
+        <p-card styleClass="h-full" [header]="'reports.monthlySales' | translate">
           @if (saleStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
+            </div>
+          } @else if (monthlySalesChartData().labels.length === 0) {
+            <div class="flex justify-center items-center py-8 text-gray-500">
+              {{ 'common.noDataFound' | translate }}
             </div>
           } @else {
             <div
@@ -217,10 +231,14 @@ interface PieChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Sales Distribution" styleClass="mb-6">
+      <p-card [header]="'reports.salesDistribution' | translate" styleClass="mb-6">
         @if (saleStore.loading()) {
           <div class="flex justify-center py-8">
             <p-skeleton height="200px" width="100%"></p-skeleton>
+          </div>
+        } @else if (topProductsData().length === 0) {
+          <div class="flex justify-center items-center py-8 text-gray-500">
+            {{ 'common.noDataFound' | translate }}
           </div>
         } @else {
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -249,43 +267,49 @@ interface PieChartTooltipContext {
       </p-card>
 
       <div id="exportContent" style="display: none;">
-        <p-card header="Top Selling Products">
-          <p-table
-            [value]="topProductsData()"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            styleClass="p-datatable-sm p-datatable-striped"
-          >
-            <ng-template pTemplate="header">
-              <tr>
-                <th style="width: 5%">Position</th>
-                <th style="width: 40%">Product</th>
-                <th style="width: 15%">Qty. Sold</th>
-                <th style="width: 20%">Total Amount</th>
-                <th style="width: 20%">% of Total</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-product let-i="rowIndex">
-              <tr>
-                <td>
-                  <span>{{ i + 1 }}</span>
-                </td>
-                <td>{{ product.product.name }}</td>
-                <td>{{ product.quantity }}</td>
-                <td>
-                  {{
-                    product.totalAmount
-                      | currency: undefined : undefined : '1.0-0'
-                  }}
-                </td>
-                <td>
-                  {{
-                    (product.totalAmount / totalSalesAmount()) * 100
-                      | number: '1.1-1'
-                  }}%
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+        <p-card [header]="'reports.topSellingProducts' | translate">
+          @if (topProductsData().length === 0) {
+            <div class="flex justify-center items-center py-8 text-gray-500">
+              {{ 'common.noDataFound' | translate }}
+            </div>
+          } @else {
+            <p-table
+              [value]="topProductsData()"
+              [tableStyle]="{ 'min-width': '50rem' }"
+              styleClass="p-datatable-sm p-datatable-striped"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 5%">{{ 'reports.position' | translate }}</th>
+                  <th style="width: 40%">{{ 'common.name' | translate }}</th>
+                  <th style="width: 15%">{{ 'reports.qtySold' | translate }}</th>
+                  <th style="width: 20%">{{ 'reports.totalAmount' | translate }}</th>
+                  <th style="width: 20%">{{ 'reports.percentOfTotal' | translate }}</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product let-i="rowIndex">
+                <tr>
+                  <td>
+                    <span>{{ i + 1 }}</span>
+                  </td>
+                  <td>{{ product.product.name }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <td>
+                    {{
+                      product.totalAmount
+                        | currency: undefined : undefined : '1.0-0'
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      (product.totalAmount / totalSalesAmount()) * 100
+                        | number: '1.1-1'
+                    }}%
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          }
         </p-card>
       </div>
     </div>
@@ -294,6 +318,7 @@ interface PieChartTooltipContext {
 export class SalesReport implements OnInit {
   public saleStore = inject(SaleStore);
   public productStore = inject(ProductStore);
+  private translateService = inject(TranslateService);
 
   dateRange = signal<Date[]>([
     null as unknown as Date,
@@ -467,14 +492,14 @@ export class SalesReport implements OnInit {
     };
   });
 
-  dailySalesChartOptions = {
+  dailySalesChartOptions = computed(() => ({
     plugins: {
       legend: {
         display: false,
       },
       title: {
         display: true,
-        text: 'Daily Sales',
+        text: this.translateService.instant('reports.dailySales'),
         font: {
           size: 16,
         },
@@ -494,26 +519,26 @@ export class SalesReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount ($)',
+          text: this.translateService.instant('reports.amount'),
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Date',
+          text: this.translateService.instant('common.date'),
         },
       },
     },
-  };
+  }));
 
-  weeklySalesChartOptions = {
+  weeklySalesChartOptions = computed(() => ({
     plugins: {
       legend: {
         display: false,
       },
       title: {
         display: true,
-        text: 'Weekly Sales',
+        text: this.translateService.instant('reports.weeklySales'),
         font: {
           size: 16,
         },
@@ -533,26 +558,26 @@ export class SalesReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount ($)',
+          text: this.translateService.instant('reports.amount'),
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Week',
+          text: this.translateService.instant('reports.week'),
         },
       },
     },
-  };
+  }));
 
-  monthlySalesChartOptions = {
+  monthlySalesChartOptions = computed(() => ({
     plugins: {
       legend: {
         display: false,
       },
       title: {
         display: true,
-        text: 'Monthly Sales',
+        text: this.translateService.instant('reports.monthlySales'),
         font: {
           size: 16,
         },
@@ -572,26 +597,26 @@ export class SalesReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount ($)',
+          text: this.translateService.instant('reports.amount'),
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Month',
+          text: this.translateService.instant('reports.month'),
         },
       },
     },
-  };
+  }));
 
-  pieChartOptions = {
+  pieChartOptions = computed(() => ({
     plugins: {
       legend: {
         position: 'right',
       },
       title: {
         display: true,
-        text: 'Distribution by Product (Top 5)',
+        text: this.translateService.instant('reports.distributionByProduct'),
         font: {
           size: 16,
         },
@@ -613,16 +638,16 @@ export class SalesReport implements OnInit {
     },
     responsive: true,
     maintainAspectRatio: false,
-  };
+  }));
 
-  doughnutChartOptions = {
+  doughnutChartOptions = computed(() => ({
     plugins: {
       legend: {
         position: 'right',
       },
       title: {
         display: true,
-        text: 'Qty. of Products Sold',
+        text: this.translateService.instant('reports.quantityProductsSold'),
         font: {
           size: 16,
         },
@@ -644,7 +669,7 @@ export class SalesReport implements OnInit {
     },
     responsive: true,
     maintainAspectRatio: false,
-  };
+  }));
 
   ngOnInit() {
     const endDate = new Date();

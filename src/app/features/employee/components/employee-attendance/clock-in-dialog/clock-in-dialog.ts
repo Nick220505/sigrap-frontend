@@ -23,7 +23,7 @@ import { Select } from 'primeng/select';
   ],
   template: `
     <p-dialog
-      header="Clock In"
+      [header]="'employees.clockInDialog.title' | translate"
       [visible]="attendanceStore.clockInDialogVisible()"
       (visibleChange)="
         $event
@@ -41,7 +41,7 @@ import { Select } from 'primeng/select';
           clockInForm.userId().invalid() && clockInForm.userId().touched();
         @let userIdErrors = clockInForm.userId().errors();
         <div class="flex flex-col gap-2" [class.p-invalid]="userIdInvalid">
-          <label for="userId" class="font-bold">Employee</label>
+          <label for="userId" class="font-bold">{{ 'employees.clockInDialog.employeeLabel' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-user"></i>
@@ -54,7 +54,7 @@ import { Select } from 'primeng/select';
               [options]="userStore.entities()"
               optionLabel="name"
               optionValue="id"
-              placeholder="Select an employee"
+              [placeholder]="'employees.clockInDialog.employeePlaceholder' | translate"
               [class.ng-dirty]="userIdInvalid"
               [class.ng-invalid]="userIdInvalid"
               appendTo="body"
@@ -81,7 +81,7 @@ import { Select } from 'primeng/select';
           (onClick)="attendanceStore.closeClockInDialog()"
         />
         <p-button
-          label="Clock In"
+          [label]="'employees.clockInDialog.clockInButton' | translate"
           icon="pi pi-check"
           type="submit"
           (onClick)="onSubmit()"

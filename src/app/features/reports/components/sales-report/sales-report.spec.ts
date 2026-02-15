@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserRole } from '@features/configuration/models/user.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { SalesReport } from './sales-report';
 
@@ -52,7 +53,7 @@ describe('SalesReport', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SalesReport],
+      imports: [SalesReport, TranslateModule.forRoot()],
       providers: [
         provideHttpClient(),
         { provide: ProductStore, useValue: productStoreMock },

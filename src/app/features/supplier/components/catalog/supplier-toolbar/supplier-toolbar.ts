@@ -14,7 +14,7 @@ import { SupplierTable } from '../supplier-table/supplier-table';
     <p-toolbar styleClass="mb-6">
       <ng-template pTemplate="start">
         <p-button
-          label="New"
+          [label]="'suppliers.catalog.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -37,7 +37,7 @@ import { SupplierTable } from '../supplier-table/supplier-table';
 
       <ng-template pTemplate="end">
         <p-button
-          label="Export"
+          [label]="'suppliers.catalog.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           pTooltip="Export suppliers to CSV"

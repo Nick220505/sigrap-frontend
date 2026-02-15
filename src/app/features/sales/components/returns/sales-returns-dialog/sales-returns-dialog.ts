@@ -84,7 +84,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
                 [options]="saleStore.entities()"
                 optionLabel="id"
                 optionValue="id"
-                placeholder="Select Original Sale"
+                [placeholder]="'sales.returns.selectOriginalSale' | translate"
                 (onChange)="onOriginalSaleChange($event.value)"
                 [filter]="true"
                 styleClass="w-full"
@@ -153,7 +153,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
                   class="w-full"
                   [class.ng-invalid]="reasonInvalid()"
                   [class.ng-dirty]="reasonInvalid()"
-                  placeholder="Enter the detailed reason for the return..."
+                  [placeholder]="'sales.returns.returnReasonPlaceholder' | translate"
                 ></textarea>
               } @else {
                 <textarea

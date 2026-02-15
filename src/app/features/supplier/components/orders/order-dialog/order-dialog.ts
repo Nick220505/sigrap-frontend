@@ -80,7 +80,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 [options]="supplierStore.entities()"
                 optionLabel="name"
                 optionValue="id"
-                placeholder="Select a supplier"
+                [placeholder]="'suppliers.orders.selectSupplier' | translate"
                 filter
                 filterBy="name"
                 styleClass="w-full"
@@ -129,7 +129,7 @@ import { TooltipModule } from 'primeng/tooltip';
             <h3 class="font-bold text-lg m-0">Products</h3>
             @if (!viewMode()) {
               <p-button
-                label="Add Product"
+                [label]="'suppliers.orders.addProduct' | translate"
                 icon="pi pi-plus"
                 (onClick)="addItem()"
                 [disabled]="viewMode() || !productStore.entities().length"
@@ -165,7 +165,7 @@ import { TooltipModule } from 'primeng/tooltip';
                       [options]="productStore.entities()"
                       optionLabel="name"
                       optionValue="id"
-                      placeholder="Select Product"
+                      [placeholder]="'suppliers.orders.selectProduct' | translate"
                       [filter]="true"
                       filterBy="name"
                       (onChange)="onProductChange(idx, $event.value)"

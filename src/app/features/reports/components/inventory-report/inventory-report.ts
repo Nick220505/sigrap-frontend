@@ -7,6 +7,7 @@ import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -75,6 +76,7 @@ interface ChartTooltipContext {
     SelectModule,
     SelectButtonModule,
     ProgressBarModule,
+    TranslateModule,
   ],
   template: `
     <div class="p-4">
@@ -83,7 +85,7 @@ interface ChartTooltipContext {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Products in Inventory</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'inventory.products' | translate }}</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -100,7 +102,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Units in Stock</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'inventory.currentStock' | translate }}</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -117,7 +119,7 @@ interface ChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Products on Alert</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.lowStockItems' | translate }}</h3>
             @if (isLoading()) {
               <p-skeleton
                 height="2rem"
@@ -140,7 +142,7 @@ interface ChartTooltipContext {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <p-card styleClass="h-full" header="Distribution by Category">
+        <p-card styleClass="h-full" [header]="'reports.salesDistribution' | translate">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -159,7 +161,7 @@ interface ChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Stock Levels by Category">
+        <p-card styleClass="h-full" [header]="'dashboard.inventoryLevelsByCategory' | translate">
           @if (isLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -184,14 +186,14 @@ interface ChartTooltipContext {
           <div class="flex flex-wrap items-center gap-3">
             <div class="flex gap-1">
               <p-button
-                label="All"
+                [label]="'common.all' | translate"
                 [outlined]="selectedStockView() !== 'all'"
                 [raised]="selectedStockView() === 'all'"
                 (onClick)="changeView('all')"
                 styleClass="p-button-sm mr-1"
               ></p-button>
               <p-button
-                label="Low Stock"
+                [label]="'inventory.lowStock' | translate"
                 [outlined]="selectedStockView() !== 'low'"
                 [raised]="selectedStockView() === 'low'"
                 (onClick)="changeView('low')"
@@ -213,14 +215,14 @@ interface ChartTooltipContext {
             [options]="categoryOptions()"
             [ngModel]="selectedCategory()"
             (ngModelChange)="selectedCategory.set($event); filterByCategory()"
-            placeholder="All Categories"
+            [placeholder]="'inventory.categories' | translate"
             [showClear]="true"
             class="w-64"
           ></p-select>
         </ng-template>
       </p-toolbar>
 
-      <p-card header="Inventory Status by Product">
+      <p-card [header]="'reports.inventoryReport' | translate">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -241,20 +243,20 @@ interface ChartTooltipContext {
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="product.name">
-                  Product <p-sortIcon field="product.name"></p-sortIcon>
+                  {{ 'dashboard.product' | translate }} <p-sortIcon field="product.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="product.category.name">
-                  Category
+                  {{ 'dashboard.category' | translate }}
                   <p-sortIcon field="product.category.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="product.stock">
-                  Stock <p-sortIcon field="product.stock"></p-sortIcon>
+                  {{ 'dashboard.stock' | translate }} <p-sortIcon field="product.stock"></p-sortIcon>
                 </th>
-                <th style="width: 25%">Stock Level</th>
+                <th style="width: 25%">{{ 'inventory.stockLevel' | translate }}</th>
                 <th pSortableColumn="sales">
-                  Sales <p-sortIcon field="sales"></p-sortIcon>
+                  {{ 'dashboard.sales' | translate }} <p-sortIcon field="sales"></p-sortIcon>
                 </th>
-                <th>Status</th>
+                <th>{{ 'common.status' | translate }}</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product>
@@ -296,7 +298,7 @@ interface ChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center p-4">
-                  No products available in inventory.
+                  {{ 'common.noDataFound' | translate }}
                 </td>
               </tr>
             </ng-template>
@@ -304,7 +306,7 @@ interface ChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Inventory Status by Category" styleClass="mt-6">
+      <p-card [header]="'reports.inventoryReport' | translate" styleClass="mt-6">
         @if (isLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -319,19 +321,19 @@ interface ChartTooltipContext {
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="category.name">
-                  Category <p-sortIcon field="category.name"></p-sortIcon>
+                  {{ 'dashboard.category' | translate }} <p-sortIcon field="category.name"></p-sortIcon>
                 </th>
                 <th pSortableColumn="productCount">
-                  Products <p-sortIcon field="productCount"></p-sortIcon>
+                  {{ 'inventory.products' | translate }} <p-sortIcon field="productCount"></p-sortIcon>
                 </th>
                 <th pSortableColumn="totalStock">
-                  Total Stock <p-sortIcon field="totalStock"></p-sortIcon>
+                  {{ 'inventory.currentStock' | translate }} <p-sortIcon field="totalStock"></p-sortIcon>
                 </th>
                 <th pSortableColumn="averageStock">
-                  Average <p-sortIcon field="averageStock"></p-sortIcon>
+                  {{ 'reports.averageSale' | translate }} <p-sortIcon field="averageStock"></p-sortIcon>
                 </th>
                 <th pSortableColumn="lowStockCount">
-                  On Alert <p-sortIcon field="lowStockCount"></p-sortIcon>
+                  {{ 'reports.lowStockItems' | translate }} <p-sortIcon field="lowStockCount"></p-sortIcon>
                 </th>
               </tr>
             </ng-template>
@@ -363,7 +365,7 @@ interface ChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="5" class="text-center p-4">
-                  No categories available in inventory.
+                  {{ 'common.noDataFound' | translate }}
                 </td>
               </tr>
             </ng-template>
@@ -377,6 +379,7 @@ export class InventoryReport implements OnInit {
   public productStore = inject(ProductStore);
   public categoryStore = inject(CategoryStore);
   public saleStore = inject(SaleStore);
+  private translateService = inject(TranslateService);
 
   stockViewOptions = [
     { label: 'All', value: 'all', id: 1 },
@@ -495,11 +498,11 @@ export class InventoryReport implements OnInit {
   reportTitle = computed(() => {
     switch (this.selectedStockView()) {
       case 'low':
-        return 'Products with Low Stock';
+        return this.translateService.instant('dashboard.lowStockProducts');
       case 'critical':
-        return 'Products in Critical Status';
+        return this.translateService.instant('reports.inventoryReport');
       default:
-        return 'Inventory Status';
+        return this.translateService.instant('reports.inventoryReport');
     }
   });
 

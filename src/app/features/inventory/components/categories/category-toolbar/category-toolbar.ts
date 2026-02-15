@@ -14,7 +14,7 @@ import { CategoryTable } from '../category-table/category-table';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="New"
+          [label]="'inventory.categories.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -37,7 +37,7 @@ import { CategoryTable } from '../category-table/category-table';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'inventory.categories.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           pTooltip="Export categories to CSV"

@@ -7,6 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -30,6 +31,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
     MessageModule,
     FormsModule,
     DatePipe,
+    TranslateModule,
   ],
   template: `
     @let columns =
@@ -76,7 +78,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Search..."
+                [placeholder]="'common.searchPlaceholder' | translate"
                 class="w-full"
               />
             </p-iconfield>
@@ -116,10 +118,10 @@ import { UserStore } from '@features/configuration/stores/user-store';
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Clear all filters"
+                [pTooltip]="'common.clearAllFilters' | translate"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Clear all filters"
+                [attr.aria-label]="'common.clearAllFilters' | translate"
               ></button>
             </div>
           </th>
@@ -196,7 +198,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Retry"
+                        [label]="'common.retry' | translate"
                         (onClick)="userStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="userStore.loading()"

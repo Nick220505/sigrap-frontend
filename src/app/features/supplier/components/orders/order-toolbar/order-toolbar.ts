@@ -14,7 +14,7 @@ import { OrderTable } from '../order-table/order-table';
     <p-toolbar styleClass="mb-6">
       <ng-template pTemplate="start">
         <p-button
-          label="New Order"
+          [label]="'suppliers.orders.newOrder' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -37,7 +37,7 @@ import { OrderTable } from '../order-table/order-table';
 
       <ng-template pTemplate="end">
         <p-button
-          label="Export"
+          [label]="'suppliers.orders.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           pTooltip="Export orders to CSV"

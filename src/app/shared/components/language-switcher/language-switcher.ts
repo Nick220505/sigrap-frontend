@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Select, SelectChangeEvent } from 'primeng/select';
+import { TranslateModule } from '@ngx-translate/core';
 import { LanguageStore } from '../../../core/stores/language.store';
 
 @Component({
   selector: 'app-language-switcher',
-  imports: [Select, CommonModule, FormsModule],
+  imports: [Select, CommonModule, FormsModule, TranslateModule],
   template: `
     <p-select
       [options]="availableLanguages()"
@@ -15,7 +16,7 @@ import { LanguageStore } from '../../../core/stores/language.store';
       optionLabel="nativeName"
       optionValue="code"
       [style]="{ width: '150px' }"
-      placeholder="Select Language"
+      [placeholder]="'common.selectLanguage' | translate"
     />
   `,
 })

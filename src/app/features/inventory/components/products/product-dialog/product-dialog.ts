@@ -62,7 +62,7 @@ import { TextareaModule } from 'primeng/textarea';
               pInputText
               id="name"
               [formField]="productForm.name"
-              placeholder="Enter product name"
+              [placeholder]="'inventory.products.productNamePlaceholder' | translate"
               [class.ng-dirty]="nameInvalid"
               [class.ng-invalid]="nameInvalid"
               fluid
@@ -88,7 +88,7 @@ import { TextareaModule } from 'primeng/textarea';
               rows="3"
               id="description"
               [formField]="productForm.description"
-              placeholder="Enter a description (optional)"
+              [placeholder]="'inventory.products.descriptionPlaceholder' | translate"
               class="w-full"
               fluid
             ></textarea>
@@ -246,7 +246,7 @@ import { TextareaModule } from 'primeng/textarea';
               [options]="categoryStore.entities()"
               optionLabel="name"
               optionValue="id"
-              placeholder="Select a category"
+              [placeholder]="'inventory.products.selectCategory' | translate"
               filter
               filterBy="name"
               appendTo="body"

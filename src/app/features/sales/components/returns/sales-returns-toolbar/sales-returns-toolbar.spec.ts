@@ -123,7 +123,7 @@ describe('SalesReturnsToolbar', () => {
   describe('Create button', () => {
     it('should call openReturnDialog when clicked', () => {
       const createButton = fixture.debugElement.query(
-        By.css('p-button[label="New"]'),
+        By.css('p-button[icon="pi pi-plus"]'),
       );
       createButton.triggerEventHandler('onClick', null);
 
@@ -207,7 +207,7 @@ describe('SalesReturnsToolbar', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Export"]'),
+        By.css('p-button[icon="pi pi-download"]'),
       );
       expect(exportButton.componentInstance.disabled).toBe(true);
     });
@@ -217,7 +217,7 @@ describe('SalesReturnsToolbar', () => {
       fixture.detectChanges();
 
       const exportButton = fixture.debugElement.query(
-        By.css('p-button[label="Export"]'),
+        By.css('p-button[icon="pi pi-download"]'),
       );
       expect(exportButton.componentInstance.disabled).toBe(false);
     });

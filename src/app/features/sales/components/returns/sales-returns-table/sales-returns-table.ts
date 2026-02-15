@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SaleReturnInfo } from '@features/sales/models/sale-return.model';
 import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -32,6 +33,7 @@ import { TooltipModule } from 'primeng/tooltip';
     DatePipe,
     CurrencyPipe,
     MessageModule,
+    TranslateModule,
   ],
   template: `
     @let columns =
@@ -87,7 +89,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Search..."
+                [placeholder]="'sales.returns.searchPlaceholder' | translate"
                 class="w-full"
               />
             </p-iconfield>
@@ -125,10 +127,10 @@ import { TooltipModule } from 'primeng/tooltip';
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Clear all filters"
+                [pTooltip]="'common.clearAllFilters' | translate"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Clear all filters"
+                [attr.aria-label]="'common.clearAllFilters' | translate"
               ></button>
             </div>
           </th>
@@ -195,7 +197,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Retry"
+                        [label]="'common.retry' | translate"
                         (onClick)="saleReturnStore.loadAll()"
                         styleClass="p-button-sm"
                         [loading]="saleReturnStore.loading()"

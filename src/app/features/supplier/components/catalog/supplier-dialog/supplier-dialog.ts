@@ -32,7 +32,7 @@ import { TextareaModule } from 'primeng/textarea';
       (visibleChange)="supplierStore.closeSupplierDialog()"
       [style]="{ width: '90vw', maxWidth: '800px' }"
       [header]="
-        supplierStore.selectedSupplier() ? 'Edit Supplier' : 'New Supplier'
+        supplierStore.selectedSupplier() ? ('suppliers.editSupplier' | translate) : ('suppliers.createSupplier' | translate)
       "
       modal
     >
@@ -58,7 +58,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   [formField]="supplierForm.name"
-                  placeholder="Supplier name"
+                  [placeholder]="'suppliers.catalog.supplierNamePlaceholder' | translate"
                   [class.ng-dirty]="nameInvalid"
                   [class.ng-invalid]="nameInvalid"
                   fluid
@@ -85,7 +85,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="address"
                   [formField]="supplierForm.address"
                   [rows]="2"
-                  placeholder="Full address"
+                  [placeholder]="'suppliers.catalog.addressPlaceholder' | translate"
                   class="w-full"
                 ></textarea>
               </p-inputgroup>
@@ -109,7 +109,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   [formField]="supplierForm.contactPerson"
-                  placeholder="Contact name"
+                  [placeholder]="'suppliers.catalog.contactNamePlaceholder' | translate"
                   fluid
                 />
               </p-inputgroup>
@@ -132,7 +132,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="email"
                   pInputText
                   [formField]="supplierForm.email"
-                  placeholder="email@example.com"
+                  [placeholder]="'suppliers.catalog.emailPlaceholder' | translate"
                   [class.ng-dirty]="emailInvalid"
                   [class.ng-invalid]="emailInvalid"
                   fluid
@@ -160,7 +160,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   [formField]="supplierForm.phone"
-                  placeholder="Phone number"
+                  [placeholder]="'suppliers.catalog.phonePlaceholder' | translate"
                   fluid
                 />
               </p-inputgroup>
@@ -181,7 +181,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   [formField]="supplierForm.alternativePhone"
-                  placeholder="Alternative phone"
+                  [placeholder]="'suppliers.catalog.alternativePhonePlaceholder' | translate"
                   fluid
                 />
               </p-inputgroup>
@@ -200,7 +200,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   [formField]="supplierForm.website"
-                  placeholder="www.example.com"
+                  [placeholder]="'suppliers.catalog.websitePlaceholder' | translate"
                   fluid
                 />
               </p-inputgroup>
@@ -223,7 +223,7 @@ import { TextareaModule } from 'primeng/textarea';
                   id="productsProvided"
                   [formField]="supplierForm.productsProvided"
                   [rows]="2"
-                  placeholder="Describe the products or services offered"
+                  [placeholder]="'suppliers.catalog.productsProvidedPlaceholder' | translate"
                   class="w-full"
                 ></textarea>
               </p-inputgroup>
@@ -242,7 +242,7 @@ import { TextareaModule } from 'primeng/textarea';
                   type="text"
                   pInputText
                   [formField]="supplierForm.paymentTerms"
-                  placeholder="Payment terms"
+                  [placeholder]="'suppliers.catalog.paymentTermsLabel' | translate"
                   fluid
                 />
               </p-inputgroup>
@@ -266,7 +266,7 @@ import { TextareaModule } from 'primeng/textarea';
                   [showButtons]="true"
                   [min]="1"
                   buttonLayout="horizontal"
-                  placeholder="Days"
+                  [placeholder]="'suppliers.catalog.daysLabel' | translate"
                   styleClass="w-full"
                 />
               </p-inputgroup>

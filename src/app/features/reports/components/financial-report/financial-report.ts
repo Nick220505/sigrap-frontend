@@ -7,6 +7,7 @@ import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.model';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
+import { TranslateModule } from '@ngx-translate/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
@@ -81,18 +82,17 @@ interface PieChartTooltipContext {
     SkeletonModule,
     TooltipModule,
     ToolbarModule,
+    TranslateModule,
   ],
   template: `
     <div class="p-4" id="reportContent">
-      <h2 class="text-2xl font-bold mb-4">Financial Reports</h2>
+      <h2 class="text-2xl font-bold mb-4">{{ 'reports.financialReports' | translate }}</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
-              <span class="font-medium text-sm whitespace-nowrap"
-                >Start Date:</span
-              >
+              <span class="font-medium text-sm whitespace-nowrap">{{ 'reports.from' | translate }}:</span>
               <p-datePicker
                 [ngModel]="dateRange()[0]"
                 [showIcon]="true"
@@ -105,9 +105,7 @@ interface PieChartTooltipContext {
             </div>
 
             <div class="flex items-center gap-2">
-              <span class="font-medium text-sm whitespace-nowrap"
-                >End Date:</span
-              >
+              <span class="font-medium text-sm whitespace-nowrap">{{ 'reports.to' | translate }}:</span>
               <p-datePicker
                 [ngModel]="dateRange()[1]"
                 [showIcon]="true"
@@ -124,29 +122,29 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
-              label="Export PDF"
+              [label]="'reports.exportPDF' | translate"
               icon="pi pi-file-pdf"
               styleClass="p-button-help"
               (onClick)="exportToPDF()"
               [loading]="isExporting()"
-              pTooltip="Export report to PDF"
+              [pTooltip]="'reports.exportPDF' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Apply"
+              [label]="'common.apply' | translate"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Apply date filter"
+              [pTooltip]="'common.apply' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Clear"
+              [label]="'common.clear' | translate"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Clear all filters"
+              [pTooltip]="'common.clear' | translate"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -156,7 +154,7 @@ interface PieChartTooltipContext {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Total Revenue</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.totalRevenue' | translate }}</h3>
             @if (isDataLoading()) {
               <p-skeleton
                 height="2rem"
@@ -173,7 +171,7 @@ interface PieChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Total Expenses</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.expenses' | translate }}</h3>
             @if (isDataLoading()) {
               <p-skeleton
                 height="2rem"
@@ -190,7 +188,7 @@ interface PieChartTooltipContext {
 
         <p-card styleClass="h-full">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Profit</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.netProfit' | translate }}</h3>
             @if (isDataLoading()) {
               <p-skeleton
                 height="2rem"
@@ -224,7 +222,7 @@ interface PieChartTooltipContext {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <p-card styleClass="h-full" header="Monthly Profit Trend">
+        <p-card styleClass="h-full" [header]="'reports.monthlyProfitTrend' | translate">
           @if (isDataLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -243,7 +241,7 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Revenue and Expenses Comparison">
+        <p-card styleClass="h-full" [header]="'reports.revenueExpensesComparison' | translate">
           @if (isDataLoading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -263,7 +261,7 @@ interface PieChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Financial Distribution" styleClass="mb-6">
+      <p-card [header]="'reports.financialDistribution' | translate" styleClass="mb-6">
         @if (isDataLoading()) {
           <div class="flex justify-center py-8">
             <p-skeleton height="300px" width="100%"></p-skeleton>
@@ -282,7 +280,7 @@ interface PieChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Financial Summary by Period">
+      <p-card [header]="'reports.financialDistribution' | translate">
         @if (isDataLoading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -300,12 +298,12 @@ interface PieChartTooltipContext {
           >
             <ng-template pTemplate="header">
               <tr>
-                <th>Period</th>
-                <th>Revenue</th>
-                <th>Expenses</th>
-                <th>Returns</th>
-                <th>Profit</th>
-                <th>Profit Margin</th>
+                <th>{{ 'reports.period' | translate }}</th>
+                <th>{{ 'reports.totalRevenue' | translate }}</th>
+                <th>{{ 'reports.expenses' | translate }}</th>
+                <th>{{ 'reports.returns' | translate }}</th>
+                <th>{{ 'dashboard.profit' | translate }}</th>
+                <th>{{ 'reports.profitMargin' | translate }}</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-summary>
@@ -351,7 +349,7 @@ interface PieChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center p-4">
-                  No financial data available for the selected period.
+                  {{ 'common.noDataFound' | translate }}
                 </td>
               </tr>
             </ng-template>
@@ -362,12 +360,12 @@ interface PieChartTooltipContext {
 
     <!-- Hidden container for PDF export -->
     <div class="p-4" id="exportContent" style="display: none;">
-      <h2 class="text-2xl font-bold mb-4">Financial Report</h2>
+      <h2 class="text-2xl font-bold mb-4">{{ 'reports.financialReports' | translate }}</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div class="p-4 border rounded-lg bg-white">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Ingresos Totales</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.totalRevenue' | translate }}</h3>
             <span class="text-3xl font-bold text-green-600">{{
               totalRevenue() | currency: undefined : undefined : '1.0-0'
             }}</span>
@@ -376,7 +374,7 @@ interface PieChartTooltipContext {
 
         <div class="p-4 border rounded-lg bg-white">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Total Expenses</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.expenses' | translate }}</h3>
             <span class="text-3xl font-bold text-red-600">{{
               totalExpenses() | currency: undefined : undefined : '1.0-0'
             }}</span>
@@ -385,7 +383,7 @@ interface PieChartTooltipContext {
 
         <div class="p-4 border rounded-lg bg-white">
           <div class="flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-2">Profit</h3>
+            <h3 class="text-xl font-semibold mb-2">{{ 'reports.netProfit' | translate }}</h3>
             <span
               class="text-3xl font-bold"
               [ngClass]="{
@@ -411,16 +409,16 @@ interface PieChartTooltipContext {
       </div>
 
       <div class="mt-6 p-4 border rounded-lg bg-white">
-        <h3 class="text-xl font-semibold mb-4">Financial Summary by Period</h3>
+        <h3 class="text-xl font-semibold mb-4">{{ 'reports.financialDistribution' | translate }}</h3>
         <table class="w-full">
           <thead>
             <tr class="border-b">
-              <th class="p-2 text-left">Period</th>
-              <th class="p-2 text-right">Revenue</th>
-              <th class="p-2 text-right">Expenses</th>
-              <th class="p-2 text-right">Returns</th>
-              <th class="p-2 text-right">Profit</th>
-              <th class="p-2 text-right">Profit Margin</th>
+              <th class="p-2 text-left">{{ 'reports.period' | translate }}</th>
+              <th class="p-2 text-right">{{ 'reports.totalRevenue' | translate }}</th>
+              <th class="p-2 text-right">{{ 'reports.expenses' | translate }}</th>
+              <th class="p-2 text-right">{{ 'reports.returns' | translate }}</th>
+              <th class="p-2 text-right">{{ 'dashboard.profit' | translate }}</th>
+              <th class="p-2 text-right">{{ 'reports.profitMargin' | translate }}</th>
             </tr>
           </thead>
           <tbody>

@@ -15,7 +15,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
     <p-toolbar styleClass="mb-6">
       <ng-template #start>
         <p-button
-          label="New"
+          [label]="'sales.returns.newButton' | translate"
           icon="pi pi-plus"
           outlined
           class="mr-2"
@@ -38,7 +38,7 @@ import { SalesReturnsTable } from '../sales-returns-table/sales-returns-table';
 
       <ng-template #end>
         <p-button
-          label="Export"
+          [label]="'sales.returns.exportButton' | translate"
           icon="pi pi-download"
           severity="secondary"
           pTooltip="Export returns to CSV"

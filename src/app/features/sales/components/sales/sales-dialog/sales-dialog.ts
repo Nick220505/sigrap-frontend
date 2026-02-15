@@ -70,7 +70,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 [options]="this.customerStore.entities()"
                 optionLabel="fullName"
                 optionValue="id"
-                placeholder="Select Customer"
+                [placeholder]="'sales.sales.selectCustomer' | translate"
                 [filter]="true"
                 filterBy="fullName"
                 styleClass="w-full"
@@ -94,7 +94,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 [options]="this.userStore.entities()"
                 optionLabel="name"
                 optionValue="id"
-                placeholder="Select Employee"
+                [placeholder]="'sales.sales.selectEmployee' | translate"
                 [filter]="true"
                 filterBy="name"
                 styleClass="w-full"
@@ -110,7 +110,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
             <h3 class="font-bold text-lg m-0">Products</h3>
             @if (!viewMode()) {
               <p-button
-                label="Add Product"
+                [label]="'sales.sales.addProduct' | translate"
                 icon="pi pi-plus"
                 (click)="addItem()"
                 [disabled]="viewMode()"
@@ -148,7 +148,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                       [options]="this.productStore.entities()"
                       optionLabel="name"
                       optionValue="id"
-                      placeholder="Select Product"
+                      [placeholder]="'sales.sales.selectProduct' | translate"
                       [filter]="true"
                       filterBy="name"
                       (onChange)="onProductChange(idx, $event.value)"

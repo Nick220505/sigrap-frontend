@@ -26,7 +26,7 @@ import { PasswordModule } from 'primeng/password';
       >
         @if (feedback()) {
           <ng-template pTemplate="header">
-            <div class="font-semibold text-xm mb-4">Choose a password</div>
+            <div class="font-semibold text-xm mb-4">{{ 'passwordField.choosePassword' | translate }}</div>
           </ng-template>
           <ng-template pTemplate="footer">
             <p-divider />
@@ -39,7 +39,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasMinLength(),
                   }"
                 ></i>
-                Minimum 8 characters
+                {{ 'passwordField.minLength' | translate }}
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -49,7 +49,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasLowercase(),
                   }"
                 ></i>
-                At least one lowercase letter
+                {{ 'passwordField.lowercase' | translate }}
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -59,7 +59,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasUppercase(),
                   }"
                 ></i>
-                At least one uppercase letter
+                {{ 'passwordField.uppercase' | translate }}
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -69,7 +69,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasNumber(),
                   }"
                 ></i>
-                At least one number
+                {{ 'passwordField.number' | translate }}
               </li>
               <li class="flex items-center gap-2">
                 <i
@@ -79,7 +79,7 @@ import { PasswordModule } from 'primeng/password';
                     'pi-times-circle text-gray-400': !hasSpecialChar(),
                   }"
                 ></i>
-                At least one special character
+                {{ 'passwordField.specialChar' | translate }}
               </li>
             </ul>
           </ng-template>
@@ -91,7 +91,7 @@ import { PasswordModule } from 'primeng/password';
           @if (control().hasError('required')) {
             {{ 'validation.required' | translate: { field: 'Password' } }}
           } @else if (control().hasError('pattern')) {
-            Password must meet all requirements.
+            {{ 'passwordField.requirementsNotMet' | translate }}
           }
         </small>
       }

@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CategoryStore } from '@features/inventory/stores/category-store';
 import { ProductStore } from '@features/inventory/stores/product-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import { TranslateModule } from '@ngx-translate/core';
 import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
@@ -49,7 +50,7 @@ describe('InventoryReport', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [InventoryReport],
+      imports: [InventoryReport, TranslateModule.forRoot()],
       providers: [
         providePrimeNG({
           theme: {
@@ -83,7 +84,8 @@ describe('InventoryReport', () => {
   it('should display the inventory report title', () => {
     const titleElement = fixture.debugElement.query(By.css('h2'));
     expect(titleElement).toBeTruthy();
-    expect(titleElement.nativeElement.textContent).toBe('Inventory Status');
+    // When using TranslateModule without translation files, it returns the key
+    expect(titleElement.nativeElement.textContent).toContain('reports.inventoryReport');
   });
 
   it('should display cards with inventory statistics', () => {

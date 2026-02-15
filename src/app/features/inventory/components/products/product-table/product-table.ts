@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ProductInfo } from '@features/inventory/models/product.model';
 import { ProductStore } from '@features/inventory/stores/product-store';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -30,6 +31,7 @@ import { TooltipModule } from 'primeng/tooltip';
     MessageModule,
     FormsModule,
     CurrencyPipe,
+    TranslateModule,
   ],
   template: `
     @let columns =
@@ -77,7 +79,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Search..."
+                [placeholder]="'inventory.products.searchPlaceholder' | translate"
                 class="w-full"
               />
             </p-iconfield>
@@ -117,10 +119,10 @@ import { TooltipModule } from 'primeng/tooltip';
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Clear all filters"
+                [pTooltip]="'common.clearAllFilters' | translate"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Clear all filters"
+                [attr.aria-label]="'common.clearAllFilters' | translate"
               ></button>
             </div>
           </th>
@@ -194,7 +196,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Retry"
+                        [label]="'common.retry' | translate"
                         (onClick)="productStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="productStore.loading()"

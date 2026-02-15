@@ -5,6 +5,7 @@ import { CustomerInfo } from '@features/customer/models/customer.model';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale-store';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -65,17 +66,18 @@ interface PieChartTooltipContext {
     TooltipModule,
     SelectModule,
     ToolbarModule,
+    TranslateModule,
   ],
   template: `
     <div class="p-4">
-      <h2 class="text-2xl font-bold mb-4">Frequent Customer Ranking</h2>
+      <h2 class="text-2xl font-bold mb-4">{{ 'reports.frequentCustomerRanking' | translate }}</h2>
 
       <p-toolbar styleClass="mb-6">
         <ng-template #start>
           <div class="flex flex-wrap items-center gap-3 mr-3">
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >Start Date:</span
+                >{{ 'reports.from' | translate }}:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[0]"
@@ -90,7 +92,7 @@ interface PieChartTooltipContext {
 
             <div class="flex items-center gap-2">
               <span class="font-medium text-sm whitespace-nowrap"
-                >End Date:</span
+                >{{ 'reports.to' | translate }}:</span
               >
               <p-datePicker
                 [ngModel]="dateRange()[1]"
@@ -104,7 +106,7 @@ interface PieChartTooltipContext {
             </div>
 
             <div class="flex items-center gap-2 ml-3">
-              <span class="font-medium text-sm whitespace-nowrap">Show:</span>
+              <span class="font-medium text-sm whitespace-nowrap">{{ 'common.select' | translate }}:</span>
               <p-select
                 [options]="limitOptions"
                 [ngModel]="customerLimitSignal()"
@@ -120,20 +122,20 @@ interface PieChartTooltipContext {
         <ng-template #end>
           <div class="flex gap-2">
             <p-button
-              label="Apply"
+              [label]="'common.apply' | translate"
               icon="pi pi-filter"
               (onClick)="applyDateFilter()"
               [disabled]="!(dateRange()[0] && dateRange()[1])"
-              pTooltip="Apply date filter"
+              [pTooltip]="'common.filter' | translate"
               tooltipPosition="top"
             ></p-button>
             <p-button
-              label="Clear"
+              [label]="'common.clear' | translate"
               icon="pi pi-times"
               styleClass="p-button-outlined p-button-secondary"
               (onClick)="clearFilters()"
               [disabled]="!(dateRange()[0] || dateRange()[1])"
-              pTooltip="Clear all filters"
+              [pTooltip]="'common.clear' | translate"
               tooltipPosition="top"
             ></p-button>
           </div>
@@ -141,7 +143,7 @@ interface PieChartTooltipContext {
       </p-toolbar>
 
       <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <p-card styleClass="h-full" header="Total Sales by Customer">
+        <p-card styleClass="h-full" [header]="'reports.salesByCustomer' | translate">
           @if (saleStore.loading() || customerStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -160,7 +162,7 @@ interface PieChartTooltipContext {
           }
         </p-card>
 
-        <p-card styleClass="h-full" header="Purchase Frequency by Customer">
+        <p-card styleClass="h-full" [header]="'reports.topCustomers' | translate">
           @if (saleStore.loading() || customerStore.loading()) {
             <div class="flex justify-center py-8">
               <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -180,7 +182,7 @@ interface PieChartTooltipContext {
         </p-card>
       </div>
 
-      <p-card header="Sales Distribution" styleClass="mb-6">
+      <p-card [header]="'reports.salesDistribution' | translate" styleClass="mb-6">
         @if (saleStore.loading() || customerStore.loading()) {
           <div class="flex justify-center py-8">
             <p-skeleton height="200px" width="100%"></p-skeleton>
@@ -211,7 +213,7 @@ interface PieChartTooltipContext {
         }
       </p-card>
 
-      <p-card header="Customer Ranking">
+      <p-card [header]="'reports.topCustomers' | translate">
         @if (saleStore.loading() || customerStore.loading()) {
           <div class="flex flex-col gap-3 py-3">
             <p-skeleton height="2.5rem" styleClass="mb-2"></p-skeleton>
@@ -230,11 +232,11 @@ interface PieChartTooltipContext {
           >
             <ng-template pTemplate="header">
               <tr>
-                <th style="width: 5%">Position</th>
-                <th style="width: 30%">Customer</th>
-                <th style="width: 25%">Total Purchases</th>
-                <th style="width: 25%">Total Amount</th>
-                <th style="width: 15%">Last Purchase</th>
+                <th style="width: 5%">{{ 'reports.position' | translate }}</th>
+                <th style="width: 30%">{{ 'customers.customerName' | translate }}</th>
+                <th style="width: 25%">{{ 'customers.totalPurchases' | translate }}</th>
+                <th style="width: 25%">{{ 'reports.totalAmount' | translate }}</th>
+                <th style="width: 15%">{{ 'customers.lastPurchase' | translate }}</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-customer let-i="rowIndex">
@@ -271,7 +273,7 @@ interface PieChartTooltipContext {
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="5" class="text-center p-4">
-                  No customers with purchases found for the selected period.
+                  {{ 'common.noDataFound' | translate }}
                 </td>
               </tr>
             </ng-template>

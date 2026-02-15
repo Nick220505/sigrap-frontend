@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -34,6 +35,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
     FormsModule,
     DatePipe,
     CurrencyPipe,
+    TranslateModule,
   ],
   providers: [DatePipe, CurrencyPipe],
   template: `
@@ -89,7 +91,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 [(ngModel)]="searchValue"
-                placeholder="Search..."
+                [placeholder]="'common.searchPlaceholder' | translate"
                 class="w-full"
               />
             </p-iconfield>
@@ -129,10 +131,10 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                 pButton
                 icon="pi pi-filter-slash"
                 class="p-button-rounded p-button-text p-button-secondary"
-                pTooltip="Clear all filters"
+                [pTooltip]="'common.clearAllFilters' | translate"
                 tooltipPosition="top"
                 (click)="clearAllFilters()"
-                aria-label="Clear all filters"
+                [attr.aria-label]="'common.clearAllFilters' | translate"
               ></button>
             </div>
           </th>
@@ -235,7 +237,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button
-                        label="Retry"
+                        [label]="'common.retry' | translate"
                         (onClick)="saleStore.findAll()"
                         styleClass="p-button-sm"
                         [loading]="saleStore.loading()"
