@@ -13,15 +13,6 @@ import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
 
-// HttpLoaderFactory: Configures the translation file loader
-// In ngx-translate v17+, we use provideTranslateHttpLoader instead of the traditional factory pattern
-export function HttpLoaderFactory() {
-  return provideTranslateHttpLoader({
-    prefix: './assets/i18n/',
-    suffix: '.json'
-  });
-}
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(
@@ -48,7 +39,10 @@ export const appConfig: ApplicationConfig = {
     provideTranslateService({
       defaultLanguage: 'en',
       fallbackLang: 'en',
-      loader: HttpLoaderFactory()
+      loader: provideTranslateHttpLoader({
+        prefix: './assets/i18n/',
+        suffix: '.json'
+      })
     }),
     MessageService,
     ConfirmationService,
