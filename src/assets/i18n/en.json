@@ -1065,6 +1065,12 @@
       "sessionClosed": "Session Closed",
       "sessionClosedDetail": "You have successfully logged out"
     },
+    "warnings": {
+      "invalidForm": "Warning",
+      "invalidFormDetail": "Invalid form. Please check the fields.",
+      "noValidSale": "Warning",
+      "noValidSaleDetail": "No valid original sale selected."
+    },
     "errors": {
       "generic": "An error occurred. Please try again.",
       "network": "Network error. Please check your connection.",

@@ -553,8 +553,8 @@ export class SalesReturnsDialog {
     if (!this.selectedOriginalSale()) {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error',
-        detail: 'No valid original sale selected.',
+        summary: this.translateService.instant('messages.errors.error'),
+        detail: this.translateService.instant('messages.warnings.noValidSaleDetail'),
       });
       return;
     }
@@ -562,8 +562,8 @@ export class SalesReturnsDialog {
     if (formValue.originalSaleId == null || formValue.employeeId == null) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Warning',
-        detail: 'Invalid form. Please check the fields.',
+        summary: this.translateService.instant('messages.warnings.invalidForm'),
+        detail: this.translateService.instant('messages.warnings.invalidFormDetail'),
       });
       return;
     }

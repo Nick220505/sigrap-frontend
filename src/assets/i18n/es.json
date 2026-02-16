@@ -1065,6 +1065,12 @@
       "sessionClosed": "Sesión Cerrada",
       "sessionClosedDetail": "Ha cerrado sesión exitosamente"
     },
+    "warnings": {
+      "invalidForm": "Advertencia",
+      "invalidFormDetail": "Formulario inválido. Por favor verifique los campos.",
+      "noValidSale": "Advertencia",
+      "noValidSaleDetail": "No se ha seleccionado una venta original válida."
+    },
     "errors": {
       "generic": "Ocurrió un error. Por favor intente nuevamente.",
       "network": "Error de red. Por favor verifique su conexión.",
