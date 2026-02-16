@@ -434,7 +434,7 @@ describe('ProductTable', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('Delete product');
+      expect(confirmOptions.header).toBe('common.confirmations.deleteHeader');
       expect(confirmOptions.message).toBe(
         'Are you sure you want to delete the product <b>Product 1</b>?',
       );

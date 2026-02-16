@@ -176,7 +176,7 @@ describe('SalesReturnsToolbar', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('Delete returns');
+      expect(confirmOptions.header).toBe('common.confirmations.deleteHeaderPlural');
       expect(confirmOptions.message).toContain('the 1 selected returns');
       expect(confirmOptions.message).toContain(
         `<b>Return #${mockSaleReturn.id}</b>`,

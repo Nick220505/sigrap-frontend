@@ -164,8 +164,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Category created',
-        detail: 'Category New Category has been created successfully',
+        summary: 'messages.success.categoryCreated',
+        detail: 'messages.success.categoryCreatedDetail',
       }),
     );
   });
@@ -213,8 +213,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Category updated',
-        detail: 'Category Updated Category 1 has been updated successfully',
+        summary: 'messages.success.categoryUpdated',
+        detail: 'messages.success.categoryUpdatedDetail',
       }),
     );
   });
@@ -240,8 +240,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Category deleted',
-        detail: 'The category has been deleted successfully',
+        summary: 'messages.success.categoryDeleted',
+        detail: 'messages.success.categoryDeletedDetail',
       }),
     );
   });
@@ -277,8 +277,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Categories deleted',
-        detail: 'The selected categories have been deleted successfully',
+        summary: 'messages.success.categoriesDeleted',
+        detail: 'messages.success.categoriesDeletedDetail',
       }),
     );
   });
@@ -307,8 +307,8 @@ describe('Categories Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error creating category',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryCreateError',
       }),
     );
 

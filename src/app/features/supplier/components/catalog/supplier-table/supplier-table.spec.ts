@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SupplierInfo } from '@features/supplier/models/supplier.model';
 import { SupplierStore } from '@features/supplier/stores/supplier-store';
 import { ConfirmationService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { SupplierTable } from './supplier-table';
 
 describe('SupplierTable', () => {
@@ -68,7 +69,7 @@ describe('SupplierTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SupplierTable, FormsModule],
+      imports: [SupplierTable, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: SupplierStore, useValue: supplierStore },
         { provide: ConfirmationService, useValue: confirmationService },
@@ -162,7 +163,7 @@ describe('SupplierTable', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('Delete supplier');
+      expect(confirmOptions.header).toBe('common.confirmations.deleteHeader');
       expect(confirmOptions.message).toBe(
         'Are you sure you want to delete the supplier <b>Supplier 1</b>?',
       );

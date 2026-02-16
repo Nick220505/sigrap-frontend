@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuditLogStore } from '@features/configuration/stores/audit-log-store';
 import { Audit } from './audit';
 
@@ -11,7 +12,7 @@ describe('Audit', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Audit],
+      imports: [Audit, TranslateModule.forRoot()],
       providers: [provideHttpClient(), MessageService, AuditLogStore],
     })
       .overrideComponent(Audit, { set: { template: '' } })

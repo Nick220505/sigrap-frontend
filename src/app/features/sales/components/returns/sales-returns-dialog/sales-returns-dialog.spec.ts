@@ -256,7 +256,7 @@ describe('SalesReturnsDialog', () => {
       const dialogHeader = fixture.debugElement.query(
         By.css('.p-dialog-title'),
       );
-      expect(dialogHeader.nativeElement.textContent.trim()).toBe('New Return');
+      expect(dialogHeader.nativeElement.textContent.trim()).toBe('sales.newReturn');
     });
 
     it('should have "Return Details" header when a return is selected', () => {
@@ -270,7 +270,7 @@ describe('SalesReturnsDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Return Details',
+        'sales.returnDetails',
       );
     });
   });
@@ -509,7 +509,7 @@ describe('SalesReturnsDialog', () => {
       expect(messageService.add).toHaveBeenCalledWith(
         expect.objectContaining({
           severity: 'warn',
-          summary: 'Warning',
+          summary: 'messages.warnings.noItemsToReturn',
         }),
       );
       expect(saleReturnStore.create).not.toHaveBeenCalled();

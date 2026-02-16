@@ -335,7 +335,7 @@ describe('CategoryTable', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('Delete category');
+      expect(confirmOptions.header).toBe('common.confirmations.deleteHeader');
       expect(confirmOptions.message).toContain(categoryToDelete.name);
     });
 

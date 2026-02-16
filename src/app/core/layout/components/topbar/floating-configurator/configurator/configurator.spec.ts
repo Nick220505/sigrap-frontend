@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { LayoutService } from '@core/layout/services/layout';
+import { TranslateModule } from '@ngx-translate/core';
 import { Configurator } from './configurator';
 
 type PaletteType = Record<string, string>;
@@ -41,7 +42,7 @@ describe('Configurator', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [Configurator, FormsModule],
+      imports: [Configurator, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: LayoutService, useValue: layoutServiceSpy },
         { provide: Router, useValue: routerSpy },
@@ -109,7 +110,7 @@ describe('Configurator', () => {
       };
 
       const fixture2 = TestBed.configureTestingModule({
-        imports: [Configurator],
+        imports: [Configurator, TranslateModule.forRoot()],
         providers: [
           { provide: Router, useValue: authRouterSpy },
           { provide: LayoutService, useValue: layoutServiceMock },

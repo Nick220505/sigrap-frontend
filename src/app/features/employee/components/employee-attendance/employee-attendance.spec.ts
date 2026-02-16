@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { EmployeeAttendance } from './employee-attendance';
 
 describe('EmployeeAttendance', () => {
@@ -11,7 +12,7 @@ describe('EmployeeAttendance', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmployeeAttendance],
+      imports: [EmployeeAttendance, TranslateModule.forRoot()],
       providers: [
         provideHttpClient(),
         MessageService,

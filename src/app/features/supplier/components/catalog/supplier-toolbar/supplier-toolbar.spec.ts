@@ -146,7 +146,7 @@ describe('SupplierToolbar', () => {
         accept?: () => void;
       };
 
-      expect(confirmOptions.header).toBe('Delete suppliers');
+      expect(confirmOptions.header).toBe('common.confirmations.deleteHeaderPlural');
       expect(confirmOptions.message).toContain(
         'Are you sure you want to delete the 1 selected suppliers?',
       );

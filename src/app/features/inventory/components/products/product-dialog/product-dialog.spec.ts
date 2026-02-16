@@ -217,7 +217,7 @@ describe('ProductDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Create Product',
+        'common.dialogs.createProduct',
       );
     });
 
@@ -239,7 +239,7 @@ describe('ProductDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Edit Product',
+        'common.dialogs.editProduct',
       );
     });
 

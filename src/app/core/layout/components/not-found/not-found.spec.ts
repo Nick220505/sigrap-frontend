@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule, provideRouter } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { FloatingConfigurator } from '../topbar/floating-configurator/floating-configurator';
 import { NotFound } from './not-found';
@@ -13,7 +14,7 @@ describe('NotFound', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotFound, RouterModule, ButtonModule],
+      imports: [NotFound, RouterModule, ButtonModule, TranslateModule.forRoot()],
       providers: [provideRouter([])],
     })
       .overrideComponent(FloatingConfigurator, { set: { template: '' } })
@@ -40,7 +41,7 @@ describe('NotFound', () => {
     it('should display page not found heading', () => {
       const heading = fixture.debugElement.query(By.css('h1'));
       expect(heading).toBeTruthy();
-      expect(heading.nativeElement.textContent.trim()).toBe('Page not found');
+      expect(heading.nativeElement.textContent.trim()).toBe('notFound.title');
     });
 
     it('should display error description message', () => {
@@ -49,12 +50,12 @@ describe('NotFound', () => {
       );
       expect(description).toBeTruthy();
       expect(description.nativeElement.textContent.trim()).toContain(
-        'The requested resource does not exist',
+        'notFound.description',
       );
     });
 
     it('should display SIGRAP logo', () => {
-      const logo = fixture.debugElement.query(By.css('img[alt="SIGRAP Logo"]'));
+      const logo = fixture.debugElement.query(By.css('img'));
       expect(logo).toBeTruthy();
       expect(logo.nativeElement.src).toContain('logo.png');
     });
@@ -71,7 +72,7 @@ describe('NotFound', () => {
         By.css('.text-surface-900.dark\\:text-surface-0'),
       );
       expect(linkTitle.nativeElement.textContent.trim()).toBe(
-        'General Inventory',
+        'notFound.generalInventory',
       );
 
       const linkIcon = inventoryLink.query(By.css('.pi-database'));
@@ -88,7 +89,7 @@ describe('NotFound', () => {
         By.css('.text-surface-900.dark\\:text-surface-0'),
       );
       expect(linkTitle.nativeElement.textContent.trim()).toBe(
-        'Entry Management',
+        'notFound.entryManagement',
       );
 
       const linkIcon = entradasLink.query(By.css('.pi-box'));
@@ -105,7 +106,7 @@ describe('NotFound', () => {
         By.css('.text-surface-900.dark\\:text-surface-0'),
       );
       expect(linkTitle.nativeElement.textContent.trim()).toBe(
-        'Exit Management',
+        'notFound.exitManagement',
       );
 
       const linkIcon = salidasLink.query(By.css('.pi-truck'));
@@ -117,9 +118,6 @@ describe('NotFound', () => {
         By.css('p-button[routerLink="/"]'),
       );
       expect(mainPanelButton).toBeTruthy();
-
-      const buttonLabel = mainPanelButton.attributes['label'];
-      expect(buttonLabel).toBe('Go to Main Panel');
     });
   });
 });

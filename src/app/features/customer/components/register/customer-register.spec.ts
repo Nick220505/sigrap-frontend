@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { CustomerRegister } from './customer-register';
 
 describe('CustomerRegister', () => {
@@ -14,7 +15,7 @@ describe('CustomerRegister', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomerRegister],
+      imports: [CustomerRegister, TranslateModule.forRoot()],
       providers: [provideHttpClient(), MessageService, ConfirmationService],
     })
       .overrideComponent(CustomerRegister, {

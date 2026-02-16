@@ -155,7 +155,7 @@ describe('CategoryDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Create Category',
+        'common.dialogs.createCategory',
       );
     });
 
@@ -174,7 +174,7 @@ describe('CategoryDialog', () => {
         By.css('.p-dialog-title'),
       );
       expect(dialogHeader.nativeElement.textContent.trim()).toBe(
-        'Edit Category',
+        'common.dialogs.editCategory',
       );
     });
 

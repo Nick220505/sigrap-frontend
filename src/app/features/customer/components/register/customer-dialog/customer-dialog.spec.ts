@@ -34,6 +34,10 @@ describe('CustomerDialog', () => {
     address: 'Test Address',
   };
 
+  beforeEach(() => {
+    TestBed.resetTestingModule();
+  });
+
   beforeEach(async () => {
     const dialogVisibleSignal = signal(false);
     const selectedCustomerSignal = signal<CustomerInfo | null>(null);

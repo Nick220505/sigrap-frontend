@@ -6,12 +6,13 @@ import { of, throwError, from } from 'rxjs';
 
 describe('LanguageStore - switchLanguage', () => {
   let store: InstanceType<typeof LanguageStore>;
-  let translateService: { use: Mock; getBrowserLang: Mock };
+  let translateService: { use: Mock; getBrowserLang: Mock; instant: Mock };
 
   beforeEach(() => {
     translateService = {
       use: vi.fn().mockReturnValue(of({})),
-      getBrowserLang: vi.fn().mockReturnValue('en')
+      getBrowserLang: vi.fn().mockReturnValue('en'),
+      instant: vi.fn((key: string) => key)
     };
 
     TestBed.configureTestingModule({
@@ -159,13 +160,14 @@ describe('LanguageStore - switchLanguage', () => {
 
 describe('LanguageStore - localStorage error handling', () => {
   let store: InstanceType<typeof LanguageStore>;
-  let translateService: { use: Mock; getBrowserLang: Mock };
+  let translateService: { use: Mock; getBrowserLang: Mock; instant: Mock };
   let consoleWarnSpy: Mock;
 
   beforeEach(() => {
     translateService = {
       use: vi.fn().mockReturnValue(of({})),
-      getBrowserLang: vi.fn().mockReturnValue('en')
+      getBrowserLang: vi.fn().mockReturnValue('en'),
+      instant: vi.fn((key: string) => key)
     };
 
     TestBed.configureTestingModule({

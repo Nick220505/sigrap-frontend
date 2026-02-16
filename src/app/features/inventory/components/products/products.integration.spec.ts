@@ -208,8 +208,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Product created',
-        detail: 'The product New Product has been created successfully',
+        summary: 'messages.success.productCreated',
+        detail: 'messages.success.productCreatedDetail',
       }),
     );
   });
@@ -250,8 +250,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Product updated',
-        detail: 'The product Updated Product has been updated successfully',
+        summary: 'messages.success.productUpdated',
+        detail: 'messages.success.productUpdatedDetail',
       }),
     );
   });
@@ -277,8 +277,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Product deleted',
-        detail: 'The product has been deleted successfully',
+        summary: 'messages.success.productDeleted',
+        detail: 'messages.success.productDeletedDetail',
       }),
     );
   });
@@ -314,8 +314,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Products deleted',
-        detail: 'The selected products have been deleted successfully',
+        summary: 'messages.success.productsDeleted',
+        detail: 'messages.success.productsDeletedDetail',
       }),
     );
   });
@@ -349,8 +349,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error creating product',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.productCreateError',
       }),
     );
 
@@ -400,8 +400,8 @@ describe('Products Feature Integration', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        summary: 'Product created',
-        detail: 'The product Another Product has been created successfully',
+        summary: 'messages.success.productCreated',
+        detail: 'messages.success.productCreatedDetail',
       }),
     );
   });

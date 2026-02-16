@@ -7,6 +7,7 @@ import Aura from '@primeuix/themes/aura';
 import { ButtonModule } from 'primeng/button';
 import { providePrimeNG } from 'primeng/config';
 import { StyleClassModule } from 'primeng/styleclass';
+import { TranslateModule } from '@ngx-translate/core';
 import { Configurator } from './configurator/configurator';
 import { FloatingConfigurator } from './floating-configurator';
 
@@ -39,7 +40,7 @@ describe('FloatingConfigurator', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FloatingConfigurator, ButtonModule, StyleClassModule],
+      imports: [FloatingConfigurator, ButtonModule, StyleClassModule, TranslateModule.forRoot()],
       providers: [
         providePrimeNG({
           theme: {

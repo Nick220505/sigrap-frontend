@@ -352,7 +352,7 @@ describe('SalesReturnsTable', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('Delete return');
+      expect(confirmOptions.header).toBe('common.confirmations.deleteHeader');
       expect(confirmOptions.message).toContain(
         `#<b>${mockSaleReturns[0].id}</b>`,
       );
