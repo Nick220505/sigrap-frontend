@@ -37,12 +37,11 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideTranslateService({
-      defaultLanguage: 'en',
       fallbackLang: 'en',
       loader: provideTranslateHttpLoader({
         prefix: './assets/i18n/',
         suffix: '.json'
-      })
+      }),
     }),
     MessageService,
     ConfirmationService,
