@@ -762,7 +762,12 @@ export class FinancialReport implements OnInit {
     const operatingExpenses = expenses * 0.2;
 
     return {
-      labels: ['Cost of Goods', 'Operating Expenses', 'Returns', 'Profit'],
+      labels: [
+        this.translateService.instant('reports.chartLabels.costOfGoods'),
+        this.translateService.instant('reports.chartLabels.operatingExpenses'),
+        this.translateService.instant('reports.chartLabels.returns'),
+        this.translateService.instant('reports.chartLabels.profit')
+      ],
       datasets: [
         {
           label: this.translateService.instant('reports.financialDistribution'),

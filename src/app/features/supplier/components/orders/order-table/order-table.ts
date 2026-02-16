@@ -142,7 +142,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     | currency: undefined : undefined : '1.0-0'
                 }}
               } @else if (column.field === 'supplier.name') {
-                {{ order.supplier?.name || 'No supplier' }}
+                {{ order.supplier?.name || ('common.noSupplier' | translate) }}
               } @else if (column.field === 'createdAt') {
                 {{ order[column.field] | date: 'dd/MM/yyyy' }}
               } @else if (column.field === 'deliveryDate') {
@@ -150,13 +150,13 @@ import { TooltipModule } from 'primeng/tooltip';
               } @else if (column.field === 'status') {
                 @switch (order[column.field]) {
                   @case ('DELIVERED') {
-                    <p-tag severity="success" value="Delivered" />
+                    <p-tag severity="success" [value]="'common.statuses.delivered' | translate" />
                   }
                   @case ('SHIPPED') {
-                    <p-tag severity="info" value="Shipped" />
+                    <p-tag severity="info" [value]="'common.statuses.shipped' | translate" />
                   }
                   @case ('CONFIRMED') {
-                    <p-tag severity="info" value="Confirmed" />
+                    <p-tag severity="info" [value]="'common.statuses.confirmed' | translate" />
                   }
                   @case ('DRAFT') {
                     <p-tag severity="warn" [value]="'common.statuses.draft' | translate" />

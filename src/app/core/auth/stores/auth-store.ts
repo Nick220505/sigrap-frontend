@@ -70,16 +70,16 @@ export const AuthStore = signalStore(
                 });
               },
               error: ({ status, error }: HttpErrorResponse) => {
-                let errorMessage = 'An error occurred. Please try again later.';
+                let errorMessage = translateService.instant('messages.errors.genericError');
 
                 if (
                   status === HttpStatusCode.Unauthorized ||
                   status === HttpStatusCode.Forbidden
                 ) {
-                  errorMessage = 'Invalid credentials';
+                  errorMessage = translateService.instant('messages.errors.invalidCredentials');
                 } else if (error?.message) {
                   if (error.message === 'Invalid credentials') {
-                    errorMessage = 'Invalid credentials';
+                    errorMessage = translateService.instant('messages.errors.invalidCredentials');
                   } else {
                     errorMessage = error.message;
                   }
@@ -122,13 +122,13 @@ export const AuthStore = signalStore(
                 });
               },
               error: ({ status, error }: HttpErrorResponse) => {
-                let errorMessage = 'An error occurred. Please try again later.';
+                let errorMessage = translateService.instant('messages.errors.genericError');
 
                 if (
                   status === HttpStatusCode.Conflict ||
                   error?.message === 'Email already exists'
                 ) {
-                  errorMessage = 'Email is already registered';
+                  errorMessage = translateService.instant('messages.errors.emailAlreadyRegistered');
                 } else if (error?.message) {
                   errorMessage = error.message;
                 }

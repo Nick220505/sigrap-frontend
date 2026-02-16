@@ -73,6 +73,9 @@
     "orderNumber": "Orden #{{id}}",
     "returnNumber": "Devolución #{{id}}",
     "unregisteredCustomer": "Cliente no registrado",
+    "noSupplier": "Sin proveedor",
+    "noCategory": "Sin categoría",
+    "noDescription": "Sin descripción",
     "employeeOriginalSale": "Empleado (Venta Original)",
     "errorLoadingUsers": "Error al cargar usuarios:",
     "tooltips": {
@@ -138,7 +141,8 @@
       "showingProducts": "Mostrando {first} a {last} de {totalRecords} productos",
       "showingCategories": "Mostrando {first} a {last} de {totalRecords} categorías",
       "showingSchedules": "Mostrando {first} a {last} de {totalRecords} horarios",
-      "showingRecords": "Mostrando {first} a {last} de {totalRecords} registros"
+      "showingRecords": "Mostrando {first} a {last} de {totalRecords} registros",
+      "pageOf": "Página {{current}} de {{total}}"
     },
     "tableTitles": {
       "employeeSchedules": "Horarios de Empleados",
@@ -184,6 +188,8 @@
       "draft": "Borrador",
       "submitted": "Enviado",
       "confirmed": "Confirmado",
+      "shipped": "Enviado",
+      "delivered": "Entregado",
       "cancelled": "Cancelado",
       "present": "Presente",
       "late": "Tarde",
@@ -325,7 +331,11 @@
       "totalSalesAmountAxis": "Monto Total de Ventas",
       "employeeAxis": "Empleado",
       "amountAxis": "Monto",
-      "monthAxis": "Mes"
+      "monthAxis": "Mes",
+      "sales": "Ventas",
+      "totalDollars": "Total ($)",
+      "avgSale": "Prom/Venta",
+      "productivity": "Productividad"
     },
     "stockStatus": {
       "normal": "Normal",
@@ -338,7 +348,11 @@
       "productsOnAlert": "Productos en Alerta",
       "units": "Unidades",
       "products": "productos",
-      "purchases": "compras"
+      "purchases": "compras",
+      "costOfGoods": "Costo de Bienes",
+      "operatingExpenses": "Gastos Operativos",
+      "returns": "Devoluciones",
+      "profit": "Ganancias"
     },
     "tooltips": {
       "exportPDF": "Exportar reporte a PDF",
@@ -833,6 +847,8 @@
     "action": "Acción",
     "user": "Usuario",
     "timestamp": "Marca de Tiempo",
+    "date": "Fecha",
+    "entity": "Entidad",
     "ipAddress": "Dirección IP",
     "userAgent": "Agente de Usuario",
     "resource": "Recurso",
@@ -1114,6 +1130,10 @@
       "generic": "Ocurrió un error. Por favor intente nuevamente.",
       "network": "Error de red. Por favor verifique su conexión.",
       "error": "Error",
+      "genericError": "Ocurrió un error. Por favor intente más tarde.",
+      "unknownError": "Error desconocido",
+      "invalidCredentials": "Credenciales inválidas",
+      "emailAlreadyRegistered": "El correo electrónico ya está registrado",
       "originalSaleNotFound": "Error",
       "originalSaleNotFoundDetail": "Venta original con ID {{id}} no encontrada.",
       "csvExportError": "Error de Exportación",

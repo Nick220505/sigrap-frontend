@@ -73,6 +73,9 @@
     "orderNumber": "Order #{{id}}",
     "returnNumber": "Return #{{id}}",
     "unregisteredCustomer": "Unregistered customer",
+    "noSupplier": "No supplier",
+    "noCategory": "No category",
+    "noDescription": "No description",
     "employeeOriginalSale": "Employee (Original Sale)",
     "errorLoadingUsers": "Error loading users:",
     "tooltips": {
@@ -138,7 +141,8 @@
       "showingProducts": "Showing {first} to {last} of {totalRecords} products",
       "showingCategories": "Showing {first} to {last} of {totalRecords} categories",
       "showingSchedules": "Showing {first} to {last} of {totalRecords} schedules",
-      "showingRecords": "Showing {first} to {last} of {totalRecords} records"
+      "showingRecords": "Showing {first} to {last} of {totalRecords} records",
+      "pageOf": "Page {{current}} of {{total}}"
     },
     "tableTitles": {
       "employeeSchedules": "Employee Schedules",
@@ -184,6 +188,8 @@
       "draft": "Draft",
       "submitted": "Submitted",
       "confirmed": "Confirmed",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
       "cancelled": "Cancelled",
       "present": "Present",
       "late": "Late",
@@ -325,7 +331,11 @@
       "totalSalesAmountAxis": "Total Sales Amount",
       "employeeAxis": "Employee",
       "amountAxis": "Amount",
-      "monthAxis": "Month"
+      "monthAxis": "Month",
+      "sales": "Sales",
+      "totalDollars": "Total ($)",
+      "avgSale": "Avg/Sale",
+      "productivity": "Productivity"
     },
     "stockStatus": {
       "normal": "Normal",
@@ -338,7 +348,11 @@
       "productsOnAlert": "Products on Alert",
       "units": "Units",
       "products": "products",
-      "purchases": "purchases"
+      "purchases": "purchases",
+      "costOfGoods": "Cost of Goods",
+      "operatingExpenses": "Operating Expenses",
+      "returns": "Returns",
+      "profit": "Profit"
     },
     "tooltips": {
       "exportPDF": "Export report to PDF",
@@ -833,6 +847,8 @@
     "action": "Action",
     "user": "User",
     "timestamp": "Timestamp",
+    "date": "Date",
+    "entity": "Entity",
     "ipAddress": "IP Address",
     "userAgent": "User Agent",
     "resource": "Resource",
@@ -1114,6 +1130,10 @@
       "generic": "An error occurred. Please try again.",
       "network": "Network error. Please check your connection.",
       "error": "Error",
+      "genericError": "An error occurred. Please try again later.",
+      "unknownError": "Unknown error",
+      "invalidCredentials": "Invalid credentials",
+      "emailAlreadyRegistered": "Email is already registered",
       "originalSaleNotFound": "Error",
       "originalSaleNotFoundDetail": "Original sale with ID {{id}} not found.",
       "csvExportError": "Export Error",

@@ -699,7 +699,12 @@ export class EmployeesReport implements OnInit {
     }
 
     return {
-      labels: ['Sales', 'Total ($)', 'Avg/Sale', 'Productivity'],
+      labels: [
+        this.translateService.instant('reports.chartAxisTitles.sales'),
+        this.translateService.instant('reports.chartAxisTitles.totalDollars'),
+        this.translateService.instant('reports.chartAxisTitles.avgSale'),
+        this.translateService.instant('reports.chartAxisTitles.productivity')
+      ],
       datasets: topEmployees.map((emp, index) => {
         const maxSalesCount = Math.max(
           ...employees.map((e) => e.salesCount),

@@ -150,9 +150,9 @@ import { TooltipModule } from 'primeng/tooltip';
               ) {
                 {{ product[column.field] }}
               } @else if (column.field === 'category.name') {
-                {{ product.category?.name || 'No category' }}
+                {{ product.category?.name || ('common.noCategory' | translate) }}
               } @else if (column.field === 'description') {
-                {{ product[column.field] || 'No description' }}
+                {{ product[column.field] || ('common.noDescription' | translate) }}
               } @else {
                 {{ product[column.field] }}
               }

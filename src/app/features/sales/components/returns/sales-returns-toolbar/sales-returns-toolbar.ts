@@ -80,13 +80,13 @@ export class SalesReturnsToolbar {
 
   exportCSV(): void {
     const headers = [
-      'ID',
-      'Original Sale',
-      'Customer',
-      'Employee',
-      'Amount',
-      'Reason',
-      'Date',
+      this.translateService.instant('common.tableHeaders.id'),
+      this.translateService.instant('common.tableHeaders.originalSale'),
+      this.translateService.instant('common.tableHeaders.customer'),
+      this.translateService.instant('common.tableHeaders.employee'),
+      this.translateService.instant('common.tableHeaders.amount'),
+      this.translateService.instant('common.tableHeaders.reason'),
+      this.translateService.instant('common.tableHeaders.date'),
     ];
 
     const csvData = this.saleReturnStore

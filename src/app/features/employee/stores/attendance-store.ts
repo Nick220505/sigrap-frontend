@@ -103,7 +103,7 @@ export const AttendanceStore = signalStore(
               },
               error: ({ error, message }: HttpErrorResponse) => {
                 patchState(store, {
-                  error: message ?? 'Unknown error',
+                  error: message ?? translateService.instant('messages.errors.unknownError'),
                 });
 
                 if (

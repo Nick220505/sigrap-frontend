@@ -258,7 +258,12 @@ export class AuditTable {
         return;
       }
 
-      const headers = ['Date', 'User', 'Action', 'Entity'];
+      const headers = [
+        this.translateService.instant('auditLogs.date'),
+        this.translateService.instant('auditLogs.user'),
+        this.translateService.instant('auditLogs.action'),
+        this.translateService.instant('auditLogs.entity')
+      ];
       let csvContent = headers.join(',') + '\n';
 
       data.forEach((audit) => {
@@ -445,7 +450,7 @@ export class AuditTable {
         pdf.setFontSize(8);
         pdf.setTextColor(128, 128, 128);
         pdf.text(
-          `Page ${i + 1} of ${currentPage}`,
+          this.translateService.instant('common.pagination.pageOf', { current: i + 1, total: currentPage }),
           pdf.internal.pageSize.getWidth() / 2,
           pdf.internal.pageSize.getHeight() - 10,
           { align: 'center' },

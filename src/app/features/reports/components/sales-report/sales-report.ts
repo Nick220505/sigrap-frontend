@@ -662,7 +662,7 @@ export class SalesReport implements OnInit {
             );
             const percentage =
               total > 0 ? ((value * 100) / total).toFixed(2) : '0';
-            return `${context.label || ''}: ${value} units (${percentage}%)`;
+            return `${context.label || ''}: ${value} ${this.translateService.instant('reports.chartLabels.units')} (${percentage}%)`;
           },
         },
       },
