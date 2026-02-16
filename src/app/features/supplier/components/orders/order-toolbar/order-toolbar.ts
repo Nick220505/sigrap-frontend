@@ -65,7 +65,7 @@ export class OrderToolbar {
         header: this.translateService.instant('common.confirmations.operationNotAllowedHeader'),
         message: this.translateService.instant('common.confirmations.draftOnlyMessage'),
         acceptVisible: false,
-        rejectLabel: 'Understood',
+        rejectLabel: this.translateService.instant('common.confirmations.understood'),
       });
       return;
     }

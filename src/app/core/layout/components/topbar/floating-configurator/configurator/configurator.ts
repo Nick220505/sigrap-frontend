@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LayoutService } from '@core/layout/services/layout';
 import {
   definePreset,
@@ -155,13 +155,15 @@ export class Configurator implements OnInit {
 
   readonly primeng = inject(PrimeNG);
 
+  private readonly translateService = inject(TranslateService);
+
   readonly presets = Object.keys(presets);
 
   readonly showMenuModeButton = signal(!this.router.url.includes('auth'));
 
   readonly menuModeOptions = [
-    { label: 'Static', value: 'static' },
-    { label: 'Overlay', value: 'overlay' },
+    { label: this.translateService.instant('common.configurator.static'), value: 'static' },
+    { label: this.translateService.instant('common.configurator.overlay'), value: 'overlay' },
   ];
 
   readonly surfaces: SurfacesType[] = [

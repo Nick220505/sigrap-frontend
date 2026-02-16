@@ -166,7 +166,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
             @if (reasonInvalid()) {
               <small class="p-error">
                 @if (reasonHasRequiredError()) {
-                  {{ 'validation.required' | translate: { field: 'Return reason' } }}
+                  {{ 'validation.required' | translate: { field: ('validation.fields.returnReason' | translate) } }}
                 } @else if (reasonHasMinLengthError()) {
                   {{ 'validation.minLength' | translate: { min: 5 } }}
                 }

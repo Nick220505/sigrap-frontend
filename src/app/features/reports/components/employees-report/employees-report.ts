@@ -9,7 +9,7 @@ import { AttendanceStore } from '@features/employee/stores/attendance-store';
 import { ScheduleStore } from '@features/employee/stores/schedule-store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
@@ -470,6 +470,7 @@ export class EmployeesReport implements OnInit {
   public userStore = inject(UserStore);
   public attendanceStore = inject(AttendanceStore);
   public scheduleStore = inject(ScheduleStore);
+  private translateService = inject(TranslateService);
 
   dateRange = signal<Date[]>([
     null as unknown as Date,
@@ -675,7 +676,7 @@ export class EmployeesReport implements OnInit {
       labels: topEmployees.map((emp) => this.truncateName(emp.employee.name)),
       datasets: [
         {
-          label: 'Total Sales',
+          label: this.translateService.instant('reports.totalSales'),
           data: topEmployees.map((emp) => emp.totalSalesAmount),
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
         },
@@ -769,13 +770,13 @@ export class EmployeesReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Total Sales Amount',
+          text: this.translateService.instant('reports.chartAxisTitles.totalSalesAmountAxis'),
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Employee',
+          text: this.translateService.instant('reports.chartAxisTitles.employeeAxis'),
         },
       },
     },

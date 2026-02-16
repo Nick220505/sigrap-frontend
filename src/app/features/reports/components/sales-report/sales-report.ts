@@ -457,7 +457,7 @@ export class SalesReport implements OnInit {
       labels: topProducts.map((item) => this.truncateName(item.product.name)),
       datasets: [
         {
-          label: 'Distribution by product',
+          label: this.translateService.instant('reports.distributionByProduct'),
           data: topProducts.map((item) => item.totalAmount),
           backgroundColor: [
             '#FF6384',
@@ -478,7 +478,7 @@ export class SalesReport implements OnInit {
       labels: topProducts.map((item) => this.truncateName(item.product.name)),
       datasets: [
         {
-          label: 'Qty. sold',
+          label: this.translateService.instant('reports.qtySold'),
           data: topProducts.map((item) => item.quantity),
           backgroundColor: [
             '#FF6347',

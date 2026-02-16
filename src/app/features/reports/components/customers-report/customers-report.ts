@@ -5,7 +5,7 @@ import { CustomerInfo } from '@features/customer/models/customer.model';
 import { CustomerStore } from '@features/customer/stores/customer-store';
 import { SaleInfo } from '@features/sales/models/sale.model';
 import { SaleStore } from '@features/sales/stores/sale-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -286,6 +286,7 @@ interface PieChartTooltipContext {
 export class CustomersReport implements OnInit {
   public saleStore = inject(SaleStore);
   public customerStore = inject(CustomerStore);
+  private translateService = inject(TranslateService);
 
   dateRange = signal<Date[]>([
     null as unknown as Date,
@@ -294,11 +295,11 @@ export class CustomersReport implements OnInit {
 
   today = new Date();
   limitOptions = [
-    { label: 'Top 5', value: 5 },
-    { label: 'Top 10', value: 10 },
-    { label: 'Top 15', value: 15 },
-    { label: 'Top 20', value: 20 },
-    { label: 'All', value: 999 },
+    { label: this.translateService.instant('reports.top5'), value: 5 },
+    { label: this.translateService.instant('reports.top10'), value: 10 },
+    { label: this.translateService.instant('reports.top15'), value: 15 },
+    { label: this.translateService.instant('reports.top20'), value: 20 },
+    { label: this.translateService.instant('reports.all'), value: 999 },
   ];
 
   customerLimitSignal = signal<number>(10);
@@ -349,7 +350,7 @@ export class CustomersReport implements OnInit {
       labels: ranking.map((item) => this.truncateName(item.customer.fullName)),
       datasets: [
         {
-          label: 'Number of Purchases',
+          label: this.translateService.instant('reports.numberOfPurchases'),
           data: ranking.map((item) => item.purchaseCount),
           backgroundColor: [
             '#42A5F5',
@@ -375,7 +376,7 @@ export class CustomersReport implements OnInit {
       labels: ranking.map((item) => this.truncateName(item.customer.fullName)),
       datasets: [
         {
-          label: 'Total Amount ($)',
+          label: this.translateService.instant('reports.totalAmountDollars'),
           data: ranking.map((item) => item.totalAmount),
           backgroundColor: [
             '#26A69A',
@@ -401,7 +402,7 @@ export class CustomersReport implements OnInit {
       labels: ranking.map((item) => this.truncateName(item.customer.fullName)),
       datasets: [
         {
-          label: 'Sales by Customer',
+          label: this.translateService.instant('reports.salesByCustomerChart'),
           data: ranking.map((item) => item.totalAmount),
           backgroundColor: [
             '#FF6384',
@@ -471,7 +472,7 @@ export class CustomersReport implements OnInit {
       },
       title: {
         display: true,
-        text: 'Purchase Frequency',
+        text: this.translateService.instant('reports.chartAxisTitles.purchaseFrequencyChart'),
         font: {
           size: 16,
         },
@@ -479,7 +480,7 @@ export class CustomersReport implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.parsed.y} purchases`;
+            return `${context.parsed.y} ${this.translateService.instant('reports.chartLabels.purchases')}`;
           },
         },
       },
@@ -491,7 +492,7 @@ export class CustomersReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Number of Purchases',
+          text: this.translateService.instant('reports.chartAxisTitles.numberOfPurchasesAxis'),
         },
       },
     },
@@ -504,7 +505,7 @@ export class CustomersReport implements OnInit {
       },
       title: {
         display: true,
-        text: 'Total Sales',
+        text: this.translateService.instant('reports.chartAxisTitles.totalSalesChart'),
         font: {
           size: 16,
         },
@@ -524,7 +525,7 @@ export class CustomersReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Total Amount ($)',
+          text: this.translateService.instant('reports.chartAxisTitles.totalAmountAxis'),
         },
       },
     },
@@ -537,7 +538,7 @@ export class CustomersReport implements OnInit {
       },
       title: {
         display: true,
-        text: 'Sales Distribution by Customer (Top 5)',
+        text: this.translateService.instant('reports.chartAxisTitles.salesDistributionChart'),
         font: {
           size: 16,
         },
@@ -565,7 +566,7 @@ export class CustomersReport implements OnInit {
     plugins: {
       title: {
         display: true,
-        text: 'Sales Evolution (Top 3 Customers)',
+        text: this.translateService.instant('reports.chartAxisTitles.salesEvolutionChart'),
         font: {
           size: 16,
         },
@@ -578,7 +579,7 @@ export class CustomersReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Sales Amount',
+          text: this.translateService.instant('reports.chartAxisTitles.salesAmountAxis'),
         },
       },
     },

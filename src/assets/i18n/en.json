@@ -58,7 +58,9 @@
       "primary": "Primary",
       "surface": "Surface",
       "presets": "Presets",
-      "menuMode": "Menu Mode"
+      "menuMode": "Menu Mode",
+      "static": "Static",
+      "overlay": "Overlay"
     },
     "top": "Top",
     "ariaLabels": {
@@ -125,7 +127,8 @@
       "clockOutHeader": "Clock Out",
       "clockOutMessage": "Are you sure you want to clock out <b>{{name}}</b>?",
       "operationNotAllowedHeader": "Operation Not Allowed",
-      "draftOnlyMessage": "Only orders in Draft status can be deleted."
+      "draftOnlyMessage": "Only orders in Draft status can be deleted.",
+      "understood": "Understood"
     },
     "pagination": {
       "showingOrders": "Showing {first} to {last} of {totalRecords} orders",
@@ -311,6 +314,19 @@
     "top10": "Top 10",
     "top15": "Top 15",
     "top20": "Top 20",
+    "chartAxisTitles": {
+      "purchaseFrequencyChart": "Purchase Frequency",
+      "numberOfPurchasesAxis": "Number of Purchases",
+      "totalSalesChart": "Total Sales",
+      "totalAmountAxis": "Total Amount ($)",
+      "salesDistributionChart": "Sales Distribution by Customer (Top 5)",
+      "salesEvolutionChart": "Sales Evolution (Top 3 Customers)",
+      "salesAmountAxis": "Sales Amount",
+      "totalSalesAmountAxis": "Total Sales Amount",
+      "employeeAxis": "Employee",
+      "amountAxis": "Amount",
+      "monthAxis": "Month"
+    },
     "stockStatus": {
       "normal": "Normal",
       "low": "Low",
@@ -320,7 +336,9 @@
       "productsByCategory": "Products by Category",
       "totalStock": "Total Stock",
       "productsOnAlert": "Products on Alert",
-      "units": "Units"
+      "units": "Units",
+      "products": "products",
+      "purchases": "purchases"
     },
     "tooltips": {
       "exportPDF": "Export report to PDF",
@@ -942,7 +960,10 @@
     "stockMin": "Stock must be at least 0.",
     "minimumStockMin": "Minimum stock must be at least 0.",
     "selectDateToExport": "Please select a date to export",
-    "invalidForm": "Invalid form. Please check the fields."
+    "invalidForm": "Invalid form. Please check the fields.",
+    "fields": {
+      "returnReason": "Return reason"
+    }
   },
   "passwordField": {
     "label": "Password",

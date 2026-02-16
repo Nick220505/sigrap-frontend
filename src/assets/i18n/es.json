@@ -58,7 +58,9 @@
       "primary": "Primario",
       "surface": "Superficie",
       "presets": "Preajustes",
-      "menuMode": "Modo de Menú"
+      "menuMode": "Modo de Menú",
+      "static": "Estático",
+      "overlay": "Superpuesto"
     },
     "top": "Top",
     "ariaLabels": {
@@ -125,7 +127,8 @@
       "clockOutHeader": "Registrar Salida",
       "clockOutMessage": "¿Está seguro de que desea registrar la salida de <b>{{name}}</b>?",
       "operationNotAllowedHeader": "Operación No Permitida",
-      "draftOnlyMessage": "Solo se pueden eliminar órdenes en estado Borrador."
+      "draftOnlyMessage": "Solo se pueden eliminar órdenes en estado Borrador.",
+      "understood": "Entendido"
     },
     "pagination": {
       "showingOrders": "Mostrando {first} a {last} de {totalRecords} órdenes",
@@ -311,6 +314,19 @@
     "top10": "Top 10",
     "top15": "Top 15",
     "top20": "Top 20",
+    "chartAxisTitles": {
+      "purchaseFrequencyChart": "Frecuencia de Compras",
+      "numberOfPurchasesAxis": "Número de Compras",
+      "totalSalesChart": "Ventas Totales",
+      "totalAmountAxis": "Monto Total ($)",
+      "salesDistributionChart": "Distribución de Ventas por Cliente (Top 5)",
+      "salesEvolutionChart": "Evolución de Ventas (Top 3 Clientes)",
+      "salesAmountAxis": "Monto de Ventas",
+      "totalSalesAmountAxis": "Monto Total de Ventas",
+      "employeeAxis": "Empleado",
+      "amountAxis": "Monto",
+      "monthAxis": "Mes"
+    },
     "stockStatus": {
       "normal": "Normal",
       "low": "Bajo",
@@ -320,7 +336,9 @@
       "productsByCategory": "Productos por Categoría",
       "totalStock": "Stock Total",
       "productsOnAlert": "Productos en Alerta",
-      "units": "Unidades"
+      "units": "Unidades",
+      "products": "productos",
+      "purchases": "compras"
     },
     "tooltips": {
       "exportPDF": "Exportar reporte a PDF",
@@ -942,7 +960,10 @@
     "stockMin": "El stock debe ser al menos 0.",
     "minimumStockMin": "El stock mínimo debe ser al menos 0.",
     "selectDateToExport": "Por favor seleccione una fecha para exportar",
-    "invalidForm": "Formulario inválido. Por favor revise los campos."
+    "invalidForm": "Formulario inválido. Por favor revise los campos.",
+    "fields": {
+      "returnReason": "Motivo de devolución"
+    }
   },
   "passwordField": {
     "label": "Contraseña",

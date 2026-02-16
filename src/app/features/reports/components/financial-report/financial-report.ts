@@ -7,7 +7,7 @@ import { SaleReturnStore } from '@features/sales/stores/sale-return-store';
 import { SaleStore } from '@features/sales/stores/sale-store';
 import { PurchaseOrderInfo } from '@features/supplier/models/purchase-order.model';
 import { PurchaseOrderStore } from '@features/supplier/stores/purchase-order-store';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ButtonModule } from 'primeng/button';
@@ -472,6 +472,7 @@ export class FinancialReport implements OnInit {
   saleStore = inject(SaleStore);
   saleReturnStore = inject(SaleReturnStore);
   purchaseOrderStore = inject(PurchaseOrderStore);
+  private translateService = inject(TranslateService);
 
   dateRange = signal<Date[]>([
     null as unknown as Date,
@@ -665,7 +666,7 @@ export class FinancialReport implements OnInit {
     if (!summaries.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Profit', data: [] }],
+        datasets: [{ label: this.translateService.instant('reports.profit'), data: [] }],
       };
     }
 
@@ -678,7 +679,7 @@ export class FinancialReport implements OnInit {
       datasets: [
         {
           type: 'line',
-          label: 'Profit',
+          label: this.translateService.instant('reports.profit'),
           data: sortedData.map((item) => item.profit),
           backgroundColor: sortedData.map((item) =>
             item.profit >= 0
@@ -691,21 +692,21 @@ export class FinancialReport implements OnInit {
         },
         {
           type: 'bar',
-          label: 'Ingresos',
+          label: this.translateService.instant('reports.income'),
           data: sortedData.map((item) => item.revenue),
           backgroundColor: '#4CAF50',
           stack: 'stack0',
         },
         {
           type: 'bar',
-          label: 'Gastos',
+          label: this.translateService.instant('reports.expenses'),
           data: sortedData.map((item) => item.expenses),
           backgroundColor: '#F44336',
           stack: 'stack1',
         },
         {
           type: 'bar',
-          label: 'Returns',
+          label: this.translateService.instant('reports.returns'),
           data: sortedData.map((item) => item.returns),
           backgroundColor: '#FF9800',
           stack: 'stack2',
@@ -720,7 +721,7 @@ export class FinancialReport implements OnInit {
     if (!summaries.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Revenue', data: [] }],
+        datasets: [{ label: this.translateService.instant('reports.revenue'), data: [] }],
       };
     }
 
@@ -732,7 +733,7 @@ export class FinancialReport implements OnInit {
       labels: sortedData.map((item) => this.formatMonthDisplay(item.month)),
       datasets: [
         {
-          label: 'Ingresos',
+          label: this.translateService.instant('reports.income'),
           data: sortedData.map((item) => item.revenue),
           borderColor: '#4CAF50',
           backgroundColor: 'rgba(76, 175, 80, 0.1)',
@@ -740,7 +741,7 @@ export class FinancialReport implements OnInit {
           tension: 0.4,
         },
         {
-          label: 'Gastos',
+          label: this.translateService.instant('reports.expenses'),
           data: sortedData.map((item) => item.expenses),
           borderColor: '#F44336',
           backgroundColor: 'rgba(244, 67, 54, 0.1)',
@@ -764,7 +765,7 @@ export class FinancialReport implements OnInit {
       labels: ['Cost of Goods', 'Operating Expenses', 'Returns', 'Profit'],
       datasets: [
         {
-          label: 'Financial Distribution',
+          label: this.translateService.instant('reports.financialDistribution'),
           data: [
             costOfGoods,
             operatingExpenses,
@@ -800,13 +801,13 @@ export class FinancialReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount',
+          text: this.translateService.instant('reports.chartAxisTitles.amountAxis'),
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Month',
+          text: this.translateService.instant('reports.chartAxisTitles.monthAxis'),
         },
       },
     },
@@ -835,7 +836,7 @@ export class FinancialReport implements OnInit {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount',
+          text: this.translateService.instant('reports.chartAxisTitles.amountAxis'),
         },
       },
     },

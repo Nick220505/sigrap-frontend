@@ -382,9 +382,9 @@ export class InventoryReport implements OnInit {
   private translateService = inject(TranslateService);
 
   stockViewOptions = [
-    { label: 'All', value: 'all', id: 1 },
-    { label: 'Low Stock', value: 'low', id: 2 },
-    { label: 'Critical', value: 'critical', id: 3 },
+    { label: this.translateService.instant('reports.all'), value: 'all', id: 1 },
+    { label: this.translateService.instant('reports.lowStock'), value: 'low', id: 2 },
+    { label: this.translateService.instant('reports.critical'), value: 'critical', id: 3 },
   ];
 
   selectedStockView = signal('all');
@@ -568,7 +568,7 @@ export class InventoryReport implements OnInit {
       tooltip: {
         callbacks: {
           label: (context: ChartTooltipContext) => {
-            return `${context.label}: ${context.parsed} products`;
+            return `${context.label}: ${context.parsed} ${this.translateService.instant('reports.chartLabels.products')}`;
           },
         },
       },

@@ -154,7 +154,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                   {{
                     sale.customer
                       ? sale.customer.fullName
-                      : 'Unregistered customer'
+                      : ('common.unregisteredCustomer' | translate)
                   }}
                 }
                 @case ('totalAmount') {
