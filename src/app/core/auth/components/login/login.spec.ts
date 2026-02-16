@@ -227,6 +227,6 @@ describe('Login', () => {
       By.css('a[routerLink="/register"]'),
     );
     expect(registrationLink).toBeTruthy();
-    expect(registrationLink.nativeElement.textContent.trim()).toBe('Register');
+    expect(registrationLink.nativeElement.textContent.trim()).toContain('auth.login.registerLink');
   });
 });

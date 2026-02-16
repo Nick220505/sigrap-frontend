@@ -168,10 +168,8 @@ describe('ProductToolbar', () => {
         reject?: () => void;
       };
 
-      expect(confirmOptions.header).toBe('common.confirmations.deleteHeaderPlural');
-      expect(confirmOptions.message).toContain(
-        'Are you sure you want to delete the 1 selected products?',
-      );
+      expect(confirmOptions.header).toContain('common.confirmations.deleteHeaderPlural');
+      expect(confirmOptions.message).toContain('common.confirmations.deleteMessagePlural');
       expect(confirmOptions.message).toContain('<b>Product 1</b>');
     });
 

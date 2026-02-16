@@ -17,6 +17,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
@@ -107,6 +108,7 @@ describe('SupplierStore', () => {
     supplierService.deleteAllById.mockReturnValue(of(void 0));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         SupplierStore,
         provideHttpClient(),

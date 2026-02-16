@@ -38,7 +38,7 @@ describe('LanguageStore - switchLanguage', () => {
     store.switchLanguage(unsupportedLang);
     
     await vi.waitFor(() => {
-      expect(store.error()).toBe(`Unsupported language: ${unsupportedLang}`);
+      expect(store.error()).toBe('messages.errors.unsupportedLanguage');
       expect(store.currentLanguage()).toBe('en'); // Should remain unchanged
     });
   });
@@ -47,7 +47,7 @@ describe('LanguageStore - switchLanguage', () => {
     store.switchLanguage('de');
     
     await vi.waitFor(() => {
-      expect(store.error()).toContain('Unsupported language');
+      expect(store.error()).toBe('messages.errors.unsupportedLanguage');
       expect(store.isLoading()).toBe(false);
     });
   });

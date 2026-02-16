@@ -13,6 +13,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import {
@@ -73,6 +74,7 @@ describe('AttendanceStore', () => {
     attendanceService.clockOut.mockReturnValue(of(mockAttendance));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         AttendanceStore,
         provideHttpClient(),
@@ -143,8 +145,8 @@ describe('AttendanceStore', () => {
       expect(attendanceService.clockIn).toHaveBeenCalledWith(mockClockInData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Clock-in recorded',
-        detail: 'The clock-in has been recorded successfully',
+        summary: 'messages.success.clockInRecorded',
+        detail: 'messages.success.clockInRecordedDetail',
       });
       expect(store.clockInDialogVisible()).toBe(false);
     });
@@ -159,8 +161,8 @@ describe('AttendanceStore', () => {
       expect(store.error()).toBe('Error clocking in');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error recording clock-in',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.clockInRecordError',
       });
     });
   });
@@ -172,8 +174,8 @@ describe('AttendanceStore', () => {
       expect(attendanceService.clockOut).toHaveBeenCalledWith(mockClockOutData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Clock-out recorded',
-        detail: 'The clock-out has been recorded successfully',
+        summary: 'messages.success.clockOutRecorded',
+        detail: 'messages.success.clockOutRecordedDetail',
       });
     });
 
@@ -187,8 +189,8 @@ describe('AttendanceStore', () => {
       expect(store.error()).toBe('Error clocking out');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error recording clock-out',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.clockOutRecordError',
       });
     });
   });

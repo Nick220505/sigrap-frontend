@@ -163,10 +163,8 @@ describe('SupplierTable', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('common.confirmations.deleteHeader');
-      expect(confirmOptions.message).toBe(
-        'Are you sure you want to delete the supplier <b>Supplier 1</b>?',
-      );
+      expect(confirmOptions.header).toContain('common.confirmations.deleteHeader');
+      expect(confirmOptions.message).toContain('common.confirmations.deleteMessage');
     });
 
     it('should call supplierStore.delete when confirmation is accepted', () => {

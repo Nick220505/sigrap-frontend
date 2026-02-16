@@ -15,6 +15,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../services/auth';
 import { AuthStore } from './auth-store';
@@ -81,6 +82,7 @@ describe('AuthStore', () => {
     authServiceSpy.register.mockReturnValue(of(mockResponse));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         AuthStore,
         provideHttpClient(),
@@ -146,11 +148,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('An error occurred. Please try again later.');
+      expect(store.error()).toBe('messages.errors.genericError');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'An error occurred. Please try again later.',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.genericError',
       });
     });
 
@@ -162,11 +164,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('Invalid credentials');
+      expect(store.error()).toBe('messages.errors.invalidCredentials');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Invalid credentials',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.invalidCredentials',
       });
     });
 
@@ -178,11 +180,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('Invalid credentials');
+      expect(store.error()).toBe('messages.errors.invalidCredentials');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Invalid credentials',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.invalidCredentials',
       });
     });
 
@@ -194,11 +196,11 @@ describe('AuthStore', () => {
 
       store.login(credentials);
 
-      expect(store.error()).toBe('Invalid credentials');
+      expect(store.error()).toBe('messages.errors.invalidCredentials');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Invalid credentials',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.invalidCredentials',
       });
     });
 
@@ -213,7 +215,7 @@ describe('AuthStore', () => {
       expect(store.error()).toBe('Other error');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
+        summary: 'messages.errors.error',
         detail: 'Other error',
       });
     });
@@ -262,11 +264,11 @@ describe('AuthStore', () => {
 
       store.register(registerData);
 
-      expect(store.error()).toBe('An error occurred. Please try again later.');
+      expect(store.error()).toBe('messages.errors.genericError');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'An error occurred. Please try again later.',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.genericError',
       });
     });
 
@@ -278,11 +280,11 @@ describe('AuthStore', () => {
 
       store.register(registerData);
 
-      expect(store.error()).toBe('Email is already registered');
+      expect(store.error()).toBe('messages.errors.emailAlreadyRegistered');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Email is already registered',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.emailAlreadyRegistered',
       });
     });
 
@@ -294,11 +296,11 @@ describe('AuthStore', () => {
 
       store.register(registerData);
 
-      expect(store.error()).toBe('Email is already registered');
+      expect(store.error()).toBe('messages.errors.emailAlreadyRegistered');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Email is already registered',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.emailAlreadyRegistered',
       });
     });
 
@@ -313,7 +315,7 @@ describe('AuthStore', () => {
       expect(store.error()).toBe('Custom error message');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
+        summary: 'messages.errors.error',
         detail: 'Custom error message',
       });
     });

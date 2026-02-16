@@ -17,6 +17,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { CategoryData, CategoryInfo } from '../models/category.model';
@@ -67,6 +68,7 @@ describe('CategoryStore', () => {
     categoryService.deleteAllById.mockReturnValue(of(undefined));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         CategoryStore,
         provideHttpClient(),
@@ -115,8 +117,8 @@ describe('CategoryStore', () => {
       expect(categoryService.create).toHaveBeenCalledWith(categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Category created',
-        detail: 'Category New Category has been created successfully',
+        summary: 'messages.success.categoryCreated',
+        detail: 'messages.success.categoryCreatedDetail',
       });
     });
 
@@ -136,8 +138,8 @@ describe('CategoryStore', () => {
       expect(categoryService.create).toHaveBeenCalledWith(categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error creating category',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryCreateError',
       });
     });
   });
@@ -154,8 +156,8 @@ describe('CategoryStore', () => {
       expect(categoryService.update).toHaveBeenCalledWith(1, categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Category updated',
-        detail: 'Category Updated Category has been updated successfully',
+        summary: 'messages.success.categoryUpdated',
+        detail: 'messages.success.categoryUpdatedDetail',
       });
     });
 
@@ -175,8 +177,8 @@ describe('CategoryStore', () => {
       expect(categoryService.update).toHaveBeenCalledWith(1, categoryData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error updating category',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryUpdateError',
       });
     });
   });
@@ -188,8 +190,8 @@ describe('CategoryStore', () => {
       expect(categoryService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Category deleted',
-        detail: 'The category has been deleted successfully',
+        summary: 'messages.success.categoryDeleted',
+        detail: 'messages.success.categoryDeletedDetail',
       });
     });
 
@@ -212,9 +214,8 @@ describe('CategoryStore', () => {
       expect(categoryService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail:
-          'Cannot delete category "Category 1" because it is being used by a product.',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryDeleteErrorDetail',
       });
     });
 
@@ -233,8 +234,8 @@ describe('CategoryStore', () => {
       expect(categoryService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error deleting category',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryDeleteError',
       });
     });
   });
@@ -246,8 +247,8 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Categories deleted',
-        detail: 'The selected categories have been deleted successfully',
+        summary: 'messages.success.categoriesDeleted',
+        detail: 'messages.success.categoriesDeletedDetail',
       });
     });
 
@@ -272,9 +273,8 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail:
-          'Cannot delete category "Category 1" because it is being used by a product.',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryDeleteErrorDetail',
       });
     });
 
@@ -299,9 +299,8 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2, 3]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail:
-          'Cannot delete category "ID 3" because it is being used by a product.',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryDeleteErrorDetail',
       });
     });
 
@@ -326,9 +325,8 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail:
-          'Cannot delete category "unknown" because it is being used by a product.',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoryDeleteErrorDetail',
       });
     });
 
@@ -349,8 +347,8 @@ describe('CategoryStore', () => {
       expect(categoryService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error deleting categories',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.categoriesDeleteError',
       });
     });
   });

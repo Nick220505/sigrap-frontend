@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
 import { Footer } from './footer';
 
 describe('Footer', () => {
@@ -9,7 +10,7 @@ describe('Footer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Footer],
+      imports: [Footer, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Footer);
@@ -27,7 +28,7 @@ describe('Footer', () => {
 
     expect(footerElement).toBeTruthy();
     expect(spanElement.nativeElement.textContent).toContain(
-      'Integrated Stationery Article Management and Registration System',
+      'footer.appDescription',
     );
   });
 

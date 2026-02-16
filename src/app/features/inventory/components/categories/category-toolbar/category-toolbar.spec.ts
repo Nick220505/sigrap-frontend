@@ -156,10 +156,8 @@ describe('CategoryToolbar', () => {
         reject?: () => void;
       };
 
-      expect(confirmOptions.header).toBe('common.confirmations.deleteHeaderPlural');
-      expect(confirmOptions.message).toContain(
-        'Are you sure you want to delete the 1 selected categories?',
-      );
+      expect(confirmOptions.header).toContain('common.confirmations.deleteHeaderPlural');
+      expect(confirmOptions.message).toContain('common.confirmations.deleteMessagePlural');
       expect(confirmOptions.message).toContain('<b>Category 1</b>');
     });
 

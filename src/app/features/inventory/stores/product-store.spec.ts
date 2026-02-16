@@ -17,6 +17,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { CategoryInfo } from '../models/category.model';
@@ -106,6 +107,7 @@ describe('ProductStore', () => {
     productService.deleteAllById.mockReturnValue(of(undefined));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         ProductStore,
         provideHttpClient(),
@@ -159,8 +161,8 @@ describe('ProductStore', () => {
       expect(productService.create).toHaveBeenCalledWith(productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Product created',
-        detail: 'The product Product 3 has been created successfully',
+        summary: 'messages.success.productCreated',
+        detail: 'messages.success.productCreatedDetail',
       });
     });
 
@@ -185,8 +187,8 @@ describe('ProductStore', () => {
       expect(productService.create).toHaveBeenCalledWith(productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error creating product',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.productCreateError',
       });
     });
   });
@@ -208,8 +210,8 @@ describe('ProductStore', () => {
       expect(productService.update).toHaveBeenCalledWith(1, productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Product updated',
-        detail: 'The product Updated Product has been updated successfully',
+        summary: 'messages.success.productUpdated',
+        detail: 'messages.success.productUpdatedDetail',
       });
     });
 
@@ -234,8 +236,8 @@ describe('ProductStore', () => {
       expect(productService.update).toHaveBeenCalledWith(1, productData);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error updating product',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.productUpdateError',
       });
     });
   });
@@ -247,8 +249,8 @@ describe('ProductStore', () => {
       expect(productService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Product deleted',
-        detail: 'The product has been deleted successfully',
+        summary: 'messages.success.productDeleted',
+        detail: 'messages.success.productDeletedDetail',
       });
     });
 
@@ -267,8 +269,8 @@ describe('ProductStore', () => {
       expect(productService.delete).toHaveBeenCalledWith(1);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error deleting product',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.productDeleteError',
       });
     });
   });
@@ -280,8 +282,8 @@ describe('ProductStore', () => {
       expect(productService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'success',
-        summary: 'Products deleted',
-        detail: 'The selected products have been deleted successfully',
+        summary: 'messages.success.productsDeleted',
+        detail: 'messages.success.productsDeletedDetail',
       });
     });
 
@@ -302,8 +304,8 @@ describe('ProductStore', () => {
       expect(productService.deleteAllById).toHaveBeenCalledWith([1, 2]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error deleting products',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.productsDeleteError',
       });
     });
   });

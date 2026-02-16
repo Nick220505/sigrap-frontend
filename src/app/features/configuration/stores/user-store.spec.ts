@@ -13,6 +13,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { UserData, UserInfo, UserRole } from '../models/user.model';
@@ -92,6 +93,7 @@ describe('UserStore', () => {
     userService.resetPassword.mockReturnValue(of(mockUsers[0]));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         UserStore,
         provideHttpClient(),
@@ -128,8 +130,8 @@ describe('UserStore', () => {
       expect(store.error()).toBe('Failed to fetch users');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error loading users',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.userLoadError',
       });
     });
   });
@@ -150,8 +152,8 @@ describe('UserStore', () => {
       expect(store.error()).toBe('Failed to create user');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error creating user',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.userCreateError',
       });
     });
   });
@@ -172,8 +174,8 @@ describe('UserStore', () => {
       expect(store.error()).toBe('Failed to update user');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error updating user',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.userUpdateError',
       });
     });
   });
@@ -194,8 +196,8 @@ describe('UserStore', () => {
       expect(store.error()).toBe('Failed to delete user');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error deleting user',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.userDeleteError',
       });
     });
   });

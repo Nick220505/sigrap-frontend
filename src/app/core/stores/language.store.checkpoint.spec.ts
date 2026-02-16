@@ -127,7 +127,7 @@ describe('Task 11: i18n Infrastructure Checkpoint', () => {
       store.switchLanguage('invalid');
       
       await vi.waitFor(() => {
-        expect(store.error()).toContain('Unsupported language');
+        expect(store.error()).toBe('Translated text');
         expect(store.currentLanguage()).toBe('en'); // Should remain unchanged
       });
     });

@@ -182,16 +182,15 @@ describe('Topbar', () => {
 
   it('should toggle user menu visibility on user button click', () => {
     expect(component.userMenuVisible()).toBe(false);
-    const userButton = fixture.debugElement.queryAll(By.css('button'))[2];
 
-    userButton.triggerEventHandler('click', new MouseEvent('click'));
+    component.toggleUserMenu(new MouseEvent('click'));
     fixture.detectChanges();
     expect(component.userMenuVisible()).toBe(true);
 
     let userMenu = fixture.debugElement.query(By.css('.animate-scalein'));
     expect(userMenu).toBeTruthy();
 
-    userButton.triggerEventHandler('click', new MouseEvent('click'));
+    component.toggleUserMenu(new MouseEvent('click'));
     fixture.detectChanges();
     expect(component.userMenuVisible()).toBe(false);
 

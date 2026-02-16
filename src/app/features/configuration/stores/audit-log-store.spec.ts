@@ -1,5 +1,6 @@
 import { describe, expect, it, type Mock, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { AuditLogInfo } from '../models/audit-log.model';
@@ -115,6 +116,7 @@ describe('AuditLogStore', () => {
     );
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         AuditLogStore,
         { provide: AuditLogService, useValue: auditLogService },
@@ -151,8 +153,8 @@ describe('AuditLogStore', () => {
       expect(errorStore.entities()).toEqual([]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error loading audit logs',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.auditLogLoadError',
       });
     });
   });
@@ -181,8 +183,8 @@ describe('AuditLogStore', () => {
       expect(errorStore.entities()).toEqual([]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error loading user audit logs',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.userAuditLogLoadError',
       });
     });
   });
@@ -211,8 +213,8 @@ describe('AuditLogStore', () => {
       expect(errorStore.entities()).toEqual([]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error loading entity audit logs',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.entityAuditLogLoadError',
       });
     });
   });
@@ -241,8 +243,8 @@ describe('AuditLogStore', () => {
       expect(errorStore.entities()).toEqual([]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error loading audit logs by action',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.auditLogByActionLoadError',
       });
     });
   });
@@ -277,8 +279,8 @@ describe('AuditLogStore', () => {
       expect(errorStore.entities()).toEqual([]);
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error loading audit logs by date range',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.auditLogByDateRangeLoadError',
       });
     });
   });

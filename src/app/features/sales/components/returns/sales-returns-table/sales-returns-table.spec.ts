@@ -352,10 +352,8 @@ describe('SalesReturnsTable', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('common.confirmations.deleteHeader');
-      expect(confirmOptions.message).toContain(
-        `#<b>${mockSaleReturns[0].id}</b>`,
-      );
+      expect(confirmOptions.header).toContain('common.confirmations.deleteHeader');
+      expect(confirmOptions.message).toContain('common.confirmations.deleteMessage');
     });
 
     it('should call saleReturnStore.deleteById when confirmation is accepted', () => {

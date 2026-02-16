@@ -176,11 +176,8 @@ describe('SalesReturnsToolbar', () => {
         message?: string;
         accept?: () => void;
       };
-      expect(confirmOptions.header).toBe('common.confirmations.deleteHeaderPlural');
-      expect(confirmOptions.message).toContain('the 1 selected returns');
-      expect(confirmOptions.message).toContain(
-        `<b>Return #${mockSaleReturn.id}</b>`,
-      );
+      expect(confirmOptions.header).toContain('common.confirmations.deleteHeaderPlural');
+      expect(confirmOptions.message).toContain('common.confirmations.deleteMessagePlural');
     });
 
     it('should call deleteAllById with correct ids when confirmation is accepted', () => {

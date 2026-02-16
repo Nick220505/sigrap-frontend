@@ -13,6 +13,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { CustomerData, CustomerInfo } from '../models/customer.model';
@@ -77,6 +78,7 @@ describe('CustomerStore', () => {
     customerService.deleteAllById.mockReturnValue(of(void 0));
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         CustomerStore,
         provideHttpClient(),
@@ -129,8 +131,8 @@ describe('CustomerStore', () => {
       expect(store.error()).toBe('Failed to create customer');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error creating customer',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.customerCreateError',
       });
     });
   });
@@ -151,8 +153,8 @@ describe('CustomerStore', () => {
       expect(store.error()).toBe('Failed to update customer');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error updating customer',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.customerUpdateError',
       });
     });
   });
@@ -173,8 +175,8 @@ describe('CustomerStore', () => {
       expect(store.error()).toBe('Failed to delete customer');
       expect(messageService.add).toHaveBeenCalledWith({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Error deleting customer',
+        summary: 'messages.errors.error',
+        detail: 'messages.errors.customerDeleteError',
       });
     });
   });

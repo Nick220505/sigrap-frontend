@@ -431,8 +431,8 @@ describe('Configurator', () => {
 
     it('should render the menuModeOptions correctly', () => {
       expect(component.menuModeOptions).toEqual([
-        { label: 'Static', value: 'static' },
-        { label: 'Overlay', value: 'overlay' },
+        { label: 'common.configurator.static', value: 'static' },
+        { label: 'common.configurator.overlay', value: 'overlay' },
       ]);
     });
 
