@@ -1,5 +1,5 @@
 import { computed, inject } from '@angular/core';
-import { signalStore, withState, withComputed, withMethods, withHooks, patchState } from '@ngrx/signals';
+import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { pipe, switchMap, tap, catchError, of, from } from 'rxjs';
@@ -53,6 +53,7 @@ export const LanguageStore = signalStore(
               patchState(store, { currentLanguage: initialLang, isLoading: false });
             }),
             catchError((error) => {
+              console.error('Error loading translations:', error);
               patchState(store, { error: error.message, isLoading: false });
               return of(null);
             })
@@ -80,7 +81,6 @@ export const LanguageStore = signalStore(
                 localStorage.setItem('language-preference', locale);
               } catch (error) {
                 console.warn('Failed to persist language preference:', error);
-                // Continue operation without persistence
               }
               patchState(store, { 
                 currentLanguage: locale, 
@@ -98,10 +98,5 @@ export const LanguageStore = signalStore(
         })
       )
     )
-  })),
-  withHooks({
-    onInit(store) {
-      store.initializeLanguage();
-    }
-  })
+  }))
 );

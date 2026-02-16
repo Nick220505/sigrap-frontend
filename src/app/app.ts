@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { LanguageStore } from './core/stores/language.store';
 
 @Component({
   selector: 'app-root',
@@ -16,4 +17,10 @@ import { ToastModule } from 'primeng/toast';
     />
   `,
 })
-export class App {}
+export class App {
+  private languageStore = inject(LanguageStore);
+
+  constructor() {
+    this.languageStore.initializeLanguage();
+  }
+}
