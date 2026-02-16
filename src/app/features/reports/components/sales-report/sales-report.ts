@@ -374,7 +374,7 @@ export class SalesReport implements OnInit {
     if (!sales.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Daily sales', data: [] }],
+        datasets: [{ label: this.translateService.instant('reports.dailySales'), data: [] }],
       };
     }
 
@@ -387,7 +387,7 @@ export class SalesReport implements OnInit {
       labels: sortedData.map((item) => this.formatDate(new Date(item.date))),
       datasets: [
         {
-          label: 'Sales amount',
+          label: this.translateService.instant('reports.salesAmount'),
           data: sortedData.map((item) => item.totalAmount),
           backgroundColor: '#42A5F5',
         },
@@ -400,7 +400,7 @@ export class SalesReport implements OnInit {
     if (!sales.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Weekly sales', data: [] }],
+        datasets: [{ label: this.translateService.instant('reports.weeklySales'), data: [] }],
       };
     }
 
@@ -414,7 +414,7 @@ export class SalesReport implements OnInit {
       labels: sortedData.map((item) => item.displayLabel),
       datasets: [
         {
-          label: 'Sales amount',
+          label: this.translateService.instant('reports.salesAmount'),
           data: sortedData.map((item) => item.totalAmount),
           backgroundColor: '#66BB6A',
         },
@@ -427,7 +427,7 @@ export class SalesReport implements OnInit {
     if (!sales.length) {
       return {
         labels: [],
-        datasets: [{ label: 'Monthly sales', data: [] }],
+        datasets: [{ label: this.translateService.instant('reports.monthlySales'), data: [] }],
       };
     }
 
@@ -442,7 +442,7 @@ export class SalesReport implements OnInit {
       labels: sortedData.map((item) => this.formatMonthDisplay(item.month)),
       datasets: [
         {
-          label: 'Sales amount',
+          label: this.translateService.instant('reports.salesAmount'),
           data: sortedData.map((item) => item.totalAmount),
           backgroundColor: '#FFA726',
         },
