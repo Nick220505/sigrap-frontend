@@ -978,7 +978,10 @@
     "selectDateToExport": "Por favor seleccione una fecha para exportar",
     "invalidForm": "Formulario inválido. Por favor revise los campos.",
     "fields": {
-      "returnReason": "Motivo de devolución"
+      "returnReason": "Motivo de devolución",
+      "supplier": "Proveedor",
+      "name": "Nombre",
+      "email": "Correo electrónico"
     }
   },
   "passwordField": {

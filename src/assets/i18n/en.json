@@ -978,7 +978,10 @@
     "selectDateToExport": "Please select a date to export",
     "invalidForm": "Invalid form. Please check the fields.",
     "fields": {
-      "returnReason": "Return reason"
+      "returnReason": "Return reason",
+      "supplier": "Supplier",
+      "name": "Name",
+      "email": "Email"
     }
   },
   "passwordField": {

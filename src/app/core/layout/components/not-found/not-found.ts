@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
       <div class="flex flex-col items-center justify-center">
         <img
           src="logo.png"
-          alt="SIGRAP Logo"
+          [alt]="'common.sigrapLogo' | translate"
           class="mb-8 w-40 h-40 object-contain drop-shadow-lg"
         />
 

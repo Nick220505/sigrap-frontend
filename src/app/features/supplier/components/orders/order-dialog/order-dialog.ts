@@ -92,7 +92,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.supplierId().invalid() &&
               orderForm.supplierId().touched()
             ) {
-              <small class="text-red-500">{{ 'validation.required' | translate: { field: 'Supplier' } }}</small>
+              <small class="text-red-500">{{ 'validation.required' | translate: { field: ('validation.fields.supplier' | translate) } }}</small>
             }
           </div>
 

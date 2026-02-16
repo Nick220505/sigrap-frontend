@@ -69,7 +69,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
           </p-inputgroup>
 
           @if (nameControlInvalid) {
-            <small class="text-red-500">{{ 'validation.required' | translate: { field: 'Name' } }}</small>
+            <small class="text-red-500">{{ 'validation.required' | translate: { field: ('validation.fields.name' | translate) } }}</small>
           }
         </div>
 
@@ -100,7 +100,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
           @if (emailControlInvalid) {
             <small class="text-red-500">
               @if (emailHasRequiredError()) {
-                {{ 'validation.required' | translate: { field: 'Email' } }}
+                {{ 'validation.required' | translate: { field: ('validation.fields.email' | translate) } }}
               } @else if (emailHasEmailError()) {
                 {{ 'validation.email' | translate }}
               }
