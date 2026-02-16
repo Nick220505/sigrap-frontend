@@ -194,7 +194,7 @@ import { UserStore } from '@features/configuration/stores/user-store';
               <div class="flex justify-center p-6">
                 <p-message severity="error">
                   <div class="flex flex-col gap-4 text-center p-3">
-                    <strong>Error loading users:</strong>
+                    <strong>{{ 'common.errorLoadingUsers' | translate }}</strong>
                     <p>{{ error }}</p>
                     <div class="flex justify-center">
                       <p-button

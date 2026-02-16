@@ -119,7 +119,7 @@ import { TooltipModule } from 'primeng/tooltip';
               orderForm.deliveryDate().invalid() &&
               orderForm.deliveryDate().touched()
             ) {
-              <small class="text-red-500">{{ 'validation.required' | translate: { field: 'Delivery date' } }}</small>
+              <small class="text-red-500">{{ 'validation.required' | translate: { field: ('suppliers.labels.deliveryDate' | translate) } }}</small>
             }
           </div>
         </div>

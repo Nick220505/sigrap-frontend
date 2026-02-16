@@ -246,9 +246,9 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                       <td class="p-2">
                         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                           <div class="flex flex-col">
-                            <label for="discountPercent" class="text-xs mb-1"
-                              >Percentage</label
-                            >
+                            <label for="discountPercent" class="text-xs mb-1">{{
+                              'common.percentage' | translate
+                            }}</label>
                             @if (!viewMode()) {
                               <p-inputNumber
                                 id="discountPercent"
@@ -273,9 +273,9 @@ import { SaleStore } from '@features/sales/stores/sale-store';
                             }
                           </div>
                           <div class="flex flex-col">
-                            <label for="discountAmount" class="text-xs mb-1"
-                              >Amount</label
-                            >
+                            <label for="discountAmount" class="text-xs mb-1">{{
+                              'common.amount' | translate
+                            }}</label>
                             {{
                               saleForm.discountAmount().value()
                                 | currency: undefined : undefined : '1.0-0'

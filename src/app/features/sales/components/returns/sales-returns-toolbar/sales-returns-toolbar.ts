@@ -68,7 +68,7 @@ export class SalesReturnsToolbar {
       message: `
         ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: selection.length, items: 'returns' })}
         <ul class='mt-2 mb-0'>
-          ${selection.map((item) => `<li>• <b>Return #${item.id}</b></li>`).join('')}
+          ${selection.map((item) => `<li>• <b>${this.translateService.instant('common.returnNumber', { id: item.id })}</b></li>`).join('')}
         </ul>
       `,
       accept: () => {

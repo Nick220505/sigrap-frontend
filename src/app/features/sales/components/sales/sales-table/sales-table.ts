@@ -301,11 +301,11 @@ export class SalesTable {
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
           <div>
-            <p style="font-size: 1.1rem; font-weight: bold;">Customer:</p>
-            <p style="font-size: 1.1rem;">${sale.customer?.fullName || 'Unregistered customer'}</p>
+            <p style="font-size: 1.1rem; font-weight: bold;">${this.translateService.instant('sales.customer')}:</p>
+            <p style="font-size: 1.1rem;">${sale.customer?.fullName || this.translateService.instant('common.unregisteredCustomer')}</p>
           </div>
           <div>
-            <p style="font-size: 1.1rem; font-weight: bold;">Date:</p>
+            <p style="font-size: 1.1rem; font-weight: bold;">${this.translateService.instant('common.date')}:</p>
             <p style="font-size: 1.1rem;">${this.datePipe.transform(sale.createdAt, 'dd/MM/yyyy HH:mm', 'UTC-5')}</p>
           </div>
         </div>

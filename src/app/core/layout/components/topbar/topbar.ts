@@ -39,7 +39,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           type="button"
           class="layout-menu-button flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] mr-1 max-lg:mr-2 focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
           (click)="layoutService.onMenuToggle()"
-          aria-label="Toggle menu"
+          [attr.aria-label]="'common.ariaLabels.toggleMenu' | translate"
         >
           <i class="pi pi-bars text-5 text-[1.25rem]"></i>
         </button>
@@ -49,7 +49,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           routerLink="/"
         >
           <img src="logo.png" [alt]="'common.logo' | translate" class="h-12" />
-          <span>SIGRAP</span>
+          <span>{{ 'common.appName' | translate }}</span>
         </a>
       </div>
 
@@ -61,7 +61,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
             type="button"
             class="flex justify-center items-center rounded-full w-10 h-10 text-[var(--text-color)] transition-colors duration-[var(--element-transition-duration)] cursor-pointer hover:bg-[var(--surface-hover)] focus-visible:outline-[var(--focus-ring-width)_var(--focus-ring-style)_var(--focus-ring-color)] focus-visible:outline-offset-[var(--focus-ring-offset)] focus-visible:shadow-[var(--focus-ring-shadow)] focus-visible:transition-[box-shadow_var(--transition-duration),outline-color_var(--transition-duration)]"
             (click)="toggleThemeMode()"
-            aria-label="Toggle theme mode"
+            [attr.aria-label]="'common.ariaLabels.toggleThemeMode' | translate"
             [pTooltip]="getThemeTooltip()"
             tooltipPosition="bottom"
           >
@@ -86,7 +86,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
               leaveToClass="hidden"
               leaveActiveClass="animate-fadeout"
               [hideOnOutsideClick]="true"
-              aria-label="Toggle theme configurator"
+              [attr.aria-label]="'common.ariaLabels.toggleThemeConfigurator' | translate"
             >
               <i class="pi pi-palette text-[1.25rem]"></i>
             </button>
@@ -104,7 +104,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           leaveToClass="hidden"
           leaveActiveClass="animate-fadeout"
           [hideOnOutsideClick]="true"
-          aria-label="Toggle menu options"
+          [attr.aria-label]="'common.ariaLabels.toggleMenuOptions' | translate"
         >
           <i class="pi pi-ellipsis-v text-[1.25rem]"></i>
         </button>

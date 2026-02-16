@@ -75,7 +75,7 @@ export class OrderToolbar {
       message: `
           ${this.translateService.instant('common.confirmations.deleteMessagePlural', { count: orders.length, items: 'orders' })}
           <ul class='mt-2 mb-0'>
-            ${orders.map(({ id }) => `<li>• <b>Order #${id}</b></li>`).join('')}
+            ${orders.map(({ id }) => `<li>• <b>${this.translateService.instant('common.orderNumber', { id })}</b></li>`).join('')}
           </ul>
         `,
       accept: () => {

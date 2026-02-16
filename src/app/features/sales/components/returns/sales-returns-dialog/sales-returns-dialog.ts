@@ -119,9 +119,9 @@ import { SaleInfo } from '@features/sales/models/sale.model';
               </p-inputgroup>
             </div>
             <div class="flex flex-col gap-2">
-              <label for="employeeName" class="font-bold"
-                >Employee (Original Sale)</label
-              >
+              <label for="employeeName" class="font-bold">{{
+                'common.employeeOriginalSale' | translate
+              }}</label>
               <p-inputgroup>
                 <p-inputgroup-addon>
                   <i class="pi pi-user-edit"></i>

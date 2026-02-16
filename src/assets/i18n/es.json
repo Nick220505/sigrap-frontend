@@ -51,6 +51,9 @@
     "remove": "Eliminar",
     "logo": "Logo",
     "sigrapLogo": "Logo SIGRAP",
+    "appName": "SIGRAP",
+    "percentage": "Porcentaje",
+    "amount": "Monto",
     "configurator": {
       "primary": "Primario",
       "surface": "Superficie",
@@ -58,6 +61,18 @@
       "menuMode": "Modo de Menú"
     },
     "top": "Top",
+    "ariaLabels": {
+      "toggleMenu": "Alternar menú",
+      "toggleThemeMode": "Alternar modo de tema",
+      "toggleThemeConfigurator": "Alternar configurador de tema",
+      "toggleMenuOptions": "Alternar opciones de menú"
+    },
+    "order": "Orden",
+    "orderNumber": "Orden #{{id}}",
+    "returnNumber": "Devolución #{{id}}",
+    "unregisteredCustomer": "Cliente no registrado",
+    "employeeOriginalSale": "Empleado (Venta Original)",
+    "errorLoadingUsers": "Error al cargar usuarios:",
     "tooltips": {
       "edit": "Editar",
       "delete": "Eliminar",
