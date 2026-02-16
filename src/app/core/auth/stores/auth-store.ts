@@ -12,6 +12,7 @@ import {
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, tap } from 'rxjs';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login-request.model';
@@ -42,9 +43,10 @@ export const AuthStore = signalStore(
   withProps(() => ({
     authService: inject(AuthService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
     router: inject(Router),
   })),
-  withMethods(({ authService, messageService, router, ...store }) => ({
+  withMethods(({ authService, messageService, translateService, router, ...store }) => ({
     login: rxMethod<LoginRequest>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -63,8 +65,8 @@ export const AuthStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Login Successful',
-                  detail: `Welcome, ${name}`,
+                  summary: translateService.instant('messages.success.loginSuccessful'),
+                  detail: translateService.instant('messages.success.loginSuccessfulDetail', { name }),
                 });
               },
               error: ({ status, error }: HttpErrorResponse) => {
@@ -87,7 +89,7 @@ export const AuthStore = signalStore(
 
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
+                  summary: translateService.instant('messages.errors.error'),
                   detail: errorMessage,
                 });
               },
@@ -115,8 +117,8 @@ export const AuthStore = signalStore(
 
                 messageService.add({
                   severity: 'success',
-                  summary: 'Registration Successful',
-                  detail: `Account created successfully. Welcome, ${name}!`,
+                  summary: translateService.instant('messages.success.registrationSuccessful'),
+                  detail: translateService.instant('messages.success.registrationSuccessfulDetail', { name }),
                 });
               },
               error: ({ status, error }: HttpErrorResponse) => {
@@ -135,7 +137,7 @@ export const AuthStore = signalStore(
 
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
+                  summary: translateService.instant('messages.errors.error'),
                   detail: errorMessage,
                 });
               },
@@ -159,8 +161,8 @@ export const AuthStore = signalStore(
 
       messageService.add({
         severity: 'success',
-        summary: 'Session Closed',
-        detail: 'You have successfully logged out',
+        summary: translateService.instant('messages.success.sessionClosed'),
+        detail: translateService.instant('messages.success.sessionClosedDetail'),
       });
     },
     getToken: (): string | null => {

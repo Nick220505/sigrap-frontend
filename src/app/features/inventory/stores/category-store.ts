@@ -20,6 +20,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { CategoryData, CategoryInfo } from '../models/category.model';
 import { CategoryService } from '../services/category';
@@ -46,8 +47,9 @@ export const CategoryStore = signalStore(
   withProps(() => ({
     categoryService: inject(CategoryService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ categoryService, messageService, ...store }) => ({
+  withMethods(({ categoryService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -76,16 +78,16 @@ export const CategoryStore = signalStore(
                 patchState(store, addEntity(createdCategory));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Category created',
-                  detail: `Category ${createdCategory.name} has been created successfully`,
+                  summary: translateService.instant('messages.success.categoryCreated'),
+                  detail: translateService.instant('messages.success.categoryCreatedDetail', { name: createdCategory.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating category',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.categoryCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -107,16 +109,16 @@ export const CategoryStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Category updated',
-                  detail: `Category ${updatedCategory.name} has been updated successfully`,
+                  summary: translateService.instant('messages.success.categoryUpdated'),
+                  detail: translateService.instant('messages.success.categoryUpdatedDetail', { name: updatedCategory.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating category',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.categoryUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -135,8 +137,8 @@ export const CategoryStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Category deleted',
-                  detail: 'The category has been deleted successfully',
+                  summary: translateService.instant('messages.success.categoryDeleted'),
+                  detail: translateService.instant('messages.success.categoryDeletedDetail'),
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -149,14 +151,14 @@ export const CategoryStore = signalStore(
                   const category = store.entities().find((c) => c.id === id);
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: `Cannot delete category "${category?.name}" because it is being used by a product.`,
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.categoryDeleteErrorDetail', { name: category?.name || '' }),
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error deleting category',
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.categoryDeleteError'),
                   });
                 }
               },
@@ -176,9 +178,8 @@ export const CategoryStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Categories deleted',
-                  detail:
-                    'The selected categories have been deleted successfully',
+                  summary: translateService.instant('messages.success.categoriesDeleted'),
+                  detail: translateService.instant('messages.success.categoriesDeletedDetail'),
                 });
               },
               error: ({ error: { status, message } }: HttpErrorResponse) => {
@@ -206,14 +207,14 @@ export const CategoryStore = signalStore(
                   }
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: `Cannot delete category "${categoryName}" because it is being used by a product.`,
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.categoryDeleteErrorDetail', { name: categoryName }),
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error deleting categories',
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.categoriesDeleteError'),
                   });
                 }
               },

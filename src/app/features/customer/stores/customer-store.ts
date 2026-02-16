@@ -19,6 +19,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { CustomerData, CustomerInfo } from '../models/customer.model';
 import { CustomerService } from '../services/customer';
@@ -45,8 +46,9 @@ export const CustomerStore = signalStore(
   withProps(() => ({
     customerService: inject(CustomerService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ customerService, messageService, ...store }) => ({
+  withMethods(({ customerService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -95,8 +97,8 @@ export const CustomerStore = signalStore(
                 patchState(store, addEntity(createdCustomer));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Customer created',
-                  detail: `Customer ${createdCustomer.fullName} has been created successfully`,
+                  summary: translateService.instant('messages.success.customerCreated'),
+                  detail: translateService.instant('messages.success.customerCreatedDetail', { name: createdCustomer.fullName }),
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -104,8 +106,8 @@ export const CustomerStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating customer',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.customerCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -131,8 +133,8 @@ export const CustomerStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Customer updated',
-                  detail: `Customer ${updatedCustomer.fullName} has been updated successfully`,
+                  summary: translateService.instant('messages.success.customerUpdated'),
+                  detail: translateService.instant('messages.success.customerUpdatedDetail', { name: updatedCustomer.fullName }),
                 });
                 patchState(store, { dialogVisible: false });
               },
@@ -140,8 +142,8 @@ export const CustomerStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating customer',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.customerUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -161,16 +163,16 @@ export const CustomerStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Customer deleted',
-                  detail: 'The customer has been deleted successfully',
+                  summary: translateService.instant('messages.success.customerDeleted'),
+                  detail: translateService.instant('messages.success.customerDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting customer',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.customerDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -190,17 +192,16 @@ export const CustomerStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Customers deleted',
-                  detail:
-                    'The selected customers have been deleted successfully',
+                  summary: translateService.instant('messages.success.customersDeleted'),
+                  detail: translateService.instant('messages.success.customersDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting customers',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.customersDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

@@ -19,6 +19,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { UserData, UserInfo } from '../models/user.model';
 import { UserService } from '../services/user';
@@ -45,8 +46,9 @@ export const UserStore = signalStore(
   withProps(() => ({
     userService: inject(UserService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ userService, messageService, ...store }) => ({
+  withMethods(({ userService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -60,8 +62,8 @@ export const UserStore = signalStore(
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading users',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.userLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -80,16 +82,16 @@ export const UserStore = signalStore(
                 patchState(store, addEntity(createdUser));
                 messageService.add({
                   severity: 'success',
-                  summary: 'User Created',
-                  detail: `User ${createdUser.name} has been created successfully`,
+                  summary: translateService.instant('messages.success.userCreated'),
+                  detail: translateService.instant('messages.success.userCreatedDetail', { name: createdUser.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating user',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.userCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -108,16 +110,16 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'User Updated',
-                  detail: `User ${updatedUser.name} has been updated successfully`,
+                  summary: translateService.instant('messages.success.userUpdated'),
+                  detail: translateService.instant('messages.success.userUpdatedDetail', { name: updatedUser.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating user',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.userUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -136,16 +138,16 @@ export const UserStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'User Deleted',
-                  detail: 'User has been deleted successfully',
+                  summary: translateService.instant('messages.success.userDeleted'),
+                  detail: translateService.instant('messages.success.userDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting user',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.userDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -164,16 +166,16 @@ export const UserStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Users Deleted',
-                  detail: 'Selected users have been deleted successfully',
+                  summary: translateService.instant('messages.success.usersDeleted'),
+                  detail: translateService.instant('messages.success.usersDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting users',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.usersDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -192,16 +194,16 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Profile Updated',
-                  detail: 'Profile has been updated successfully',
+                  summary: translateService.instant('messages.success.profileUpdated'),
+                  detail: translateService.instant('messages.success.profileUpdatedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating profile',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.profileUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -223,16 +225,16 @@ export const UserStore = signalStore(
               next: () => {
                 messageService.add({
                   severity: 'success',
-                  summary: 'Password Updated',
-                  detail: 'Password has been updated successfully',
+                  summary: translateService.instant('messages.success.passwordUpdated'),
+                  detail: translateService.instant('messages.success.passwordUpdatedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating password',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.passwordUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -250,16 +252,16 @@ export const UserStore = signalStore(
               next: () => {
                 messageService.add({
                   severity: 'success',
-                  summary: 'Password Reset',
-                  detail: 'Password has been reset successfully',
+                  summary: translateService.instant('messages.success.passwordReset'),
+                  detail: translateService.instant('messages.success.passwordResetDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error resetting password',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.passwordResetError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -278,16 +280,16 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Account Locked',
-                  detail: `User ${updatedUser.name}'s account has been locked`,
+                  summary: translateService.instant('messages.success.accountLocked'),
+                  detail: translateService.instant('messages.success.accountLockedDetail', { name: updatedUser.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error locking account',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.accountLockError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -306,16 +308,16 @@ export const UserStore = signalStore(
                 patchState(store, updateEntity({ id, changes: updatedUser }));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Account Unlocked',
-                  detail: `User ${updatedUser.name}'s account has been unlocked`,
+                  summary: translateService.instant('messages.success.accountUnlocked'),
+                  detail: translateService.instant('messages.success.accountUnlockedDetail', { name: updatedUser.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error unlocking account',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.accountUnlockError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

@@ -19,6 +19,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import { ProductData, ProductInfo } from '../models/product.model';
 import { ProductService } from '../services/product';
@@ -45,8 +46,9 @@ export const ProductStore = signalStore(
   withProps(() => ({
     productService: inject(ProductService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ productService, messageService, ...store }) => ({
+  withMethods(({ productService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -75,16 +77,16 @@ export const ProductStore = signalStore(
                 patchState(store, addEntity(createdProduct));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Product created',
-                  detail: `The product ${createdProduct.name} has been created successfully`,
+                  summary: translateService.instant('messages.success.productCreated'),
+                  detail: translateService.instant('messages.success.productCreatedDetail', { name: createdProduct.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error creating product',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.productCreateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -106,16 +108,16 @@ export const ProductStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Product updated',
-                  detail: `The product ${updatedProduct.name} has been updated successfully`,
+                  summary: translateService.instant('messages.success.productUpdated'),
+                  detail: translateService.instant('messages.success.productUpdatedDetail', { name: updatedProduct.name }),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error updating product',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.productUpdateError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -134,16 +136,16 @@ export const ProductStore = signalStore(
                 patchState(store, removeEntity(id));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Product deleted',
-                  detail: 'The product has been deleted successfully',
+                  summary: translateService.instant('messages.success.productDeleted'),
+                  detail: translateService.instant('messages.success.productDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting product',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.productDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -162,17 +164,16 @@ export const ProductStore = signalStore(
                 patchState(store, removeEntities(ids));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Products deleted',
-                  detail:
-                    'The selected products have been deleted successfully',
+                  summary: translateService.instant('messages.success.productsDeleted'),
+                  detail: translateService.instant('messages.success.productsDeletedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error deleting products',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.productsDeleteError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

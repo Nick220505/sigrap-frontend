@@ -18,6 +18,7 @@ import {
 } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { concatMap, pipe, switchMap, tap } from 'rxjs';
 import {
   AttendanceInfo,
@@ -46,8 +47,9 @@ export const AttendanceStore = signalStore(
   withProps(() => ({
     attendanceService: inject(AttendanceService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ attendanceService, messageService, ...store }) => ({
+  withMethods(({ attendanceService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -94,8 +96,8 @@ export const AttendanceStore = signalStore(
                 patchState(store, addEntity(attendance));
                 messageService.add({
                   severity: 'success',
-                  summary: 'Clock-in recorded',
-                  detail: 'The clock-in has been recorded successfully',
+                  summary: translateService.instant('messages.success.clockInRecorded'),
+                  detail: translateService.instant('messages.success.clockInRecordedDetail'),
                 });
                 patchState(store, { clockInDialogVisible: false });
               },
@@ -111,15 +113,14 @@ export const AttendanceStore = signalStore(
                 ) {
                   messageService.add({
                     severity: 'warn',
-                    summary: 'Duplicate Record',
-                    detail:
-                      'Employee already has an attendance record for today',
+                    summary: translateService.instant('messages.errors.duplicateRecord'),
+                    detail: translateService.instant('messages.errors.duplicateRecordDetail'),
                   });
                 } else {
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error recording clock-in',
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.clockInRecordError'),
                   });
                 }
               },
@@ -145,16 +146,16 @@ export const AttendanceStore = signalStore(
                 );
                 messageService.add({
                   severity: 'success',
-                  summary: 'Clock-out recorded',
-                  detail: 'The clock-out has been recorded successfully',
+                  summary: translateService.instant('messages.success.clockOutRecorded'),
+                  detail: translateService.instant('messages.success.clockOutRecordedDetail'),
                 });
               },
               error: ({ message: error }: Error) => {
                 patchState(store, { error });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error recording clock-out',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.clockOutRecordError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),

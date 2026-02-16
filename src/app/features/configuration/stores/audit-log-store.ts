@@ -12,6 +12,7 @@ import {
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { switchMap, tap } from 'rxjs';
 import { AuditLogInfo } from '../models/audit-log.model';
 import { AuditLogService, PageResponse } from '../services/audit-log';
@@ -44,8 +45,9 @@ export const AuditLogStore = signalStore(
   withProps(() => ({
     auditLogService: inject(AuditLogService),
     messageService: inject(MessageService),
+    translateService: inject(TranslateService),
   })),
-  withMethods(({ auditLogService, messageService, ...store }) => ({
+  withMethods(({ auditLogService, messageService, translateService, ...store }) => ({
     findAll: rxMethod<{ page?: number; size?: number }>((params$) =>
       params$.pipe(
         tap(() => patchState(store, { loading: true, error: null })),
@@ -64,8 +66,8 @@ export const AuditLogStore = signalStore(
                 patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading audit logs',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.auditLogLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -96,8 +98,8 @@ export const AuditLogStore = signalStore(
                 patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading user audit logs',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.userAuditLogLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -128,8 +130,8 @@ export const AuditLogStore = signalStore(
                 patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading entity audit logs',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.entityAuditLogLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -157,8 +159,8 @@ export const AuditLogStore = signalStore(
                   patchState(store, { error: error.message });
                   messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Error loading audit logs by action',
+                    summary: translateService.instant('messages.errors.error'),
+                    detail: translateService.instant('messages.errors.auditLogByActionLoadError'),
                   });
                 },
                 finalize: () => patchState(store, { loading: false }),
@@ -190,8 +192,8 @@ export const AuditLogStore = signalStore(
                 patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading audit logs by date range',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.auditLogByDateRangeLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -222,8 +224,8 @@ export const AuditLogStore = signalStore(
                 patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading audit logs by entity ID',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.auditLogByEntityIdLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
@@ -250,8 +252,8 @@ export const AuditLogStore = signalStore(
                 patchState(store, { error: error.message });
                 messageService.add({
                   severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error loading audit logs with errors',
+                  summary: translateService.instant('messages.errors.error'),
+                  detail: translateService.instant('messages.errors.auditLogWithErrorsLoadError'),
                 });
               },
               finalize: () => patchState(store, { loading: false }),
