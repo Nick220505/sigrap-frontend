@@ -289,7 +289,7 @@ export class AuditTable {
       document.body.removeChild(link);
     } catch (error) {
       console.error('Error exporting to CSV:', error);
-      alert('There was an error exporting the CSV file. Please try again.');
+      alert(this.translateService.instant('messages.errors.csvExportErrorDetail'));
     } finally {
       this.isExporting.set(false);
     }
@@ -455,7 +455,7 @@ export class AuditTable {
       pdf.save('auditoria.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('There was an error generating the PDF. Please try again.');
+      alert(this.translateService.instant('messages.errors.pdfExportErrorDetail'));
     } finally {
       this.isExporting.set(false);
     }

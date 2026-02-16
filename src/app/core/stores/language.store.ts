@@ -68,7 +68,7 @@ export const LanguageStore = signalStore(
           const supportedLangs = store.availableLanguages().map(l => l.code);
           if (!supportedLangs.includes(locale)) {
             patchState(store, { 
-              error: `Unsupported language: ${locale}`, 
+              error: translateService.instant('messages.errors.unsupportedLanguage', { locale }), 
               isLoading: false 
             });
             return of(null);

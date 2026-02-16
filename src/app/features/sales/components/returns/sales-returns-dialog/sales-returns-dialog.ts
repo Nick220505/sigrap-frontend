@@ -424,8 +424,8 @@ export class SalesReturnsDialog {
           } else {
             this.messageService.add({
               severity: 'error',
-              summary: 'Error',
-              detail: `Original sale with ID ${currentSaleReturn.originalSaleId} not found.`,
+              summary: this.translateService.instant('messages.errors.originalSaleNotFound'),
+              detail: this.translateService.instant('messages.errors.originalSaleNotFoundDetail', { id: currentSaleReturn.originalSaleId }),
             });
             this.saleReturnStore.closeReturnDialog();
           }
@@ -495,8 +495,8 @@ export class SalesReturnsDialog {
       });
       this.messageService.add({
         severity: 'warn',
-        summary: 'Warning',
-        detail: `Original sale with ID ${saleId} not found in local list. Make sure it is loaded.`,
+        summary: this.translateService.instant('messages.warnings.saleNotInLocalList'),
+        detail: this.translateService.instant('messages.warnings.saleNotInLocalListDetail', { id: saleId }),
       });
     }
   }
@@ -587,9 +587,8 @@ export class SalesReturnsDialog {
     if (saleReturnData.items.length === 0) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Warning',
-        detail:
-          'You must specify a quantity greater than zero for at least one item to return.',
+        summary: this.translateService.instant('messages.warnings.noItemsToReturn'),
+        detail: this.translateService.instant('messages.warnings.noItemsToReturnDetail'),
       });
       return;
     }
