@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { LayoutService } from '@core/layout/services/layout';
 import {
   definePreset,
@@ -50,11 +51,11 @@ declare interface SurfacesType {
 
 @Component({
   selector: 'app-configurator',
-  imports: [CommonModule, FormsModule, SelectButtonModule],
+  imports: [CommonModule, FormsModule, SelectButtonModule, TranslateModule],
   template: `
     <div class="flex flex-col gap-4">
       <div>
-        <span class="text-sm text-muted-color font-semibold">Primary</span>
+        <span class="text-sm text-muted-color font-semibold">{{ 'common.configurator.primary' | translate }}</span>
 
         <div class="pt-2 flex gap-2 flex-wrap justify-start">
           @for (primaryColor of primaryColors(); track primaryColor.name) {
@@ -81,7 +82,7 @@ declare interface SurfacesType {
       </div>
 
       <div>
-        <span class="text-sm text-muted-color font-semibold">Surface</span>
+        <span class="text-sm text-muted-color font-semibold">{{ 'common.configurator.surface' | translate }}</span>
 
         <div class="pt-2 flex gap-2 flex-wrap justify-start">
           @for (surface of surfaces; track surface.name) {
@@ -112,7 +113,7 @@ declare interface SurfacesType {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span class="text-sm text-muted-color font-semibold">Presets</span>
+        <span class="text-sm text-muted-color font-semibold">{{ 'common.configurator.presets' | translate }}</span>
 
         <p-selectbutton
           [options]="presets"
@@ -125,7 +126,7 @@ declare interface SurfacesType {
 
       @if (showMenuModeButton()) {
         <div class="flex flex-col gap-2">
-          <span class="text-sm text-muted-color font-semibold">Menu Mode</span>
+          <span class="text-sm text-muted-color font-semibold">{{ 'common.configurator.menuMode' | translate }}</span>
 
           <p-selectbutton
             [ngModel]="menuMode()"

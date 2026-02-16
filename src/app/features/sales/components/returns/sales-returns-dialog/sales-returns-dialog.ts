@@ -70,7 +70,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
         class="flex flex-col gap-4 pt-4"
       >
         <div class="flex flex-col gap-2">
-          <label for="originalSaleId" class="font-bold">Original Sale</label>
+          <label for="originalSaleId" class="font-bold">{{ 'suppliers.labels.originalSale' | translate }}</label>
           <p-inputgroup>
             <p-inputgroup-addon>
               <i class="pi pi-shopping-cart"></i>
@@ -138,9 +138,7 @@ import { SaleInfo } from '@features/sales/models/sale.model';
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="reason" class="font-bold"
-              >Return Reason <span class="text-red-500">*</span></label
-            >
+            <label for="reason" class="font-bold">{{ 'suppliers.labels.returnReason' | translate }} <span class="text-red-500">*</span></label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-comment"></i>
@@ -177,18 +175,18 @@ import { SaleInfo } from '@features/sales/models/sale.model';
           </div>
 
           <div class="flex flex-col gap-2">
-            <h3 class="font-bold text-lg m-0">Products to Return</h3>
+            <h3 class="font-bold text-lg m-0">{{ 'common.productsToReturn' | translate }}</h3>
             <p-table
               [value]="itemIndexes()"
               [tableStyle]="{ 'min-width': '50rem' }"
             >
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Product</th>
-                  <th>Original Price</th>
-                  <th>Qty. Purchased</th>
-                  <th>Qty. to Return</th>
-                  <th>Return Subtotal</th>
+                  <th>{{ 'common.product' | translate }}</th>
+                  <th>{{ 'common.originalPrice' | translate }}</th>
+                  <th>{{ 'common.qtyPurchased' | translate }}</th>
+                  <th>{{ 'common.qtyToReturn' | translate }}</th>
+                  <th>{{ 'common.subtotal' | translate }}</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-idx>

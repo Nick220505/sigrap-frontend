@@ -112,7 +112,7 @@ interface PieChartTooltipContext {
                 [ngModel]="customerLimitSignal()"
                 (onChange)="applyRankingLimit($event)"
                 styleClass="w-36"
-                placeholder="Top"
+                [placeholder]="'common.top' | translate"
                 inputId="customerLimit"
               ></p-select>
             </div>

@@ -116,7 +116,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Actions</span>
+              <span>{{ 'common.actions' | translate }}</span>
               <button
                 type="button"
                 pButton

@@ -38,6 +38,26 @@
     "filterBy": "Filter by {{field}}",
     "addProduct": "Add Product",
     "selectLanguage": "Select Language",
+    "product": "Product",
+    "unitPrice": "Unit Price",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "finalTotal": "Final Total",
+    "products": "Products",
+    "productsToReturn": "Products to Return",
+    "originalPrice": "Original Price",
+    "qtyPurchased": "Qty. Purchased",
+    "qtyToReturn": "Qty. to Return",
+    "remove": "Remove",
+    "logo": "Logo",
+    "sigrapLogo": "SIGRAP Logo",
+    "configurator": {
+      "primary": "Primary",
+      "surface": "Surface",
+      "presets": "Presets",
+      "menuMode": "Menu Mode"
+    },
+    "top": "Top",
     "tooltips": {
       "edit": "Edit",
       "delete": "Delete",
@@ -105,7 +125,18 @@
     "tableTitles": {
       "employeeSchedules": "Employee Schedules",
       "employeeAttendanceRecords": "Employee Attendance Records",
-      "auditLog": "Audit Log"
+      "auditLog": "Audit Log",
+      "purchaseOrders": "Purchase Orders",
+      "manageSuppliers": "Manage Suppliers",
+      "salesRegistry": "Sales Registry",
+      "manageReturns": "Manage Returns",
+      "manageProducts": "Manage Products",
+      "manageCategories": "Manage Categories"
+    },
+    "stats": {
+      "ordersInProgress": "Orders in Progress",
+      "completedOrders": "Completed Orders",
+      "pendingOrders": "Pending Orders"
     },
     "errors": {
       "errorLoadingOrders": "Error loading orders:",
@@ -522,7 +553,18 @@
       "employee": "Employee",
       "category": "Category",
       "description": "Description",
-      "stock": "Stock"
+      "stock": "Stock",
+      "deliveryDate": "Delivery Date",
+      "originalSale": "Original Sale",
+      "returnReason": "Return Reason",
+      "scheduleType": "Schedule Type",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "costPrice": "Cost Price",
+      "salePrice": "Sale Price",
+      "minimumStock": "Minimum Stock",
+      "supplier": "Supplier",
+      "dayOfWeek": "Day of Week"
     },
     "tooltips": {
       "createOrder": "Create new order",

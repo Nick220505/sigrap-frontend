@@ -107,7 +107,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
 
         <div class="flex flex-col gap-2">
           <div class="flex justify-between items-center">
-            <h3 class="font-bold text-lg m-0">Products</h3>
+            <h3 class="font-bold text-lg m-0">{{ 'common.products' | translate }}</h3>
             @if (!viewMode()) {
               <p-button
                 [label]="'sales.sales.addProduct' | translate"
@@ -125,12 +125,12 @@ import { SaleStore } from '@features/sales/stores/sale-store';
           >
             <ng-template pTemplate="header">
               <tr>
-                <th class="w-1/3">Product</th>
-                <th class="w-1/8">Quantity</th>
-                <th class="w-1/8">Unit Price</th>
-                <th class="w-1/4">Subtotal</th>
+                <th class="w-1/3">{{ 'common.product' | translate }}</th>
+                <th class="w-1/8">{{ 'common.quantity' | translate }}</th>
+                <th class="w-1/8">{{ 'common.unitPrice' | translate }}</th>
+                <th class="w-1/4">{{ 'common.subtotal' | translate }}</th>
                 @if (!viewMode()) {
-                  <th class="w-12 text-center">Actions</th>
+                  <th class="w-12 text-center">{{ 'common.actions' | translate }}</th>
                 }
               </tr>
             </ng-template>

@@ -78,7 +78,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Sales Registry</h5>
+            <h5 class="m-0 text-left">{{ 'common.tableTitles.salesRegistry' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -125,7 +125,7 @@ import { SaleStore } from '@features/sales/stores/sale-store';
 
           <th>
             <div class="flex items-center gap-2">
-              <span>Actions</span>
+              <span>{{ 'common.actions' | translate }}</span>
               <button
                 type="button"
                 pButton
@@ -313,10 +313,10 @@ export class SalesTable {
         <table style="width: 100%; margin-bottom: 2rem; border-collapse: collapse;">
           <thead>
             <tr style="background-color: #f8f9fa;">
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Product</th>
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Quantity</th>
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Unit Price</th>
-              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">Subtotal</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">{{ 'common.product' | translate }}</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">{{ 'common.quantity' | translate }}</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">{{ 'common.unitPrice' | translate }}</th>
+              <th style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">{{ 'common.subtotal' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -358,7 +358,7 @@ export class SalesTable {
             </tr>
             <tr>
               <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
-                <strong>Discount:</strong>
+                <strong>{{ 'common.discount' | translate }}:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
                 ${this.currencyPipe.transform(sale.discountAmount, undefined, undefined, '1.0-0')}
@@ -374,7 +374,7 @@ export class SalesTable {
             </tr>
             <tr style="background-color: #f8f9fa;">
               <td colspan="3" style="text-align: right; border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem;">
-                <strong>Final Total:</strong>
+                <strong>{{ 'common.finalTotal' | translate }}:</strong>
               </td>
               <td style="border: 1px solid #dee2e6; padding: 0.75rem; font-size: 1.1rem; text-align: right;">
                 <strong>${this.currencyPipe.transform(sale.finalAmount, undefined, undefined, '1.0-0')}</strong>

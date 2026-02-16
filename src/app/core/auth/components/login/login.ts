@@ -43,7 +43,7 @@ import { AuthStore } from '@core/auth/stores/auth-store';
             <div class="mb-8 text-center">
               <img
                 src="logo.png"
-                alt="SIGRAP Logo"
+                [alt]="'common.sigrapLogo' | translate"
                 class="w-16 mx-auto mb-8 object-contain drop-shadow-lg"
               />
 

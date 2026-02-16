@@ -102,7 +102,7 @@ import { TextareaModule } from 'primeng/textarea';
           @let costPriceErrors = productForm.costPrice().errors();
 
           <div class="flex flex-col gap-2" [class.p-invalid]="costPriceInvalid">
-            <label for="costPrice" class="font-bold">Cost Price</label>
+            <label for="costPrice" class="font-bold">{{ 'suppliers.labels.costPrice' | translate }}</label>
             <p-inputNumber
               id="costPrice"
               [ngModel]="productForm.costPrice().value()"
@@ -137,7 +137,7 @@ import { TextareaModule } from 'primeng/textarea';
           @let salePriceErrors = productForm.salePrice().errors();
 
           <div class="flex flex-col gap-2" [class.p-invalid]="salePriceInvalid">
-            <label for="salePrice" class="font-bold">Sale Price</label>
+            <label for="salePrice" class="font-bold">{{ 'suppliers.labels.salePrice' | translate }}</label>
             <p-inputNumber
               id="salePrice"
               [ngModel]="productForm.salePrice().value()"
@@ -205,9 +205,7 @@ import { TextareaModule } from 'primeng/textarea';
             class="flex flex-col gap-2"
             [class.p-invalid]="minimumStockThresholdInvalid"
           >
-            <label for="minimumStockThreshold" class="font-bold"
-              >Minimum Stock</label
-            >
+            <label for="minimumStockThreshold" class="font-bold">{{ 'suppliers.labels.minimumStock' | translate }}</label>
             <p-inputNumber
               id="minimumStockThreshold"
               [ngModel]="productForm.minimumStockThreshold().value()"

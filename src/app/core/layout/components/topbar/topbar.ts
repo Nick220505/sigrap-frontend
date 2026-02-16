@@ -48,7 +48,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           class="layout-topbar-logo flex items-center text-2xl text-[var(--text-color)] font-medium gap-3"
           routerLink="/"
         >
-          <img src="logo.png" alt="Logo" class="h-12" />
+          <img src="logo.png" [alt]="'common.logo' | translate" class="h-12" />
           <span>SIGRAP</span>
         </a>
       </div>

@@ -38,6 +38,26 @@
     "filterBy": "Filtrar por {{field}}",
     "addProduct": "Agregar Producto",
     "selectLanguage": "Seleccionar Idioma",
+    "product": "Producto",
+    "unitPrice": "Precio Unitario",
+    "subtotal": "Subtotal",
+    "discount": "Descuento",
+    "finalTotal": "Total Final",
+    "products": "Productos",
+    "productsToReturn": "Productos a Devolver",
+    "originalPrice": "Precio Original",
+    "qtyPurchased": "Cant. Comprada",
+    "qtyToReturn": "Cant. a Devolver",
+    "remove": "Eliminar",
+    "logo": "Logo",
+    "sigrapLogo": "Logo SIGRAP",
+    "configurator": {
+      "primary": "Primario",
+      "surface": "Superficie",
+      "presets": "Preajustes",
+      "menuMode": "Modo de Menú"
+    },
+    "top": "Top",
     "tooltips": {
       "edit": "Editar",
       "delete": "Eliminar",
@@ -105,7 +125,18 @@
     "tableTitles": {
       "employeeSchedules": "Horarios de Empleados",
       "employeeAttendanceRecords": "Registros de Asistencia de Empleados",
-      "auditLog": "Registro de Auditoría"
+      "auditLog": "Registro de Auditoría",
+      "purchaseOrders": "Órdenes de Compra",
+      "manageSuppliers": "Gestionar Proveedores",
+      "salesRegistry": "Registro de Ventas",
+      "manageReturns": "Gestionar Devoluciones",
+      "manageProducts": "Gestionar Productos",
+      "manageCategories": "Gestionar Categorías"
+    },
+    "stats": {
+      "ordersInProgress": "Órdenes en Progreso",
+      "completedOrders": "Órdenes Completadas",
+      "pendingOrders": "Órdenes Pendientes"
     },
     "errors": {
       "errorLoadingOrders": "Error al cargar órdenes:",
@@ -522,7 +553,18 @@
       "employee": "Empleado",
       "category": "Categoría",
       "description": "Descripción",
-      "stock": "Stock"
+      "stock": "Stock",
+      "deliveryDate": "Fecha de Entrega",
+      "originalSale": "Venta Original",
+      "returnReason": "Motivo de Devolución",
+      "scheduleType": "Tipo de Horario",
+      "startTime": "Hora de Inicio",
+      "endTime": "Hora de Fin",
+      "costPrice": "Precio de Costo",
+      "salePrice": "Precio de Venta",
+      "minimumStock": "Stock Mínimo",
+      "supplier": "Proveedor",
+      "dayOfWeek": "Día de la Semana"
     },
     "tooltips": {
       "createOrder": "Crear nueva orden",

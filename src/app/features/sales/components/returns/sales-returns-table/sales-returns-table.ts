@@ -76,7 +76,7 @@ import { TooltipModule } from 'primeng/tooltip';
           class="flex flex-col sm:flex-row items-center gap-4 sm:justify-between w-full"
         >
           <div class="self-start">
-            <h5 class="m-0 text-left">Manage Returns</h5>
+            <h5 class="m-0 text-left">{{ 'common.tableTitles.manageReturns' | translate }}</h5>
           </div>
 
           <div class="flex items-center w-full sm:w-auto">
@@ -121,7 +121,7 @@ import { TooltipModule } from 'primeng/tooltip';
           }
           <th>
             <div class="flex items-center gap-2">
-              <span>Actions</span>
+              <span>{{ 'common.actions' | translate }}</span>
               <button
                 type="button"
                 pButton

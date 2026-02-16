@@ -85,7 +85,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
             scheduleForm.day().invalid() && scheduleForm.day().touched();
           @let dayErrors = scheduleForm.day().errors();
           <div class="flex flex-col gap-2" [class.p-invalid]="dayInvalid">
-            <label for="day" class="font-bold">Day of Week</label>
+            <label for="day" class="font-bold">{{ 'suppliers.labels.dayOfWeek' | translate }}</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-calendar"></i>
@@ -127,7 +127,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
             scheduleForm.type().invalid() && scheduleForm.type().touched();
           @let typeErrors = scheduleForm.type().errors();
           <div class="flex flex-col gap-2" [class.p-invalid]="typeInvalid">
-            <label for="type" class="font-bold">Schedule Type</label>
+            <label for="type" class="font-bold">{{ 'suppliers.labels.scheduleType' | translate }}</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-briefcase"></i>
@@ -167,7 +167,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
             scheduleForm.startTime().touched();
           @let startTimeErrors = scheduleForm.startTime().errors();
           <div class="flex flex-col gap-2" [class.p-invalid]="startTimeInvalid">
-            <label for="startTime" class="font-bold">Start Time</label>
+            <label for="startTime" class="font-bold">{{ 'suppliers.labels.startTime' | translate }}</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-clock"></i>
@@ -196,7 +196,7 @@ import { ScheduleStore } from '@features/employee/stores/schedule-store';
             scheduleForm.endTime().touched();
           @let endTimeErrors = scheduleForm.endTime().errors();
           <div class="flex flex-col gap-2" [class.p-invalid]="endTimeInvalid">
-            <label for="endTime" class="font-bold">End Time</label>
+            <label for="endTime" class="font-bold">{{ 'suppliers.labels.endTime' | translate }}</label>
             <p-inputgroup>
               <p-inputgroup-addon>
                 <i class="pi pi-clock"></i>
